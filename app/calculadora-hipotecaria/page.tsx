@@ -3,7 +3,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
 
-function calcMortgage(principal, rate, years) {
+// FIXED: All parameters typed!
+function calcMortgage(principal: number, rate: number, years: number): number {
   const monthlyRate = rate / 100 / 12;
   const n = years * 12;
   if (monthlyRate === 0) return principal / n || 0;
@@ -31,7 +32,7 @@ export default function CalculadoraHipotecaria() {
   const totalRenta = multi && unidades > 0 ? rentaMensual * unidades : 0;
   const flujo = multi ? totalRenta - mensual : null;
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setShowResults(true);
   }
@@ -140,7 +141,7 @@ export default function CalculadoraHipotecaria() {
             type="number"
             className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
             value={anios}
-            onChange={(e) => setAnios(e.target.value)}
+            onChange={(e) => setAnios(Number(e.target.value))}
             min="5"
             max="35"
             placeholder="ej. 25"
@@ -244,11 +245,11 @@ export default function CalculadoraHipotecaria() {
                   {totalRenta.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
                 </span>
               </p>
-              <p className={`text-lg font-bold mt-3 ${flujo >= 0 ? "text-brand-green" : "text-red-600"}`}>
-                {flujo >= 0
+              <p className={`text-lg font-bold mt-3 ${flujo && flujo >= 0 ? "text-brand-green" : "text-red-600"}`}>
+                {flujo && flujo >= 0
                   ? "Flujo de caja estimado positivo: "
                   : "Déficit estimado: "}
-                {flujo.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
+                {flujo?.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
               </p>
             </>
           )}

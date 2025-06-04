@@ -3,7 +3,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
 
-function calcMortgage(principal, rate, years) {
+// Add types for clarity (optional but recommended)
+function calcMortgage(principal: number, rate: number, years: number): number {
   const monthlyRate = rate / 100 / 12;
   const n = years * 12;
   if (monthlyRate === 0) return principal / n || 0;
@@ -31,7 +32,7 @@ export default function MortgageCalculator() {
   const totalRental = multi && units > 0 ? monthlyRental * units : 0;
   const cashFlow = multi ? totalRental - monthly : null;
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setShowResults(true);
   }
@@ -140,7 +141,7 @@ export default function MortgageCalculator() {
             type="number"
             className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
             value={years}
-            onChange={(e) => setYears(e.target.value)}
+            onChange={(e) => setYears(Number(e.target.value))}
             min="5"
             max="35"
             placeholder="e.g. 25"
@@ -248,7 +249,7 @@ export default function MortgageCalculator() {
                 {cashFlow >= 0
                   ? "Estimated Positive Cash Flow: "
                   : "Estimated Shortfall: "}
-                {cashFlow.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
+                {cashFlow?.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
               </p>
             </>
           )}

@@ -21,13 +21,14 @@ export default function CalculadoraPresupuesto() {
   );
   const neto = (parseFloat(ingresos) || 0) - totalGastos;
 
-  function handleGastoChange(i, val) {
+  // --- FIX: add types for TypeScript ---
+  function handleGastoChange(i: number, val: string) {
     setGastos((prev) =>
       prev.map((exp, idx) => (idx === i ? { ...exp, value: val } : exp))
     );
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setShowResults(true);
   }
