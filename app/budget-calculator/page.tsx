@@ -21,13 +21,14 @@ export default function BudgetCalculator() {
   );
   const net = (parseFloat(income) || 0) - totalExpenses;
 
-  function handleExpenseChange(i, val) {
+  // --- FIXED TYPES BELOW ---
+  function handleExpenseChange(i: number, val: string) {
     setExpenses((prev) =>
       prev.map((exp, idx) => (idx === i ? { ...exp, value: val } : exp))
     );
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setShowResults(true);
   }
