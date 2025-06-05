@@ -1,159 +1,147 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { usePathname } from "next/navigation";
+import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const links = [
-  { en: { label: "Home", href: "/" }, es: { label: "Inicio", href: "/inicio" } },
-  { en: { label: "About", href: "/about" }, es: { label: "Sobre mí", href: "/sobre-mi" } },
-  { en: { label: "Services", href: "/services" }, es: { label: "Servicios", href: "/servicios" } },
-  { en: { label: "Tools", href: "/tools" }, es: { label: "Herramientas", href: "/herramientas" } },
-  { en: { label: "Resources", href: "/resources" }, es: { label: "Recursos", href: "/recursos" } },
-  { en: { label: "Testimonials", href: "/testimonials" }, es: { label: "Testimonios", href: "/testimonios" } },
-  { en: { label: "Contact", href: "/contact" }, es: { label: "Contacto", href: "/contacto" } },
+const navGroups = [
+  { href: "", labelEn: "Home", labelEs: "Inicio" },
+  { href: "/about", labelEn: "About", labelEs: "Sobre Mí" },
+  {
+    labelEn: "Services", labelEs: "Servicios", href: "/services",
+    subLinks: [
+      { href: "/services", labelEn: "All Services", labelEs: "Todos los servicios" },
+      { href: "/tools", labelEn: "Tools", labelEs: "Herramientas" },
+      { href: "/investment", labelEn: "Investment", labelEs: "Inversión" },
+    ]
+  },
+  {
+    labelEn: "Resources", labelEs: "Recursos", href: "/resources",
+    subLinks: [
+      { href: "/resources", labelEn: "All Resources", labelEs: "Todos los recursos" },
+      { href: "/budget-calculator", labelEn: "Budget Calculator", labelEs: "Calculadora Presupuesto" },
+      { href: "/mortgage-calculator", labelEn: "Mortgage Calculator", labelEs: "Calculadora Hipotecaria" },
+    ]
+  },
+  { href: "/testimonials", labelEn: "Testimonials", labelEs: "Testimonios" },
+  { href: "/contact", labelEn: "Contact", labelEs: "Contacto" },
 ];
 
-function isSpanishPath(pathname) {
-  return [
-    "/inicio",
-    "/sobre-mi",
-    "/servicios",
-    "/herramientas",
-    "/recursos",
-    "/testimonios",
-    "/contacto",
-    "/calculadora-presupuesto",
-    "/calculadora-hipotecaria"
-  ].some(prefix => pathname.startsWith(prefix));
-}
+type NavBarProps = {
+  lang?: string;
+};
 
-export default function NavBar() {
-  const pathname = usePathname();
+export default function NavBar({ lang = "en" }: NavBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openAccordions, setOpenAccordions] = useState<number[]>([]);
+  const pathname = usePathname();
+  const isSpanish = lang === "es";
+  const langPrefix = isSpanish ? "/es" : "/en";
 
-  const isSpanish = isSpanishPath(pathname);
-
-  // Get language switcher link
-  const languageSwitch = isSpanish
-    ? { label: "English", href: pathname.replace(
-        /^\/(inicio|sobre-mi|servicios|herramientas|recursos|testimonios|contacto|calculadora-presupuesto|calculadora-hipotecaria)/,
-        (match) => {
-          // Map Spanish route to English route
-          switch (match) {
-            case "/inicio": return "/";
-            case "/sobre-mi": return "/about";
-            case "/servicios": return "/services";
-            case "/herramientas": return "/tools";
-            case "/recursos": return "/resources";
-            case "/testimonios": return "/testimonials";
-            case "/contacto": return "/contact";
-            case "/calculadora-presupuesto": return "/budget-calculator";
-            case "/calculadora-hipotecaria": return "/mortgage-calculator";
-            default: return "/";
-          }
-        }
-      ) }
-    : { label: "Español", href: (() => {
-        switch (pathname) {
-          case "/": return "/inicio";
-          case "/about": return "/sobre-mi";
-          case "/services": return "/servicios";
-          case "/tools": return "/herramientas";
-          case "/resources": return "/recursos";
-          case "/testimonials": return "/testimonios";
-          case "/contact": return "/contacto";
-          case "/budget-calculator": return "/calculadora-presupuesto";
-          case "/mortgage-calculator": return "/calculadora-hipotecaria";
-          default: return "/inicio";
-        }
-      })()
-    };
+  // Mobile accordion toggle
+  const handleAccordionToggle = (idx: number) => {
+    setOpenAccordions((open) =>
+      open.includes(idx) ? open.filter((i) => i !== idx) : [...open, idx]
+    );
+  };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-        {/* Logo */}
-        <Link href={isSpanish ? "/inicio" : "/"}>
-          <span className="font-serif text-brand-green text-2xl font-bold cursor-pointer">
-            Fanny Samaniego
+    <nav className="bg-white border-b shadow-lg fixed top-0 left-0 w-full z-50">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        {/* Logo/Brand */}
+        <Link href={langPrefix}>
+          <span className="flex items-center cursor-pointer select-none">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-9 w-9 mr-2"
+              style={{ minWidth: 36 }}
+            />
+            <span className="font-serif text-2xl font-bold text-brand-blue">
+              Fanny Samaniego
+            </span>
           </span>
         </Link>
-        {/* Desktop Links */}
-        <div className="hidden md:flex gap-8 items-center">
-          {links.map((link, i) => (
-            <Link
-              key={i}
-              href={isSpanish ? link.es.href : link.en.href}
-              className={`text-lg font-semibold hover:text-brand-blue transition ${
-                pathname === (isSpanish ? link.es.href : link.en.href)
-                  ? "text-brand-green underline"
-                  : "text-brand-body"
-              }`}
-            >
-              {isSpanish ? link.es.label : link.en.label}
-            </Link>
-          ))}
-          {/* Language Switcher */}
-          <Link
-            href={languageSwitch.href}
-            className="ml-3 px-4 py-2 rounded-full bg-brand-gold text-brand-green font-bold shadow hover:bg-brand-blue hover:text-white transition-all"
-          >
-            {languageSwitch.label}
-          </Link>
-        </div>
-        {/* Mobile Menu Button */}
+
+        {/* Hamburger for mobile */}
         <button
-          className="md:hidden p-2 rounded text-brand-green hover:bg-brand-gold/20 focus:outline-none"
-          aria-label="Open menu"
-          onClick={() => setMenuOpen(true)}
+          className="md:hidden text-2xl text-brand-blue focus:outline-none"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
         >
-          <FaBars size={24} />
+          {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
-      </nav>
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="fixed inset-0 bg-black/30 z-50 flex">
-          <nav className="bg-white w-72 p-8 shadow-2xl h-full flex flex-col gap-6">
-            <div className="flex justify-between items-center mb-8">
-              <span className="font-serif text-brand-green text-2xl font-bold">
-                Fanny Samaniego
-              </span>
-              <button
-                className="p-2 rounded hover:bg-brand-gold/20"
-                aria-label="Close menu"
-                onClick={() => setMenuOpen(false)}
-              >
-                <FaTimes size={24} />
-              </button>
-            </div>
-            {links.map((link, i) => (
+
+        {/* Desktop Nav: Flat Links Only */}
+        <ul className="hidden md:flex space-x-6 font-semibold text-lg items-center">
+          {navGroups.map((item) => (
+            <li key={item.labelEn}>
               <Link
-                key={i}
-                href={isSpanish ? link.es.href : link.en.href}
-                className={`text-lg font-semibold hover:text-brand-blue transition ${
-                  pathname === (isSpanish ? link.es.href : link.en.href)
-                    ? "text-brand-green underline"
-                    : "text-brand-body"
+                href={item.href === "" ? langPrefix : `${langPrefix}${item.href}`}
+                className={`transition-colors hover:text-brand-gold text-brand-blue px-1.5 py-1 rounded-lg ${
+                  pathname === (item.href === "" ? langPrefix : `${langPrefix}${item.href}`) ? "text-brand-gold" : ""
                 }`}
-                onClick={() => setMenuOpen(false)}
               >
-                {isSpanish ? link.es.label : link.en.label}
+                {isSpanish ? item.labelEs : item.labelEn}
               </Link>
-            ))}
-            {/* Language Switcher */}
-            <Link
-              href={languageSwitch.href}
-              className="mt-4 px-4 py-2 rounded-full bg-brand-gold text-brand-green font-bold shadow hover:bg-brand-blue hover:text-white transition-all"
-              onClick={() => setMenuOpen(false)}
-            >
-              {languageSwitch.label}
-            </Link>
-          </nav>
-          {/* Click outside to close */}
-          <div className="flex-1" onClick={() => setMenuOpen(false)} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Mobile Accordion Menu */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setMenuOpen(false)}>
+          <ul
+            className="absolute top-16 left-0 w-full bg-white shadow-xl flex flex-col items-center py-8 space-y-5 font-semibold text-xl z-50"
+            onClick={e => e.stopPropagation()}
+          >
+            {navGroups.map((item, idx) => {
+              if (item.subLinks) {
+                const open = openAccordions.includes(idx);
+                return (
+                  <li key={item.labelEn} className="w-full">
+                    <button
+                      onClick={() => handleAccordionToggle(idx)}
+                      className="w-full flex justify-between items-center px-5 py-2 rounded-lg text-brand-blue font-bold hover:bg-brand-blue/10 focus:outline-none"
+                    >
+                      <span>{isSpanish ? item.labelEs : item.labelEn}</span>
+                      {open ? <FaChevronUp /> : <FaChevronDown />}
+                    </button>
+                    {open && (
+                      <ul className="pl-6 pt-1 flex flex-col space-y-2">
+                        {item.subLinks.map((sub) => (
+                          <li key={sub.labelEn}>
+                            <Link
+                              href={`${langPrefix}${sub.href}`}
+                              className="block px-2 py-1 text-brand-blue hover:text-brand-gold transition rounded"
+                              onClick={() => setMenuOpen(false)}
+                            >
+                              {isSpanish ? sub.labelEs : sub.labelEn}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+              // Flat link for normal items
+              return (
+                <li key={item.labelEn} className="w-full">
+                  <Link
+                    href={item.href === "" ? langPrefix : `${langPrefix}${item.href}`}
+                    className="block px-5 py-2 rounded-lg text-brand-blue hover:text-brand-gold transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {isSpanish ? item.labelEs : item.labelEn}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
-    </header>
+    </nav>
   );
 }

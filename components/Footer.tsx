@@ -1,38 +1,35 @@
 "use client";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
 
-export default function Footer() {
-  const pathname = usePathname();
-  const isSpanish =
-    pathname?.startsWith("/es") ||
-    pathname?.startsWith("/contacto") ||
-    pathname?.startsWith("/recursos") ||
-    pathname?.startsWith("/herramientas") ||
-    pathname?.startsWith("/testimonios") ||
-    pathname?.startsWith("/servicios") ||
-    pathname?.startsWith("/sobre-mi");
+// Accept lang prop from parent layout
+type FooterProps = {
+  lang?: string;
+};
+
+export default function Footer({ lang = "en" }: FooterProps) {
+  const isSpanish = lang === "es";
+  const langPrefix = isSpanish ? "/es" : "/en";
 
   const [subscribed, setSubscribed] = useState(false);
 
-  // Social links (add your real URLs)
+  // Social links (replace with your actual URLs)
   const socials = [
     {
       icon: <Instagram size={22} />,
       href: "https://www.instagram.com/",
-      label: isSpanish ? "Instagram" : "Instagram",
+      label: "Instagram",
     },
     {
       icon: <Linkedin size={22} />,
       href: "https://www.linkedin.com/",
-      label: isSpanish ? "LinkedIn" : "LinkedIn",
+      label: "LinkedIn",
     },
     {
       icon: <Facebook size={22} />,
       href: "https://www.facebook.com/",
-      label: isSpanish ? "Facebook" : "Facebook",
+      label: "Facebook",
     },
     {
       icon: <Mail size={22} />,
@@ -76,12 +73,12 @@ export default function Footer() {
           <div className="font-serif text-lg font-semibold text-brand-gold mb-1">
             {isSpanish ? "Navegación" : "Navigation"}
           </div>
-          <Link href={isSpanish ? "/sobre-mi" : "/about"} className="hover:text-brand-gold transition">{isSpanish ? "Sobre Mí" : "About"}</Link>
-          <Link href={isSpanish ? "/servicios" : "/services"} className="hover:text-brand-gold transition">{isSpanish ? "Servicios" : "Services"}</Link>
-          <Link href={isSpanish ? "/recursos" : "/resources"} className="hover:text-brand-gold transition">{isSpanish ? "Recursos" : "Resources"}</Link>
-          <Link href={isSpanish ? "/testimonios" : "/testimonials"} className="hover:text-brand-gold transition">{isSpanish ? "Testimonios" : "Testimonials"}</Link>
-          <Link href={isSpanish ? "/herramientas" : "/tools"} className="hover:text-brand-gold transition">{isSpanish ? "Herramientas" : "Tools"}</Link>
-          <Link href={isSpanish ? "/contacto" : "/contact"} className="hover:text-brand-gold transition">{isSpanish ? "Contacto" : "Contact"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/sobre-mi" : "/about"}`} className="hover:text-brand-gold transition">{isSpanish ? "Sobre Mí" : "About"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/servicios" : "/services"}`} className="hover:text-brand-gold transition">{isSpanish ? "Servicios" : "Services"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/recursos" : "/resources"}`} className="hover:text-brand-gold transition">{isSpanish ? "Recursos" : "Resources"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/testimonios" : "/testimonials"}`} className="hover:text-brand-gold transition">{isSpanish ? "Testimonios" : "Testimonials"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/herramientas" : "/tools"}`} className="hover:text-brand-gold transition">{isSpanish ? "Herramientas" : "Tools"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/contacto" : "/contact"}`} className="hover:text-brand-gold transition">{isSpanish ? "Contacto" : "Contact"}</Link>
         </div>
 
         {/* Right: Social & Compliance */}
@@ -106,7 +103,7 @@ export default function Footer() {
               : "Mortgage License #M22000490 · Zolo Realty"}
           </div>
           <Link
-            href={isSpanish ? "/cumplimiento" : "/compliance"}
+            href={`${langPrefix}${isSpanish ? "/cumplimiento" : "/compliance"}`}
             className="text-xs text-brand-beige/80 text-right hover:text-brand-gold underline transition"
           >
             {isSpanish
