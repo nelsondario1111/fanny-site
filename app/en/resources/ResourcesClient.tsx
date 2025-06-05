@@ -17,7 +17,6 @@ export default function ResourcesClient({ articles }: { articles: Article[] }) {
     ...Array.from(new Set(articles.map((a) => a.category).filter(Boolean))),
   ];
 
-  // More robust filtering that won't error if title/summary is missing
   const filteredArticles = articles.filter(
     (a) =>
       (selected === "All" || a.category === selected) &&
@@ -96,4 +95,21 @@ export default function ResourcesClient({ articles }: { articles: Article[] }) {
             {filteredArticles.map((a, idx) => (
               <div
                 key={a.slug + idx}
-                className="p-6 border border-brand-green/2
+                className="p-6 border border-brand-green/20 rounded-2xl shadow hover:shadow-md transition"
+              >
+                <h3 className="text-lg font-bold text-brand-green mb-2">{a.title}</h3>
+                <p className="text-sm text-brand-body mb-4">{a.summary}</p>
+                <Link
+                  href={`/en/resources/${a.slug}`}
+                  className="text-brand-blue font-semibold hover:underline"
+                >
+                  Read More →
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      </section>
+    </main>
+  );
+}

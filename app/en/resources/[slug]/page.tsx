@@ -3,20 +3,22 @@ import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
 
-// This function enables Next.js to statically generate all article paths at build time
+// Generate static paths for English articles
 export async function generateStaticParams() {
-  const articles = getAllArticles("en");
+  const articles = await getAllArticles("en"); // FIXED
   return articles.map((a) => ({ slug: a.slug }));
 }
 
 export default async function ArticlePage({ params }) {
-  const article = getArticleBySlug(params.slug, "en");
+  const article = await getArticleBySlug(params.slug, "en"); // FIXED
   if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-brand-blue mb-4">Article not found</h1>
-          <Link href="/resources" className="text-brand-green hover:underline">Back to Resources</Link>
+          <Link href="/en/resources" className="text-brand-green hover:underline">
+            Back to Resources
+          </Link>
         </div>
       </main>
     );
@@ -37,25 +39,25 @@ export default async function ArticlePage({ params }) {
           </span>
           {article.date && (
             <span className="text-brand-green/80">
-              {new Date(article.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+              {new Date(article.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
             </span>
           )}
           {article.author && (
-            <span className="text-brand-blue/70 font-medium">
-              by {article.author}
-            </span>
+            <span className="text-brand-blue/70 font-medium">by {article.author}</span>
           )}
         </div>
 
-        {/* Article content */}
         <article
           className="prose prose-lg max-w-none text-brand-body"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
 
-        {/* Back to Resources link */}
         <div className="mt-12 text-center">
-          <Link href="/resources">
+          <Link href="/en/resources">
             <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
               Back to Resources
             </button>
