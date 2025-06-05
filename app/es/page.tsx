@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomeEs() {
   return (
@@ -30,13 +31,14 @@ export default function HomeEs() {
       {/* About Brief */}
       <section className="py-24 bg-white flex flex-col md:flex-row items-center max-w-6xl mx-auto gap-12">
         <div className="md:w-1/2 flex justify-center">
-          <img
+          <Image
             src="/fanny.jpg"
             alt="Fanny Samaniego"
             width={340}
             height={340}
             className="rounded-full shadow-xl object-cover border-4 border-brand-green"
             loading="lazy"
+            priority
           />
         </div>
         <div className="md:w-1/2 md:pl-12">

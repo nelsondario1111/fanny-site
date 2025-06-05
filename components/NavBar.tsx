@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -51,10 +52,12 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
         {/* Logo/Brand */}
         <Link href={langPrefix}>
           <span className="flex items-center cursor-pointer select-none">
-            <img
+            <Image
               src="/logo.png"
               alt="Logo"
-              className="h-9 w-9 mr-2"
+              className="mr-2"
+              width={36}
+              height={36}
               style={{ minWidth: 36 }}
             />
             <span className="font-serif text-2xl font-bold text-brand-blue">

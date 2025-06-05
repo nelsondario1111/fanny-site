@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
 
-// Accept lang prop from parent layout
 type FooterProps = {
   lang?: string;
 };
@@ -49,10 +49,12 @@ export default function Footer({ lang = "en" }: FooterProps) {
         {/* Left: Branding */}
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center mb-3">
-            <img
+            <Image
               src="/fanny-logo-footer.png"
               alt="Fanny Samaniego Logo"
-              className="h-12 w-12 rounded-full mr-3 border-2 border-brand-gold bg-white object-contain"
+              className="rounded-full mr-3 border-2 border-brand-gold bg-white object-contain"
+              width={48}
+              height={48}
             />
             <span className="font-serif text-2xl font-bold text-brand-gold tracking-tight">
               Fanny Samaniego
