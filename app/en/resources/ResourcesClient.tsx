@@ -2,7 +2,14 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function ResourcesClient({ articles }) {
+type Article = {
+  title: string;
+  slug: string;
+  category: string;
+  summary?: string;
+};
+
+export default function ResourcesClient({ articles }: { articles: Article[] }) {
   const [selected, setSelected] = useState("All");
   const [search, setSearch] = useState("");
   const uniqueCategories = [
@@ -10,13 +17,12 @@ export default function ResourcesClient({ articles }) {
     ...Array.from(new Set(articles.map((a) => a.category).filter(Boolean))),
   ];
 
-  // UPDATED: More robust filtering that won't error if title/summary is missing
-  const filteredArticles = articles.filter((a) =>
-    (selected === "All" || a.category === selected) &&
-    (
-      (a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
-      (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase())
-    )
+  // More robust filtering that won't error if title/summary is missing
+  const filteredArticles = articles.filter(
+    (a) =>
+      (selected === "All" || a.category === selected) &&
+      ((a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
+        (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase()))
   );
 
   return (
@@ -90,36 +96,4 @@ export default function ResourcesClient({ articles }) {
             {filteredArticles.map((a, idx) => (
               <div
                 key={a.slug + idx}
-                className="p-6 border border-brand-green/20 rounded-2xl bg-white shadow-md hover:shadow-xl transition flex flex-col"
-              >
-                <h3 className="font-bold font-serif mb-2 text-lg text-brand-green">
-                  {a.title}
-                </h3>
-                <p className="mb-3 text-brand-green/90 text-sm flex-1">{a.summary}</p>
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="text-xs text-brand-blue bg-brand-gold/20 rounded-full px-3 py-1">
-                    {a.category}
-                  </span>
-                  <Link href={`/resources/${a.slug}`}>
-                    <span className="text-brand-blue font-semibold hover:underline cursor-pointer">
-                      Read More
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Explore All */}
-        <div className="text-center mt-12">
-          <Link href="#">
-            <button className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg">
-              Explore All Resources
-            </button>
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
-}
+                className="p-6 border border-brand-green/2

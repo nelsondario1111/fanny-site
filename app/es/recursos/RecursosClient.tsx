@@ -2,7 +2,14 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function RecursosClient({ articles }) {
+type Article = {
+  title: string;
+  slug: string;
+  category: string;
+  summary?: string;
+};
+
+export default function RecursosClient({ articles }: { articles: Article[] }) {
   const [selected, setSelected] = useState("Todos");
   const [search, setSearch] = useState("");
   const uniqueCategories = [
@@ -10,19 +17,18 @@ export default function RecursosClient({ articles }) {
     ...Array.from(new Set(articles.map((a) => a.category).filter(Boolean))),
   ];
 
-  // BLOQUE SEGURO para filtrar y evitar errores si falta title o summary
-  const filteredArticles = articles.filter((a) =>
-    (selected === "Todos" || a.category === selected) &&
-    (
-      (a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
-      (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase())
-    )
+  // Safe filtering with optional chaining
+  const filteredArticles = articles.filter(
+    (a) =>
+      (selected === "Todos" || a.category === selected) &&
+      ((a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
+        (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase()))
   );
 
   return (
     <main className="bg-brand-beige min-h-screen py-20">
       <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
-        {/* Encabezado */}
+        {/* Header */}
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-6 text-center tracking-tight">
           Recursos para tu Bienestar Financiero
         </h1>
@@ -30,7 +36,7 @@ export default function RecursosClient({ articles }) {
           <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
         </div>
 
-        {/* CTA Descarga */}
+        {/* Download CTA */}
         <section className="mb-12">
           <div className="bg-brand-beige/80 p-8 rounded-2xl flex flex-col md:flex-row items-center md:justify-between shadow-lg border border-brand-gold/30">
             <div>
@@ -51,9 +57,9 @@ export default function RecursosClient({ articles }) {
           </div>
         </section>
 
-        {/* Búsqueda + Categorías */}
+        {/* Search + Categories */}
         <section className="mb-8 flex flex-col md:flex-row items-center md:justify-between gap-6">
-          {/* Categorías */}
+          {/* Categories */}
           <div className="flex flex-wrap gap-3">
             {uniqueCategories.map((cat) => (
               <button
@@ -69,17 +75,17 @@ export default function RecursosClient({ articles }) {
               </button>
             ))}
           </div>
-          {/* Buscador */}
+          {/* Search Input */}
           <input
             className="mt-2 md:mt-0 px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue w-full md:w-72 font-sans text-base"
             type="text"
             placeholder="Buscar artículos…"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </section>
 
-        {/* Grid de artículos */}
+        {/* Articles Grid */}
         <section className="mb-10">
           <div className="grid md:grid-cols-3 gap-6">
             {filteredArticles.length === 0 && (
@@ -111,7 +117,7 @@ export default function RecursosClient({ articles }) {
           </div>
         </section>
 
-        {/* Explorar todos */}
+        {/* Explore All Resources Button */}
         <div className="text-center mt-12">
           <Link href="#">
             <button className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg">
