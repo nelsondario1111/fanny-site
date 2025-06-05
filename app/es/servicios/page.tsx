@@ -17,7 +17,7 @@ const servicios = [
       "Conversación gratuita y amable para conocerte, entender tus necesidades y tus objetivos—sin presión ni compromiso. Descubramos si somos compatibles.",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Reservar llamada",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Sesión de Claridad Financiera",
@@ -26,7 +26,7 @@ const servicios = [
       "Sesión enfocada para aclarar tu mayor duda financiera—presupuesto, impuestos, compra de vivienda, o cualquier reto con tu dinero. Recibe pasos personalizados y tranquilidad.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Reservar sesión",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Paquete Bienestar 3 Meses",
@@ -35,7 +35,7 @@ const servicios = [
       "Acompañamiento para crear hábitos financieros sólidos, un plan claro y avanzar realmente en tu camino financiero—juntas, paso a paso.",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Más información",
-    link: "/inversion",
+    link: "/es/inversion",
   },
   {
     name: "Paquete Holístico 6 Meses",
@@ -44,7 +44,7 @@ const servicios = [
       "Transformación profunda y apoyo continuo para cambios importantes, grandes metas financieras o planificación integral para ti y tu familia o pareja.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Más información",
-    link: "/inversion",
+    link: "/es/inversion",
   },
   {
     name: "Retención Continua (Solo ex-clientes)",
@@ -53,7 +53,7 @@ const servicios = [
       "Mantén el acompañamiento y el apoyo con sesiones mensuales y guía continua. Solo para quienes ya han sido clientes.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconectar",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Círculo de Dinero (Grupo, 4 Semanas)",
@@ -62,7 +62,7 @@ const servicios = [
       "Grupo pequeño y seguro para aprender, compartir y crecer juntas en temas de dinero y abundancia. Empoderamiento y comunidad en confianza.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Unirme al círculo",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Círculo Mensual de Dinero",
@@ -71,7 +71,7 @@ const servicios = [
       "Sesiones grupales mensuales para acompañamiento continuo, inspiración y aprendizaje práctico.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Unirme al mensual",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Talleres (Comunidad/Público)",
@@ -80,7 +80,7 @@ const servicios = [
       "Talleres interactivos sobre presupuesto, impuestos, compra de vivienda y más—para comunidades, organizaciones y público general.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Solicitar información",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Talleres (Corporativo/Organización)",
@@ -89,7 +89,7 @@ const servicios = [
       "Talleres personalizados para empresas y organizaciones. Da a tu equipo herramientas de bienestar financiero, en inglés o español.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reservar taller",
-    link: "/contacto",
+    link: "/es/contacto",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function Servicios() {
         <p className="text-brand-body mb-2">
           Ya sea que busques asesoría puntual, un proceso transformador o una comunidad de apoyo, te ofrezco guía con compasión, claridad y cuidado—en español o inglés.
         </p>
-        <Link href="/inversion" className="inline-block mt-4">
+        <Link href="/es/inversion" className="inline-block mt-4">
           <button className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition">
             Ver paquetes e inversión
           </button>

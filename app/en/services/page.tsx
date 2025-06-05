@@ -17,7 +17,7 @@ const services = [
       "A free, friendly conversation to get to know you, your needs, and your goals—no pressure, no commitment. Let's see if we're a fit.",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Book Free Call",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Financial Clarity Session",
@@ -26,7 +26,7 @@ const services = [
       "A focused session to clarify your biggest financial question—budgeting, taxes, home buying, or any money challenge. Get personalized next steps and peace of mind.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Book Session",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "3-Month Wellness Package",
@@ -35,7 +35,7 @@ const services = [
       "Guided support to build strong money habits, create a clear plan, and make real progress on your financial journey—together, step by step.",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Learn More",
-    link: "/investment",
+    link: "/en/investment",
   },
   {
     name: "6-Month Holistic Package",
@@ -44,7 +44,7 @@ const services = [
       "Deep transformation and ongoing support for life changes, major financial goals, or holistic planning for you (and your partner or family).",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Learn More",
-    link: "/investment",
+    link: "/en/investment",
   },
   {
     name: "Ongoing Retainer (Alumni Only)",
@@ -53,7 +53,7 @@ const services = [
       "Stay connected and supported with monthly check-ins and ongoing guidance for alumni clients. For steady growth and accountability.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconnect",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Money Circle (Group, 4 Weeks)",
@@ -62,7 +62,7 @@ const services = [
       "A small, supportive group to learn, share, and grow together around money and abundance. Empowerment and community in a safe space.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Join Next Circle",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Money Circle (Monthly)",
@@ -71,7 +71,7 @@ const services = [
       "Ongoing monthly group sessions for continued support, inspiration, and practical learning.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Join Monthly",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Workshops (Public/Community)",
@@ -80,7 +80,7 @@ const services = [
       "Interactive workshops on budgeting, taxes, home buying, and more—for communities, organizations, and the public.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Request Info",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Workshops (Corporate/Org)",
@@ -89,7 +89,7 @@ const services = [
       "Custom workshops for companies and organizations. Empower your team with financial wellness tools, English or Spanish.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Book Workshop",
-    link: "/contact",
+    link: "/en/contact",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function Services() {
         <p className="text-brand-body mb-2">
           Whether you need focused advice, a transformational journey, or a supportive community, I offer guidance with compassion, clarity, and care—in English or Spanish.
         </p>
-        <Link href="/investment" className="inline-block mt-4">
+        <Link href="/en/investment" className="inline-block mt-4">
           <button className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition">
             See Packages & Investment
           </button>

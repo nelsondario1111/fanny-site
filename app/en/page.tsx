@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <main className="bg-brand-beige min-h-screen">
-      {/* Hero Section with fixed background */}
+      {/* Hero Section */}
       <section
         className="relative min-h-[65vh] flex items-center justify-center overflow-hidden
         bg-[url('/nature.jpg')] bg-cover bg-center bg-no-repeat bg-fixed"
@@ -16,7 +16,7 @@ export default function Home() {
           <p className="font-sans text-2xl text-brand-blue mb-8">
             When you’re ready for holistic, heart-centered financial guidance, I’m here to walk alongside you—offering support that honors your unique journey.
           </p>
-          <Link href="/contact" legacyBehavior>
+          <Link href="/en/contact" legacyBehavior>
             <a>
               <button className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none">
                 <span className="mr-2">🤝</span>Request an Invitation
@@ -47,7 +47,7 @@ export default function Home() {
             <br /><br />
             Over the years, I’ve learned that real prosperity is about aligning your numbers with your heart, your values, and your vision for the future. I work with a limited number of clients at a time, so each receives focused, present guidance and genuine support.
           </p>
-          <Link href="/about" legacyBehavior>
+          <Link href="/en/about" legacyBehavior>
             <a>
               <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-green hover:text-brand-blue border-2 border-brand-gold transition-all">
                 Discover My Journey
@@ -65,15 +65,12 @@ export default function Home() {
         <p className="font-sans text-lg text-brand-body mb-2">
           After years of experience, I’ve found that the most meaningful results happen when there’s genuine connection and trust. That’s why I work by invitation: every client relationship begins with a real conversation, so we can both feel if it’s the right fit.
         </p>
-        {/* Optional gentle nod to Human Design */}
         <p className="text-brand-body text-base mt-3 opacity-60">
-          <em>
-            (My approach is inspired by a philosophy that values deep recognition and the right timing. If you’re curious, feel free to ask me more!)
-          </em>
+          <em>(My approach is inspired by a philosophy that values deep recognition and the right timing. If you’re curious, feel free to ask me more!)</em>
         </p>
       </section>
 
-      {/* Core Services Overview */}
+      {/* Core Services */}
       <section className="py-24 bg-gradient-to-b from-brand-beige to-white">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold">
           Ways I Can Guide You
@@ -81,7 +78,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row gap-10 justify-center max-w-6xl mx-auto">
           <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
             <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
-              <span>💡</span>
+              💡
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
               Financial Guidance
@@ -92,7 +89,7 @@ export default function Home() {
           </div>
           <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
             <div className="w-14 h-14 mb-4 rounded-full bg-brand-blue flex items-center justify-center text-white text-2xl">
-              <span>🌱</span>
+              🌱
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
               Holistic Tax Planning
@@ -103,7 +100,7 @@ export default function Home() {
           </div>
           <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
             <div className="w-14 h-14 mb-4 rounded-full bg-brand-gold flex items-center justify-center text-brand-green text-2xl">
-              <span>🏡</span>
+              🏡
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
               Mortgage Guidance
@@ -114,7 +111,7 @@ export default function Home() {
           </div>
         </div>
         <div className="mt-16 text-center">
-          <Link href="/services" legacyBehavior>
+          <Link href="/en/services" legacyBehavior>
             <a>
               <button className="px-10 py-4 bg-brand-gold text-brand-green rounded-full font-semibold shadow-lg hover:bg-brand-green hover:text-white border-2 border-brand-blue transition-all duration-200">
                 Ways to Invite Me In
@@ -124,7 +121,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kitchen Table Conversations Section */}
+      {/* Kitchen Table */}
       <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center">
         <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">
           Kitchen Table Conversations
@@ -132,7 +129,7 @@ export default function Home() {
         <p className="font-sans text-lg text-brand-body mb-4">
           Join a small group session—just like gathering around a kitchen table—where we share stories, answer questions, and support each other’s journeys. If you’d like to be invited to a future circle, reach out below.
         </p>
-        <Link href="/kitchen-table" legacyBehavior>
+        <Link href="/en/kitchen-table" legacyBehavior>
           <a>
             <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
               Request to Join a Circle
@@ -141,7 +138,7 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Tools Section */}
+      {/* Tools */}
       <section className="py-20 bg-white max-w-6xl mx-auto">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold">
           Tools to Nourish Your Financial Journey
@@ -154,7 +151,7 @@ export default function Home() {
             <p className="font-sans text-brand-body mb-6">
               Create a budget that feels nourishing, not restrictive—aligned with your values and unique life.
             </p>
-            <Link href="/tools" legacyBehavior>
+            <Link href="/en/budget-calculator" legacyBehavior>
               <a>
                 <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
                   Try the Budget Tool
@@ -169,7 +166,7 @@ export default function Home() {
             <p className="font-sans text-brand-body mb-6">
               Estimate your payments and explore holistic strategies for your property journey—whether buying, refinancing, or investing.
             </p>
-            <Link href="/tools" legacyBehavior>
+            <Link href="/en/mortgage-calculator" legacyBehavior>
               <a>
                 <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
                   Explore Mortgage Tools
@@ -180,7 +177,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial Section */}
+      {/* Testimonials */}
       <section className="py-24 bg-brand-beige">
         <div className="max-w-2xl mx-auto text-center">
           <blockquote className="font-serif italic text-2xl text-brand-blue mb-8 border-l-4 border-brand-gold pl-6">
@@ -189,7 +186,7 @@ export default function Home() {
           <div className="font-sans font-semibold text-lg text-brand-green mb-8">
             – Maria & Carlos, Toronto
           </div>
-          <Link href="/testimonials" legacyBehavior>
+          <Link href="/en/testimonials" legacyBehavior>
             <a>
               <button className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow-md hover:bg-brand-gold hover:text-brand-green border-2 border-brand-gold transition-all duration-200">
                 Stories of Invitation & Guidance

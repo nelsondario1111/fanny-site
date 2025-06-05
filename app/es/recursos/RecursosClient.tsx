@@ -106,7 +106,7 @@ export default function RecursosClient({ articles }: { articles: Article[] }) {
                   <span className="text-xs text-brand-blue bg-brand-gold/20 rounded-full px-3 py-1">
                     {a.category}
                   </span>
-                  <Link href={`/recursos/${a.slug}`}>
+                  <Link href={`/es/recursos/${a.slug}`}>
                     <span className="text-brand-blue font-semibold hover:underline cursor-pointer">
                       Leer más
                     </span>

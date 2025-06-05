@@ -5,12 +5,16 @@ import Link from "next/link";
 
 // Generate static paths for each Spanish article
 export async function generateStaticParams() {
-  const articles = await getAllArticles("es"); // FIXED
-  return articles.map((a) => ({ slug: a.slug }));
+  const articles = await getAllArticles("es");
+
+  return (articles ?? [])
+    .filter((a): a is { slug: string } => !!a && typeof a.slug === "string")
+    .map((a) => ({ slug: a.slug }));
 }
 
-export default async function ArticuloPage({ params }) {
-  const article = await getArticleBySlug(params.slug, "es"); // FIXED
+export default async function ArticuloPage({ params }: { params: { slug: string } }) {
+  const article = await getArticleBySlug(params.slug, "es");
+
   if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center">

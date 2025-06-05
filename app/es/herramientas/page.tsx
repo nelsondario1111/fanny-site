@@ -30,7 +30,7 @@ export default function Herramientas() {
           <p className="text-brand-green mb-4">
             Crea un presupuesto que refleje tu estilo de vida y tus metas. Simple, intuitiva y privada.
           </p>
-          <Link href="/calculadora-presupuesto">
+          <Link href="/es/calculadora-presupuesto">
             <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
               Usar calculadora
             </button>
@@ -48,7 +48,7 @@ export default function Herramientas() {
           <p className="text-brand-green mb-4">
             Calcula tus pagos hipotecarios al instante—también para propiedades multi-unidad.
           </p>
-          <Link href="/calculadora-hipotecaria">
+          <Link href="/es/calculadora-hipotecaria">
             <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
               Usar calculadora
             </button>
@@ -66,7 +66,7 @@ export default function Herramientas() {
           <p className="text-brand-body mb-4">
             Explora guías, hojas de trabajo y artículos prácticos en la sección de recursos.
           </p>
-          <Link href="/recursos">
+          <Link href="/es/recursos">
             <button className="px-8 py-3 bg-brand-green text-white font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-brand-gold transition-all text-lg">
               Ir a Recursos
             </button>

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,10 +12,10 @@ type FooterProps = {
 export default function Footer({ lang = "en" }: FooterProps) {
   const isSpanish = lang === "es";
   const langPrefix = isSpanish ? "/es" : "/en";
+  const altLangPrefix = isSpanish ? "/en" : "/es";
 
   const [subscribed, setSubscribed] = useState(false);
 
-  // Social links (replace with your actual URLs)
   const socials = [
     {
       icon: <Instagram size={22} />,
@@ -44,9 +45,9 @@ export default function Footer({ lang = "en" }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-brand-green text-brand-beige pt-16 pb-8 px-4 mt-12 font-sans">
+    <footer className="bg-brand-green text-brand-beige pt-16 pb-10 px-4 mt-12 font-sans">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 border-b border-brand-gold/30 pb-12">
-        {/* Left: Branding */}
+        {/* Branding */}
         <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center mb-3">
             <Image
@@ -70,20 +71,20 @@ export default function Footer({ lang = "en" }: FooterProps) {
           </div>
         </div>
 
-        {/* Center: Quick Links */}
+        {/* Navigation */}
         <div className="flex flex-col items-center md:items-start gap-2 border-t border-b md:border-t-0 md:border-b-0 md:border-l md:border-r border-brand-gold/20 md:px-8 py-6 md:py-0">
           <div className="font-serif text-lg font-semibold text-brand-gold mb-1">
             {isSpanish ? "Navegación" : "Navigation"}
           </div>
           <Link href={`${langPrefix}${isSpanish ? "/sobre-mi" : "/about"}`} className="hover:text-brand-gold transition">{isSpanish ? "Sobre Mí" : "About"}</Link>
           <Link href={`${langPrefix}${isSpanish ? "/servicios" : "/services"}`} className="hover:text-brand-gold transition">{isSpanish ? "Servicios" : "Services"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/herramientas" : "/tools"}`} className="hover:text-brand-gold transition">{isSpanish ? "Herramientas" : "Tools"}</Link>
           <Link href={`${langPrefix}${isSpanish ? "/recursos" : "/resources"}`} className="hover:text-brand-gold transition">{isSpanish ? "Recursos" : "Resources"}</Link>
           <Link href={`${langPrefix}${isSpanish ? "/testimonios" : "/testimonials"}`} className="hover:text-brand-gold transition">{isSpanish ? "Testimonios" : "Testimonials"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/herramientas" : "/tools"}`} className="hover:text-brand-gold transition">{isSpanish ? "Herramientas" : "Tools"}</Link>
           <Link href={`${langPrefix}${isSpanish ? "/contacto" : "/contact"}`} className="hover:text-brand-gold transition">{isSpanish ? "Contacto" : "Contact"}</Link>
         </div>
 
-        {/* Right: Social & Compliance */}
+        {/* Socials & Compliance */}
         <div className="flex flex-col gap-3 items-center md:items-end">
           <div className="flex gap-4 mb-3">
             {socials.map(({ icon, href, label }) => (
@@ -115,7 +116,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
         </div>
       </div>
 
-      {/* Newsletter Subscription */}
+      {/* Newsletter */}
       <div className="max-w-6xl mx-auto mt-12 flex flex-col items-center">
         <div className="font-serif text-xl text-brand-gold mb-4">
           {isSpanish ? "Boletín de Novedades" : "Newsletter"}
@@ -124,24 +125,19 @@ export default function Footer({ lang = "en" }: FooterProps) {
           className={`w-full max-w-lg flex flex-col sm:flex-row items-center gap-4 bg-brand-beige/90 rounded-2xl px-6 py-4 shadow-lg border border-brand-gold/30 ${
             subscribed ? "opacity-50 pointer-events-none" : "opacity-100"
           }`}
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             setSubscribed(true);
             setTimeout(() => setSubscribed(false), 5000);
           }}
           aria-label={isSpanish ? "Formulario de suscripción al boletín" : "Newsletter signup form"}
         >
-          <label htmlFor="newsletter-email" className="sr-only">
-            {isSpanish ? "Correo electrónico" : "Email address"}
-          </label>
           <input
-            id="newsletter-email"
             type="email"
             required
             className="flex-1 p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
             placeholder={isSpanish ? "Ingresa tu correo..." : "Enter your email..."}
             disabled={subscribed}
-            aria-label={isSpanish ? "Correo electrónico" : "Email address"}
           />
           <button
             type="submit"
@@ -156,7 +152,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
             ? "Recibe recursos y consejos de bienestar financiero. Sin spam."
             : "Get holistic financial tips & resources. No spam ever."}
         </div>
-        {/* Success message */}
+
         {subscribed && (
           <div className="mt-4 animate-fade-in">
             <div className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg text-center text-lg border border-brand-green/20 transition-all duration-500">
@@ -166,6 +162,16 @@ export default function Footer({ lang = "en" }: FooterProps) {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Language Switcher */}
+      <div className="mt-10 text-center">
+        <Link
+          href={altLangPrefix}
+          className="inline-block px-5 py-2 border border-brand-gold text-brand-gold rounded-full hover:bg-brand-gold hover:text-white transition"
+        >
+          {isSpanish ? "Ver en Inglés" : "View in Spanish"}
+        </Link>
       </div>
     </footer>
   );

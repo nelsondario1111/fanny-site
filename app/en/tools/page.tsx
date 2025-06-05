@@ -1,7 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaCalculator, FaHome, FaBook } from "react-icons/fa";
 
 export default function Tools() {
+  const pathname = usePathname();
+  const langPrefix = pathname.startsWith("/es") ? "/es" : "/en";
+
   return (
     <main className="bg-brand-beige min-h-screen py-16 px-2">
       {/* Banner */}
@@ -30,7 +36,7 @@ export default function Tools() {
           <p className="text-brand-green mb-4">
             Create a budget that truly reflects your lifestyle and goals. Simple, intuitive, and fully private.
           </p>
-          <Link href="/budget-calculator">
+          <Link href={`${langPrefix}/budget-calculator`}>
             <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
               Use Calculator
             </button>
@@ -48,7 +54,7 @@ export default function Tools() {
           <p className="text-brand-green mb-4">
             Instantly estimate your mortgage payments—even for multi-unit properties.
           </p>
-          <Link href="/mortgage-calculator">
+          <Link href={`${langPrefix}/mortgage-calculator`}>
             <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
               Use Calculator
             </button>
@@ -66,7 +72,7 @@ export default function Tools() {
           <p className="text-brand-body mb-4">
             Explore guides, worksheets, and practical articles in the resources section.
           </p>
-          <Link href="/resources">
+          <Link href={`${langPrefix}/resources`}>
             <button className="px-8 py-3 bg-brand-green text-white font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-brand-gold transition-all text-lg">
               Go to Resources
             </button>

@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
@@ -6,26 +7,46 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const navGroups = [
+  // Home
   { href: "", labelEn: "Home", labelEs: "Inicio" },
-  { href: "/about", labelEn: "About", labelEs: "Sobre Mí" },
+  // About
+  { href: "/about", labelEn: "About", labelEs: "Sobre Mí", hrefEs: "/sobre-mi" },
+  // Services
   {
-    labelEn: "Services", labelEs: "Servicios", href: "/services",
+    href: "/services",
+    labelEn: "Services",
+    labelEs: "Servicios",
+    hrefEs: "/servicios",
     subLinks: [
-      { href: "/services", labelEn: "All Services", labelEs: "Todos los servicios" },
-      { href: "/tools", labelEn: "Tools", labelEs: "Herramientas" },
-      { href: "/investment", labelEn: "Investment", labelEs: "Inversión" },
-    ]
+      { href: "/services", labelEn: "All Services", labelEs: "Todos los servicios", hrefEs: "/servicios" },
+    ],
   },
+  // Investment (in menu or as sublink if needed)
+  // Tools / Herramientas
   {
-    labelEn: "Resources", labelEs: "Recursos", href: "/resources",
+    href: "/tools",
+    labelEn: "Tools",
+    labelEs: "Herramientas",
+    hrefEs: "/herramientas",
     subLinks: [
-      { href: "/resources", labelEn: "All Resources", labelEs: "Todos los recursos" },
-      { href: "/budget-calculator", labelEn: "Budget Calculator", labelEs: "Calculadora Presupuesto" },
-      { href: "/mortgage-calculator", labelEn: "Mortgage Calculator", labelEs: "Calculadora Hipotecaria" },
-    ]
+      { href: "/budget-calculator", labelEn: "Budget Calculator", labelEs: "Calculadora Presupuesto", hrefEs: "/calculadora-presupuesto" },
+      { href: "/mortgage-calculator", labelEn: "Mortgage Calculator", labelEs: "Calculadora Hipotecaria", hrefEs: "/calculadora-hipotecaria" },
+    ],
   },
-  { href: "/testimonials", labelEn: "Testimonials", labelEs: "Testimonios" },
-  { href: "/contact", labelEn: "Contact", labelEs: "Contacto" },
+  // Resources / Recursos
+  {
+    href: "/resources",
+    labelEn: "Resources",
+    labelEs: "Recursos",
+    hrefEs: "/recursos",
+    subLinks: [
+      { href: "/resources", labelEn: "All Resources", labelEs: "Todos los recursos", hrefEs: "/recursos" },
+    ],
+  },
+  // Testimonials / Testimonios
+  { href: "/testimonials", labelEn: "Testimonials", labelEs: "Testimonios", hrefEs: "/testimonios" },
+  // Contact / Contacto
+  { href: "/contact", labelEn: "Contact", labelEs: "Contacto", hrefEs: "/contacto" },
 ];
 
 type NavBarProps = {
@@ -38,12 +59,27 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
   const pathname = usePathname();
   const isSpanish = lang === "es";
   const langPrefix = isSpanish ? "/es" : "/en";
+  const altLangPrefix = isSpanish ? "/en" : "/es";
 
-  // Mobile accordion toggle
   const handleAccordionToggle = (idx: number) => {
     setOpenAccordions((open) =>
       open.includes(idx) ? open.filter((i) => i !== idx) : [...open, idx]
     );
+  };
+
+  // Helper for bilingual routing
+  const getHref = (item: any) => {
+    if (isSpanish && item.hrefEs) return `/es${item.hrefEs.startsWith("/") ? item.hrefEs : `/${item.hrefEs}`}`;
+    if (!isSpanish) return item.href === "" ? "/en" : `/en${item.href.startsWith("/") ? item.href : `/${item.href}`}`;
+    // fallback
+    return isSpanish ? `/es${item.href}` : `/en${item.href}`;
+  };
+
+  // For sublinks in Tools/Resources
+  const getSubHref = (sub: any) => {
+    if (isSpanish && sub.hrefEs) return `/es${sub.hrefEs.startsWith("/") ? sub.hrefEs : `/${sub.hrefEs}`}`;
+    if (!isSpanish) return `/en${sub.href.startsWith("/") ? sub.href : sub.href}`;
+    return isSpanish ? `/es${sub.href}` : `/en${sub.href}`;
   };
 
   return (
@@ -66,7 +102,33 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
           </span>
         </Link>
 
-        {/* Hamburger for mobile */}
+        {/* Desktop Nav */}
+        <ul className="hidden md:flex space-x-6 font-semibold text-lg items-center">
+          {navGroups.map((item) => (
+            <li key={item.labelEn}>
+              <Link
+                href={getHref(item)}
+                className={`transition-colors hover:text-brand-gold text-brand-blue px-1.5 py-1 rounded-lg ${
+                  pathname === getHref(item)
+                    ? "text-brand-gold"
+                    : ""
+                }`}
+              >
+                {isSpanish ? item.labelEs : item.labelEn}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link
+              href={altLangPrefix}
+              className="ml-4 px-3 py-1.5 border border-brand-blue text-brand-blue rounded-lg hover:bg-brand-blue hover:text-white transition"
+            >
+              {isSpanish ? "English" : "Español"}
+            </Link>
+          </li>
+        </ul>
+
+        {/* Mobile menu toggle */}
         <button
           className="md:hidden text-2xl text-brand-blue focus:outline-none"
           onClick={() => setMenuOpen((v) => !v)}
@@ -74,22 +136,6 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
-
-        {/* Desktop Nav: Flat Links Only */}
-        <ul className="hidden md:flex space-x-6 font-semibold text-lg items-center">
-          {navGroups.map((item) => (
-            <li key={item.labelEn}>
-              <Link
-                href={item.href === "" ? langPrefix : `${langPrefix}${item.href}`}
-                className={`transition-colors hover:text-brand-gold text-brand-blue px-1.5 py-1 rounded-lg ${
-                  pathname === (item.href === "" ? langPrefix : `${langPrefix}${item.href}`) ? "text-brand-gold" : ""
-                }`}
-              >
-                {isSpanish ? item.labelEs : item.labelEn}
-              </Link>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* Mobile Accordion Menu */}
@@ -116,7 +162,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
                         {item.subLinks.map((sub) => (
                           <li key={sub.labelEn}>
                             <Link
-                              href={`${langPrefix}${sub.href}`}
+                              href={getSubHref(sub)}
                               className="block px-2 py-1 text-brand-blue hover:text-brand-gold transition rounded"
                               onClick={() => setMenuOpen(false)}
                             >
@@ -129,11 +175,10 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
                   </li>
                 );
               }
-              // Flat link for normal items
               return (
                 <li key={item.labelEn} className="w-full">
                   <Link
-                    href={item.href === "" ? langPrefix : `${langPrefix}${item.href}`}
+                    href={getHref(item)}
                     className="block px-5 py-2 rounded-lg text-brand-blue hover:text-brand-gold transition"
                     onClick={() => setMenuOpen(false)}
                   >
@@ -142,6 +187,16 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
                 </li>
               );
             })}
+            {/* Language toggle */}
+            <li className="w-full">
+              <Link
+                href={altLangPrefix}
+                className="block text-center px-5 py-2 mt-4 rounded-lg border border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+                onClick={() => setMenuOpen(false)}
+              >
+                {isSpanish ? "English" : "Español"}
+              </Link>
+            </li>
           </ul>
         </div>
       )}
