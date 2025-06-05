@@ -129,7 +129,7 @@ export default function HomeEs() {
         <p className="font-sans text-lg text-brand-body mb-4">
           Únete a sesiones en grupo íntimas—como si estuviéramos en la mesa de una cocina—donde compartimos, reflexionamos y nos apoyamos en comunidad.
         </p>
-        <Link href="/es/circulo" legacyBehavior>
+        <Link href="/es/contacto" legacyBehavior>
           <a>
             <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
               Solicita Unirte a un Círculo

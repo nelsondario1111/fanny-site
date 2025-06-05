@@ -129,7 +129,7 @@ export default function Home() {
         <p className="font-sans text-lg text-brand-body mb-4">
           Join a small group session—just like gathering around a kitchen table—where we share stories, answer questions, and support each other’s journeys. If you’d like to be invited to a future circle, reach out below.
         </p>
-        <Link href="/en/kitchen-table" legacyBehavior>
+        <Link href="/en/contact" legacyBehavior>
           <a>
             <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
               Request to Join a Circle

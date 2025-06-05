@@ -21,7 +21,6 @@ const navGroups = [
       { href: "/services", labelEn: "All Services", labelEs: "Todos los servicios", hrefEs: "/servicios" },
     ],
   },
-  // Investment (in menu or as sublink if needed)
   // Tools / Herramientas
   {
     href: "/tools",
@@ -68,7 +67,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
   };
 
   // Helper for bilingual routing
-  const getHref = (item: any) => {
+  const getHref = (item: Record<string, any>) => {
     if (isSpanish && item.hrefEs) return `/es${item.hrefEs.startsWith("/") ? item.hrefEs : `/${item.hrefEs}`}`;
     if (!isSpanish) return item.href === "" ? "/en" : `/en${item.href.startsWith("/") ? item.href : `/${item.href}`}`;
     // fallback
@@ -76,7 +75,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
   };
 
   // For sublinks in Tools/Resources
-  const getSubHref = (sub: any) => {
+  const getSubHref = (sub: Record<string, any>) => {
     if (isSpanish && sub.hrefEs) return `/es${sub.hrefEs.startsWith("/") ? sub.hrefEs : `/${sub.hrefEs}`}`;
     if (!isSpanish) return `/en${sub.href.startsWith("/") ? sub.href : sub.href}`;
     return isSpanish ? `/es${sub.href}` : `/en${sub.href}`;
