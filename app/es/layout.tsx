@@ -6,22 +6,21 @@ import { lato, playfair, pacifico } from "../fonts";
 
 export const metadata = {
   title: "Fanny Samaniego Coaching",
-  description: "Coaching financiero holístico y soluciones hipotecarias en Toronto, en inglés y español.",
+  description: "Coaching financiero holístico y soluciones hipotecarias en Toronto, inglés y español.",
 };
 
-export default function EsLayout({ children }: { children: React.ReactNode }) {
-  const lang = "es";
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={lang}>
+    <html lang="es">
       <body
         className={`
           ${lato.variable} ${playfair.variable} ${pacifico.variable}
           font-sans bg-brand-beige text-brand-body min-h-screen flex flex-col
         `}
       >
-        <NavBar lang={lang} />
-        <div className="flex-1">{children}</div>
-        <Footer lang={lang} />
+        <NavBar lang="es" />
+        <main className="flex-1 pt-16">{children}</main>
+        <Footer lang="es" />
         <BackToTopButton />
       </body>
     </html>

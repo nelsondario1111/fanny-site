@@ -9,19 +9,18 @@ export const metadata = {
   description: "Holistic financial coaching and mortgage solutions in Toronto, English and Spanish.",
 };
 
-export default function EnLayout({ children }: { children: React.ReactNode }) {
-  const lang = "en";
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={lang}>
+    <html lang="en">
       <body
         className={`
           ${lato.variable} ${playfair.variable} ${pacifico.variable}
           font-sans bg-brand-beige text-brand-body min-h-screen flex flex-col
         `}
       >
-        <NavBar lang={lang} />
-        <div className="flex-1">{children}</div>
-        <Footer lang={lang} />
+        <NavBar lang="en" />
+        <main className="flex-1 pt-16">{children}</main>
+        <Footer lang="en" />
         <BackToTopButton />
       </body>
     </html>

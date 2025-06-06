@@ -2,11 +2,28 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const navGroups = [
+// Define specific types for navigation links to avoid 'any'
+type SubNavLink = {
+  href: string;
+  labelEn: string;
+  labelEs: string;
+  hrefEs?: string; // Optional property
+};
+
+type NavLink = {
+  href: string;
+  labelEn: string;
+  labelEs: string;
+  hrefEs?: string; // Optional property
+  subLinks?: SubNavLink[]; // Optional array of SubNavLinks
+};
+
+// Apply the new type to the navGroups array
+const navGroups: NavLink[] = [
   // Home
   { href: "", labelEn: "Home", labelEs: "Inicio" },
   // About
@@ -66,19 +83,24 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
     );
   };
 
-  // Helper for bilingual routing
-  const getHref = (item: Record<string, any>) => {
+  // Helper for bilingual routing with the specific NavLink type
+  const getHref = (item: NavLink) => {
     if (isSpanish && item.hrefEs) return `/es${item.hrefEs.startsWith("/") ? item.hrefEs : `/${item.hrefEs}`}`;
     if (!isSpanish) return item.href === "" ? "/en" : `/en${item.href.startsWith("/") ? item.href : `/${item.href}`}`;
     // fallback
     return isSpanish ? `/es${item.href}` : `/en${item.href}`;
   };
 
-  // For sublinks in Tools/Resources
-  const getSubHref = (sub: Record<string, any>) => {
+  // For sublinks in Tools/Resources with the specific SubNavLink type
+  const getSubHref = (sub: SubNavLink) => {
     if (isSpanish && sub.hrefEs) return `/es${sub.hrefEs.startsWith("/") ? sub.hrefEs : `/${sub.hrefEs}`}`;
     if (!isSpanish) return `/en${sub.href.startsWith("/") ? sub.href : sub.href}`;
     return isSpanish ? `/es${sub.href}` : `/en${sub.href}`;
+  };
+  
+  // Type the event parameter to avoid implicit 'any'
+  const handleMobileNavClick = (e: MouseEvent<HTMLUListElement>) => {
+    e.stopPropagation();
   };
 
   return (
@@ -142,7 +164,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
         <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setMenuOpen(false)}>
           <ul
             className="absolute top-16 left-0 w-full bg-white shadow-xl flex flex-col items-center py-8 space-y-5 font-semibold text-xl z-50"
-            onClick={e => e.stopPropagation()}
+            onClick={handleMobileNavClick}
           >
             {navGroups.map((item, idx) => {
               if (item.subLinks) {

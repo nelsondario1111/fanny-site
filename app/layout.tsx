@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html>
       <body
         className={`
           ${lato.variable} ${playfair.variable} ${pacifico.variable}
