@@ -3,15 +3,15 @@ import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
 
-// Dynamic routes for the App Router use this for static paths
+// --- Fix the filter (see last message)
 export async function generateStaticParams() {
   const articles = await getAllArticles("en");
   return (articles ?? [])
-    .filter((a): a is { slug: string } => !!a && typeof a.slug === "string")
-    .map((a) => ({ slug: a.slug }));
+    .filter(a => !!a && typeof a.slug === "string")
+    .map(a => ({ slug: a.slug }));
 }
 
-// INLINE the type directly—do NOT use a 'Props' or 'PageProps' alias!
+// --- DO NOT use type alias for props!
 export default async function Page({ params }: { params: { slug: string } }) {
   const article = await getArticleBySlug(params.slug, "en");
 

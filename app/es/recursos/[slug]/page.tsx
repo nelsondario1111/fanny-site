@@ -3,25 +3,23 @@ import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
 
-// --- Fix the filter (see last message)
 export async function generateStaticParams() {
-  const articles = await getAllArticles("en");
+  const articles = await getAllArticles("es");
   return (articles ?? [])
     .filter(a => !!a && typeof a.slug === "string")
     .map(a => ({ slug: a.slug }));
 }
 
-// --- DO NOT use type alias for props!
 export default async function Page({ params }: { params: { slug: string } }) {
-  const article = await getArticleBySlug(params.slug, "en");
+  const article = await getArticleBySlug(params.slug, "es");
 
   if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-brand-blue mb-4">Article not found</h1>
-          <Link href="/en/resources" className="text-brand-green hover:underline">
-            Back to Resources
+          <h1 className="text-3xl font-bold text-brand-blue mb-4">Artículo no encontrado</h1>
+          <Link href="/es/recursos" className="text-brand-green hover:underline">
+            Volver a Recursos
           </Link>
         </div>
       </main>
@@ -41,7 +39,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </span>
           {article.date && (
             <span className="text-brand-green/80">
-              {new Date(article.date).toLocaleDateString("en-US", {
+              {new Date(article.date).toLocaleDateString("es-ES", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -49,7 +47,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </span>
           )}
           {article.author && (
-            <span className="text-brand-blue/70 font-medium">by {article.author}</span>
+            <span className="text-brand-blue/70 font-medium">por {article.author}</span>
           )}
         </div>
         <article
@@ -57,9 +55,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
         <div className="mt-12 text-center">
-          <Link href="/en/resources">
+          <Link href="/es/recursos">
             <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
-              Back to Resources
+              Volver a Recursos
             </button>
           </Link>
         </div>
