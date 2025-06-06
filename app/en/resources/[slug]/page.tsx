@@ -3,17 +3,28 @@ import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
 
-// --- Fix the filter (see last message)
+// Optional: define the Article interface for type safety (update if your real fields differ)
+interface Article {
+  content: string;
+  slug: string;
+  lang: "en" | "es";
+  title: string;
+  category?: string;
+  date?: string;
+  author?: string;
+}
+
+// Generate static params for dynamic routes
 export async function generateStaticParams() {
   const articles = await getAllArticles("en");
   return (articles ?? [])
-    .filter(a => !!a && typeof a.slug === "string")
+    .filter((a): a is Article => !!a && typeof a.slug === "string")
     .map(a => ({ slug: a.slug }));
 }
 
-// --- DO NOT use type alias for props!
+// Main dynamic route page
 export default async function Page({ params }: { params: { slug: string } }) {
-  const article = await getArticleBySlug(params.slug, "en");
+  const article = await getArticleBySlug(params.slug, "en") as Article | null;
 
   if (!article) {
     return (
@@ -36,9 +47,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <section className="max-w-3xl mx-auto bg-white/95 rounded-3xl shadow-xl p-10 border border-brand-gold">
         <h1 className="text-4xl font-serif font-bold text-brand-green mb-4">{article.title}</h1>
         <div className="flex flex-wrap items-center gap-4 mb-8 text-sm">
-          <span className="bg-brand-gold/20 text-brand-blue px-4 py-1 rounded-full font-semibold">
-            {article.category}
-          </span>
+          {article.category && (
+            <span className="bg-brand-gold/20 text-brand-blue px-4 py-1 rounded-full font-semibold">
+              {article.category}
+            </span>
+          )}
           {article.date && (
             <span className="text-brand-green/80">
               {new Date(article.date).toLocaleDateString("en-US", {

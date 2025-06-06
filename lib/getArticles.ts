@@ -2,50 +2,51 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// Helper: Get all articles in a given language directory
-function getArticlesFromDir(dir: string, lang: "en" | "es") {
-  const articlesDir = path.join(process.cwd(), "content", dir);
-  if (!fs.existsSync(articlesDir)) return [];
-  const files = fs.readdirSync(articlesDir);
+// Make sure this matches your Markdown fields!
+export interface Article {
+  slug: string;
+  lang: "en" | "es";
+  title: string;
+  summary?: string;
+  category?: string;
+  date?: string;
+  author?: string;
+  image?: string;
+  content: string;
+}
+
+// Utility to get all articles for a language
+export function getAllArticles(lang: "en" | "es"): Article[] {
+  // Adjust if your content lives elsewhere!
+  const dir = lang === "en"
+    ? "content/en/resources"
+    : "content/es/recursos";
+  const files = fs.readdirSync(dir);
+
   return files
-    .map((filename) => {
-      const filePath = path.join(articlesDir, filename);
-      try {
-        const fileContent = fs.readFileSync(filePath, "utf8");
-        const { data, content } = matter(fileContent);
-        // Optionally skip files missing required front matter
-        if (!data.title || !data.summary) return null;
-        return {
-          ...data,
-          content,
-          slug: filename.replace(/\.md$/, ""),
-          lang,
-        };
-      } catch (err) {
-        console.error("Error reading file:", filePath, err);
-        return null;
-      }
-    })
-    .filter(Boolean); // Removes nulls
+    .filter((f) => f.endsWith(".md"))
+    .map((file) => {
+      const slug = file.replace(/\.md$/, "");
+      const filePath = path.join(dir, file);
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const { data, content } = matter(fileContent);
+
+      return {
+        slug,
+        lang,
+        content,
+        title: data.title || "",
+        summary: data.summary,
+        category: data.category,
+        date: data.date,
+        author: data.author,
+        image: data.image,
+      };
+    });
 }
 
-// Exported functions to get articles per language
-export function getAllArticles(lang: "en" | "es") {
-  if (lang === "en") return getArticlesFromDir("articles", "en");
-  if (lang === "es") return getArticlesFromDir("articulos", "es");
-  return [];
-}
-
-export function getArticleBySlug(slug: string, lang: "en" | "es") {
-  const dir = lang === "en" ? "articles" : "articulos";
-  const filePath = path.join(process.cwd(), "content", dir, slug + ".md");
-  try {
-    if (!fs.existsSync(filePath)) return null;
-    const fileContent = fs.readFileSync(filePath, "utf8");
-    const { data, content } = matter(fileContent);
-    return { ...data, content, slug, lang };
-  } catch (err) {
-    console.error("Error loading article:", filePath, err);
-    return null;
-  }
+// Utility to get a single article by slug
+export function getArticleBySlug(slug: string, lang: "en" | "es"): Article | null {
+  const articles = getAllArticles(lang);
+  return articles.find((a) => a.slug === slug) || null;
 }
