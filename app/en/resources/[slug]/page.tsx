@@ -11,11 +11,8 @@ export async function generateStaticParams() {
     .map((a) => ({ slug: a.slug }));
 }
 
-type Props = {
-  params: { slug: string }
-};
-
-export default async function Page({ params }: Props) {
+// INLINE the type directly—do NOT use a 'Props' or 'PageProps' alias!
+export default async function Page({ params }: { params: { slug: string } }) {
   const article = await getArticleBySlug(params.slug, "en");
 
   if (!article) {
