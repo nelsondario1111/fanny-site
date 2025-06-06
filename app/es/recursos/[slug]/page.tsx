@@ -6,13 +6,16 @@ import Link from "next/link";
 // Generate static paths for each Spanish article
 export async function generateStaticParams() {
   const articles = await getAllArticles("es");
-
   return (articles ?? [])
     .filter((a): a is { slug: string } => !!a && typeof a.slug === "string")
     .map((a) => ({ slug: a.slug }));
 }
 
-export default async function ArticuloPage({ params }: { params: { slug: string } }) {
+type Props = {
+  params: { slug: string }
+};
+
+export default async function Page({ params }: Props) {
   const article = await getArticleBySlug(params.slug, "es");
 
   if (!article) {
@@ -53,13 +56,10 @@ export default async function ArticuloPage({ params }: { params: { slug: string 
             <span className="text-brand-blue/70 font-medium">por {article.author}</span>
           )}
         </div>
-
         <article
           className="prose prose-lg max-w-none text-brand-body"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
-
-        {/* Back button */}
         <div className="mt-12 text-center">
           <Link href="/es/recursos">
             <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
