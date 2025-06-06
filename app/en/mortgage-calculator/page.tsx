@@ -3,13 +3,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
 
-// Add types for clarity (optional but recommended)
+// Mortgage calculation helper
 function calcMortgage(principal: number, rate: number, years: number): number {
   const monthlyRate = rate / 100 / 12;
   const n = years * 12;
   if (monthlyRate === 0) return principal / n || 0;
-  const payment =
-    (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
+  const payment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -n));
   return payment || 0;
 }
 
@@ -245,13 +244,20 @@ export default function MortgageCalculator() {
                   {totalRental.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
                 </span>
               </p>
-              <p className={`text-lg font-bold mt-3 ${cashFlow >= 0 ? "text-brand-green" : "text-red-600"}`}>
-                {cashFlow >= 0
-                  ? "Estimated Positive Cash Flow: "
-                  : "Estimated Shortfall: "}
-                {cashFlow?.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
-              </p>
+              {typeof cashFlow === "number" && (
+                <p className={`text-lg font-bold mt-3 ${cashFlow >= 0 ? "text-brand-green" : "text-red-600"}`}>
+                  {cashFlow >= 0
+                    ? "Estimated Positive Cash Flow: "
+                    : "Estimated Shortfall: "}
+                  {cashFlow.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
+                </p>
+              )}
             </>
+          )}
+          {!multi && (
+            <p className="text-lg mt-3 font-bold text-brand-green">
+              Not a multi-unit scenario. Use “Multi-Unit Property” toggle to see advanced results.
+            </p>
           )}
           <p className="text-lg mb-2 mt-4">
             <span className="font-bold text-brand-blue">Total Paid Over {years} Years:</span>{" "}
@@ -316,7 +322,7 @@ export default function MortgageCalculator() {
             Book a free discovery call for tailored mortgage strategies, or ask for our free Multi-Unit Mortgage Checklist!
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/contact">
+            <Link href="/en/contact">
               <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
                 Book Discovery Call
               </button>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
 
-// FIXED: All parameters typed!
+// Calculadora de hipoteca
 function calcMortgage(principal: number, rate: number, years: number): number {
   const monthlyRate = rate / 100 / 12;
   const n = years * 12;
@@ -245,12 +245,14 @@ export default function CalculadoraHipotecaria() {
                   {totalRenta.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
                 </span>
               </p>
-              <p className={`text-lg font-bold mt-3 ${flujo && flujo >= 0 ? "text-brand-green" : "text-red-600"}`}>
-                {flujo && flujo >= 0
-                  ? "Flujo de caja estimado positivo: "
-                  : "Déficit estimado: "}
-                {flujo?.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
-              </p>
+              {typeof flujo === "number" && (
+                <p className={`text-lg font-bold mt-3 ${flujo >= 0 ? "text-brand-green" : "text-red-600"}`}>
+                  {flujo >= 0
+                    ? "Flujo de caja estimado positivo: "
+                    : "Déficit estimado: "}
+                  {flujo.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
+                </p>
+              )}
             </>
           )}
           <p className="text-lg mb-2 mt-4">
@@ -316,7 +318,7 @@ export default function CalculadoraHipotecaria() {
             Agenda una llamada gratuita para estrategias personalizadas o solicita gratis nuestro Checklist Hipotecario Multi-Unidad.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/contacto">
+            <Link href="/es/contacto">
               <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
                 Agendar llamada
               </button>
