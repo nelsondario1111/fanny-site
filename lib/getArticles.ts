@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// Match your Markdown fields
+// Matches your Markdown frontmatter fields
 export interface Article {
   slug: string;
   lang: "en" | "es";
@@ -15,7 +15,7 @@ export interface Article {
   content: string;
 }
 
-// Utility to get all articles for a language
+// Async utility to get all articles for a language
 export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
   const dir =
     lang === "en"
@@ -51,7 +51,7 @@ export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
     });
 }
 
-// Utility to get a single article by slug
+// Async utility to get a single article by slug
 export async function getArticleBySlug(
   slug: string,
   lang: "en" | "es"
