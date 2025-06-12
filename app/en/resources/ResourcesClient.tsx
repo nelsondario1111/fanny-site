@@ -1,29 +1,23 @@
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
+import type { Article } from "@/lib/getArticles"; // Import the shared Article type
 
-type Article = {
-  title: string;
-  summary: string;
-  category: string;
-  slug: string;
-};
-
-export default function ResourcesClient({
-  articles,
-  categories,
-}: {
+type Props = {
   articles: Article[];
   categories: string[];
-}) {
+};
+
+export default function ResourcesClient({ articles, categories }: Props) {
   const [selected, setSelected] = useState("All");
   const [search, setSearch] = useState("");
 
   const filteredArticles = useMemo(() => {
-    return articles.filter((a) =>
-      (selected === "All" || a.category === selected) &&
-      ((a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
-        (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase()))
+    return articles.filter(
+      (a) =>
+        (selected === "All" || a.category === selected) &&
+        ((a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
+          (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase()))
     );
   }, [articles, selected, search]);
 
