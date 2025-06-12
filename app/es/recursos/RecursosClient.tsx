@@ -68,7 +68,7 @@ export default function RecursosClient({ articles }: { articles: Article[] }) {
                     ? "bg-brand-green text-white border-brand-green"
                     : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
                   }`}
-                onClick={() => setSelected(cat ?? "Todos")}  {/* <-- FIXED HERE */}
+                onClick={() => setSelected(cat ?? "Todos")}
               >
                 {cat}
               </button>

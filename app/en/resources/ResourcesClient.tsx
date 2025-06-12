@@ -54,7 +54,7 @@ export default function ResourcesClient({ articles }: Props) {
                 ? "bg-brand-green text-white border-brand-green"
                 : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
               }`}
-            onClick={() => setSelected(cat ?? "")}   {/* <--- FIXED HERE */}
+            onClick={() => setSelected(cat ?? "")}
           >
             {cat}
           </button>
