@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// This should match your Markdown frontmatter fields!
+// Match your Markdown fields
 export interface Article {
   slug: string;
   lang: "en" | "es";
@@ -15,7 +15,7 @@ export interface Article {
   content: string;
 }
 
-// Async for future-proofing (Next.js recommends this)
+// Utility to get all articles for a language
 export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
   const dir =
     lang === "en"
@@ -24,8 +24,8 @@ export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
   let files: string[] = [];
   try {
     files = fs.readdirSync(dir);
-  } catch (err) {
-    // If folder does not exist, return empty array instead of crashing
+  } catch {
+    // Folder does not exist? Return empty array.
     return [];
   }
 
@@ -51,7 +51,7 @@ export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
     });
 }
 
-// Async for future scalability (e.g., remote fetch)
+// Utility to get a single article by slug
 export async function getArticleBySlug(
   slug: string,
   lang: "en" | "es"
