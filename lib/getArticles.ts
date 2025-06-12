@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// Make sure this matches your Markdown fields!
+// This should match your Markdown frontmatter fields!
 export interface Article {
   slug: string;
   lang: "en" | "es";
@@ -15,13 +15,19 @@ export interface Article {
   content: string;
 }
 
-// Utility to get all articles for a language
-export function getAllArticles(lang: "en" | "es"): Article[] {
-  // Adjust if your content lives elsewhere!
-  const dir = lang === "en"
-    ? "content/en/resources"
-    : "content/es/recursos";
-  const files = fs.readdirSync(dir);
+// Async for future-proofing (Next.js recommends this)
+export async function getAllArticles(lang: "en" | "es"): Promise<Article[]> {
+  const dir =
+    lang === "en"
+      ? path.join(process.cwd(), "content/en/resources")
+      : path.join(process.cwd(), "content/es/recursos");
+  let files: string[] = [];
+  try {
+    files = fs.readdirSync(dir);
+  } catch (err) {
+    // If folder does not exist, return empty array instead of crashing
+    return [];
+  }
 
   return files
     .filter((f) => f.endsWith(".md"))
@@ -41,12 +47,15 @@ export function getAllArticles(lang: "en" | "es"): Article[] {
         date: data.date,
         author: data.author,
         image: data.image,
-      };
+      } as Article;
     });
 }
 
-// Utility to get a single article by slug
-export function getArticleBySlug(slug: string, lang: "en" | "es"): Article | null {
-  const articles = getAllArticles(lang);
+// Async for future scalability (e.g., remote fetch)
+export async function getArticleBySlug(
+  slug: string,
+  lang: "en" | "es"
+): Promise<Article | null> {
+  const articles = await getAllArticles(lang);
   return articles.find((a) => a.slug === slug) || null;
 }
