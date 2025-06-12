@@ -3,7 +3,6 @@ title: "5 Steps to Financial Freedom"
 summary: "A heart-centered, practical guide to building peace of mind and prosperity — especially for newcomers and families in Toronto."
 category: "Personal Finance"
 date: "2025-06-04"
-dateDisplay: "June 4, 2025"
 author: "Fanny Samaniego"
 image: "/5-steps.png"
 ---

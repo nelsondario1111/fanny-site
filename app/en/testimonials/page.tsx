@@ -29,7 +29,7 @@ export default function Testimonials() {
         </section>
 
         <div className="text-center mt-10">
-          <Link href="/contact">
+          <Link href="/en/contact">
             <button className="px-10 py-4 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-lg tracking-wide">
               Schedule Your Own Discovery Call
             </button>

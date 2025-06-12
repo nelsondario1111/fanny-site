@@ -1,28 +1,14 @@
-import { getAllArticles } from "@/lib/getArticles";
-import Link from "next/link";
-
-// If you have an Article interface elsewhere, you can import it instead.
-interface Article {
-  slug: string;
-  title: string;
-  summary?: string;
-}
+import ResourcesClient from "./ResourcesClient";
+import { getAllArticles } from "@/lib/getArticles"; // Adjust path as needed
 
 export default async function Page() {
-  const articles: Article[] = await getAllArticles("en");
-  return (
-    <main className="max-w-2xl mx-auto py-16">
-      <h1 className="text-3xl font-bold mb-6">Resources</h1>
-      <ul className="space-y-4">
-        {(articles ?? []).map((a) => (
-          <li key={a.slug} className="p-4 border rounded-lg bg-white shadow">
-            <Link href={`/en/resources/${a.slug}`}>
-              <span className="text-xl font-semibold text-brand-green hover:underline">{a.title}</span>
-            </Link>
-            <div className="text-sm text-gray-600">{a.summary}</div>
-          </li>
-        ))}
-      </ul>
-    </main>
+  const articles = await getAllArticles("en");
+  const validArticles = (articles ?? []).filter(Boolean);
+
+  // Get unique categories from your real English articles
+  const categories: string[] = Array.from(
+    new Set(validArticles.map((a: any) => a.category).filter(Boolean))
   );
+
+  return <ResourcesClient articles={validArticles} categories={categories} />;
 }
