@@ -69,7 +69,7 @@ export default function SobreMi() {
 
       {/* Llamado a la acción */}
       <section className="text-center">
-        <Link href="/contacto">
+        <Link href="/es/contacto">
           <button className="px-10 py-4 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition tracking-wide text-lg">
             Solicitar una invitación para conversar
           </button>

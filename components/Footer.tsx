@@ -13,7 +13,6 @@ export default function Footer({ lang = "en" }: FooterProps) {
   const isSpanish = lang === "es";
   const langPrefix = isSpanish ? "/es" : "/en";
   const altLangPrefix = isSpanish ? "/en" : "/es";
-
   const [subscribed, setSubscribed] = useState(false);
 
   const socials = [
@@ -45,7 +44,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-brand-green text-brand-beige pt-16 pb-10 px-4 mt-12 font-sans">
+    <footer className="bg-brand-green text-brand-beige pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 mt-12 font-sans">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 border-b border-brand-gold/30 pb-12">
         {/* Branding */}
         <div className="flex flex-col items-center md:items-start">
@@ -53,7 +52,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
             <Image
               src="/fanny-logo-footer.png"
               alt="Fanny Samaniego Logo"
-              className="rounded-full mr-3 border-2 border-brand-gold bg-white object-contain"
+              className="rounded-full mr-3 border-2 border-brand-gold bg-white object-cover"
               width={48}
               height={48}
             />
@@ -61,12 +60,12 @@ export default function Footer({ lang = "en" }: FooterProps) {
               Fanny Samaniego
             </span>
           </div>
-          <div className="text-brand-beige/90 mb-2">
+          <div className="text-brand-beige/90 mb-2 text-center md:text-left">
             {isSpanish
               ? "Coaching financiero holístico & agente hipotecaria en Toronto"
               : "Holistic Financial Coach & Mortgage Agent in Toronto"}
           </div>
-          <div className="text-brand-gold text-xs">
+          <div className="text-brand-gold text-xs text-center md:text-left">
             © 2025 Fanny Samaniego Coaching
           </div>
         </div>
@@ -76,12 +75,12 @@ export default function Footer({ lang = "en" }: FooterProps) {
           <div className="font-serif text-lg font-semibold text-brand-gold mb-1">
             {isSpanish ? "Navegación" : "Navigation"}
           </div>
-          <Link href={`${langPrefix}${isSpanish ? "/sobre-mi" : "/about"}`} className="hover:text-brand-gold transition">{isSpanish ? "Sobre Mí" : "About"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/servicios" : "/services"}`} className="hover:text-brand-gold transition">{isSpanish ? "Servicios" : "Services"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/herramientas" : "/tools"}`} className="hover:text-brand-gold transition">{isSpanish ? "Herramientas" : "Tools"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/recursos" : "/resources"}`} className="hover:text-brand-gold transition">{isSpanish ? "Recursos" : "Resources"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/testimonios" : "/testimonials"}`} className="hover:text-brand-gold transition">{isSpanish ? "Testimonios" : "Testimonials"}</Link>
-          <Link href={`${langPrefix}${isSpanish ? "/contacto" : "/contact"}`} className="hover:text-brand-gold transition">{isSpanish ? "Contacto" : "Contact"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/sobre-mi" : "/about"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Sobre Mí" : "About"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/servicios" : "/services"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Servicios" : "Services"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/herramientas" : "/tools"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Herramientas" : "Tools"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/recursos" : "/resources"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Recursos" : "Resources"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/testimonios" : "/testimonials"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Testimonios" : "Testimonials"}</Link>
+          <Link href={`${langPrefix}${isSpanish ? "/contacto" : "/contact"}`} className="hover:text-brand-gold transition min-w-[110px] text-center">{isSpanish ? "Contacto" : "Contact"}</Link>
         </div>
 
         {/* Socials & Compliance */}
@@ -94,7 +93,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="hover:text-brand-gold transition"
+                className="hover:text-brand-gold transition p-1.5 rounded-full"
               >
                 {icon}
               </a>
@@ -147,7 +146,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
             {isSpanish ? "Suscribirme" : "Subscribe"}
           </button>
         </form>
-        <div className="text-xs text-brand-beige mt-2">
+        <div className="text-xs text-brand-beige mt-2 text-center">
           {isSpanish
             ? "Recibe recursos y consejos de bienestar financiero. Sin spam."
             : "Get holistic financial tips & resources. No spam ever."}

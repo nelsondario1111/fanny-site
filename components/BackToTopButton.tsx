@@ -36,7 +36,9 @@ export default function BackToTopButton() {
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Back to top"
-      className="fixed bottom-8 right-6 z-50 bg-brand-green text-white shadow-xl rounded-full p-3 hover:bg-brand-gold hover:text-brand-green transition-all duration-200 border-2 border-brand-gold focus:outline-none"
+      className="fixed bottom-8 right-6 z-50 bg-brand-green text-white shadow-xl rounded-full p-3 
+        hover:bg-brand-gold hover:text-brand-green transition-all duration-200 border-2 border-brand-gold 
+        focus:outline-none active:scale-90"
       style={{
         boxShadow:
           "0 4px 24px 0 rgba(60,80,60,0.15), 0 2px 4px 0 rgba(60,80,60,0.10)",

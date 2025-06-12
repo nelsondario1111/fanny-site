@@ -69,7 +69,7 @@ export default function About() {
 
       {/* Call to Action */}
       <section className="text-center">
-        <Link href="/contact">
+        <Link href="/en/contact">
           <button className="px-10 py-4 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition tracking-wide text-lg">
             Request an Invitation to Connect
           </button>

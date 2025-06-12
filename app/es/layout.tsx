@@ -9,6 +9,13 @@ export const metadata = {
   description: "Coaching financiero holístico y soluciones hipotecarias en Toronto, inglés y español.",
 };
 
+// ✅ Add viewport export for themeColor and mobile support
+export const viewport = {
+  themeColor: "#ffffff", // Adjust if you want another brand color
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
