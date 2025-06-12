@@ -21,11 +21,8 @@ export async function generateStaticParams() {
   return (articles ?? []).map(a => ({ article: a.slug }));
 }
 
-// Explicitly type the props for Next.js
-type PageProps = { params: { article: string } };
-
-export default async function Page({ params }: PageProps) {
-  // Fix: await params before using its properties (Next.js 15+)
+// Use async params type for Next.js 15+
+export default async function Page({ params }: { params: Promise<{ article: string }> }) {
   const { article: articleSlug } = await params;
   const article = await getArticleBySlug(articleSlug, "es") as Article | null;
 
