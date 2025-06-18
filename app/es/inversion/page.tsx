@@ -18,7 +18,7 @@ const servicios = [
     price: "Gratis",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Solicitar llamada",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Sesión de Claridad Financiera",
@@ -28,7 +28,7 @@ const servicios = [
     price: "$250 CAD",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Reservar sesión",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Paquete Bienestar 3 Meses",
@@ -38,7 +38,7 @@ const servicios = [
     price: "$1,500 CAD (o 3 × $540/mes)",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Comenzar mi camino",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Paquete Holístico 6 Meses",
@@ -48,7 +48,7 @@ const servicios = [
     price: "$3,000 CAD (o 6 × $540/mes)",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Comenzar ahora",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Retención Continua (ex-clientes)",
@@ -58,7 +58,7 @@ const servicios = [
     price: "$135/mes",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconectar",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Círculo de Dinero (4 Semanas)",
@@ -68,7 +68,7 @@ const servicios = [
     price: "$300/persona",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Unirme al círculo",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Círculo Mensual de Dinero",
@@ -78,7 +78,7 @@ const servicios = [
     price: "$80/persona/mes",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Unirme al mensual",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Talleres (Comunidad/Público)",
@@ -88,7 +88,7 @@ const servicios = [
     price: "$0–$65/participante",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Solicitar información",
-    link: "/contacto",
+    link: "/es/contacto",
   },
   {
     name: "Talleres (Corporativo/Organización)",
@@ -98,7 +98,7 @@ const servicios = [
     price: "Desde $675/sesión",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Solicitar taller",
-    link: "/contacto",
+    link: "/es/contacto",
   },
 ];
 

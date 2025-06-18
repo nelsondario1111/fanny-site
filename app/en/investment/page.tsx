@@ -18,7 +18,7 @@ const services = [
     price: "Free",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Book Free Call",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Financial Clarity Session",
@@ -28,7 +28,7 @@ const services = [
     price: "$250 CAD",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Book Session",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "3-Month Wellness Package",
@@ -38,7 +38,7 @@ const services = [
     price: "$1,500 CAD (or 3 × $540/mo)",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Start Your Journey",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "6-Month Holistic Package",
@@ -48,7 +48,7 @@ const services = [
     price: "$3,000 CAD (or 6 × $540/mo)",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Let’s Begin",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Ongoing Retainer (alumni only)",
@@ -58,7 +58,7 @@ const services = [
     price: "$135/mo",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconnect",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Money Circle (Group, 4 Weeks)",
@@ -68,7 +68,7 @@ const services = [
     price: "$300/person",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Join Next Circle",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Money Circle (Ongoing, Monthly)",
@@ -78,7 +78,7 @@ const services = [
     price: "$80/person/mo",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Join Monthly",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Workshops (Public/Community)",
@@ -88,7 +88,7 @@ const services = [
     price: "$0–$65/attendee",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Request Info",
-    link: "/contact",
+    link: "/en/contact",
   },
   {
     name: "Workshops (Corporate/Org)",
@@ -98,7 +98,7 @@ const services = [
     price: "From $675/session",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Book Workshop",
-    link: "/contact",
+    link: "/en/contact",
   },
 ];
 

@@ -14,7 +14,6 @@ export const metadata = {
   ],
 };
 
-// ✅ themeColor is only in viewport, not in metadata
 export const viewport = {
   themeColor: "#F5F2EA",
   width: "device-width",
@@ -31,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           overscroll-y-none antialiased
         `}
       >
-        {children}
+        <main className="flex-1 pt-16">{children}</main>
       </body>
     </html>
   );
