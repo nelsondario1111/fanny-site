@@ -36,8 +36,8 @@ export default function Contact() {
         <div className="bg-white rounded-2xl p-6 shadow text-brand-green text-center space-y-2 border border-brand-gold/40">
           <div>
             <span className="font-semibold">Email:</span>{" "}
-            <a className="underline hover:text-brand-blue transition" href="mailto:fanny.samaniego@zolo.ca">
-              fanny.samaniego@zolo.ca
+            <a className="underline hover:text-brand-blue transition" href="mailto:info@fannysamaniego.com>
+              info@fannysamaniego.com
             </a>
           </div>
           <div>
