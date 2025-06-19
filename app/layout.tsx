@@ -1,6 +1,7 @@
 import "./globals.css";
 import { lato, playfair, pacifico } from "./fonts";
-import { Analytics } from "@vercel/analytics/react"; // ✅ Use the correct import
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next"; // ✅ Import SpeedInsights
 
 export const metadata = {
   title: "Fanny Samaniego Coaching",
@@ -32,7 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}
       >
         <main className="flex-1 pt-16">{children}</main>
-        <Analytics /> {/* ✅ Add Analytics here */}
+        <Analytics />       {/* ✅ Vercel Web Analytics */}
+        <SpeedInsights />   {/* ✅ Vercel Speed Insights */}
       </body>
     </html>
   );
