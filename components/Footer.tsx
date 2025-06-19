@@ -89,14 +89,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
               ? "Licencia Hipotecaria #M22000490 · Zolo Realty"
               : "Mortgage License #M22000490 · Zolo Realty"}
           </div>
-          <Link
-            href={`${langPrefix}${isSpanish ? "/cumplimiento" : "/compliance"}`}
-            className="text-xs text-brand-beige/80 text-right hover:text-brand-gold underline transition"
-          >
-            {isSpanish
-              ? "Aviso de Cumplimiento Hipotecario"
-              : "Mortgage Compliance Notice"}
-          </Link>
+          
         </div>
       </div>
 
