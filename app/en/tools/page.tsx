@@ -12,7 +12,8 @@ export default function Tools() {
     <main className="bg-brand-beige min-h-screen py-16 px-2">
       {/* Banner */}
       <section className="max-w-3xl mx-auto text-center mb-10">
-        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3">
+        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3 flex items-center gap-2 justify-center">
+          <span aria-hidden="true">🛠️</span>
           Tools for Your Financial Wellbeing
         </h1>
         <p className="text-lg text-brand-blue mb-3">
@@ -37,7 +38,11 @@ export default function Tools() {
             Create a budget that truly reflects your lifestyle and goals. Simple, intuitive, and fully private.
           </p>
           <Link href={`${langPrefix}/budget-calculator`}>
-            <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
+            <button
+              type="button"
+              className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              aria-label="Use Budget Calculator"
+            >
               Use Calculator
             </button>
           </Link>
@@ -55,7 +60,11 @@ export default function Tools() {
             Instantly estimate your mortgage payments—even for multi-unit properties.
           </p>
           <Link href={`${langPrefix}/mortgage-calculator`}>
-            <button className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
+            <button
+              type="button"
+              className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              aria-label="Use Mortgage Calculator"
+            >
               Use Calculator
             </button>
           </Link>
@@ -66,14 +75,19 @@ export default function Tools() {
       <section className="max-w-3xl mx-auto mb-12">
         <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center">
           <FaBook className="inline-block text-brand-green text-2xl mb-2" />
-          <h3 className="text-xl font-serif font-bold text-brand-green mb-2">
+          <h3 className="text-xl font-serif font-bold text-brand-green mb-2 flex items-center gap-2 justify-center">
+            <span aria-hidden="true">📚</span>
             Looking for more resources?
           </h3>
           <p className="text-brand-body mb-4">
             Explore guides, worksheets, and practical articles in the resources section.
           </p>
           <Link href={`${langPrefix}/resources`}>
-            <button className="px-8 py-3 bg-brand-green text-white font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-brand-gold transition-all text-lg">
+            <button
+              type="button"
+              className="px-8 py-3 bg-brand-green text-white font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-brand-gold transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
+              aria-label="Go to Resources"
+            >
               Go to Resources
             </button>
           </Link>

@@ -19,7 +19,7 @@ export default function Home() {
           <Link href="/en/contact" legacyBehavior>
             <a>
               <button className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none">
-                <span className="mr-2">🤝</span>Request an Invitation
+                <span className="mr-2" aria-hidden="true">🤝</span>Request an Invitation
               </button>
             </a>
           </Link>

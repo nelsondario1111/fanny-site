@@ -1,3 +1,32 @@
+// --- SEO METADATA (Next.js 13/14 App Router) --- //
+export const metadata = {
+  title: "Sobre Fanny Samaniego | Coach Financiera Holística y Agente Hipotecaria",
+  description:
+    "Conoce a Fanny Samaniego: coach financiera holística y agente hipotecaria en Toronto. Descubre su enfoque humano, consciente y basado en la invitación—en español e inglés.",
+  openGraph: {
+    title: "Sobre Fanny Samaniego | Coach Financiera Holística y Agente Hipotecaria",
+    description:
+      "Descubre el acompañamiento holístico y humano de Fanny Samaniego. Coaching y asesoría financiera por invitación, en español o inglés.",
+    url: "https://fannysamaniego.com/es/sobre-mi",
+    siteName: "Fanny Samaniego Coaching",
+    type: "profile",
+    images: [
+      {
+        url: "https://fannysamaniego.com/og-fanny-coaching.png",
+        width: 1200,
+        height: 630,
+        alt: "Sobre Fanny Samaniego, coach financiera holística",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sobre Fanny Samaniego | Coach Financiera Holística",
+    description: "Coaching financiero humano y consciente, por invitación y en español o inglés.",
+    images: ["https://fannysamaniego.com/og-fanny-coaching.png"],
+  },
+};
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,7 +39,7 @@ export default function SobreMi() {
         <div className="flex-shrink-0 flex justify-center">
           <Image
             src="/fanny-portrait.jpg"
-            alt="Fanny Samaniego"
+            alt="Retrato de Fanny Samaniego, coach financiera holística y agente hipotecaria"
             width={260}
             height={340}
             className="rounded-3xl shadow-lg object-cover border-4 border-brand-gold"
@@ -19,7 +48,8 @@ export default function SobreMi() {
         </div>
         {/* Biografía */}
         <div className="flex-1 md:pl-8">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6 text-brand-green tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6 text-brand-green tracking-tight flex items-center gap-3">
+            <span aria-hidden="true">🌿</span>
             Conoce a Fanny: Guía Financiera por Invitación
           </h1>
           <p className="mb-4 text-lg md:text-xl text-brand-blue/90 leading-relaxed">
@@ -36,10 +66,11 @@ export default function SobreMi() {
 
       {/* Compromiso */}
       <section className="max-w-4xl mx-auto mb-16">
-        <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+        <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center flex items-center gap-2 justify-center">
+          <span aria-hidden="true">💎</span>
           Mi compromiso contigo
         </h2>
-        <ul className="list-disc ml-8 md:ml-12 text-lg md:text-xl text-brand-green space-y-3">
+        <ul className="list-disc ml-8 md:ml-12 text-lg md:text-xl text-brand-green space-y-3 text-left">
           <li>Presencia, integridad y transparencia en cada encuentro.</li>
           <li>Acompañamiento compasivo—honrando tu historia y necesidades únicas.</li>
           <li>Estrategias holísticas para un bienestar financiero consciente y sostenible.</li>
@@ -53,7 +84,8 @@ export default function SobreMi() {
 
       {/* Mini-FAQ de Filosofía */}
       <section className="max-w-3xl mx-auto mb-12 bg-brand-beige rounded-2xl shadow p-8 border border-brand-green text-center">
-        <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+        <h3 className="font-serif text-xl text-brand-green font-bold mb-2 flex items-center gap-2 justify-center">
+          <span aria-hidden="true">💬</span>
           ¿Por qué “Guía por invitación”?
         </h3>
         <p className="font-sans text-lg text-brand-body">
@@ -70,7 +102,11 @@ export default function SobreMi() {
       {/* Llamado a la acción */}
       <section className="text-center">
         <Link href="/es/contacto">
-          <button className="px-10 py-4 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition tracking-wide text-lg">
+          <button
+            type="button"
+            className="px-10 py-4 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            aria-label="Solicitar una invitación para conversar"
+          >
             Solicitar una invitación para conversar
           </button>
         </Link>

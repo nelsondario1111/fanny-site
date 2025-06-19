@@ -1,3 +1,24 @@
+// --- SEO METADATA (Next.js 13/14 App Router) --- //
+export const metadata = {
+  title: "Servicios | Fanny Samaniego Coaching – Acompañamiento Financiero Holístico",
+  description:
+    "Descubre todos los servicios de coaching financiero holístico: sesiones privadas, paquetes, círculos y talleres. Apoyo cálido, práctico y bilingüe para tu bienestar financiero.",
+  openGraph: {
+    title: "Servicios | Fanny Samaniego Coaching",
+    description:
+      "Todos los servicios de coaching financiero holístico: desde llamadas de descubrimiento y sesiones privadas, hasta círculos y talleres, en español e inglés.",
+    url: "https://fannysamaniego.com/es/servicios",
+    siteName: "Fanny Samaniego Coaching",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Servicios | Fanny Samaniego Coaching",
+    description:
+      "Explora todos los servicios de coaching financiero: sesiones, paquetes y grupos en español e inglés.",
+  },
+};
+
 import Link from "next/link";
 import {
   FaLeaf,
@@ -108,7 +129,11 @@ export default function Servicios() {
           Ya sea que busques asesoría puntual, un proceso transformador o una comunidad de apoyo, te ofrezco guía con compasión, claridad y cuidado—en español o inglés.
         </p>
         <Link href="/es/inversion" className="inline-block mt-4">
-          <button className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition">
+          <button
+            type="button"
+            className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            aria-label="Ver paquetes e inversión"
+          >
             Ver paquetes e inversión
           </button>
         </Link>
@@ -127,7 +152,10 @@ export default function Servicios() {
             <h3 className="font-serif text-xl font-bold mb-2">{servicio.name}</h3>
             <p className="text-brand-body mb-4">{servicio.description}</p>
             <Link href={servicio.link}>
-              <button className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition">
+              <button
+                type="button"
+                className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              >
                 {servicio.cta}
               </button>
             </Link>

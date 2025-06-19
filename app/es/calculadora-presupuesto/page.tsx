@@ -21,7 +21,6 @@ export default function CalculadoraPresupuesto() {
   );
   const neto = (parseFloat(ingresos) || 0) - totalGastos;
 
-  // --- FIX: add types for TypeScript ---
   function handleGastoChange(i: number, val: string) {
     setGastos((prev) =>
       prev.map((exp, idx) => (idx === i ? { ...exp, value: val } : exp))
@@ -142,14 +141,43 @@ export default function CalculadoraPresupuesto() {
         </section>
       )}
 
-      {/* Sección educativa / FAQ */}
+      {/* Sección educativa / FAQ expandida */}
       <section className="max-w-3xl mx-auto mb-12">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center">
+        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center mb-8">
           <h3 className="text-xl font-serif font-bold text-brand-green mb-2">
             ¿Por qué presupuestar de manera holística?
           </h3>
           <p className="text-brand-body mb-4">
             Cuando tu presupuesto refleja tus valores y tu vida real—no solo números—es mucho más fácil tomar decisiones financieras con confianza y conciencia. Usa esta calculadora para revisar, ajustar y celebrar tu progreso.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow p-8 border border-brand-green/20 mb-6 text-left">
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Qué cuentan como “ingresos” y “gastos”?</h4>
+          <p className="text-brand-body mb-3">
+            <strong>Ingresos</strong> incluyen tu salario, ingresos por negocio o emprendimiento, rentas, inversiones y cualquier apoyo que recibas (beneficios del gobierno, ayuda familiar, etc.) cada mes.
+            <br />
+            <strong>Gastos</strong> son todo lo que pagas de forma regular: vivienda, alimentos, seguros, deudas, suscripciones, transporte y hasta “gastos de diversión”.
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Qué hago si mis números cambian cada mes?</h4>
+          <p className="text-brand-body mb-3">
+            La vida no siempre es predecible—algunos meses hay sorpresas, gastos extras o ingresos distintos. No te preocupes por hacerlo “perfecto”. Solo coloca lo que sea típico, o tu mejor estimado para este mes. ¡Puedes recalcular el siguiente mes!
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Con qué frecuencia debería revisar mi presupuesto?</h4>
+          <p className="text-brand-body mb-3">
+            Lo ideal es una vez al mes—puedes ponerte un recordatorio el primer día, o después de cobrar tu sueldo. ¡Entre más lo hagas, más claridad y seguridad tendrás!
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Y si mis gastos son más altos que mis ingresos?</h4>
+          <p className="text-brand-body mb-3">
+            Es más común de lo que imaginas, sobre todo en tiempos de cambios. No te juzgues. Usa el resultado como una oportunidad para buscar ajustes suaves: ¿puedes bajar un recibo, pedir apoyo, o hacer un pequeño cambio? Si quieres conversar, aquí estoy para apoyarte.
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Alguien ve o guarda mis datos?</h4>
+          <p className="text-brand-body">
+            No—esta calculadora es privada. Tus números solo se quedan en tu dispositivo y nunca se envían ni se almacenan.
           </p>
         </div>
       </section>

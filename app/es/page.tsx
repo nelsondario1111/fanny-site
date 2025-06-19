@@ -1,3 +1,32 @@
+// --- SEO METADATA (Next.js 13/14 App Router) --- //
+export const metadata = {
+  title: "Fanny Samaniego Coaching | Guía Financiera Holística y Soluciones Hipotecarias",
+  description:
+    "Coaching financiero de corazón, asesoría fiscal holística y acompañamiento en hipotecas en Toronto. Apoyo bilingüe (español e inglés) para tu bienestar y abundancia.",
+  openGraph: {
+    title: "Fanny Samaniego Coaching | Guía Financiera Holística y Hipotecas",
+    description:
+      "Acompañamiento personalizado, planificación fiscal holística, asesoría hipotecaria y herramientas prácticas para tu abundancia en español e inglés.",
+    url: "https://fannysamaniego.com/es",
+    siteName: "Fanny Samaniego Coaching",
+    type: "website",
+    images: [
+      {
+        url: "https://fannysamaniego.com/og-fanny-coaching.png", // Reemplaza con tu URL real
+        width: 1200,
+        height: 630,
+        alt: "Fanny Samaniego Coaching – Guía Financiera Holística",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fanny Samaniego Coaching | Guía Financiera Holística",
+    description: "Coaching financiero, fiscal y hipotecario de corazón en Toronto. Español e inglés.",
+    images: ["https://fannysamaniego.com/og-fanny-coaching.png"],
+  },
+};
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -18,8 +47,12 @@ export default function HomeEs() {
           </p>
           <Link href="/es/contacto" legacyBehavior>
             <a>
-              <button className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none">
-                <span className="mr-2">🤝</span>Solicitar una Invitación
+              <button
+                type="button"
+                className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label="Solicitar una Invitación"
+              >
+                <span className="mr-2" aria-hidden="true">🤝</span>Solicitar una Invitación
               </button>
             </a>
           </Link>
@@ -31,7 +64,7 @@ export default function HomeEs() {
         <div className="md:w-1/2 flex justify-center">
           <Image
             src="/fanny.jpg"
-            alt="Fanny Samaniego"
+            alt="Retrato de Fanny Samaniego, tu guía financiera holística"
             width={340}
             height={340}
             className="rounded-full shadow-xl object-cover border-4 border-brand-green"
@@ -49,7 +82,11 @@ export default function HomeEs() {
           </p>
           <Link href="/es/sobre-mi" legacyBehavior>
             <a>
-              <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-green hover:text-brand-blue border-2 border-brand-gold transition-all">
+              <button
+                type="button"
+                className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-green hover:text-brand-blue border-2 border-brand-gold transition-all focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label="Conoce Mi Historia"
+              >
                 Conoce Mi Historia
               </button>
             </a>
@@ -59,7 +96,8 @@ export default function HomeEs() {
 
       {/* Por qué trabajo por invitación */}
       <section className="py-10 bg-brand-beige max-w-3xl mx-auto text-center rounded-2xl shadow-sm border border-brand-green my-8">
-        <h3 className="font-serif text-2xl text-brand-green font-bold mb-3">
+        <h3 className="font-serif text-2xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
+          <span aria-hidden="true">🌿</span>
           ¿Por Qué Trabajo por Invitación?
         </h3>
         <p className="font-sans text-lg text-brand-body mb-2">
@@ -72,12 +110,14 @@ export default function HomeEs() {
 
       {/* Servicios */}
       <section className="py-24 bg-gradient-to-b from-brand-beige to-white">
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold">
+        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold flex items-center justify-center gap-2">
+          <span aria-hidden="true">🪴</span>
           Formas en que Puedo Acompañarte
         </h2>
         <div className="flex flex-col md:flex-row gap-10 justify-center max-w-6xl mx-auto">
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
+          {/* Guía Financiera */}
+          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl shadow-md">
               💡
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
@@ -87,8 +127,9 @@ export default function HomeEs() {
               Encuentra claridad y confianza a través de conversaciones honestas y centradas en tu corazón—sin fórmulas ni presiones.
             </p>
           </div>
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-blue flex items-center justify-center text-white text-2xl">
+          {/* Planificación Fiscal Holística */}
+          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div className="w-14 h-14 mb-4 rounded-full bg-brand-blue flex items-center justify-center text-white text-2xl shadow-md">
               🌱
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
@@ -98,8 +139,9 @@ export default function HomeEs() {
               Exploramos estrategias prácticas alineadas con tus valores. Co-creamos un plan que te brinde paz financiera sostenible.
             </p>
           </div>
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-gold flex items-center justify-center text-brand-green text-2xl">
+          {/* Guía Hipotecaria */}
+          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div className="w-14 h-14 mb-4 rounded-full bg-brand-gold flex items-center justify-center text-brand-green text-2xl shadow-md">
               🏡
             </div>
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
@@ -113,7 +155,11 @@ export default function HomeEs() {
         <div className="mt-16 text-center">
           <Link href="/es/servicios" legacyBehavior>
             <a>
-              <button className="px-10 py-4 bg-brand-gold text-brand-green rounded-full font-semibold shadow-lg hover:bg-brand-green hover:text-white border-2 border-brand-blue transition-all duration-200">
+              <button
+                type="button"
+                className="px-10 py-4 bg-brand-gold text-brand-green rounded-full font-semibold shadow-lg hover:bg-brand-green hover:text-white border-2 border-brand-blue transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label="Formas de Trabajar Juntos"
+              >
                 Formas de Trabajar Juntos
               </button>
             </a>
@@ -123,7 +169,8 @@ export default function HomeEs() {
 
       {/* Círculos de Conversación */}
       <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center">
-        <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">
+        <h3 className="font-serif text-2xl text-brand-green font-bold mb-2 flex items-center justify-center gap-2">
+          <span aria-hidden="true">☕</span>
           Círculos de Conversación
         </h3>
         <p className="font-sans text-lg text-brand-body mb-4">
@@ -131,7 +178,11 @@ export default function HomeEs() {
         </p>
         <Link href="/es/contacto" legacyBehavior>
           <a>
-            <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
+            <button
+              type="button"
+              className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              aria-label="Solicita Unirte a un Círculo"
+            >
               Solicita Unirte a un Círculo
             </button>
           </a>
@@ -140,11 +191,12 @@ export default function HomeEs() {
 
       {/* Herramientas */}
       <section className="py-20 bg-white max-w-6xl mx-auto">
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold">
+        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold flex items-center justify-center gap-2">
+          <span aria-hidden="true">🛠️</span>
           Herramientas para Nutrir tu Camino Financiero
         </h2>
         <div className="flex flex-col md:flex-row gap-10">
-          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold">
+          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold hover:shadow-lg transition">
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
               Planificador de Presupuesto Holístico
             </h3>
@@ -153,13 +205,17 @@ export default function HomeEs() {
             </p>
             <Link href="/es/tools/calculadora-presupuesto" legacyBehavior>
               <a>
-                <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
+                <button
+                  type="button"
+                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  aria-label="Probar Herramienta"
+                >
                   Probar Herramienta
                 </button>
               </a>
             </Link>
           </div>
-          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold">
+          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold hover:shadow-lg transition">
             <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
               Herramientas Hipotecarias
             </h3>
@@ -168,7 +224,11 @@ export default function HomeEs() {
             </p>
             <Link href="/es/tools/calculadora-hipotecaria" legacyBehavior>
               <a>
-                <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
+                <button
+                  type="button"
+                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  aria-label="Explorar Herramientas"
+                >
                   Explorar Herramientas
                 </button>
               </a>
@@ -188,7 +248,11 @@ export default function HomeEs() {
           </div>
           <Link href="/es/testimonios" legacyBehavior>
             <a>
-              <button className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow-md hover:bg-brand-gold hover:text-brand-green border-2 border-brand-gold transition-all duration-200">
+              <button
+                type="button"
+                className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow-md hover:bg-brand-gold hover:text-brand-green border-2 border-brand-gold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label="Historias de Guía y Transformación"
+              >
                 Historias de Guía y Transformación
               </button>
             </a>

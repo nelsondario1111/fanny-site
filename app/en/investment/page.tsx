@@ -1,3 +1,23 @@
+// --- SEO METADATA --- //
+export const metadata = {
+  title: "Investment & Packages | Fanny Samaniego Coaching – Transparent Holistic Pricing",
+  description:
+    "Explore transparent, heart-centered pricing for all holistic financial coaching services. Compare packages, book a discovery call, or find group and corporate options in English or Spanish.",
+  openGraph: {
+    title: "Investment & Packages | Fanny Samaniego Coaching",
+    description:
+      "Compare holistic financial coaching packages, private sessions, group programs, and workshops with transparent pricing. All services available in English or Spanish.",
+    url: "https://fannysamaniego.com/en/investment",
+    siteName: "Fanny Samaniego Coaching",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Investment & Packages | Fanny Samaniego Coaching",
+    description: "Transparent, heart-centered pricing for all holistic financial coaching services. Compare all options.",
+  },
+};
+
 import Link from "next/link";
 import {
   FaLeaf,
@@ -14,134 +34,135 @@ const services = [
     name: "Discovery Call",
     icon: <FaPhoneAlt className="text-brand-green text-2xl" />,
     description:
-      "30-min intro (Zoom/phone). Let's connect, see your goals, and decide together—no obligation.",
-    price: "Free",
+      "A free, friendly conversation to get to know you, your needs, and your goals—no pressure, no commitment. Let's see if we're a fit.",
     color: "bg-brand-green/10 border-brand-green",
     cta: "Book Free Call",
     link: "/en/contact",
+    price: "Free (30 min)",
   },
   {
     name: "Financial Clarity Session",
     icon: <FaDollarSign className="text-brand-gold text-2xl" />,
     description:
-      "A focused, 60-min private session on your biggest financial question—budget, debt, taxes, home buying and more. Includes written next steps.",
-    price: "$250 CAD",
+      "A focused session to clarify your biggest financial question—budgeting, taxes, home buying, or any money challenge. Get personalized next steps and peace of mind.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Book Session",
     link: "/en/contact",
+    price: "$180 (90 min)",
   },
   {
     name: "3-Month Wellness Package",
     icon: <FaLeaf className="text-brand-green text-2xl" />,
     description:
-      "6 biweekly coaching sessions + personalized plan, check-ins, and practical tools. Perfect for building new money habits.",
-    price: "$1,500 CAD (or 3 × $540/mo)",
+      "Guided support to build strong money habits, create a clear plan, and make real progress on your financial journey—together, step by step.",
     color: "bg-brand-green/10 border-brand-green",
-    cta: "Start Your Journey",
-    link: "/en/contact",
+    cta: "Learn More",
+    link: "/en/investment",
+    price: "$480 (3 months, 3 sessions)",
   },
   {
     name: "6-Month Holistic Package",
     icon: <FaUsers className="text-brand-blue text-2xl" />,
     description:
-      "12 biweekly sessions with a full holistic plan (budget, tax, mortgage prep). Unlimited email support. Add partner/spouse: +$400.",
-    price: "$3,000 CAD (or 6 × $540/mo)",
+      "Deep transformation and ongoing support for life changes, major financial goals, or holistic planning for you (and your partner or family).",
     color: "bg-brand-blue/10 border-brand-blue",
-    cta: "Let’s Begin",
-    link: "/en/contact",
+    cta: "Learn More",
+    link: "/en/investment",
+    price: "$850 (6 months, 6 sessions)",
   },
   {
-    name: "Ongoing Retainer (alumni only)",
+    name: "Ongoing Retainer (Alumni Only)",
     icon: <FaRegLightbulb className="text-brand-blue text-2xl" />,
     description:
-      "1 private check-in per month + ongoing email support. Only for returning clients.",
-    price: "$135/mo",
+      "Stay connected and supported with monthly check-ins and ongoing guidance for alumni clients. For steady growth and accountability.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconnect",
     link: "/en/contact",
+    price: "$90/month (alumni only)",
   },
   {
     name: "Money Circle (Group, 4 Weeks)",
     icon: <FaComments className="text-brand-blue text-2xl" />,
     description:
-      "4 × 90-min small group sessions, supportive community, and workbook. Build financial confidence together.",
-    price: "$300/person",
+      "A small, supportive group to learn, share, and grow together around money and abundance. Empowerment and community in a safe space.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Join Next Circle",
     link: "/en/contact",
+    price: "$120 (4 weeks, group)",
   },
   {
-    name: "Money Circle (Ongoing, Monthly)",
+    name: "Money Circle (Monthly)",
     icon: <FaComments className="text-brand-gold text-2xl" />,
     description:
-      "Stay connected with a monthly group for ongoing support, accountability, and new topics every time.",
-    price: "$80/person/mo",
+      "Ongoing monthly group sessions for continued support, inspiration, and practical learning.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Join Monthly",
     link: "/en/contact",
+    price: "$35/month (group)",
   },
   {
     name: "Workshops (Public/Community)",
     icon: <FaHandshake className="text-brand-gold text-2xl" />,
     description:
-      "60–90 min on budgeting, taxes, home buying, and more. Community topics: $0–$65/attendee.",
-    price: "$0–$65/attendee",
+      "Interactive workshops on budgeting, taxes, home buying, and more—for communities, organizations, and the public.",
     color: "bg-brand-gold/10 border-brand-gold",
     cta: "Request Info",
     link: "/en/contact",
+    price: "From $250 (custom)",
   },
   {
     name: "Workshops (Corporate/Org)",
     icon: <FaHandshake className="text-brand-blue text-2xl" />,
     description:
-      "Tailored 60–90 min for organizations, teams, or companies. Available English/Spanish. From $675/session.",
-    price: "From $675/session",
+      "Custom workshops for companies and organizations. Empower your team with financial wellness tools, English or Spanish.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Book Workshop",
     link: "/en/contact",
+    price: "From $500 (custom)",
   },
 ];
 
 export default function Investment() {
   return (
-    <main className="bg-brand-beige min-h-screen py-12 px-2">
-      {/* Banner */}
-      <section className="max-w-2xl mx-auto text-center mb-10">
-        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3">
+    <main className="bg-brand-beige min-h-screen py-20 px-2">
+      {/* HERO / HEADER */}
+      <section className="max-w-4xl mx-auto text-center mb-12">
+        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
+          <span aria-hidden="true">💸</span>
           Investment & Packages
         </h1>
         <p className="text-lg text-brand-blue mb-3">
           Transparent, heart-centered pricing—so you always know what to expect.
         </p>
         <p className="text-brand-body mb-2">
-          All services are available in English or Spanish.
+          All services are available in English or Spanish.<br />
           Every journey starts with a free, no-pressure discovery call.
         </p>
       </section>
 
-      {/* Table for Quick Comparison */}
-      <section className="max-w-5xl mx-auto mb-10 overflow-x-auto">
+      {/* COMPARISON TABLE */}
+      <section className="max-w-6xl mx-auto mb-14 overflow-x-auto">
         <table className="w-full bg-white rounded-2xl shadow-lg border border-brand-gold text-left text-base">
           <thead>
             <tr className="bg-brand-green text-white">
-              <th className="py-3 px-4 rounded-tl-2xl">Service</th>
+              <th className="py-3 px-4 rounded-tl-2xl min-w-[120px]">Service</th>
               <th className="py-3 px-4">What’s Included</th>
-              <th className="py-3 px-4 rounded-tr-2xl">Investment (CAD)</th>
+              <th className="py-3 px-4 rounded-tr-2xl min-w-[140px]">Investment (CAD)</th>
             </tr>
           </thead>
           <tbody>
             {services.map((service) => (
-              <tr key={service.name}>
-                <td className="py-3 px-4 font-bold">{service.name}</td>
-                <td className="py-3 px-4">{service.description}</td>
-                <td className="py-3 px-4">{service.price}</td>
+              <tr key={service.name} className="border-t border-brand-gold/20">
+                <td className="py-3 px-4 font-bold align-top">{service.name}</td>
+                <td className="py-3 px-4 align-top">{service.description}</td>
+                <td className="py-3 px-4 align-top font-semibold text-brand-green">{service.price}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      {/* Card Grid */}
+      {/* SERVICE CARD GRID */}
       <section className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {services.map((service) => (
           <div
@@ -155,7 +176,11 @@ export default function Investment() {
             <p className="text-brand-body mb-4">{service.description}</p>
             <p className="font-semibold text-brand-green text-lg mb-3">{service.price}</p>
             <Link href={service.link}>
-              <button className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition">
+              <button
+                type="button"
+                className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label={service.cta}
+              >
                 {service.cta}
               </button>
             </Link>
@@ -163,9 +188,12 @@ export default function Investment() {
         ))}
       </section>
 
-      {/* FAQ */}
-      <section className="max-w-3xl mx-auto mb-12">
-        <h2 className="text-2xl font-serif font-bold text-brand-green mb-4">FAQ</h2>
+      {/* FAQ SECTION */}
+      <section className="max-w-3xl mx-auto mb-14">
+        <h2 className="text-2xl font-serif font-bold text-brand-green mb-4 flex items-center gap-2">
+          <span aria-hidden="true">❓</span>
+          FAQ
+        </h2>
         <div className="mb-3">
           <span className="font-semibold text-brand-blue">
             How do I know which package is best?
@@ -198,7 +226,7 @@ export default function Investment() {
         </div>
       </section>
 
-      {/* Sliding Scale Note */}
+      {/* SLIDING SCALE / ACCESSIBILITY NOTE */}
       <section className="max-w-xl mx-auto bg-brand-beige border-l-4 border-brand-gold rounded-2xl p-6 shadow text-center mb-12">
         <p className="text-brand-body font-semibold">
           <FaHandshake className="inline-block text-brand-gold text-xl mr-2" />

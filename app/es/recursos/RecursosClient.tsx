@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import type { Article } from "@/lib/getArticles"; // Import shared type
+import type { Article } from "@/lib/getArticles";
 
 type Props = {
   articles: Article[];
@@ -25,7 +25,8 @@ export default function RecursosClient({ articles, categories }: Props) {
     <main className="bg-brand-beige min-h-screen py-20">
       <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
         {/* Header */}
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-6 text-center tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-6 text-center tracking-tight flex items-center justify-center gap-2">
+          <span aria-hidden="true">📚</span>
           Empodérate con Sabiduría Financiera Holística
         </h1>
         <div className="flex justify-center mb-8">
@@ -45,7 +46,8 @@ export default function RecursosClient({ articles, categories }: Props) {
               <a
                 href="/budget-planner.pdf"
                 download
-                className="inline-block px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg"
+                className="inline-block px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label="Descargar PDF Planificador de Presupuesto"
               >
                 Descargar Ahora
               </a>
@@ -58,24 +60,28 @@ export default function RecursosClient({ articles, categories }: Props) {
           {/* Categories */}
           <div className="flex flex-wrap gap-3">
             <button
+              type="button"
               className={`px-4 py-2 rounded-full font-semibold border shadow-sm transition
                 ${selected === "Todos"
                   ? "bg-brand-green text-white border-brand-green"
                   : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
                 }`}
               onClick={() => setSelected("Todos")}
+              aria-pressed={selected === "Todos"}
             >
               Todos
             </button>
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 className={`px-4 py-2 rounded-full font-semibold border shadow-sm transition
                   ${selected === cat
                     ? "bg-brand-green text-white border-brand-green"
                     : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
                   }`}
                 onClick={() => setSelected(cat)}
+                aria-pressed={selected === cat}
               >
                 {cat}
               </button>
@@ -88,6 +94,7 @@ export default function RecursosClient({ articles, categories }: Props) {
             placeholder="Buscar artículos…"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            aria-label="Buscar artículos"
           />
         </section>
 
@@ -111,7 +118,7 @@ export default function RecursosClient({ articles, categories }: Props) {
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-xs text-brand-blue bg-brand-gold/20 rounded-full px-3 py-1">{a.category}</span>
                   <Link href={`/es/recursos/${a.slug}`}>
-                    <span className="text-brand-blue font-semibold hover:underline cursor-pointer">
+                    <span className="text-brand-blue font-semibold hover:underline cursor-pointer" tabIndex={0}>
                       Leer más
                     </span>
                   </Link>
@@ -124,7 +131,11 @@ export default function RecursosClient({ articles, categories }: Props) {
         {/* Explore All */}
         <div className="text-center mt-12">
           <Link href="#">
-            <button className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg">
+            <button
+              type="button"
+              className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
+              aria-label="Explorar Todos los Recursos"
+            >
               Explorar Todos los Recursos
             </button>
           </Link>

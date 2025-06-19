@@ -1,3 +1,23 @@
+// --- SEO METADATA (Next.js 13/14 App Router) --- //
+export const metadata = {
+  title: "Services | Fanny Samaniego Coaching – Holistic Financial Support",
+  description:
+    "Discover all holistic financial coaching services: private sessions, wellness packages, group circles, and workshops. Warm, practical, bilingual support for your journey.",
+  openGraph: {
+    title: "Services | Fanny Samaniego Coaching",
+    description:
+      "All holistic coaching services, from discovery calls and private sessions to group circles and workshops, in English and Spanish.",
+    url: "https://fannysamaniego.com/en/services",
+    siteName: "Fanny Samaniego Coaching",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Services | Fanny Samaniego Coaching",
+    description: "Explore all financial coaching services, private sessions, packages, and group programs in English and Spanish.",
+  },
+};
+
 import Link from "next/link";
 import {
   FaLeaf,
@@ -98,7 +118,8 @@ export default function Services() {
     <main className="bg-brand-beige min-h-screen py-12 px-2">
       {/* Banner */}
       <section className="max-w-2xl mx-auto text-center mb-10">
-        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3">
+        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
+          <span aria-hidden="true">🪴</span>
           Ways I Can Guide You
         </h1>
         <p className="text-lg text-brand-blue mb-3">
@@ -108,7 +129,11 @@ export default function Services() {
           Whether you need focused advice, a transformational journey, or a supportive community, I offer guidance with compassion, clarity, and care—in English or Spanish.
         </p>
         <Link href="/en/investment" className="inline-block mt-4">
-          <button className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition">
+          <button
+            type="button"
+            className="bg-brand-gold text-brand-green px-6 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold text-base transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            aria-label="See Packages & Investment"
+          >
             See Packages & Investment
           </button>
         </Link>
@@ -127,7 +152,11 @@ export default function Services() {
             <h3 className="font-serif text-xl font-bold mb-2">{service.name}</h3>
             <p className="text-brand-body mb-4">{service.description}</p>
             <Link href={service.link}>
-              <button className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition">
+              <button
+                type="button"
+                className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label={service.cta}
+              >
                 {service.cta}
               </button>
             </Link>
@@ -138,7 +167,7 @@ export default function Services() {
       {/* Invitation Note */}
       <section className="max-w-xl mx-auto bg-brand-beige border-l-4 border-brand-gold rounded-2xl p-6 shadow text-center mb-12">
         <p className="text-brand-body font-semibold">
-          Every journey starts with an open invitation.  
+          Every journey starts with an open invitation.
           <br />
           Book a free discovery call—no pressure, just a warm conversation.
         </p>

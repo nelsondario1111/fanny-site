@@ -9,26 +9,32 @@ export const metadata = {
   description: "Holistic financial coaching and mortgage solutions in Toronto, English and Spanish.",
 };
 
-// ✅ Move themeColor here for Next.js 14+ compatibility
+// Next.js 14+ viewport meta
 export const viewport = {
-  themeColor: "#ffffff", // Change this to your preferred color if needed
+  themeColor: "#F5F2EA", // Updated to your brand beige (can be #ffffff if preferred)
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
         className={`
           ${lato.variable} ${playfair.variable} ${pacifico.variable}
           font-sans bg-brand-beige text-brand-body min-h-screen flex flex-col antialiased
         `}
       >
+        {/* Top Navigation Bar */}
         <NavBar lang="en" />
-        {/* Responsive top padding for navbar */}
+
+        {/* Main Content, with spacing for sticky navbar */}
         <main className="flex-1 pt-16 sm:pt-16">{children}</main>
+
+        {/* Site Footer */}
         <Footer lang="en" />
+
+        {/* Back to Top Button */}
         <BackToTopButton />
       </body>
     </html>

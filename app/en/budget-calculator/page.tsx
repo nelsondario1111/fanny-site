@@ -21,7 +21,6 @@ export default function BudgetCalculator() {
   );
   const net = (parseFloat(income) || 0) - totalExpenses;
 
-  // --- FIXED TYPES BELOW ---
   function handleExpenseChange(i: number, val: string) {
     setExpenses((prev) =>
       prev.map((exp, idx) => (idx === i ? { ...exp, value: val } : exp))
@@ -140,14 +139,43 @@ export default function BudgetCalculator() {
         </section>
       )}
 
-      {/* FAQ / Education Section */}
+      {/* Expanded FAQ / Education Section */}
       <section className="max-w-3xl mx-auto mb-12">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center">
+        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center mb-8">
           <h3 className="text-xl font-serif font-bold text-brand-green mb-2">
             Why budget holistically?
           </h3>
           <p className="text-brand-body mb-4">
             When your budget reflects your values and real life—not just numbers—it’s easier to make confident, conscious financial choices. Use this calculator to check in, reset, and celebrate your progress.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow p-8 border border-brand-green/20 mb-6 text-left">
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">What counts as “income” and “expenses”?</h4>
+          <p className="text-brand-body mb-3">
+            <strong>Income</strong> includes your salary, business earnings, investment income, rental income, and any support (like government benefits or family help) you receive each month.
+            <br />
+            <strong>Expenses</strong> are anything you pay for regularly: housing, groceries, insurance, debt, subscriptions, transportation, and even “fun money.”
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">What if my numbers change month to month?</h4>
+          <p className="text-brand-body mb-3">
+            Life isn’t always predictable—some months have surprise expenses or income. Don’t stress about getting it “perfect.” Just enter what’s typical, or do your best for this month. You can always recalculate next month.
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">How often should I check my budget?</h4>
+          <p className="text-brand-body mb-3">
+            Try a monthly review—maybe set a reminder for the 1st or after payday. The more often you check in, the more mindful and empowered you’ll feel!
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">What if my expenses are higher than my income?</h4>
+          <p className="text-brand-body mb-3">
+            That’s more common than you might think—especially during life transitions. Don’t judge yourself. Use this as an opportunity to look for gentle adjustments: can you lower a bill, ask for support, or make a small change? I’m here if you’d like to chat about it.
+          </p>
+
+          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">Do you see or store my data?</h4>
+          <p className="text-brand-body">
+            No—this calculator is private. Your numbers stay on your device and are never sent to anyone.
           </p>
         </div>
       </section>

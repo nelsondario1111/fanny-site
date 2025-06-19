@@ -1,3 +1,24 @@
+// --- SEO METADATA (Next.js 13+ Best Practice) --- //
+export const metadata = {
+  title: "Inversión y Paquetes | Fanny Samaniego Coaching – Precios Claros y Holísticos",
+  description:
+    "Consulta precios transparentes para paquetes de coaching financiero holístico, sesiones individuales y talleres en Toronto. Opciones en español e inglés, con tarifa ajustable disponible.",
+  openGraph: {
+    title: "Inversión y Paquetes | Fanny Samaniego Coaching",
+    description:
+      "Compara todos los paquetes de coaching financiero, sesiones privadas, grupos y talleres con precios claros y flexibles.",
+    url: "https://fannysamaniego.com/es/inversion",
+    siteName: "Fanny Samaniego Coaching",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Inversión y Paquetes | Fanny Samaniego Coaching",
+    description:
+      "Precios transparentes y flexibles para todos los servicios de coaching financiero holístico. Consulta todas las opciones.",
+  },
+};
+
 import Link from "next/link";
 import {
   FaLeaf,
@@ -104,17 +125,18 @@ const servicios = [
 
 export default function Inversion() {
   return (
-    <main className="bg-brand-beige min-h-screen py-12 px-2">
+    <main className="bg-brand-beige min-h-screen py-20 px-2">
       {/* Banner */}
       <section className="max-w-2xl mx-auto text-center mb-10">
-        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3">
+        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
+          <span aria-hidden="true">💸</span>
           Inversión y Paquetes
         </h1>
         <p className="text-lg text-brand-blue mb-3">
           Precios transparentes y con corazón—para que siempre sepas qué esperar.
         </p>
         <p className="text-brand-body mb-2">
-          Todos los servicios están disponibles en español o inglés.
+          Todos los servicios están disponibles en español o inglés.<br />
           Siempre comenzamos con una llamada gratuita, sin presión ni compromiso.
         </p>
       </section>
@@ -131,10 +153,10 @@ export default function Inversion() {
           </thead>
           <tbody>
             {servicios.map((servicio) => (
-              <tr key={servicio.name}>
-                <td className="py-3 px-4 font-bold">{servicio.name}</td>
-                <td className="py-3 px-4">{servicio.description}</td>
-                <td className="py-3 px-4">{servicio.price}</td>
+              <tr key={servicio.name} className="border-t border-brand-gold/20">
+                <td className="py-3 px-4 font-bold align-top">{servicio.name}</td>
+                <td className="py-3 px-4 align-top">{servicio.description}</td>
+                <td className="py-3 px-4 align-top font-semibold text-brand-green">{servicio.price}</td>
               </tr>
             ))}
           </tbody>
@@ -155,7 +177,11 @@ export default function Inversion() {
             <p className="text-brand-body mb-4">{servicio.description}</p>
             <p className="font-semibold text-brand-green text-lg mb-3">{servicio.price}</p>
             <Link href={servicio.link}>
-              <button className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition">
+              <button
+                type="button"
+                className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                aria-label={servicio.cta}
+              >
                 {servicio.cta}
               </button>
             </Link>
@@ -165,7 +191,10 @@ export default function Inversion() {
 
       {/* FAQ */}
       <section className="max-w-3xl mx-auto mb-12">
-        <h2 className="text-2xl font-serif font-bold text-brand-green mb-4">Preguntas Frecuentes</h2>
+        <h2 className="text-2xl font-serif font-bold text-brand-green mb-4 flex items-center gap-2">
+          <span aria-hidden="true">❓</span>
+          Preguntas Frecuentes
+        </h2>
         <div className="mb-3">
           <span className="font-semibold text-brand-blue">
             ¿Cómo sé cuál es el mejor paquete para mí?
