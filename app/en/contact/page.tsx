@@ -1,4 +1,6 @@
-// --- SEO METADATA (Next.js 13/14 App Router) --- //
+import ContactForm from "./ContactForm";
+
+// --- SEO METADATA (Next.js 13/14/15 App Router) --- //
 export const metadata = {
   title: "Contact | Fanny Samaniego Coaching – Schedule Your Free Discovery Call",
   description:
@@ -29,83 +31,7 @@ export default function Contact() {
           I’d love to hear from you. Schedule a free discovery call, send your questions, or reach out directly on WhatsApp.
         </p>
 
-        {/* Contact Form */}
-        <form className="bg-brand-beige/70 rounded-2xl p-8 mb-12 shadow-lg border border-brand-gold/40 space-y-5 max-w-xl mx-auto">
-          <div>
-            <label className="block font-semibold mb-1 text-brand-blue" htmlFor="name">Name</label>
-            <input
-              className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-              type="text"
-              id="name"
-              name="name"
-              autoComplete="off"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1 text-brand-blue" htmlFor="email">Email</label>
-            <input
-              className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="off"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1 text-brand-blue" htmlFor="phone">Phone</label>
-            <input
-              className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-              type="tel"
-              id="phone"
-              name="phone"
-              autoComplete="off"
-            />
-          </div>
-          {/* Service/Package Dropdown */}
-          <div>
-            <label className="block font-semibold mb-1 text-brand-blue" htmlFor="service">
-              Which service or package are you interested in?
-            </label>
-            <select
-              className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-              id="service"
-              name="service"
-              defaultValue=""
-              required
-            >
-              <option value="" disabled>
-                Please select...
-              </option>
-              <option value="Just want to connect">Just want to connect / Not sure yet</option>
-              <option value="Discovery Call">Discovery Call (Free)</option>
-              <option value="Financial Clarity Session">Financial Clarity Session</option>
-              <option value="3-Month Wellness Package">3-Month Wellness Package</option>
-              <option value="6-Month Holistic Package">6-Month Holistic Package</option>
-              <option value="Ongoing Retainer">Ongoing Retainer (Alumni Only)</option>
-              <option value="Money Circle">Money Circle</option>
-              <option value="Workshop">Workshop (Community/Corporate)</option>
-              <option value="Other">Other (describe below)</option>
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1 text-brand-blue" htmlFor="message">
-              Message
-            </label>
-            <textarea
-              className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-              id="message"
-              name="message"
-              rows={4}
-              placeholder="Tell me more about how I can help, or ask any questions!"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg"
-          >
-            Invite me
-          </button>
-        </form>
+        <ContactForm />
 
         {/* Direct Contact */}
         <div className="bg-white rounded-2xl p-6 shadow text-brand-green text-center space-y-2 border border-brand-gold/40">
