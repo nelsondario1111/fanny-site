@@ -33,10 +33,16 @@ export default function ContactForm() {
         setStatus("error");
         setError(error || "Hubo un problema al enviar tu mensaje. Intenta de nuevo.");
       }
-    } catch (err: any) {
-      setStatus("error");
-      setError(err.message || "Hubo un problema al enviar tu mensaje. Intenta de nuevo.");
-    }
+    } catch (err) {
+  setStatus("error");
+  // Typescript: err is unknown, but we can check for message property
+  if (err && typeof err === "object" && "message" in err) {
+    setError((err as { message: string }).message || "Hubo un problema al enviar tu mensaje. Intenta de nuevo.");
+  } else {
+    setError("Hubo un problema al enviar tu mensaje. Intenta de nuevo.");
+  }
+}
+
   }
 
   return (
