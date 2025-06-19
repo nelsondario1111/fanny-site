@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-// Replace this with your actual MailerLite Group ID (find it in MailerLite under Audience > Groups)
-const GROUP_ID = "157670436745774731"; // e.g. "123456789012345678"
+// Use your actual MailerLite Group ID here
+const GROUP_ID = "157670436745774731";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const { email, name } = await request.json();
 
   if (!email) {
     return NextResponse.json({ success: false, error: "Missing email address." }, { status: 400 });
   }
 
-  // Prepare the request body for MailerLite API
-  const payload: Record<string, any> = { email };
+  // Strictly typed payload
+  const payload: { email: string; name?: string } = { email };
   if (name) payload.name = name;
 
   try {
@@ -32,15 +32,45 @@ export async function POST(request: Request) {
     } else {
       let message = "MailerLite error.";
       try {
-        const data = await res.json();
-        message = data.error?.message || data.message || data.error || message;
-      } catch {}
+        // Use unknown type, then type guards (no any)
+        const data: unknown = await res.json();
+        if (data && typeof data === "object") {
+          if (
+            "error" in data &&
+            typeof (data as { error?: { message?: string } }).error === "object" &&
+            (data as { error?: { message?: string } }).error !== null &&
+            "message" in (data as { error: { message?: string } }).error
+          ) {
+            const errObj = (data as { error: { message?: string } }).error;
+            if (typeof errObj.message === "string") {
+              message = errObj.message;
+            }
+          } else if (
+            "error" in data &&
+            typeof (data as { error?: string }).error === "string"
+          ) {
+            message = (data as { error: string }).error;
+          } else if (
+            "message" in data &&
+            typeof (data as { message?: string }).message === "string"
+          ) {
+            message = (data as { message: string }).message;
+          }
+        }
+      } catch {
+        // ignore JSON parse error
+      }
       return NextResponse.json({ success: false, error: message }, { status: 400 });
     }
-  } catch (err) {
+  } catch (err: unknown) {
     let message = "MailerLite error.";
-    if (err && typeof err === "object" && "message" in err) {
-      message = (err as { message: string }).message || message;
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "message" in err &&
+      typeof (err as { message?: unknown }).message === "string"
+    ) {
+      message = (err as { message: string }).message;
     }
     return NextResponse.json({ success: false, error: message }, { status: 400 });
   }
