@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // Replace this with your actual MailerLite Group ID (find it in MailerLite under Audience > Groups)
-const GROUP_ID = "YOUR_GROUP_ID"; // e.g. "123456789012345678"
+const GROUP_ID = "157670436745774731"; // e.g. "123456789012345678"
 
 export async function POST(request: Request) {
   const { email, name } = await request.json();
