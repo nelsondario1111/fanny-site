@@ -2,17 +2,9 @@ import { getArticleBySlug } from "@/lib/getArticles";
 import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
+import Image from "next/image";
 
-interface ArticleParams {
-  params: { article: string };
-}
-
-export async function generateStaticParams() {
-  // Leave this function as is or add if needed for SSG
-  return [];
-}
-
-export default async function ArticlePage({ params }: ArticleParams) {
+export default async function ArticlePage({ params }: { params: { article: string } }) {
   const { article } = params;
   const data = await getArticleBySlug(article, "en");
   if (!data) {
@@ -54,11 +46,14 @@ export default async function ArticlePage({ params }: ArticleParams) {
           )}
         </header>
         {data.image && (
-          <img
+          <Image
             src={data.image}
             alt={data.title}
-            className="w-full rounded-xl shadow mb-8"
-            style={{ maxHeight: 380, objectFit: "cover" }}
+            width={800}
+            height={380}
+            className="w-full rounded-xl shadow mb-8 object-cover"
+            style={{ maxHeight: 380 }}
+            priority
           />
         )}
         <section

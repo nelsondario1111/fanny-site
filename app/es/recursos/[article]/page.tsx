@@ -2,6 +2,7 @@ import { getAllArticles, getArticleBySlug } from "@/lib/getArticles";
 import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
+import Image from "next/image";
 
 // Article interface for type safety
 interface Article {
@@ -21,9 +22,9 @@ export async function generateStaticParams() {
   return (articles ?? []).map(a => ({ article: a.slug }));
 }
 
-// Use async params type for Next.js 15+
-export default async function Page({ params }: { params: Promise<{ article: string }> }) {
-  const { article: articleSlug } = await params;
+// Use correct params type for Next.js
+export default async function Page({ params }: { params: { article: string } }) {
+  const { article: articleSlug } = params;
   const article = await getArticleBySlug(articleSlug, "es") as Article | null;
 
   if (!article) {
@@ -54,11 +55,14 @@ export default async function Page({ params }: { params: Promise<{ article: stri
         {/* Imagen de portada opcional */}
         {article.image && !bannerAlreadyInMarkdown && (
           <div className="mb-8 w-full rounded-2xl overflow-hidden shadow">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={article.image}
               alt={`Imagen de portada: ${article.title}`}
+              width={800}
+              height={256}
               className="w-full h-64 object-cover rounded-2xl"
+              style={{ maxHeight: 256 }}
+              priority
             />
           </div>
         )}
