@@ -43,7 +43,7 @@ export default function ResourcesClient({ articles, categories }: Props) {
                 A practical PDF guide to help you align your money with your values.
               </p>
               <a
-                href="/budget-planner.pdf"
+                href="/Monthly-Budget-Planner.pdf"
                 download
                 className="inline-block px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg"
               >
