@@ -1,74 +1,63 @@
-import { getArticleBySlug } from "@/lib/getArticles";
+import { getAllArticles, getArticleBySlug } from "@/lib/getArticles";
 import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
-import Image from "next/image";
 
-export default async function ArticlePage({ params }: { params: { article: string } }) {
-  const { article } = params;
-  const data = await getArticleBySlug(article, "en");
-  if (!data) {
+interface Article {
+  content: string;
+  slug: string;
+  lang: "en" | "es";
+  title: string;
+  category?: string;
+  date?: string;
+  author?: string;
+  image?: string;
+}
+
+// For static site generation (SSG)
+export async function generateStaticParams() {
+  const articles = await getAllArticles("en");
+  return (articles ?? []).map((a) => ({ article: a.slug }));
+}
+
+// Type params as Promise (Next.js 15+)
+export default async function Page({ params }: { params: Promise<{ article: string }> }) {
+  const { article: articleSlug } = await params;
+  const article = await getArticleBySlug(articleSlug, "en") as Article | null;
+
+  if (!article) {
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
-          <p>
-            Sorry, this article doesn’t exist.{" "}
-            <Link href="/en/resources">
-              <span className="underline text-brand-blue">Return to Resources</span>
-            </Link>
-          </p>
+          <h1 className="text-3xl font-bold text-brand-blue mb-4">Article not found</h1>
+          <Link href="/en/resources" className="text-brand-green hover:underline">
+            Back to Resources
+          </Link>
         </div>
       </main>
     );
   }
 
-  // Convert markdown to HTML
-  const processedContent = await remark().use(html).process(data.content);
+  const processedContent = await remark().use(html).process(article.content);
   const contentHtml = processedContent.toString();
 
   return (
-    <main className="bg-brand-beige min-h-screen py-16 px-2">
-      <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border p-10 mb-8">
-        <header>
-          <h1 className="text-4xl font-serif font-bold text-brand-green mb-2">{data.title}</h1>
-          {data.date && (
-            <div className="mb-3 text-brand-blue/80 font-medium">
-              {new Date(data.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </div>
-          )}
-          {data.author && (
-            <div className="mb-4 text-brand-body font-semibold">By {data.author}</div>
-          )}
-        </header>
-        {data.image && (
-          <Image
-            src={data.image}
-            alt={data.title}
-            width={800}
-            height={380}
-            className="w-full rounded-xl shadow mb-8 object-cover"
-            style={{ maxHeight: 380 }}
-            priority
-          />
-        )}
-        <section
-          className="prose lg:prose-xl max-w-none text-brand-body"
+    <main className="bg-brand-beige min-h-screen py-20">
+      <section className="max-w-3xl mx-auto bg-white/95 rounded-3xl shadow-xl p-10 border border-brand-gold">
+        <h1 className="text-4xl font-serif font-bold text-brand-green mb-4">{article.title}</h1>
+        <div className="mb-8 text-sm text-gray-500">{article.date}</div>
+        <article
+          className="prose prose-lg max-w-none text-brand-body"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
-      </article>
-      <div className="max-w-3xl mx-auto flex justify-between items-center mb-12">
-        <Link href="/en/resources" className="text-brand-blue underline hover:text-brand-gold font-semibold">
-          ← Back to Resources
-        </Link>
-        <Link href="/en/contact" className="text-brand-green underline hover:text-brand-blue font-semibold">
-          Have questions? Contact Fanny
-        </Link>
-      </div>
+        <div className="mt-12 text-center">
+          <Link href="/en/resources">
+            <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
+              Back to Resources
+            </button>
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
