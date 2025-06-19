@@ -37,7 +37,7 @@ export default function ContactEs() {
           <div>
             <span className="font-semibold">Correo:</span>{" "}
             <a className="underline hover:text-brand-blue transition" href="mailto:fanny.samaniego@zolo.ca">
-              fanny.samaniego@zolo.ca
+              info@fannysamaniego.com
             </a>
           </div>
           <div>

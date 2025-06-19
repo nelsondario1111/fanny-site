@@ -33,7 +33,7 @@ export default function Footer({ lang = "en" }: FooterProps) {
     },
     {
       icon: <Mail size={22} />,
-      href: "mailto:fanny.samaniego@zolo.ca",
+      href: "mailto:info@fannysamaniego.com",
       label: isSpanish ? "Correo" : "Email",
     },
     {
