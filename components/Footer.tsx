@@ -13,34 +13,19 @@ export default function Footer({ lang = "en" }: FooterProps) {
   const isSpanish = lang === "es";
   const langPrefix = isSpanish ? "/es" : "/en";
   const altLangPrefix = isSpanish ? "/en" : "/es";
+
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   const socials = [
-    {
-      icon: <Instagram size={22} />,
-      href: "https://www.instagram.com/",
-      label: "Instagram",
-    },
-    {
-      icon: <Linkedin size={22} />,
-      href: "https://www.linkedin.com/",
-      label: "LinkedIn",
-    },
-    {
-      icon: <Facebook size={22} />,
-      href: "https://www.facebook.com/",
-      label: "Facebook",
-    },
-    {
-      icon: <Mail size={22} />,
-      href: "mailto:info@fannysamaniego.com",
-      label: isSpanish ? "Correo" : "Email",
-    },
-    {
-      icon: <Phone size={22} />,
-      href: "tel:4167268420",
-      label: isSpanish ? "Teléfono" : "Phone",
-    },
+    { icon: <Instagram size={22} />, href: "https://www.instagram.com/", label: "Instagram" },
+    { icon: <Linkedin size={22} />, href: "https://www.linkedin.com/", label: "LinkedIn" },
+    { icon: <Facebook size={22} />, href: "https://www.facebook.com/", label: "Facebook" },
+    { icon: <Mail size={22} />, href: "mailto:info@fannysamaniego.com", label: isSpanish ? "Correo" : "Email" },
+    { icon: <Phone size={22} />, href: "tel:4167268420", label: isSpanish ? "Teléfono" : "Phone" },
   ];
 
   return (
@@ -124,26 +109,63 @@ export default function Footer({ lang = "en" }: FooterProps) {
           className={`w-full max-w-lg flex flex-col sm:flex-row items-center gap-4 bg-brand-beige/90 rounded-2xl px-6 py-4 shadow-lg border border-brand-gold/30 ${
             subscribed ? "opacity-50 pointer-events-none" : "opacity-100"
           }`}
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            setSubscribed(true);
-            setTimeout(() => setSubscribed(false), 5000);
+            setSubscribing(true);
+            setSubscribeError(null);
+            // call the API
+            const res = await fetch("/api/subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, name }),
+            });
+            setSubscribing(false);
+            if (res.ok) {
+              setSubscribed(true);
+              setEmail("");
+              setName("");
+              setTimeout(() => setSubscribed(false), 5000);
+            } else {
+              const data = await res.json();
+              setSubscribeError(
+                data.error ||
+                  (isSpanish
+                    ? "Hubo un error al suscribirte. Intenta de nuevo."
+                    : "There was an error subscribing. Please try again.")
+              );
+            }
           }}
           aria-label={isSpanish ? "Formulario de suscripción al boletín" : "Newsletter signup form"}
         >
           <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="flex-1 p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
+            placeholder={isSpanish ? "Tu nombre (opcional)" : "Your name (optional)"}
+            disabled={subscribed || subscribing}
+          />
+          <input
             type="email"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="flex-1 p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
             placeholder={isSpanish ? "Ingresa tu correo..." : "Enter your email..."}
-            disabled={subscribed}
+            disabled={subscribed || subscribing}
           />
           <button
             type="submit"
             className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition text-lg"
-            disabled={subscribed}
+            disabled={subscribed || subscribing}
           >
-            {isSpanish ? "Suscribirme" : "Subscribe"}
+            {subscribing
+              ? isSpanish
+                ? "Enviando..."
+                : "Sending..."
+              : isSpanish
+                ? "Suscribirme"
+                : "Subscribe"}
           </button>
         </form>
         <div className="text-xs text-brand-beige mt-2 text-center">
@@ -158,6 +180,13 @@ export default function Footer({ lang = "en" }: FooterProps) {
               {isSpanish
                 ? "¡Gracias por suscribirte! 🎉"
                 : "Thank you for subscribing! 🎉"}
+            </div>
+          </div>
+        )}
+        {subscribeError && (
+          <div className="mt-4">
+            <div className="px-6 py-3 bg-red-100 text-red-700 font-serif font-bold rounded-full shadow text-center text-lg border border-red-200">
+              {subscribeError}
             </div>
           </div>
         )}
