@@ -1,69 +1,79 @@
-import { getAllArticles, getArticleBySlug } from "@/lib/getArticles";
+import { getArticleBySlug } from "@/lib/getArticles";
 import { remark } from "remark";
 import html from "remark-html";
 import Link from "next/link";
 
-// ...interface and generateStaticParams unchanged...
+interface ArticleParams {
+  params: { article: string };
+}
 
-export default async function Page({ params }: { params: Promise<{ article: string }> }) {
-  const { article: articleSlug } = await params;
-  const article = await getArticleBySlug(articleSlug, "en") as Article | null;
+export async function generateStaticParams() {
+  // Leave this function as is or add if needed for SSG
+  return [];
+}
 
-  if (!article) {
-    // ...not found block unchanged...
+export default async function ArticlePage({ params }: ArticleParams) {
+  const { article } = params;
+  const data = await getArticleBySlug(article, "en");
+  if (!data) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Article Not Found</h1>
+          <p>
+            Sorry, this article doesn’t exist.{" "}
+            <Link href="/en/resources">
+              <span className="underline text-brand-blue">Return to Resources</span>
+            </Link>
+          </p>
+        </div>
+      </main>
+    );
   }
 
-  // Check if the Markdown already embeds the image at the top
-  const bannerAlreadyInMarkdown = article.image
-    ? article.content.trim().startsWith(`![`)
-      && article.content.includes(`](${article.image})`)
-    : false;
-
-  const processedContent = await remark().use(html).process(article.content);
+  // Convert markdown to HTML
+  const processedContent = await remark().use(html).process(data.content);
   const contentHtml = processedContent.toString();
 
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
-      <section className="max-w-3xl mx-auto bg-white/95 rounded-3xl shadow-xl p-10 border border-brand-gold">
-        {/* Only render banner if not already in markdown */}
-        {article.image && !bannerAlreadyInMarkdown && (
-          <div className="mb-8 w-full rounded-2xl overflow-hidden shadow">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={article.image}
-              alt={`Cover for: ${article.title}`}
-              className="w-full h-64 object-cover rounded-2xl"
-            />
-          </div>
-        )}
-
-        {/* ...rest of your content... */}
-        <h1 className="text-4xl font-serif font-bold text-brand-green mb-2">{article.title}</h1>
-        <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2 items-center text-sm text-gray-500">
-          {article.date && <span>{article.date}</span>}
-          {article.category && (
-            <span className="px-3 py-1 bg-brand-gold/30 text-brand-green rounded-full text-xs font-semibold">
-              {article.category}
-            </span>
+    <main className="bg-brand-beige min-h-screen py-16 px-2">
+      <article className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl border p-10 mb-8">
+        <header>
+          <h1 className="text-4xl font-serif font-bold text-brand-green mb-2">{data.title}</h1>
+          {data.date && (
+            <div className="mb-3 text-brand-blue/80 font-medium">
+              {new Date(data.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
           )}
-          {article.author && <span>By {article.author}</span>}
-        </div>
-        <article
-          className="prose prose-lg max-w-none text-brand-body"
+          {data.author && (
+            <div className="mb-4 text-brand-body font-semibold">By {data.author}</div>
+          )}
+        </header>
+        {data.image && (
+          <img
+            src={data.image}
+            alt={data.title}
+            className="w-full rounded-xl shadow mb-8"
+            style={{ maxHeight: 380, objectFit: "cover" }}
+          />
+        )}
+        <section
+          className="prose lg:prose-xl max-w-none text-brand-body"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
-        <div className="mt-12 text-center">
-          <Link href="/en/resources">
-            <button
-              type="button"
-              className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
-              aria-label="Back to Resources"
-            >
-              Back to Resources
-            </button>
-          </Link>
-        </div>
-      </section>
+      </article>
+      <div className="max-w-3xl mx-auto flex justify-between items-center mb-12">
+        <Link href="/en/resources" className="text-brand-blue underline hover:text-brand-gold font-semibold">
+          ← Back to Resources
+        </Link>
+        <Link href="/en/contact" className="text-brand-green underline hover:text-brand-blue font-semibold">
+          Have questions? Contact Fanny
+        </Link>
+      </div>
     </main>
   );
 }
