@@ -1,23 +1,4 @@
-// --- SEO METADATA (Next.js 13+ Best Practice) --- //
-export const metadata = {
-  title: "Inversión y Paquetes | Fanny Samaniego Coaching – Precios Claros y Holísticos",
-  description:
-    "Consulta precios transparentes para paquetes de coaching financiero holístico, sesiones individuales y talleres en Toronto. Opciones en español e inglés, con tarifa ajustable disponible.",
-  openGraph: {
-    title: "Inversión y Paquetes | Fanny Samaniego Coaching",
-    description:
-      "Compara todos los paquetes de coaching financiero, sesiones privadas, grupos y talleres con precios claros y flexibles.",
-    url: "https://fannysamaniego.com/es/inversion",
-    siteName: "Fanny Samaniego Coaching",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Inversión y Paquetes | Fanny Samaniego Coaching",
-    description:
-      "Precios transparentes y flexibles para todos los servicios de coaching financiero holístico. Consulta todas las opciones.",
-  },
-};
+"use client";
 
 import Link from "next/link";
 import {
@@ -30,185 +11,220 @@ import {
   FaPhoneAlt,
 } from "react-icons/fa";
 
-const servicios = [
+const stripePriceIds: Record<string, string> = {
+  "Sesión de Claridad Financiera": "price_1RbuXGGCaTZ2y7NiZPf427KX",
+  "Paquete de Bienestar (3 Meses)": "price_1RbucDGCaTZ2y7NiyiE14R3T",
+  "Paquete Holístico (6 Meses)": "price_1RbudEGCaTZ2y7NidoHDofUu",
+  "Retención Continua (Solo Exalumnos)": "price_1RbuelGCaTZ2y7Nixqkwp1ao",
+  "Círculo de Dinero (Grupo, 4 Semanas)": "price_1RbuiWGCaTZ2y7NiA3gZhEQ1",
+  "Círculo de Dinero (Mensual)": "price_1RbujPGCaTZ2y7Ni8nes6Hyp",
+  "Talleres (Público/Comunidad)": "price_1RbukJGCaTZ2y7NiixcmYSTx",
+  "Talleres (Corporativo/Organización)": "price_1Rbul2GCaTZ2y7NizItd4dkc",
+};
+
+const services = [
   {
     name: "Llamada de Descubrimiento",
     icon: <FaPhoneAlt className="text-brand-green text-2xl" />,
     description:
-      "30 min de introducción (Zoom/teléfono). Conozcámonos y veamos tus objetivos, sin compromiso.",
-    price: "Gratis",
+      "Una conversación gratuita y cordial para conocerte, entender tus necesidades y tus metas—sin compromiso. Descubre si somos el equipo ideal.",
     color: "bg-brand-green/10 border-brand-green",
-    cta: "Solicitar llamada",
+    cta: "Agendar Llamada Gratuita",
     link: "/es/contacto",
+    price: "Gratis (30 min)",
   },
   {
     name: "Sesión de Claridad Financiera",
     icon: <FaDollarSign className="text-brand-gold text-2xl" />,
     description:
-      "Sesión privada de 60 min enfocada en tu pregunta principal: presupuesto, deudas, impuestos, compra de vivienda y más. Incluye resumen y pasos a seguir.",
-    price: "$250 CAD",
+      "Sesión enfocada para aclarar tu mayor duda financiera—presupuesto, impuestos, compra de vivienda, o cualquier reto. Obtén pasos personalizados y tranquilidad.",
     color: "bg-brand-gold/10 border-brand-gold",
-    cta: "Reservar sesión",
+    cta: "Reservar Sesión",
     link: "/es/contacto",
+    price: "$180 (90 min)",
   },
   {
-    name: "Paquete Bienestar 3 Meses",
+    name: "Paquete de Bienestar (3 Meses)",
     icon: <FaLeaf className="text-brand-green text-2xl" />,
     description:
-      "6 sesiones quincenales de coaching, plan personalizado, acompañamiento y herramientas prácticas. Perfecto para crear nuevos hábitos financieros.",
-    price: "$1,500 CAD (o 3 × $540/mes)",
+      "Acompañamiento para crear hábitos financieros sólidos, un plan claro, y avanzar de verdad en tu camino financiero—juntos, paso a paso.",
     color: "bg-brand-green/10 border-brand-green",
-    cta: "Comenzar mi camino",
-    link: "/es/contacto",
+    cta: "Más Información",
+    link: "/es/inversion",
+    price: "$480 (3 meses, 3 sesiones)",
   },
   {
-    name: "Paquete Holístico 6 Meses",
+    name: "Paquete Holístico (6 Meses)",
     icon: <FaUsers className="text-brand-blue text-2xl" />,
     description:
-      "12 sesiones quincenales, plan financiero integral (presupuesto, impuestos, hipoteca). Soporte ilimitado por correo. Añade pareja/esposo: +$400.",
-    price: "$3,000 CAD (o 6 × $540/mes)",
+      "Transformación profunda y acompañamiento continuo para grandes cambios, metas importantes, o planificación holística para ti (o en pareja/familia).",
     color: "bg-brand-blue/10 border-brand-blue",
-    cta: "Comenzar ahora",
-    link: "/es/contacto",
+    cta: "Más Información",
+    link: "/es/inversion",
+    price: "$850 (6 meses, 6 sesiones)",
   },
   {
-    name: "Retención Continua (ex-clientes)",
+    name: "Retención Continua (Solo Exalumnos)",
     icon: <FaRegLightbulb className="text-brand-blue text-2xl" />,
     description:
-      "1 sesión privada al mes + soporte continuo por correo. Solo para clientes que ya han pasado por algún paquete.",
-    price: "$135/mes",
+      "Sigue acompañado con chequeos mensuales y orientación continua solo para exalumnos. Para mantener tu avance y motivación.",
     color: "bg-brand-blue/10 border-brand-blue",
     cta: "Reconectar",
     link: "/es/contacto",
+    price: "$90/mes (solo exalumnos)",
   },
   {
-    name: "Círculo de Dinero (4 Semanas)",
+    name: "Círculo de Dinero (Grupo, 4 Semanas)",
     icon: <FaComments className="text-brand-blue text-2xl" />,
     description:
-      "4 sesiones grupales de 90 min, comunidad de apoyo, cuaderno de trabajo. Crece y aprende junto a otros.",
-    price: "$300/persona",
+      "Un grupo pequeño y seguro para aprender, compartir y crecer juntos en abundancia. Empoderamiento y comunidad.",
     color: "bg-brand-blue/10 border-brand-blue",
-    cta: "Unirme al círculo",
+    cta: "Unirme al Círculo",
     link: "/es/contacto",
+    price: "$120 (4 semanas, grupo)",
   },
   {
-    name: "Círculo Mensual de Dinero",
+    name: "Círculo de Dinero (Mensual)",
     icon: <FaComments className="text-brand-gold text-2xl" />,
     description:
-      "Grupo mensual para apoyo y aprendizaje continuo. Temas nuevos cada mes.",
-    price: "$80/persona/mes",
+      "Sesiones grupales mensuales para seguir aprendiendo, inspirándote y recibiendo apoyo práctico.",
     color: "bg-brand-gold/10 border-brand-gold",
-    cta: "Unirme al mensual",
+    cta: "Unirme Mensual",
     link: "/es/contacto",
+    price: "$35/mes (grupo)",
   },
   {
-    name: "Talleres (Comunidad/Público)",
+    name: "Talleres (Público/Comunidad)",
     icon: <FaHandshake className="text-brand-gold text-2xl" />,
     description:
-      "60–90 min sobre presupuesto, impuestos, compra de vivienda y más. Temas comunitarios: $0–$65/participante.",
-    price: "$0–$65/participante",
+      "Talleres interactivos de presupuesto, impuestos, compra de vivienda y más—para comunidades, organizaciones o el público.",
     color: "bg-brand-gold/10 border-brand-gold",
-    cta: "Solicitar información",
+    cta: "Solicitar Info",
     link: "/es/contacto",
+    price: "Desde $250 (a medida)",
   },
   {
     name: "Talleres (Corporativo/Organización)",
     icon: <FaHandshake className="text-brand-blue text-2xl" />,
     description:
-      "Sesiones personalizadas de 60–90 min para equipos o empresas. Disponible en inglés y español. Desde $675/sesión.",
-    price: "Desde $675/sesión",
+      "Talleres personalizados para empresas y organizaciones. Fortalece a tu equipo con herramientas de bienestar financiero.",
     color: "bg-brand-blue/10 border-brand-blue",
-    cta: "Solicitar taller",
+    cta: "Reservar Taller",
     link: "/es/contacto",
+    price: "Desde $500 (a medida)",
   },
 ];
 
 export default function Inversion() {
+  const handleCheckout = async (serviceName: string) => {
+    const priceId = stripePriceIds[serviceName];
+    if (!priceId) {
+      window.location.href = "/es/contacto";
+      return;
+    }
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priceId }),
+    });
+    const { url } = await res.json();
+    window.location.href = url;
+  };
+
   return (
     <main className="bg-brand-beige min-h-screen py-20 px-2">
-      {/* Banner */}
-      <section className="max-w-2xl mx-auto text-center mb-10">
+      {/* HERO / HEADER */}
+      <section className="max-w-4xl mx-auto text-center mb-12">
         <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
           <span aria-hidden="true">💸</span>
           Inversión y Paquetes
         </h1>
         <p className="text-lg text-brand-blue mb-3">
-          Precios transparentes y con corazón—para que siempre sepas qué esperar.
+          Precios claros y conscientes—siempre sabrás qué esperar.
         </p>
         <p className="text-brand-body mb-2">
-          Todos los servicios están disponibles en español o inglés.<br />
-          Siempre comenzamos con una llamada gratuita, sin presión ni compromiso.
+          Todos los servicios disponibles en español o inglés.<br />
+          Todo inicia con una llamada gratuita y sin compromiso.
         </p>
       </section>
 
-      {/* Tabla comparativa */}
-      <section className="max-w-5xl mx-auto mb-10 overflow-x-auto">
+      {/* COMPARISON TABLE */}
+      <section className="max-w-6xl mx-auto mb-14 overflow-x-auto">
         <table className="w-full bg-white rounded-2xl shadow-lg border border-brand-gold text-left text-base">
           <thead>
             <tr className="bg-brand-green text-white">
-              <th className="py-3 px-4 rounded-tl-2xl">Servicio</th>
+              <th className="py-3 px-4 rounded-tl-2xl min-w-[120px]">Servicio</th>
               <th className="py-3 px-4">¿Qué Incluye?</th>
-              <th className="py-3 px-4 rounded-tr-2xl">Inversión (CAD)</th>
+              <th className="py-3 px-4 rounded-tr-2xl min-w-[140px]">Inversión (CAD)</th>
             </tr>
           </thead>
           <tbody>
-            {servicios.map((servicio) => (
-              <tr key={servicio.name} className="border-t border-brand-gold/20">
-                <td className="py-3 px-4 font-bold align-top">{servicio.name}</td>
-                <td className="py-3 px-4 align-top">{servicio.description}</td>
-                <td className="py-3 px-4 align-top font-semibold text-brand-green">{servicio.price}</td>
+            {services.map((service) => (
+              <tr key={service.name} className="border-t border-brand-gold/20">
+                <td className="py-3 px-4 font-bold align-top">{service.name}</td>
+                <td className="py-3 px-4 align-top">{service.description}</td>
+                <td className="py-3 px-4 align-top font-semibold text-brand-green">{service.price}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      {/* Grid de tarjetas */}
+      {/* SERVICE CARD GRID */}
       <section className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {servicios.map((servicio) => (
+        {services.map((service) => (
           <div
-            key={servicio.name}
-            className={`rounded-2xl border-2 ${servicio.color} shadow-xl p-8 flex flex-col items-center text-center transition hover:-translate-y-1 hover:shadow-2xl`}
+            key={service.name}
+            className={`rounded-2xl border-2 ${service.color} shadow-xl p-8 flex flex-col items-center text-center transition hover:-translate-y-1 hover:shadow-2xl`}
           >
             <div className="mb-4 w-14 h-14 flex items-center justify-center rounded-full bg-white shadow-lg border">
-              {servicio.icon}
+              {service.icon}
             </div>
-            <h3 className="font-serif text-xl font-bold mb-2">{servicio.name}</h3>
-            <p className="text-brand-body mb-4">{servicio.description}</p>
-            <p className="font-semibold text-brand-green text-lg mb-3">{servicio.price}</p>
-            <Link href={servicio.link}>
+            <h3 className="font-serif text-xl font-bold mb-2">{service.name}</h3>
+            <p className="text-brand-body mb-4">{service.description}</p>
+            <p className="font-semibold text-brand-green text-lg mb-3">{service.price}</p>
+            {stripePriceIds[service.name] ? (
               <button
                 type="button"
+                onClick={() => handleCheckout(service.name)}
                 className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label={servicio.cta}
+                aria-label={`Comprar ${service.name}`}
               >
-                {servicio.cta}
+                Comprar
               </button>
-            </Link>
+            ) : (
+              <Link href={service.link}>
+                <button
+                  type="button"
+                  className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  aria-label={service.cta}
+                >
+                  {service.cta}
+                </button>
+              </Link>
+            )}
           </div>
         ))}
       </section>
 
-      {/* FAQ */}
-      <section className="max-w-3xl mx-auto mb-12">
+      {/* FAQ SECTION */}
+      <section className="max-w-3xl mx-auto mb-14">
         <h2 className="text-2xl font-serif font-bold text-brand-green mb-4 flex items-center gap-2">
           <span aria-hidden="true">❓</span>
           Preguntas Frecuentes
         </h2>
         <div className="mb-3">
           <span className="font-semibold text-brand-blue">
-            ¿Cómo sé cuál es el mejor paquete para mí?
+            ¿Cómo sé cuál paquete es el mejor para mí?
           </span>
           <p className="text-brand-body ml-3">
-            Empezamos con una llamada gratuita y lo decidimos juntos, sin presión.
+            Empecemos con una llamada de descubrimiento gratuita y lo resolvemos juntos, sin presión.
           </p>
         </div>
         <div className="mb-3">
-          <span className="font-semibold text-brand-blue">
-            ¿Ofreces tarifa ajustable (sliding scale)?
-          </span>
+          <span className="font-semibold text-brand-blue">¿Ofreces tarifa variable?</span>
           <p className="text-brand-body ml-3">
-            ¡Sí! La accesibilidad es fundamental para mí. Si el costo es un obstáculo, por favor avísame. Resevo algunos cupos ajustados cada temporada.
+            ¡Sí! La accesibilidad es importante para mí. Si el costo es una barrera, escríbeme. Cada temporada reservo algunos lugares con tarifa flexible.
           </p>
         </div>
         <div className="mb-3">
@@ -216,7 +232,7 @@ export default function Inversion() {
             ¿Puedo trabajar contigo en inglés?
           </span>
           <p className="text-brand-body ml-3">
-            ¡Por supuesto! Todos los servicios están disponibles en inglés y español.
+            Of course! All services are available in both Spanish and English.
           </p>
         </div>
         <div className="mb-3">
@@ -224,16 +240,16 @@ export default function Inversion() {
             ¿Pueden participar parejas o familias?
           </span>
           <p className="text-brand-body ml-3">
-            Sí, solo házmelo saber. Me adapto para incluir a tu pareja o familia.
+            Sí, solo avísame. Adapto las sesiones para incluir a tu pareja o familia.
           </p>
         </div>
       </section>
 
-      {/* Nota de accesibilidad */}
+      {/* NOTA DE ACCESIBILIDAD */}
       <section className="max-w-xl mx-auto bg-brand-beige border-l-4 border-brand-gold rounded-2xl p-6 shadow text-center mb-12">
         <p className="text-brand-body font-semibold">
           <FaHandshake className="inline-block text-brand-gold text-xl mr-2" />
-          La accesibilidad es importante para mí. Si el costo es un obstáculo, por favor avísame—ofrezco algunos cupos ajustados cada temporada.
+          La accesibilidad es fundamental para mí. Si el costo es una barrera, escríbeme—ofrezco algunos lugares de tarifa variable cada temporada.
         </p>
       </section>
     </main>

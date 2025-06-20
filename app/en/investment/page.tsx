@@ -1,22 +1,4 @@
-// --- SEO METADATA --- //
-export const metadata = {
-  title: "Investment & Packages | Fanny Samaniego Coaching – Transparent Holistic Pricing",
-  description:
-    "Explore transparent, heart-centered pricing for all holistic financial coaching services. Compare packages, book a discovery call, or find group and corporate options in English or Spanish.",
-  openGraph: {
-    title: "Investment & Packages | Fanny Samaniego Coaching",
-    description:
-      "Compare holistic financial coaching packages, private sessions, group programs, and workshops with transparent pricing. All services available in English or Spanish.",
-    url: "https://fannysamaniego.com/en/investment",
-    siteName: "Fanny Samaniego Coaching",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Investment & Packages | Fanny Samaniego Coaching",
-    description: "Transparent, heart-centered pricing for all holistic financial coaching services. Compare all options.",
-  },
-};
+"use client";
 
 import Link from "next/link";
 import {
@@ -28,6 +10,18 @@ import {
   FaRegLightbulb,
   FaPhoneAlt,
 } from "react-icons/fa";
+
+// Stripe Price IDs for packages
+const stripePriceIds: Record<string, string> = {
+  "Financial Clarity Session": "price_1RbuXGGCaTZ2y7NiZPf427KX",
+  "3-Month Wellness Package": "price_1RbucDGCaTZ2y7NiyiE14R3T",
+  "6-Month Holistic Package": "price_1RbudEGCaTZ2y7NidoHDofUu",
+  "Ongoing Retainer (Alumni Only)": "price_1RbuelGCaTZ2y7Nixqkwp1ao",
+  "Money Circle (Group, 4 Weeks)": "price_1RbuiWGCaTZ2y7NiA3gZhEQ1",
+  "Money Circle (Monthly)": "price_1RbujPGCaTZ2y7Ni8nes6Hyp",
+  "Workshops (Public/Community)": "price_1RbukJGCaTZ2y7NiixcmYSTx",
+  "Workshops (Corporate/Org)": "price_1Rbul2GCaTZ2y7NizItd4dkc",
+};
 
 const services = [
   {
@@ -123,6 +117,22 @@ const services = [
 ];
 
 export default function Investment() {
+  // Checkout handler
+  const handleCheckout = async (serviceName: string) => {
+    const priceId = stripePriceIds[serviceName];
+    if (!priceId) {
+      window.location.href = "/en/contact"; // fallback
+      return;
+    }
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priceId }),
+    });
+    const { url } = await res.json();
+    window.location.href = url;
+  };
+
   return (
     <main className="bg-brand-beige min-h-screen py-20 px-2">
       {/* HERO / HEADER */}
@@ -175,15 +185,26 @@ export default function Investment() {
             <h3 className="font-serif text-xl font-bold mb-2">{service.name}</h3>
             <p className="text-brand-body mb-4">{service.description}</p>
             <p className="font-semibold text-brand-green text-lg mb-3">{service.price}</p>
-            <Link href={service.link}>
+            {stripePriceIds[service.name] ? (
               <button
                 type="button"
+                onClick={() => handleCheckout(service.name)}
                 className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label={service.cta}
+                aria-label={`Buy ${service.name}`}
               >
-                {service.cta}
+                Buy Now
               </button>
-            </Link>
+            ) : (
+              <Link href={service.link}>
+                <button
+                  type="button"
+                  className="bg-brand-gold text-brand-green px-5 py-2 rounded-full shadow hover:bg-brand-blue hover:text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  aria-label={service.cta}
+                >
+                  {service.cta}
+                </button>
+              </Link>
+            )}
           </div>
         ))}
       </section>
