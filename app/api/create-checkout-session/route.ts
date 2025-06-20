@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/en/cancel`,
     });
     console.log("Session created! URL:", session.url);
 
