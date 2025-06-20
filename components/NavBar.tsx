@@ -1,96 +1,40 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { Menu, X } from "lucide-react";
 
-type NavLink = {
-  href: string;
-  labelEn: string;
-  labelEs: string;
-  hrefEs?: string;
-};
-
-const navGroups: NavLink[] = [
-  { href: "", labelEn: "Home", labelEs: "Inicio" },
-  { href: "/about", labelEn: "About", labelEs: "Sobre Mí", hrefEs: "/sobre-mi" },
-  { href: "/services", labelEn: "Services", labelEs: "Servicios", hrefEs: "/servicios" },
-  { href: "/tools", labelEn: "Tools", labelEs: "Herramientas", hrefEs: "/herramientas" },
-  { href: "/resources", labelEn: "Resources", labelEs: "Recursos", hrefEs: "/recursos" },
-  { href: "/testimonials", labelEn: "Testimonials", labelEs: "Testimonios", hrefEs: "/testimonios" },
-  { href: "/contact", labelEn: "Contact", labelEs: "Contacto", hrefEs: "/contacto" },
+// Define navigation labels for both languages
+const NAV_LINKS = [
+  { en: "About", es: "Sobre mí", href: "/about" },
+  { en: "Services", es: "Servicios", href: "/services" },
+  { en: "Tools", es: "Herramientas", href: "/tools" },
+  { en: "Resources", es: "Recursos", href: "/resources" },
+  { en: "Testimonials", es: "Testimonios", href: "/testimonials" },
+  { en: "Contact", es: "Contacto", href: "/contact" },
 ];
 
-type NavBarProps = {
-  lang?: string;
-};
-
-export default function NavBar({ lang = "en" }: NavBarProps) {
+export default function NavBar({ lang = "en" }: { lang?: "en" | "es" }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const isSpanish = lang === "es";
+  const currentLangPrefix = isSpanish ? "/es" : "/en";
+  const otherLang = isSpanish ? "en" : "es";
+  const otherLangLabel = isSpanish ? "English" : "Español";
+  const otherLangPrefix = otherLang === "es" ? "/es" : "/en";
+  const currentPath = pathname?.replace(/^\/(en|es)/, "") || "";
 
-
-  // Improved route matching for active highlight (handles deeper nested routes)
-  const isActive = (href: string) => {
-    if (isSpanish && href === "") return pathname === "/es";
-    if (!isSpanish && href === "") return pathname === "/en";
-    const fullHref = isSpanish
-      ? `/es${href.startsWith("/") ? href : `/${href}`}`
-      : `/en${href.startsWith("/") ? href : `/${href}`}`;
-    return pathname === fullHref || pathname.startsWith(fullHref + "/");
-  };
-
-  const getHref = (item: NavLink) => {
-    if (isSpanish && item.hrefEs)
-      return `/es${item.hrefEs.startsWith("/") ? item.hrefEs : `/${item.hrefEs}`}`;
-    if (!isSpanish)
-      return item.href === ""
-        ? "/en"
-        : `/en${item.href.startsWith("/") ? item.href : `/${item.href}`}`;
-    return isSpanish ? `/es${item.href}` : `/en${item.href}`;
-  };
-
-  // Language Switcher with Highlight
-  const LanguageSwitcher = () => (
-    <div className="flex items-center gap-1 ml-3">
-      <Link
-        href="/en"
-        className={`px-4 py-2 rounded-xl border font-bold text-lg transition-all
-          ${!isSpanish
-            ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
-            : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-gold"}
-        `}
-        aria-current={!isSpanish ? "true" : undefined}
-      >
-        English
-      </Link>
-      <Link
-        href="/es"
-        className={`px-4 py-2 rounded-xl border font-bold text-lg transition-all
-          ${isSpanish
-            ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
-            : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-gold"}
-        `}
-        aria-current={isSpanish ? "true" : undefined}
-      >
-        Español
-      </Link>
-    </div>
-  );
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <nav className="bg-white/90 border-b border-brand-blue/20 shadow-xl fixed top-0 left-0 w-full z-50 backdrop-blur-lg">
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-        {/* Logo/Brand */}
-        <Link href={langPrefix}>
+    <header className="w-full bg-white/95 border-b border-brand-green/20 shadow-sm sticky top-0 z-40 backdrop-blur">
+      <nav className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4 relative">
+        {/* LOGO */}
+        <Link href={isSpanish ? "/es" : "/en"}>
           <span className="flex items-center cursor-pointer select-none">
-            <span
-              className="inline-flex items-center justify-center rounded-full border-2 border-brand-gold shadow-lg bg-white mr-3 transition-all duration-300 hover:scale-105"
-              style={{ width: 46, height: 46, overflow: "hidden" }}
-            >
+            <span className="inline-flex items-center justify-center rounded-full border-2 border-brand-gold shadow-lg bg-white mr-3 transition-all duration-300 hover:scale-105"
+              style={{ width: 46, height: 46, overflow: "hidden" }}>
               <Image
                 src="/logo.png"
                 alt="Fanny Samaniego Financial Coaching Logo"
@@ -112,87 +56,83 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <ul className="hidden md:flex space-x-2 font-semibold text-lg items-center ml-6">
-          {navGroups.map((item) => {
-            const active = isActive(item.href);
-            return (
-              <li key={item.labelEn} className="flex items-center">
-                <Link
-                  href={getHref(item)}
-                  className={`px-3 py-2 rounded-xl min-w-[110px] text-center transition-all duration-200 ${
-                    active
-                      ? "bg-brand-green/90 text-white shadow font-bold"
-                      : "text-brand-blue hover:bg-brand-gold/20 hover:text-brand-gold"
-                  }`}
-                  aria-current={active ? "page" : undefined}
-                >
-                  {isSpanish ? item.labelEs : item.labelEn}
-                </Link>
-              </li>
-            );
-          })}
-          <li>
-            <LanguageSwitcher />
-          </li>
+        {/* Desktop navigation */}
+        <ul className="hidden md:flex gap-2 ml-4">
+          {NAV_LINKS.map((link) => (
+            <li key={link.en}>
+              <Link
+                href={currentLangPrefix + link.href}
+                className={`px-3 py-2 rounded-full font-semibold text-base md:text-lg transition-colors ${
+                  pathname?.startsWith(currentLangPrefix + link.href) ||
+                  pathname === currentLangPrefix + link.href
+                    ? "bg-brand-green text-white"
+                    : "text-brand-green hover:bg-brand-gold/20"
+                }`}
+                onClick={closeMenu}
+              >
+                {link[lang]}
+              </Link>
+            </li>
+          ))}
         </ul>
 
-        {/* Mobile menu toggle */}
+        {/* Language toggle */}
+        <Link
+          href={`${otherLangPrefix}${currentPath}`}
+          className="hidden md:inline-flex ml-6 px-4 py-2 rounded-full bg-brand-gold text-brand-blue font-semibold hover:bg-brand-blue hover:text-brand-gold border border-brand-green/20 transition"
+          aria-label={`Switch to ${otherLangLabel}`}
+        >
+          {otherLangLabel}
+        </Link>
+
+        {/* Mobile menu button */}
         <button
-          className="md:hidden text-3xl text-brand-blue focus:outline-none hover:text-brand-gold transition rounded-full p-2"
-          style={{ minWidth: 48, minHeight: 48 }}
+          className="md:hidden p-2 rounded-lg border border-brand-green/30 bg-white text-brand-green"
           onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
-          {menuOpen ? <FaTimes /> : <FaBars />}
+          {menuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
-      </div>
 
-      {/* Mobile Menu: fade/slide in, with language highlight */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40"
-          onClick={() => setMenuOpen(false)}
-        >
-          <ul
-            className="absolute top-16 left-0 w-full bg-white shadow-2xl rounded-b-3xl flex flex-col items-center py-10 space-y-6 font-semibold text-xl z-50 transition-all duration-300 ease-in-out animate-fadeInDown"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              animation: "fadeInDown 0.35s cubic-bezier(0.4,0,0.2,1)"
-            }}
-          >
-            {navGroups.map((item) => (
-              <li key={item.labelEn} className="w-full">
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="md:hidden fixed inset-0 z-50 bg-black/30 flex flex-col">
+            <nav className="bg-white shadow-xl rounded-b-2xl p-6 pb-8 flex flex-col gap-4 w-full max-w-xs ml-auto h-full">
+              <button
+                className="mb-4 self-end p-2 rounded-full bg-brand-gold/30 text-brand-blue"
+                onClick={closeMenu}
+                aria-label="Cerrar menú"
+              >
+                <X size={30} />
+              </button>
+              {NAV_LINKS.map((link) => (
                 <Link
-                  href={getHref(item)}
-                  className="block px-7 py-3 rounded-xl text-brand-blue hover:text-brand-gold hover:bg-brand-gold/10 transition text-center min-w-[110px]"
-                  onClick={() => setMenuOpen(false)}
-                  aria-current={isActive(item.href) ? "page" : undefined}
+                  key={link.en}
+                  href={currentLangPrefix + link.href}
+                  className={`block w-full px-4 py-3 rounded-xl text-lg font-bold transition-colors ${
+                    pathname?.startsWith(currentLangPrefix + link.href) ||
+                    pathname === currentLangPrefix + link.href
+                      ? "bg-brand-green text-white"
+                      : "text-brand-green hover:bg-brand-gold/20"
+                  }`}
+                  onClick={closeMenu}
                 >
-                  {isSpanish ? item.labelEs : item.labelEn}
+                  {link[lang]}
                 </Link>
-              </li>
-            ))}
-            <li className="w-full pt-3">
-              <LanguageSwitcher />
-            </li>
-          </ul>
-        </div>
-      )}
-
-      {/* Custom animation for fade-in-down */}
-      <style jsx global>{`
-        @keyframes fadeInDown {
-          0% {
-            opacity: 0;
-            transform: translateY(-24px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-    </nav>
+              ))}
+              <Link
+                href={`${otherLangPrefix}${currentPath}`}
+                className="mt-8 block px-6 py-3 rounded-full bg-brand-gold text-brand-blue font-bold hover:bg-brand-blue hover:text-brand-gold border border-brand-green/20 transition text-center"
+                onClick={closeMenu}
+                aria-label={`Switch to ${otherLangLabel}`}
+              >
+                {otherLangLabel}
+              </Link>
+            </nav>
+            <div className="flex-1" onClick={closeMenu} />
+          </div>
+        )}
+      </nav>
+    </header>
   );
 }
