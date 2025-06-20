@@ -1,28 +1,31 @@
 "use client";
-import { useState } from "react";
-import { FaCalculator } from "react-icons/fa";
+import { useState, useRef } from "react";
+import { FaCalculator, FaPrint, FaQuestionCircle } from "react-icons/fa";
+import Image from "next/image";
 
 export default function CalculadoraPresupuesto() {
-  const [ingresos, setIngresos] = useState("");
-  const [gastos, setGastos] = useState([
+  const [income, setIncome] = useState("");
+  const [expenses, setExpenses] = useState([
     { name: "Vivienda", value: "" },
     { name: "Servicios", value: "" },
-    { name: "Alimentos", value: "" },
+    { name: "Supermercado", value: "" },
     { name: "Transporte", value: "" },
-    { name: "Seguros", value: "" },
+    { name: "Seguro", value: "" },
     { name: "Salud", value: "" },
-    { name: "Otro", value: "" },
+    { name: "Otros", value: "" },
   ]);
   const [showResults, setShowResults] = useState(false);
 
-  const totalGastos = gastos.reduce(
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const totalExpenses = expenses.reduce(
     (sum, exp) => sum + (parseFloat(exp.value) || 0),
     0
   );
-  const neto = (parseFloat(ingresos) || 0) - totalGastos;
+  const net = (parseFloat(income) || 0) - totalExpenses;
 
-  function handleGastoChange(i: number, val: string) {
-    setGastos((prev) =>
+  function handleExpenseChange(i: number, val: string) {
+    setExpenses((prev) =>
       prev.map((exp, idx) => (idx === i ? { ...exp, value: val } : exp))
     );
   }
@@ -33,152 +36,197 @@ export default function CalculadoraPresupuesto() {
   }
 
   function handleReset() {
-    setIngresos("");
-    setGastos(gastos.map((exp) => ({ ...exp, value: "" })));
+    setIncome("");
+    setExpenses(expenses.map((exp) => ({ ...exp, value: "" })));
     setShowResults(false);
   }
 
+  function handlePrint() {
+    window.print();
+  }
+
+  const today = new Date();
+  const printDate = today.toLocaleDateString("es-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <main className="bg-brand-beige min-h-screen py-16 px-2">
-      {/* Encabezado */}
-      <section className="max-w-2xl mx-auto text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="rounded-full bg-brand-green/10 border shadow-lg w-16 h-16 flex items-center justify-center">
-            <FaCalculator className="text-brand-gold text-3xl" />
-          </div>
-        </div>
-        <h1 className="font-serif text-4xl md:text-5xl text-brand-green font-bold mb-3">
-          Calculadora de Presupuesto Mensual
-        </h1>
-        <p className="text-lg text-brand-blue mb-2">
-          Una forma sencilla de visualizar tus ingresos, gastos y metas—de manera holística.
-        </p>
-        <p className="text-brand-body">
-          Ingresa tus números mensuales, revisa tu saldo y obtén claridad sobre tu gestión financiera.
-        </p>
-      </section>
-
-      {/* Cómo funciona */}
-      <section className="max-w-lg mx-auto bg-white rounded-2xl shadow border p-6 mb-8 text-brand-body">
-        <h2 className="text-xl font-serif font-bold text-brand-blue mb-2">¿Cómo funciona?</h2>
-        <ul className="list-disc ml-6 mb-2 text-base">
-          <li>Ingresa tus ingresos mensuales y cada gasto principal.</li>
-          <li>Haz clic en <b>Calcular</b> para ver tu saldo y desglose.</li>
-          <li>Usa el resultado para ajustar tus hábitos y planificar mejor.</li>
-        </ul>
-      </section>
-
-      {/* Formulario de la calculadora */}
+      {/* --- FORMULARIO DE PRESUPUESTO --- */}
       <form
-        className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl border p-8 mb-10"
         onSubmit={handleSubmit}
+        className="max-w-xl mx-auto bg-white/90 rounded-2xl p-8 shadow border border-brand-gold mb-8 print:hidden"
       >
-        <div className="mb-6">
-          <label className="block text-brand-green font-bold mb-1" htmlFor="ingresos">
+        <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4 text-brand-green flex items-center gap-2">
+          <FaCalculator className="text-brand-gold" /> Calculadora Holística de Presupuesto
+        </h1>
+        <div className="mb-4">
+          <label className="block font-bold text-brand-blue mb-1">
             Ingreso mensual (CAD)
           </label>
           <input
-            id="ingresos"
             type="number"
-            className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
-            value={ingresos}
-            onChange={(e) => setIngresos(e.target.value)}
-            min="0"
-            placeholder="ej. 4000"
+            value={income}
+            min={0}
+            onChange={(e) => setIncome(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue font-sans text-lg"
             required
           />
         </div>
-        <h3 className="font-bold text-brand-blue mb-3 text-lg">Gastos</h3>
-        {gastos.map((exp, i) => (
-          <div className="mb-3" key={exp.name}>
-            <label className="block text-brand-body mb-1">{exp.name}</label>
-            <input
-              type="number"
-              className="w-full px-4 py-2 rounded-lg border border-brand-green focus:outline-brand-gold text-lg"
-              value={exp.value}
-              onChange={(e) => handleGastoChange(i, e.target.value)}
-              min="0"
-              placeholder="0"
-              required
-            />
-          </div>
-        ))}
-        <div className="flex gap-4 justify-center mt-6">
+        <div>
+          <label className="block font-bold text-brand-blue mb-2">
+            Gastos mensuales
+          </label>
+          {expenses.map((exp, i) => (
+            <div key={exp.name} className="flex items-center mb-2">
+              <span className="w-36 font-medium text-brand-green">{exp.name}</span>
+              <input
+                type="number"
+                value={exp.value}
+                min={0}
+                onChange={(e) => handleExpenseChange(i, e.target.value)}
+                className="w-full px-3 py-1 rounded-lg border border-brand-green focus:border-brand-blue font-sans text-base"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-3 mt-6">
           <button
             type="submit"
-            className="px-7 py-2 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
+            className="flex-1 px-6 py-3 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
           >
             Calcular
           </button>
           <button
             type="button"
-            className="px-7 py-2 bg-brand-blue text-white font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
             onClick={handleReset}
+            className="flex-1 px-6 py-3 bg-brand-blue text-white font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
           >
             Limpiar
           </button>
         </div>
       </form>
 
-      {/* Resultados */}
+      {/* --- RESULTADOS --- */}
       {showResults && (
-        <section className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center">
-          <h2 className="text-2xl font-serif font-bold text-brand-green mb-2">Tus Resultados</h2>
+        <section
+          ref={resultsRef}
+          className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center print:bg-white print:border-none print:shadow-none"
+        >
+          {/* --- SOLO PARA IMPRESIÓN (LOGO, NOMBRE, FECHA) --- */}
+          <div className="hidden print:block mb-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Image
+                src="/fanny-logo.png"
+                alt="Logo de Fanny Samaniego"
+                width={120}
+                height={120}
+                style={{ margin: "0 auto" }}
+                className="mb-2"
+              />
+              <div className="font-serif font-bold text-brand-green text-2xl mb-1">
+                Fanny Samaniego
+              </div>
+              <div className="text-brand-blue text-lg font-serif">
+                Coach Financiera Holística &amp; Asesora
+              </div>
+              <div className="text-sm mt-2 text-brand-blue">
+                Preparado por Fanny Samaniego <br />
+                Fecha: {printDate}
+              </div>
+            </div>
+            <hr className="my-3 border-brand-gold" />
+          </div>
+
+          <h2 className="text-2xl font-serif font-bold text-brand-green mb-2 print:mt-0">
+            Tus Resultados
+          </h2>
           <p className="text-lg mb-2">
-            <span className="font-bold text-brand-blue">Total Ingresos:</span>{" "}
-            <span className="font-semibold">{parseFloat(ingresos).toLocaleString("es-CA", {style: "currency", currency: "CAD"})}</span>
+            <span className="font-bold text-brand-blue">Ingreso total:</span>{" "}
+            <span className="font-semibold">
+              {parseFloat(income).toLocaleString("es-CA", {
+                style: "currency",
+                currency: "CAD",
+              })}
+            </span>
           </p>
           <p className="text-lg mb-2">
-            <span className="font-bold text-brand-blue">Total Gastos:</span>{" "}
-            <span className="font-semibold">{totalGastos.toLocaleString("es-CA", {style: "currency", currency: "CAD"})}</span>
+            <span className="font-bold text-brand-blue">Gastos totales:</span>{" "}
+            <span className="font-semibold">
+              {totalExpenses.toLocaleString("es-CA", {
+                style: "currency",
+                currency: "CAD",
+              })}
+            </span>
           </p>
-          <p className={`text-xl font-bold mt-3 ${neto >= 0 ? "text-brand-green" : "text-red-600"}`}>
-            {neto >= 0
-              ? "Te sobra cada mes:"
-              : "Tus gastos superan tus ingresos en:"} <br />
-            {neto.toLocaleString("es-CA", {style: "currency", currency: "CAD"})}
+          <p
+            className={`text-xl font-bold mt-3 ${
+              net >= 0 ? "text-brand-green" : "text-red-600"
+            }`}
+          >
+            {net >= 0
+              ? "Te queda dinero disponible cada mes:"
+              : "Tus gastos superan tu ingreso por:"}{" "}
+            <br />
+            {net.toLocaleString("es-CA", {
+              style: "currency",
+              currency: "CAD",
+            })}
           </p>
+
+          {/* Botón de impresión - solo en pantalla */}
+          <button
+            onClick={handlePrint}
+            className="mt-6 px-6 py-2 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition flex items-center gap-2 print:hidden"
+            type="button"
+          >
+            <FaPrint className="inline" /> Imprimir resultados (PDF)
+          </button>
         </section>
       )}
 
-      {/* Sección educativa / FAQ expandida */}
-      <section className="max-w-3xl mx-auto mb-12">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center mb-8">
-          <h3 className="text-xl font-serif font-bold text-brand-green mb-2">
-            ¿Por qué presupuestar de manera holística?
+      {/* --- FAQ Y ORIENTACIÓN --- */}
+      <section className="max-w-xl mx-auto bg-white/90 rounded-2xl p-8 shadow border border-brand-gold mb-12 print:hidden">
+        <div className="flex items-center mb-4 gap-2">
+          <FaQuestionCircle className="text-brand-blue text-2xl" />
+          <h3 className="font-serif font-bold text-brand-green text-2xl">
+            Preguntas frecuentes y orientación
           </h3>
-          <p className="text-brand-body mb-4">
-            Cuando tu presupuesto refleja tus valores y tu vida real—no solo números—es mucho más fácil tomar decisiones financieras con confianza y conciencia. Usa esta calculadora para revisar, ajustar y celebrar tu progreso.
-          </p>
         </div>
-
-        <div className="bg-white rounded-2xl shadow p-8 border border-brand-green/20 mb-6 text-left">
-          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Qué cuentan como “ingresos” y “gastos”?</h4>
-          <p className="text-brand-body mb-3">
-            <strong>Ingresos</strong> incluyen tu salario, ingresos por negocio o emprendimiento, rentas, inversiones y cualquier apoyo que recibas (beneficios del gobierno, ayuda familiar, etc.) cada mes.
-            <br />
-            <strong>Gastos</strong> son todo lo que pagas de forma regular: vivienda, alimentos, seguros, deudas, suscripciones, transporte y hasta “gastos de diversión”.
-          </p>
-
-          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Qué hago si mis números cambian cada mes?</h4>
-          <p className="text-brand-body mb-3">
-            La vida no siempre es predecible—algunos meses hay sorpresas, gastos extras o ingresos distintos. No te preocupes por hacerlo “perfecto”. Solo coloca lo que sea típico, o tu mejor estimado para este mes. ¡Puedes recalcular el siguiente mes!
-          </p>
-
-          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Con qué frecuencia debería revisar mi presupuesto?</h4>
-          <p className="text-brand-body mb-3">
-            Lo ideal es una vez al mes—puedes ponerte un recordatorio el primer día, o después de cobrar tu sueldo. ¡Entre más lo hagas, más claridad y seguridad tendrás!
-          </p>
-
-          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Y si mis gastos son más altos que mis ingresos?</h4>
-          <p className="text-brand-body mb-3">
-            Es más común de lo que imaginas, sobre todo en tiempos de cambios. No te juzgues. Usa el resultado como una oportunidad para buscar ajustes suaves: ¿puedes bajar un recibo, pedir apoyo, o hacer un pequeño cambio? Si quieres conversar, aquí estoy para apoyarte.
-          </p>
-
-          <h4 className="font-serif text-lg text-brand-blue font-bold mb-2">¿Alguien ve o guarda mis datos?</h4>
-          <p className="text-brand-body">
-            No—esta calculadora es privada. Tus números solo se quedan en tu dispositivo y nunca se envían ni se almacenan.
-          </p>
+        <ul className="list-disc pl-6 text-brand-body space-y-3 text-base">
+          <li>
+            <b>¿Qué cuenta como “ingreso”?</b> <br />
+            Incluye tu salario neto después de impuestos, más cualquier ingreso regular de rentas, trabajo independiente, gobierno o actividades extra.
+          </li>
+          <li>
+            <b>¿Cómo clasifico mis gastos?</b> <br />
+            Usa las categorías proporcionadas, pero puedes añadir más en “Otros” (por ejemplo: hijos, mascotas, ahorro, donaciones).
+          </li>
+          <li>
+            <b>¿Con qué frecuencia debo hacer un presupuesto?</b> <br />
+            Al menos una vez al mes—o cada vez que cambie tu situación. ¡Revisarlo regularmente te da claridad y confianza!
+          </li>
+          <li>
+            <b>¿Se guarda mi información?</b> <br />
+            No—todo queda en tu dispositivo, nada se almacena ni se comparte. Esta calculadora es 100% privada y segura.
+          </li>
+          <li>
+            <b>¿Qué hago si mis gastos son más altos que mis ingresos?</b> <br />
+            No te preocupes. Esto es solo un punto de partida para tomar conciencia y hacer cambios positivos. Considera ajustar gastos no esenciales o contáctame para apoyo.
+          </li>
+        </ul>
+        <div className="mt-6 text-center">
+          <span className="font-sans text-brand-green text-base">
+            ¿Quieres asesoría personalizada?{" "}
+            <a
+              href="/es/contacto"
+              className="text-brand-blue font-bold underline hover:text-brand-gold"
+            >
+              Contacta a Fanny
+            </a>
+          </span>
         </div>
       </section>
     </main>

@@ -22,15 +22,17 @@ export default function ResourcesClient({ articles, categories }: Props) {
   }, [articles, selected, search]);
 
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
-      <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
+      <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold mb-16">
         {/* Header */}
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-6 text-center tracking-tight flex items-center justify-center gap-2">
-          <span aria-hidden="true">📚</span>
-          Empower Yourself with Holistic Financial Wisdom
-        </h1>
-        <div className="flex justify-center mb-8">
-          <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-4 tracking-tight flex items-center justify-center gap-2">
+            
+            Empower Yourself with Holistic Financial Wisdom
+          </h1>
+          <div className="flex justify-center mb-8">
+            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+          </div>
         </div>
 
         {/* Download CTA */}

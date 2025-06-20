@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ article: stri
   const contentHtml = processedContent.toString();
 
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
       <section className="max-w-3xl mx-auto bg-white/95 rounded-3xl shadow-xl p-10 border border-brand-gold">
         <h1 className="text-4xl font-serif font-bold text-brand-green mb-4">{article.title}</h1>
         <div className="mb-8 text-sm text-gray-500">{article.date}</div>

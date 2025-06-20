@@ -24,4 +24,25 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+@media print {
+  nav,
+  footer,
+  .print\:hidden,
+  .print\:hidden * {
+    display: none !important;
+  }
+  .print\:block {
+    display: block !important;
+  }
+  body {
+    background: #fff !important;
+    color: #171717 !important;
+  }
+  main, section, article, .max-w-xl, .max-w-5xl, .rounded-2xl, .rounded-3xl, .shadow, .shadow-xl {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
 }

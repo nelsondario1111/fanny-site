@@ -23,11 +23,14 @@ export const metadata = {
 
 export default function Contacto() {
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
       <section className="max-w-3xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-8 text-center tracking-tight">
           Conectemos y Transforma tu Vida Financiera
         </h1>
+         <div className="flex justify-center mb-8">
+            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+          </div>
         <p className="mb-10 text-brand-green text-center text-lg">
           Me encantaría escucharte. Agenda una sesión de descubrimiento gratis, envía tus preguntas o comunícate directamente por WhatsApp.
         </p>

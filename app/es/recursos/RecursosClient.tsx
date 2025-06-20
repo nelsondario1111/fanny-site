@@ -22,42 +22,44 @@ export default function RecursosClient({ articles, categories }: Props) {
   }, [articles, selected, search]);
 
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
-      <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
-        {/* Header */}
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-6 text-center tracking-tight flex items-center justify-center gap-2">
-          <span aria-hidden="true">📚</span>
-          Empodérate con Sabiduría Financiera Holística
-        </h1>
-        <div className="flex justify-center mb-8">
-          <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
+      <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold mb-16">
+        {/* Encabezado */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-4 tracking-tight flex items-center justify-center gap-2">
+            
+            Empodérate con Sabiduría Financiera Holística
+          </h1>
+          <div className="flex justify-center mb-8">
+            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+          </div>
         </div>
 
-        {/* Download CTA */}
+        {/* Descarga CTA */}
         <section className="mb-12">
           <div className="bg-brand-beige/80 p-8 rounded-2xl flex flex-col md:flex-row items-center md:justify-between shadow-lg border border-brand-gold/30">
             <div>
               <h2 className="text-2xl font-serif font-semibold mb-2 text-brand-blue">
-                Descarga tu Planificador de Presupuesto Holístico Gratis
+                Descarga tu Planificador de Presupuesto Holístico
               </h2>
               <p className="mb-4 text-brand-green">
-                Una guía PDF práctica para ayudarte a alinear tu dinero con tus valores.
+                Una guía práctica en PDF para alinear tu dinero con tus valores.
               </p>
               <a
-                href="/budget-planner.pdf"
+                href="/Planificador-Holístico-Presupuesto.pdf"
                 download
                 className="inline-block px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label="Descargar PDF Planificador de Presupuesto"
+                aria-label="Descargar Planificador de Presupuesto PDF"
               >
-                Descargar Ahora
+                Descargar ahora
               </a>
             </div>
           </div>
         </section>
 
-        {/* Search + Categories */}
+        {/* Búsqueda + Categorías */}
         <section className="mb-8 flex flex-col md:flex-row items-center md:justify-between gap-6">
-          {/* Categories */}
+          {/* Categorías */}
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
@@ -87,7 +89,7 @@ export default function RecursosClient({ articles, categories }: Props) {
               </button>
             ))}
           </div>
-          {/* Search Box */}
+          {/* Buscador */}
           <input
             className="mt-2 md:mt-0 px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue w-full md:w-72 font-sans text-base"
             type="text"
@@ -98,7 +100,7 @@ export default function RecursosClient({ articles, categories }: Props) {
           />
         </section>
 
-        {/* Article Grid */}
+        {/* Grid de Artículos */}
         <section className="mb-10">
           <div className="grid md:grid-cols-3 gap-6">
             {filteredArticles.length === 0 && (
@@ -128,15 +130,15 @@ export default function RecursosClient({ articles, categories }: Props) {
           </div>
         </section>
 
-        {/* Explore All */}
+        {/* Explorar todos */}
         <div className="text-center mt-12">
           <Link href="#">
             <button
               type="button"
               className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
-              aria-label="Explorar Todos los Recursos"
+              aria-label="Explorar todos los recursos"
             >
-              Explorar Todos los Recursos
+              Explorar todos los recursos
             </button>
           </Link>
         </div>

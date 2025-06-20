@@ -34,6 +34,16 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
   const langPrefix = isSpanish ? "/es" : "/en";
   const altLangPrefix = isSpanish ? "/en" : "/es";
 
+  // Improved route matching for active highlight (handles deeper nested routes)
+  const isActive = (href: string) => {
+    if (isSpanish && href === "") return pathname === "/es";
+    if (!isSpanish && href === "") return pathname === "/en";
+    const fullHref = isSpanish
+      ? `/es${href.startsWith("/") ? href : `/${href}`}`
+      : `/en${href.startsWith("/") ? href : `/${href}`}`;
+    return pathname === fullHref || pathname.startsWith(fullHref + "/");
+  };
+
   const getHref = (item: NavLink) => {
     if (isSpanish && item.hrefEs)
       return `/es${item.hrefEs.startsWith("/") ? item.hrefEs : `/${item.hrefEs}`}`;
@@ -43,6 +53,34 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
         : `/en${item.href.startsWith("/") ? item.href : `/${item.href}`}`;
     return isSpanish ? `/es${item.href}` : `/en${item.href}`;
   };
+
+  // Language Switcher with Highlight
+  const LanguageSwitcher = () => (
+    <div className="flex items-center gap-1 ml-3">
+      <Link
+        href="/en"
+        className={`px-4 py-2 rounded-xl border font-bold text-lg transition-all
+          ${!isSpanish
+            ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
+            : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-gold"}
+        `}
+        aria-current={!isSpanish ? "true" : undefined}
+      >
+        English
+      </Link>
+      <Link
+        href="/es"
+        className={`px-4 py-2 rounded-xl border font-bold text-lg transition-all
+          ${isSpanish
+            ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
+            : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-gold"}
+        `}
+        aria-current={isSpanish ? "true" : undefined}
+      >
+        Español
+      </Link>
+    </div>
+  );
 
   return (
     <nav className="bg-white/90 border-b border-brand-blue/20 shadow-xl fixed top-0 left-0 w-full z-50 backdrop-blur-lg">
@@ -56,7 +94,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
             >
               <Image
                 src="/logo.png"
-                alt="Logo"
+                alt="Fanny Samaniego Financial Coaching Logo"
                 width={40}
                 height={40}
                 style={{
@@ -77,33 +115,33 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex space-x-2 font-semibold text-lg items-center ml-6">
-          {navGroups.map((item) => (
-            <li key={item.labelEn} className="flex items-center">
-              <Link
-                href={getHref(item)}
-                className={`px-3 py-2 rounded-xl min-w-[110px] text-center transition-all duration-200 ${
-                  pathname === getHref(item)
-                    ? "bg-brand-green/90 text-white shadow font-bold"
-                    : "text-brand-blue hover:bg-brand-gold/20 hover:text-brand-gold"
-                }`}
-              >
-                {isSpanish ? item.labelEs : item.labelEn}
-              </Link>
-            </li>
-          ))}
+          {navGroups.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <li key={item.labelEn} className="flex items-center">
+                <Link
+                  href={getHref(item)}
+                  className={`px-3 py-2 rounded-xl min-w-[110px] text-center transition-all duration-200 ${
+                    active
+                      ? "bg-brand-green/90 text-white shadow font-bold"
+                      : "text-brand-blue hover:bg-brand-gold/20 hover:text-brand-gold"
+                  }`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {isSpanish ? item.labelEs : item.labelEn}
+                </Link>
+              </li>
+            );
+          })}
           <li>
-            <Link
-              href={altLangPrefix}
-              className="ml-3 px-4 py-2 border border-brand-blue text-brand-blue rounded-xl font-bold hover:bg-brand-blue hover:text-brand-gold transition-all"
-            >
-              {isSpanish ? "English" : "Español"}
-            </Link>
+            <LanguageSwitcher />
           </li>
         </ul>
 
         {/* Mobile menu toggle */}
         <button
-          className="md:hidden text-3xl text-brand-blue focus:outline-none hover:text-brand-gold transition"
+          className="md:hidden text-3xl text-brand-blue focus:outline-none hover:text-brand-gold transition rounded-full p-2"
+          style={{ minWidth: 48, minHeight: 48 }}
           onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
         >
@@ -111,12 +149,18 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
         </button>
       </div>
 
-      {/* Mobile Menu: only main links, always centered */}
+      {/* Mobile Menu: fade/slide in, with language highlight */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setMenuOpen(false)}>
+        <div
+          className="fixed inset-0 bg-black/40 z-40"
+          onClick={() => setMenuOpen(false)}
+        >
           <ul
-            className="absolute top-16 left-0 w-full bg-white shadow-2xl rounded-b-3xl flex flex-col items-center py-10 space-y-6 font-semibold text-xl z-50 transition-all"
+            className="absolute top-16 left-0 w-full bg-white shadow-2xl rounded-b-3xl flex flex-col items-center py-10 space-y-6 font-semibold text-xl z-50 transition-all duration-300 ease-in-out animate-fadeInDown"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              animation: "fadeInDown 0.35s cubic-bezier(0.4,0,0.2,1)"
+            }}
           >
             {navGroups.map((item) => (
               <li key={item.labelEn} className="w-full">
@@ -124,24 +168,32 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
                   href={getHref(item)}
                   className="block px-7 py-3 rounded-xl text-brand-blue hover:text-brand-gold hover:bg-brand-gold/10 transition text-center min-w-[110px]"
                   onClick={() => setMenuOpen(false)}
+                  aria-current={isActive(item.href) ? "page" : undefined}
                 >
                   {isSpanish ? item.labelEs : item.labelEn}
                 </Link>
               </li>
             ))}
-            {/* Language toggle */}
             <li className="w-full pt-3">
-              <Link
-                href={altLangPrefix}
-                className="block text-center px-7 py-3 rounded-xl border border-brand-blue text-brand-blue font-bold hover:bg-brand-blue hover:text-brand-gold transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                {isSpanish ? "English" : "Español"}
-              </Link>
+              <LanguageSwitcher />
             </li>
           </ul>
         </div>
       )}
+
+      {/* Custom animation for fade-in-down */}
+      <style jsx global>{`
+        @keyframes fadeInDown {
+          0% {
+            opacity: 0;
+            transform: translateY(-24px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </nav>
   );
 }

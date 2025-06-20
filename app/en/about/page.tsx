@@ -1,45 +1,16 @@
-// --- SEO METADATA (Next.js 13/14 App Router) --- //
-export const metadata = {
-  title: "About Fanny Samaniego | Holistic Financial Coach & Mortgage Agent",
-  description:
-    "Meet Fanny Samaniego, your holistic financial coach and mortgage agent in Toronto. Discover her heart-centered, invitation-based approach to financial clarity and abundance—offered in English and Spanish.",
-  openGraph: {
-    title: "About Fanny Samaniego | Holistic Financial Coach & Mortgage Agent",
-    description:
-      "Discover Fanny’s holistic, heart-centered approach to financial guidance and mortgages. Invitation-based, bilingual, and rooted in deep care.",
-    url: "https://fannysamaniego.com/en/about",
-    siteName: "Fanny Samaniego Coaching",
-    type: "profile",
-    images: [
-      {
-        url: "https://fannysamaniego.com/og-fanny-coaching.png", // Update if you have a better image
-        width: 1200,
-        height: 630,
-        alt: "About Fanny Samaniego, holistic financial coach",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "About Fanny Samaniego | Holistic Financial Coach",
-    description: "Holistic, bilingual financial guidance by invitation in Toronto.",
-    images: ["https://fannysamaniego.com/og-fanny-coaching.png"],
-  },
-};
-
 import Image from "next/image";
 import Link from "next/link";
 
 export default function About() {
   return (
-    <main className="bg-brand-beige min-h-screen py-20">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
       {/* Hero/About Section */}
       <section className="max-w-5xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 flex flex-col md:flex-row items-center gap-10 mb-20 border border-brand-gold">
         {/* Portrait */}
         <div className="flex-shrink-0 flex justify-center">
           <Image
             src="/fanny-portrait.jpg"
-            alt="Portrait of Fanny Samaniego, holistic financial coach and mortgage agent"
+            alt="Portrait of Fanny Samaniego, Holistic Financial Advisor and Coach in Toronto"
             width={260}
             height={340}
             className="rounded-3xl shadow-lg object-cover border-4 border-brand-gold"
@@ -49,17 +20,20 @@ export default function About() {
         {/* Bio */}
         <div className="flex-1 md:pl-8">
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6 text-brand-green tracking-tight flex items-center gap-3">
-            <span aria-hidden="true">🌿</span>
-            Meet Fanny: Financial Guidance by Invitation
+            
+            About Fanny: Holistic Financial Guidance by Invitation
           </h1>
+           <div className="flex justify-center mb-8">
+          <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+        </div>
           <p className="mb-4 text-lg md:text-xl text-brand-blue/90 leading-relaxed">
-            My journey—from tax auditor to holistic financial coach—has taught me that true prosperity isn’t just about numbers. It’s about clarity, compassion, and aligning each step with your values and what matters most in your life.
+            My journey—from tax auditor to holistic financial advisor and coach—has taught me that prosperity is about more than numbers. It’s about clarity, compassion, and aligning every step with your deepest values and your vision for life.
           </p>
           <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
-            As a bilingual Financial Coach and Mortgage Agent, I support individuals and families in finding not only financial clarity, but also a sense of calm and empowerment in their decisions. My work is rooted in deep listening and practical, personalized strategies—whether in English or Spanish.
+            As a bilingual Financial Advisor, Holistic Coach, and Mortgage Agent, I help individuals and families discover financial clarity, inner calm, and empowerment in their decisions. My approach is rooted in deep listening, tailored strategies, and respect for your unique story—offered in both English and Spanish.
           </p>
           <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
-            I’ve learned that the best results come from genuine connection and mutual fit. That’s why I work with a small number of clients at a time, and only when there’s a real sense of resonance between us. If you feel drawn to my approach, I warmly invite you to reach out.
+            The best results come from authentic connection and mutual fit. That’s why I work with a small number of clients at a time, and only when there’s true resonance. If you feel drawn to my approach, I warmly invite you to reach out and start a conversation.
           </p>
         </div>
       </section>
@@ -89,12 +63,11 @@ export default function About() {
           Why “Guidance by Invitation”?
         </h3>
         <p className="font-sans text-lg text-brand-body">
-          Over years of guiding others, I’ve found that the most meaningful work happens when both client and guide feel a natural connection. I focus on serving those who feel truly ready for holistic support. That’s why I invite you to start with a conversation—no obligation, just openness and clarity—to see if we’re a great fit.
+          Over years of guiding others, I’ve found the most meaningful work happens when both client and guide feel a natural connection. I focus on serving those truly ready for holistic support. That’s why I invite you to start with a conversation—no obligation, just openness—to see if we’re a great fit.
         </p>
-        {/* Optional subtle Human Design nod */}
         <p className="text-brand-body text-base mt-3 opacity-70">
           <em>
-            (If you’re curious: My “invitation” approach is inspired by tools like Human Design, but my priority is always genuine human connection.)
+            (Curious? My “invitation” philosophy is inspired by Human Design, but always rooted in genuine human connection.)
           </em>
         </p>
       </section>

@@ -8,6 +8,7 @@ export default function Home() {
       <section
         className="relative min-h-[65vh] flex items-center justify-center overflow-hidden
         bg-[url('/nature.jpg')] bg-cover bg-center bg-no-repeat bg-fixed"
+        aria-label="Hero background with nature theme"
       >
         <div className="z-10 relative bg-white/80 backdrop-blur-lg p-12 rounded-3xl shadow-2xl text-center max-w-2xl mx-auto border border-brand-gold">
           <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 drop-shadow-md">
@@ -17,7 +18,7 @@ export default function Home() {
             When you’re ready for holistic, heart-centered financial guidance, I’m here to walk alongside you—offering support that honors your unique journey.
           </p>
           <Link href="/en/contact" legacyBehavior>
-            <a>
+            <a aria-label="Request an Invitation to work with Fanny Samaniego, Financial Advisor in Toronto">
               <button className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none">
                 <span className="mr-2" aria-hidden="true">🤝</span>Request an Invitation
               </button>
@@ -27,11 +28,11 @@ export default function Home() {
       </section>
 
       {/* About Brief */}
-      <section className="py-24 bg-white flex flex-col md:flex-row items-center max-w-6xl mx-auto gap-12">
+      <section className="py-24 bg-white flex flex-col md:flex-row items-center max-w-6xl mx-auto gap-12" aria-label="About Fanny Samaniego">
         <div className="md:w-1/2 flex justify-center">
           <Image
             src="/fanny.jpg"
-            alt="Fanny Samaniego"
+            alt="Portrait of Fanny Samaniego, Toronto Financial Advisor and Mortgage Agent"
             width={340}
             height={340}
             className="rounded-full shadow-xl object-cover border-4 border-brand-green"
@@ -43,12 +44,12 @@ export default function Home() {
             Invited Wisdom, Shared with Heart
           </h2>
           <p className="font-sans text-lg md:text-xl text-brand-body mb-8 leading-relaxed">
-            I’m Fanny Samaniego—a bilingual Financial Guide, Mortgage Agent, and lifelong student of life’s cycles. My deepest work happens in true partnership with those who are ready for change—not just in their finances, but in their entire approach to abundance.
+            I’m Fanny Samaniego—a bilingual <b>Financial Advisor, Holistic Financial Coach, and licensed Mortgage Agent</b> based in Toronto. My deepest work happens in true partnership with those who are ready for change—not just in their finances, but in their entire approach to abundance.
             <br /><br />
             Over the years, I’ve learned that real prosperity is about aligning your numbers with your heart, your values, and your vision for the future. I work with a limited number of clients at a time, so each receives focused, present guidance and genuine support.
           </p>
           <Link href="/en/about" legacyBehavior>
-            <a>
+            <a aria-label="Discover Fanny Samaniego's Journey as a Financial Advisor">
               <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-green hover:text-brand-blue border-2 border-brand-gold transition-all">
                 Discover My Journey
               </button>
@@ -58,7 +59,7 @@ export default function Home() {
       </section>
 
       {/* Why I Work by Invitation */}
-      <section className="py-10 bg-brand-beige max-w-3xl mx-auto text-center rounded-2xl shadow-sm border border-brand-green my-8">
+      <section className="py-10 bg-brand-beige max-w-3xl mx-auto text-center rounded-2xl shadow-sm border border-brand-green my-8" aria-label="Why I Work by Invitation">
         <h3 className="font-serif text-2xl text-brand-green font-bold mb-3">
           Why I Work by Invitation
         </h3>
@@ -71,7 +72,7 @@ export default function Home() {
       </section>
 
       {/* Core Services */}
-      <section className="py-24 bg-gradient-to-b from-brand-beige to-white">
+      <section className="py-24 bg-gradient-to-b from-brand-beige to-white" aria-label="Core Services as Financial Advisor and Mortgage Agent">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold">
           Ways I Can Guide You
         </h2>
@@ -112,7 +113,7 @@ export default function Home() {
         </div>
         <div className="mt-16 text-center">
           <Link href="/en/services" legacyBehavior>
-            <a>
+            <a aria-label="Explore Financial and Mortgage Services">
               <button className="px-10 py-4 bg-brand-gold text-brand-green rounded-full font-semibold shadow-lg hover:bg-brand-green hover:text-white border-2 border-brand-blue transition-all duration-200">
                 Ways to Invite Me In
               </button>
@@ -122,7 +123,7 @@ export default function Home() {
       </section>
 
       {/* Kitchen Table */}
-      <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center">
+      <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center" aria-label="Kitchen Table Conversations with Financial Advisor">
         <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">
           Kitchen Table Conversations
         </h3>
@@ -130,7 +131,7 @@ export default function Home() {
           Join a small group session—just like gathering around a kitchen table—where we share stories, answer questions, and support each other’s journeys. If you’d like to be invited to a future circle, reach out below.
         </p>
         <Link href="/en/contact" legacyBehavior>
-          <a>
+          <a aria-label="Request to Join a Circle with Fanny Samaniego, Financial Advisor">
             <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
               Request to Join a Circle
             </button>
@@ -139,7 +140,7 @@ export default function Home() {
       </section>
 
       {/* Tools */}
-      <section className="py-20 bg-white max-w-6xl mx-auto">
+      <section className="py-20 bg-white max-w-6xl mx-auto" aria-label="Financial Tools and Calculators">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold">
           Tools to Nourish Your Financial Journey
         </h2>
@@ -152,7 +153,7 @@ export default function Home() {
               Create a budget that feels nourishing, not restrictive—aligned with your values and unique life.
             </p>
             <Link href="/en/budget-calculator" legacyBehavior>
-              <a>
+              <a aria-label="Try Holistic Budget Calculator">
                 <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
                   Try the Budget Tool
                 </button>
@@ -167,7 +168,7 @@ export default function Home() {
               Estimate your payments and explore holistic strategies for your property journey—whether buying, refinancing, or investing.
             </p>
             <Link href="/en/mortgage-calculator" legacyBehavior>
-              <a>
+              <a aria-label="Explore Mortgage Tools and Calculators">
                 <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
                   Explore Mortgage Tools
                 </button>
@@ -178,7 +179,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-brand-beige">
+      <section className="py-24 bg-brand-beige" aria-label="Client Testimonials for Financial Advisor">
         <div className="max-w-2xl mx-auto text-center">
           <blockquote className="font-serif italic text-2xl text-brand-blue mb-8 border-l-4 border-brand-gold pl-6">
             “Being invited to work with Fanny brought me so much more than numbers—it brought me a sense of peace, security, and trust in my path. She listens, guides, and sees what you need, even before you do.”
@@ -187,7 +188,7 @@ export default function Home() {
             – Maria & Carlos, Toronto
           </div>
           <Link href="/en/testimonials" legacyBehavior>
-            <a>
+            <a aria-label="Read Client Testimonials for Financial Advisor Fanny Samaniego">
               <button className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow-md hover:bg-brand-gold hover:text-brand-green border-2 border-brand-gold transition-all duration-200">
                 Stories of Invitation & Guidance
               </button>

@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
+import { FaHome, FaPrint, FaQuestionCircle } from "react-icons/fa";
+import Image from "next/image";
 
 // Mortgage calculation helper
 function calcMortgage(principal: number, rate: number, years: number): number {
@@ -47,10 +48,21 @@ export default function MortgageCalculator() {
     setShowResults(false);
   }
 
+  function handlePrint() {
+    window.print();
+  }
+
+  const today = new Date();
+  const printDate = today.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <main className="bg-brand-beige min-h-screen py-16 px-2">
-      {/* Header */}
-      <section className="max-w-2xl mx-auto text-center mb-8">
+      {/* HEADER */}
+      <section className="max-w-xl mx-auto text-center mb-10">
         <div className="flex justify-center mb-4">
           <div className="rounded-full bg-brand-blue/10 border shadow-lg w-16 h-16 flex items-center justify-center">
             <FaHome className="text-brand-blue text-3xl" />
@@ -59,39 +71,33 @@ export default function MortgageCalculator() {
         <h1 className="font-serif text-4xl md:text-5xl text-brand-blue font-bold mb-3">
           Mortgage Calculator
         </h1>
+         <div className="flex justify-center mb-8">
+            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+          </div>
         <p className="text-lg text-brand-green mb-2">
           Instantly estimate your monthly payments—even for multi-unit properties.
         </p>
-        <p className="text-brand-body">
+        <p className="text-brand-body mb-3">
           Adjust the values below to see your payment, interest, and more for any scenario—single family or “missing middle.”
         </p>
       </section>
 
-      {/* How it Works */}
-      <section className="max-w-lg mx-auto bg-white rounded-2xl shadow border p-6 mb-8 text-brand-body">
-        <h2 className="text-xl font-serif font-bold text-brand-blue mb-2">How it works:</h2>
-        <ul className="list-disc ml-6 mb-2 text-base">
-          <li>Enter your property price, down payment, interest rate, and amortization period.</li>
-          <li>
-            <span className="font-bold">Want to analyze a multi-unit property?</span> Toggle on “Multi-Unit Property” and enter the number of units and estimated monthly rent per unit.
-          </li>
-          <li>Click <b>Calculate</b> for your payment and detailed results.</li>
-        </ul>
-      </section>
-
-      {/* Calculator Form */}
+      {/* CALCULATOR CARD */}
       <form
-        className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl border p-8 mb-10"
+        className="max-w-xl mx-auto bg-white/90 rounded-2xl p-8 shadow border border-brand-gold mb-8 print:hidden"
         onSubmit={handleSubmit}
       >
-        <div className="mb-6">
+        <h2 className="text-xl font-serif font-bold text-brand-blue mb-6">
+          Mortgage Details
+        </h2>
+        <div className="mb-4">
           <label className="block text-brand-blue font-bold mb-1" htmlFor="price">
             Property Price (CAD)
           </label>
           <input
             id="price"
             type="number"
-            className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
+            className="w-full px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue text-lg"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             min="0"
@@ -99,14 +105,14 @@ export default function MortgageCalculator() {
             required
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-brand-blue font-bold mb-1" htmlFor="down">
             Down Payment (CAD)
           </label>
           <input
             id="down"
             type="number"
-            className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
+            className="w-full px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue text-lg"
             value={down}
             onChange={(e) => setDown(e.target.value)}
             min="0"
@@ -114,7 +120,7 @@ export default function MortgageCalculator() {
             required
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-brand-blue font-bold mb-1" htmlFor="rate">
             Interest Rate (Annual %)
           </label>
@@ -122,7 +128,7 @@ export default function MortgageCalculator() {
             id="rate"
             type="number"
             step="0.01"
-            className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
+            className="w-full px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue text-lg"
             value={rate}
             onChange={(e) => setRate(e.target.value)}
             min="0"
@@ -131,14 +137,14 @@ export default function MortgageCalculator() {
             required
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-brand-blue font-bold mb-1" htmlFor="years">
             Amortization Period (years)
           </label>
           <input
             id="years"
             type="number"
-            className="w-full px-4 py-2 rounded-lg border-2 border-brand-gold focus:outline-brand-green text-lg"
+            className="w-full px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue text-lg"
             value={years}
             onChange={(e) => setYears(Number(e.target.value))}
             min="5"
@@ -147,9 +153,7 @@ export default function MortgageCalculator() {
             required
           />
         </div>
-
-        {/* Multi-unit toggle */}
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-4 flex items-center gap-3">
           <input
             type="checkbox"
             id="multi"
@@ -161,7 +165,6 @@ export default function MortgageCalculator() {
             Multi-Unit Property
           </label>
         </div>
-
         {multi && (
           <div className="bg-brand-blue/5 border-l-4 border-brand-blue p-4 rounded-xl mb-6">
             <div className="mb-4">
@@ -196,28 +199,53 @@ export default function MortgageCalculator() {
             </div>
           </div>
         )}
-
-        <div className="flex gap-4 justify-center mt-6">
+        <div className="flex gap-3 mt-6">
           <button
             type="submit"
-            className="px-7 py-2 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
+            className="flex-1 px-6 py-3 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
           >
             Calculate
           </button>
           <button
             type="button"
-            className="px-7 py-2 bg-brand-blue text-white font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
             onClick={handleReset}
+            className="flex-1 px-6 py-3 bg-brand-blue text-white font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
           >
             Reset
           </button>
         </div>
       </form>
 
-      {/* Results */}
+      {/* RESULTS */}
       {showResults && (
-        <section className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center">
-          <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2">Your Results</h2>
+        <section className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center print:bg-white print:border-none print:shadow-none">
+          {/* Print-Only Logo, Name, Date */}
+          <div className="hidden print:block mb-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Image
+                src="/fanny-logo.png"
+                alt="Fanny Samaniego Logo"
+                width={120}
+                height={120}
+                style={{ margin: "0 auto" }}
+                className="mb-2"
+              />
+              <div className="font-serif font-bold text-brand-green text-2xl mb-1">
+                Fanny Samaniego
+              </div>
+              <div className="text-brand-blue text-lg font-serif">
+                Holistic Financial Coach &amp; Advisor
+              </div>
+              <div className="text-sm mt-2 text-brand-blue">
+                Prepared by Fanny Samaniego <br />
+                Date: {printDate}
+              </div>
+            </div>
+            <hr className="my-3 border-brand-gold" />
+          </div>
+          <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2 print:mt-0">
+            Your Results
+          </h2>
           <p className="text-lg mb-2">
             <span className="font-bold text-brand-blue">Loan Amount:</span>{" "}
             <span className="font-semibold">
@@ -271,70 +299,52 @@ export default function MortgageCalculator() {
               {totalInterest.toLocaleString("en-CA", { style: "currency", currency: "CAD" })}
             </span>
           </p>
+          {/* Print Button */}
+          <button
+            onClick={handlePrint}
+            className="mt-6 px-6 py-2 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition flex items-center gap-2 print:hidden"
+            type="button"
+          >
+            <FaPrint className="inline" /> Print Results (PDF)
+          </button>
         </section>
       )}
 
-      {/* Key Considerations Callout */}
-      <section className="max-w-3xl mx-auto mb-8">
-        <div className="rounded-2xl border-l-4 border-brand-blue bg-white p-6 shadow flex items-center gap-4">
-          <FaClipboardList className="text-brand-blue text-3xl" />
-          <div>
-            <h3 className="text-lg font-bold text-brand-blue mb-1">
-              Key Considerations for Multi-Unit Buyers
-            </h3>
-            <ul className="text-brand-body list-disc ml-6 text-base">
-              <li>Most Canadian lenders require 20%+ down for 4+ units.</li>
-              <li>They’ll factor in rental income (but usually not 100% of it).</li>
-              <li>Have a plan for vacancies, repairs, and property taxes.</li>
-              <li>Your personal income and credit still matter.</li>
-              <li>Professional management can help your peace of mind!</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Investor Tips Section */}
-      <section className="max-w-3xl mx-auto mb-10">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow">
-          <div className="flex items-center mb-3">
-            <FaLightbulb className="text-brand-gold text-2xl mr-2" />
-            <h3 className="text-xl font-serif font-bold text-brand-green">
-              Investor Tips for Multi-Unit Success
-            </h3>
-          </div>
-          <ul className="text-brand-body list-disc ml-6 text-base">
-            <li><span className="font-bold">Always use conservative rent estimates</span>—leave margin for vacancies and maintenance.</li>
-            <li><span className="font-bold">Stress-test your payment</span>: What if rates rise? Is your cash flow still positive?</li>
-            <li><span className="font-bold">Track all your expenses</span>, not just mortgage—utilities, insurance, management, repairs.</li>
-            <li>Speak to a mortgage professional familiar with multi-unit and “missing middle” financing before you commit.</li>
-            <li><span className="font-bold">Connect with experienced landlords</span>—communities like LandlordBC or Facebook groups offer real-world advice.</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* Next Steps / CTA */}
-      <section className="max-w-3xl mx-auto mb-12 text-center">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-white p-8 shadow">
-          <h3 className="text-xl font-serif font-bold text-brand-blue mb-2">
-            Ready for next steps?
+      {/* FAQ & Guidance - same look as budget calculator */}
+      <section className="max-w-xl mx-auto bg-white/90 rounded-2xl p-8 shadow border border-brand-gold mb-12 print:hidden">
+        <div className="flex items-center mb-4 gap-2">
+          <FaQuestionCircle className="text-brand-blue text-2xl" />
+          <h3 className="font-serif font-bold text-brand-green text-2xl">
+            Mortgage FAQs & Guidance
           </h3>
-          <p className="text-brand-body mb-4">
-            Book a free discovery call for tailored mortgage strategies, or ask for our free Multi-Unit Mortgage Checklist!
-          </p>
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <Link href="/en/contact">
-              <button className="px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg">
-                Book Discovery Call
-              </button>
-            </Link>
-            <a
-              href="mailto:info@fannysamaniego.com?subject=Multi-Unit%20Mortgage%20Checklist%20Request"
-              className="px-8 py-3 bg-brand-blue text-white font-serif font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition-all text-lg"
-            >
-              Request Free Checklist
-            </a>
-          </div>
         </div>
+        <ul className="list-disc pl-6 text-brand-body space-y-3 text-base">
+          <li>
+            <b>How is my mortgage payment calculated?</b><br />
+            It’s based on your loan amount, interest rate, and amortization period. We use a standard Canadian mortgage formula.
+          </li>
+          <li>
+            <b>What is a “multi-unit” property?</b><br />
+            Typically a building with 2+ rental units (like duplex, fourplex, or apartment). Financing rules differ for 4+ units!
+          </li>
+          <li>
+            <b>Does rent cover all my mortgage?</b><br />
+            Most lenders only count 50–80% of rental income toward your application. Plan for vacancies and repairs.
+          </li>
+          <li>
+            <b>What about property taxes, insurance, and fees?</b><br />
+            This tool is for mortgage payment only—remember to budget for ALL housing costs.
+          </li>
+          <li>
+            <b>Want custom advice?</b><br />
+            <a
+              href="/en/contact"
+              className="text-brand-blue font-bold underline hover:text-brand-gold"
+            >
+              Contact Fanny
+            </a> for a tailored assessment!
+          </li>
+        </ul>
       </section>
     </main>
   );
