@@ -11,8 +11,7 @@ type FooterProps = {
 
 export default function Footer({ lang = "en" }: FooterProps) {
   const isSpanish = lang === "es";
-  const langPrefix = isSpanish ? "/es" : "/en";
-  const altLangPrefix = isSpanish ? "/en" : "/es";
+  
 
   // Newsletter form state
   const [firstName, setFirstName] = useState("");

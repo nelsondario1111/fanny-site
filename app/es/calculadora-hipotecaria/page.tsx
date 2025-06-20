@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { FaHome, FaLightbulb, FaClipboardList } from "react-icons/fa";
+import { FaHome, FaLightbulb, FaClipboardList, FaPrint } from "react-icons/fa";
+import Image from "next/image";
 
 // Calculadora de hipoteca
 function calcMortgage(principal: number, rate: number, years: number): number {
@@ -48,8 +49,19 @@ export default function CalculadoraHipotecaria() {
     setShowResults(false);
   }
 
+  function handlePrint() {
+    window.print();
+  }
+
+  const today = new Date();
+  const printDate = today.toLocaleDateString("es-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
-    <main className="bg-brand-beige min-h-screen py-16 px-2">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
       {/* Encabezado */}
       <section className="max-w-2xl mx-auto text-center mb-8">
         <div className="flex justify-center mb-4">
@@ -60,6 +72,9 @@ export default function CalculadoraHipotecaria() {
         <h1 className="font-serif text-4xl md:text-5xl text-brand-blue font-bold mb-3">
           Calculadora Hipotecaria
         </h1>
+        <div className="flex justify-center mb-8">
+          <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+        </div>
         <p className="text-lg text-brand-green mb-2">
           Calcula al instante tus pagos mensuales—¡incluso para propiedades de múltiples unidades!
         </p>
@@ -69,7 +84,7 @@ export default function CalculadoraHipotecaria() {
       </section>
 
       {/* ¿Cómo funciona? */}
-      <section className="max-w-lg mx-auto bg-white rounded-2xl shadow border p-6 mb-8 text-brand-body">
+      <section className="max-w-lg mx-auto bg-white/90 rounded-2xl shadow border border-brand-gold p-6 mb-8 text-brand-body">
         <h2 className="text-xl font-serif font-bold text-brand-blue mb-2">¿Cómo funciona?</h2>
         <ul className="list-disc ml-6 mb-2 text-base">
           <li>Ingresa el precio de la propiedad, enganche, tasa de interés y plazo de amortización.</li>
@@ -82,7 +97,7 @@ export default function CalculadoraHipotecaria() {
 
       {/* Formulario */}
       <form
-        className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl border p-8 mb-10"
+        className="max-w-xl mx-auto bg-white/90 rounded-2xl shadow-xl border border-brand-gold p-8 mb-10 print:hidden"
         onSubmit={handleSubmit}
       >
         <div className="mb-6">
@@ -217,8 +232,34 @@ export default function CalculadoraHipotecaria() {
 
       {/* Resultados */}
       {showResults && (
-        <section className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center">
-          <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2">Tus Resultados</h2>
+        <section className="max-w-xl mx-auto bg-brand-blue/5 rounded-2xl border-2 border-brand-blue p-8 shadow mb-10 text-center print:bg-white print:border-none print:shadow-none">
+          {/* Print logo/date */}
+          <div className="hidden print:block mb-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Image
+                src="/fanny-logo.png"
+                alt="Fanny Samaniego Logo"
+                width={120}
+                height={120}
+                style={{ margin: "0 auto" }}
+                className="mb-2"
+              />
+              <div className="font-serif font-bold text-brand-green text-2xl mb-1">
+                Fanny Samaniego
+              </div>
+              <div className="text-brand-blue text-lg font-serif">
+                Coach Financiera Holística
+              </div>
+              <div className="text-sm mt-2 text-brand-blue">
+                Preparado por Fanny Samaniego <br />
+                Fecha: {printDate}
+              </div>
+            </div>
+            <hr className="my-3 border-brand-gold" />
+          </div>
+          <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2 print:mt-0">
+            Tus Resultados
+          </h2>
           <p className="text-lg mb-2">
             <span className="font-bold text-brand-blue">Monto del préstamo:</span>{" "}
             <span className="font-semibold">
@@ -267,12 +308,19 @@ export default function CalculadoraHipotecaria() {
               {totalInteres.toLocaleString("es-CA", { style: "currency", currency: "CAD" })}
             </span>
           </p>
+          <button
+            onClick={handlePrint}
+            className="mt-6 px-6 py-2 bg-brand-gold text-brand-green font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition flex items-center gap-2 print:hidden"
+            type="button"
+          >
+            <FaPrint className="inline" /> Imprimir Resultados (PDF)
+          </button>
         </section>
       )}
 
       {/* Consideraciones clave */}
       <section className="max-w-3xl mx-auto mb-8">
-        <div className="rounded-2xl border-l-4 border-brand-blue bg-white p-6 shadow flex items-center gap-4">
+        <div className="rounded-2xl border-l-4 border-brand-blue bg-white/90 p-6 shadow flex items-center gap-4 border border-brand-gold">
           <FaClipboardList className="text-brand-blue text-3xl" />
           <div>
             <h3 className="text-lg font-bold text-brand-blue mb-1">
@@ -310,7 +358,7 @@ export default function CalculadoraHipotecaria() {
 
       {/* Siguientes pasos / CTA */}
       <section className="max-w-3xl mx-auto mb-12 text-center">
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-white p-8 shadow">
+        <div className="rounded-2xl border-l-4 border-brand-gold bg-white/90 p-8 shadow border border-brand-gold">
           <h3 className="text-xl font-serif font-bold text-brand-blue mb-2">
             ¿Listo para dar el siguiente paso?
           </h3>

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { FaHome, FaPrint, FaQuestionCircle } from "react-icons/fa";
 import Image from "next/image";
 
@@ -60,7 +59,7 @@ export default function MortgageCalculator() {
   });
 
   return (
-    <main className="bg-brand-beige min-h-screen py-16 px-2">
+    <main className="bg-brand-beige min-h-screen py-12 px-2">
       {/* HEADER */}
       <section className="max-w-xl mx-auto text-center mb-10">
         <div className="flex justify-center mb-4">

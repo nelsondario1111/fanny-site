@@ -31,8 +31,7 @@ export default function NavBar({ lang = "en" }: NavBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const isSpanish = lang === "es";
-  const langPrefix = isSpanish ? "/es" : "/en";
-  const altLangPrefix = isSpanish ? "/en" : "/es";
+
 
   // Improved route matching for active highlight (handles deeper nested routes)
   const isActive = (href: string) => {
