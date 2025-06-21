@@ -67,7 +67,7 @@ export default function HomeEs() {
       {/* Por qué trabajo por invitación */}
       <section className="py-10 bg-brand-beige max-w-3xl mx-auto text-center rounded-2xl shadow-sm border border-brand-green my-8" aria-label="Por qué trabajo por invitación">
         <h3 className="font-serif text-2xl text-brand-green font-bold mb-3 flex items-center justify-center gap-2">
-          <span aria-hidden="true">🌿</span>
+          
           ¿Por Qué Trabajo por Invitación?
         </h3>
         <p className="font-sans text-lg text-brand-body mb-2">
@@ -81,7 +81,7 @@ export default function HomeEs() {
       {/* Servicios */}
       <section className="py-24 bg-gradient-to-b from-brand-beige to-white" aria-label="Servicios y soluciones financieras en Toronto">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold flex items-center justify-center gap-2">
-          <span aria-hidden="true">🪴</span>
+         
           Formas en que Puedo Acompañarte
         </h2>
         <div className="flex flex-col md:flex-row gap-10 justify-center max-w-6xl mx-auto">
@@ -139,7 +139,7 @@ export default function HomeEs() {
       {/* Círculos de Conversación */}
       <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center" aria-label="Círculos de conversación financiera">
         <h3 className="font-serif text-2xl text-brand-green font-bold mb-2 flex items-center justify-center gap-2">
-          <span aria-hidden="true">☕</span>
+         
           Círculos de Conversación
         </h3>
         <p className="font-sans text-lg text-brand-body mb-4">
@@ -160,7 +160,7 @@ export default function HomeEs() {
       {/* Herramientas */}
       <section className="py-20 bg-white max-w-6xl mx-auto" aria-label="Herramientas y calculadoras financieras">
         <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold flex items-center justify-center gap-2">
-          <span aria-hidden="true">🛠️</span>
+          
           Herramientas para Nutrir tu Camino Financiero
         </h2>
         <div className="flex flex-col md:flex-row gap-10">

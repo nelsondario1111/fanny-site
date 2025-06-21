@@ -146,6 +146,9 @@ export default function Services() {
             
             Formas de Trabajar Juntos
           </h1>
+          <div className="flex justify-center mb-8">
+          <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
+        </div>
           <p className="text-lg text-brand-blue mb-3">
             Acompañamiento cálido, holístico y práctico para tu bienestar financiero—transparente y siempre por invitación.
           </p>

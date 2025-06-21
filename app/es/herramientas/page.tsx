@@ -15,7 +15,7 @@ export default function Tools() {
         {/* Título y Línea Dorada */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-brand-green tracking-tight flex items-center gap-3 justify-center">
-            <span aria-hidden="true">🛠️</span>
+           
             Herramientas para tu Bienestar Financiero
           </h1>
           <div className="flex justify-center mb-8">
@@ -80,7 +80,7 @@ export default function Tools() {
         <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center">
           <FaBook className="inline-block text-brand-green text-2xl mb-2" />
           <h3 className="text-xl font-serif font-bold text-brand-green mb-2 flex items-center gap-2 justify-center">
-            <span aria-hidden="true">📚</span>
+            
             ¿Buscas más recursos?
           </h3>
           <p className="text-brand-body mb-4">
