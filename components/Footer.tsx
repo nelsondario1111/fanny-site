@@ -1,245 +1,201 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Mail, Phone, Instagram, Linkedin, Facebook } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Phone, MessageCircle, Calendar, ArrowRight } from "lucide-react";
+import LangSwitcher from "@/components/layout/LangSwitcher";
 
-type FooterProps = {
-  lang?: string;
-};
+type L = "en" | "es";
 
-export default function Footer({ lang = "en" }: FooterProps) {
-  const isSpanish = lang === "es";
-  
+function useLang(pathname: string): L {
+  return pathname.startsWith("/es") ? "es" : "en";
+}
 
-  // Newsletter form state
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [subscribing, setSubscribing] = useState(false);
-  const [subscribeError, setSubscribeError] = useState<string | null>(null);
+export default function Footer({ lang: forcedLang }: { lang?: L }) {
+  const pathname = usePathname() || "/en";
+  const lang = forcedLang ?? useLang(pathname);
+  const t = (en: string, es: string) => (lang === "en" ? en : es);
+  const base = `/${lang}`;
 
-  const socials = [
-    { icon: <Instagram size={22} />, href: "https://www.instagram.com/", label: "Instagram" },
-    { icon: <Linkedin size={22} />, href: "https://www.linkedin.com/", label: "LinkedIn" },
-    { icon: <Facebook size={22} />, href: "https://www.facebook.com/", label: "Facebook" },
-    { icon: <Mail size={22} />, href: "mailto:info@fannysamaniego.com", label: isSpanish ? "Correo" : "Email" },
-    { icon: <Phone size={22} />, href: "tel:4167268420", label: isSpanish ? "Teléfono" : "Phone" },
+  // CTA path -> Contact
+  const ctaHref = `${base}/${t("contact", "contacto")}?intent=consult`;
+
+  // Primary top-level links
+  const linksPrimary = [
+    { href: `${base}/${t("services", "servicios")}`, label: t("Services", "Servicios") },
+    { href: `${base}/${t("resources", "recursos")}`, label: t("Resources", "Recursos") },
+    { href: `${base}/${t("tools", "herramientas")}`, label: t("Tools", "Herramientas") },
+    { href: `${base}/${t("about", "sobre-mi")}`, label: t("About", "Sobre mí") },
+    { href: `${base}/${t("testimonials", "testimonios")}`, label: t("Testimonials", "Testimonios") },
+    { href: `${base}/${t("contact", "contacto")}`, label: t("Contact", "Contacto") },
   ];
 
-  // Footer navigation
-  const footerNav = [
-    { en: "About", es: "Sobre Mí", href: isSpanish ? "/es/sobre-mi" : "/en/about" },
-    { en: "Services", es: "Servicios", href: isSpanish ? "/es/servicios" : "/en/services" },
-    { en: "Tools", es: "Herramientas", href: isSpanish ? "/es/herramientas" : "/en/tools" },
-    { en: "Resources", es: "Recursos", href: isSpanish ? "/es/recursos" : "/en/resources" },
-    { en: "Testimonials", es: "Testimonios", href: isSpanish ? "/es/testimonios" : "/en/testimonials" },
-    { en: "Contact", es: "Contacto", href: isSpanish ? "/es/contacto" : "/en/contact" },
+  // Services quick links (now includes Signature & Workshops)
+  const serviceLinks =
+    lang === "en"
+      ? [
+          { href: "/en/services#signature", label: "Signature Packages" },
+          { href: "/en/services#foundations", label: "Wealth Foundations" },
+          { href: "/en/services#mortgage", label: "Mortgage & Property Strategy" },
+          { href: "/en/services#business", label: "Business & Professionals" },
+          { href: "/en/services#legacy", label: "Legacy & Tax Strategy" },
+          { href: "/en/services#family", label: "Holistic Conversations (Family & Groups)" },
+          { href: "/en/services#workshops", label: "Workshops" },
+          { href: "/en/services#advice", label: "1:1 Advisory" },
+          { href: "/en/services#newcomers", label: "Newcomers" },
+        ]
+      : [
+          { href: "/es/servicios#signature", label: "Paquetes Firma" },
+          { href: "/es/servicios#fundamentos", label: "Fundamentos de Riqueza" },
+          { href: "/es/servicios#hipoteca", label: "Hipoteca & Propiedades" },
+          { href: "/es/servicios#negocios", label: "Negocios & Profesionales" },
+          { href: "/es/servicios#legado", label: "Legado & Impuestos" },
+          { href: "/es/servicios#familia", label: "Conversaciones Holísticas" },
+          { href: "/es/servicios#talleres", label: "Talleres" },
+          { href: "/es/servicios#asesoria", label: "Asesoría 1:1" },
+          { href: "/es/servicios#recien", label: "Recién Llegados" },
+        ];
+
+  const linksLegal = [
+    { href: `${base}/${t("privacy", "privacidad")}`, label: t("Privacy", "Privacidad") },
+    // { href: `${base}/${t("terms", "terminos")}`, label: t("Terms", "Términos") },
   ];
 
   return (
-    <footer className="bg-brand-green text-brand-beige pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 mt-12 font-sans">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 border-b border-brand-gold/30 pb-12">
-        {/* Branding */}
-        <div className="flex flex-col items-center md:items-start">
-          <div className="flex items-center mb-3">
-            <Image
-              src="/fanny-logo-footer.png"
-              alt="Fanny Samaniego Logo"
-              className="rounded-full mr-3 border-2 border-brand-gold bg-white object-cover"
-              width={48}
-              height={48}
-            />
-            <span className="font-serif text-2xl font-bold text-brand-gold tracking-tight">
-              Fanny Samaniego
-            </span>
-          </div>
-          <div className="text-brand-beige/90 mb-2 text-center md:text-left">
-            {isSpanish
-              ? "Coaching financiero holístico & agente hipotecaria en Toronto"
-              : "Holistic Financial Coach & Mortgage Agent in Toronto"}
-          </div>
-          <div className="text-brand-gold text-xs text-center md:text-left">
-            © 2025 Fanny Samaniego Coaching
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex flex-col items-center md:items-start gap-2 border-t border-b md:border-t-0 md:border-b-0 md:border-l md:border-r border-brand-gold/20 md:px-8 py-6 md:py-0">
-          <div className="font-serif text-lg font-semibold text-brand-gold mb-1">
-            {isSpanish ? "Navegación" : "Navigation"}
-          </div>
-          {footerNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="hover:text-brand-gold transition min-w-[110px] text-center"
+    <footer className="border-t bg-white">
+      {/* Top band: CTA + quick contact */}
+      <div className="bg-brand-green text-white">
+        <div className="max-w-content mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm">
+            {t(
+              "Ready to talk through your plan? Book a free discovery call.",
+              "¿Lista/o para revisar tu plan? Reserva una llamada de descubrimiento."
+            )}
+          </p>
+          <div className="flex items-center gap-3">
+            <a
+              className="inline-flex items-center gap-1 hover:underline"
+              href="tel:14167268420"
+              aria-label={t("Call (416) 726-8420", "Llamar al (416) 726-8420")}
             >
-              {isSpanish ? item.es : item.en}
+              <Phone size={14} /> (416) 726-8420
+            </a>
+            <a
+              className="inline-flex items-center gap-1 hover:underline"
+              href="https://wa.me/14167268420"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle size={14} /> WhatsApp
+            </a>
+            <Link
+              href={ctaHref}
+              className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-green px-3 py-1.5 text-xs font-semibold hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+            >
+              <Calendar size={14} /> {t("Book now", "Reservar")}
             </Link>
-          ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main footer */}
+      <div className="max-w-content mx-auto px-4 py-12 grid gap-10 lg:grid-cols-4">
+        {/* Brand / mission */}
+        <div>
+          <p className="font-serif text-lg font-bold text-brand-green">Fanny Samaniego</p>
+          <p className="text-sm text-brand-body mt-2">
+            {t(
+              "Human-centered financial coaching & mortgage guidance in Toronto. Clear numbers, calm decisions.",
+              "Coaching financiero con enfoque humano e hipotecas en Toronto. Números claros, decisiones en calma."
+            )}
+          </p>
+          <div className="mt-4">
+            <LangSwitcher />
+          </div>
         </div>
 
-        {/* Socials & Compliance */}
-        <div className="flex flex-col gap-3 items-center md:items-end">
-          <div className="flex gap-4 mb-3">
-            {socials.map(({ icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="hover:text-brand-gold transition p-1.5 rounded-full"
-              >
-                {icon}
-              </a>
+        {/* Explore */}
+        <nav className="grid grid-cols-2 gap-6 text-sm lg:col-span-2">
+          <ul className="space-y-2">
+            <li className="font-medium text-brand-green">{t("Explore", "Explora")}</li>
+            {linksPrimary.map((l) => (
+              <li key={l.href}>
+                <Link className="underline underline-offset-4 hover:text-brand-green" href={l.href}>
+                  {l.label}
+                </Link>
+              </li>
             ))}
-          </div>
-          <div className="text-xs text-brand-beige/80 text-right">
-            {isSpanish
-              ? "Licencia Hipotecaria #M22000490 · Zolo Realty"
-              : "Mortgage License #M22000490 · Zolo Realty"}
-          </div>
+            <li className="pt-3">
+              {linksLegal.map((l) => (
+                <Link key={l.href} className="mr-4 text-xs underline underline-offset-4" href={l.href}>
+                  {l.label}
+                </Link>
+              ))}
+            </li>
+          </ul>
+
+          <ul className="space-y-2">
+            <li className="font-medium text-brand-green">{t("Key Services", "Servicios Clave")}</li>
+            {serviceLinks.map((l) => (
+              <li key={l.href} className="flex items-start gap-1.5">
+                <ArrowRight size={14} className="mt-0.5 text-brand-gold" />
+                <Link className="underline underline-offset-4 hover:text-brand-green" href={l.href}>
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li className="pt-2">
+              <Link
+                href={`${base}/${t("services", "servicios")}`}
+                className="text-xs text-brand-blue hover:text-brand-green underline"
+              >
+                {t("See all services →", "Ver todos los servicios →")}
+              </Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Newsletter */}
+        <div>
+          <p className="font-medium text-brand-green">{t("Newsletter", "Boletín")}</p>
+          <p className="text-sm text-brand-body mt-1">
+            {t("Simple, practical insights—no spam.", "Ideas prácticas y simples—sin spam.")}
+          </p>
+          <form action="/api/subscribe" method="post" className="mt-3 flex gap-2" aria-label={t("Subscribe form", "Formulario de suscripción")}>
+            {/* Honeypot */}
+            <input type="text" name="hp" className="hidden" tabIndex={-1} autoComplete="off" />
+            <label className="sr-only" htmlFor="newsletter-email">
+              {t("Your email", "Tu correo")}
+            </label>
+            <input
+              id="newsletter-email"
+              name="email"
+              type="email"
+              required
+              placeholder={t("Your email", "Tu correo")}
+              className="border rounded-xl px-3 py-2 flex-1"
+            />
+            <button className="rounded-xl px-4 py-2 border shadow bg-white hover:bg-gray-50" type="submit">
+              {t("Join", "Unirme")}
+            </button>
+          </form>
         </div>
       </div>
 
-      {/* Newsletter */}
-      <div className="max-w-6xl mx-auto mt-12 flex flex-col items-center">
-        <div className="font-serif text-xl text-brand-gold mb-4">
-          {isSpanish ? "Boletín de Novedades" : "Newsletter"}
-        </div>
-        <form
-          className={`w-full max-w-lg flex flex-col sm:flex-row flex-wrap items-center gap-4 bg-brand-beige/90 rounded-2xl px-6 py-4 shadow-lg border border-brand-gold/30 ${
-            subscribed ? "opacity-50 pointer-events-none" : "opacity-100"
-          }`}
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setSubscribing(true);
-            setSubscribeError(null);
-            // API expects: { firstName, lastName, email }
-            const res = await fetch("/api/subscribe", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ firstName, lastName, email }),
-            });
-            setSubscribing(false);
-            if (res.ok) {
-              setSubscribed(true);
-              setFirstName("");
-              setLastName("");
-              setEmail("");
-              setTimeout(() => setSubscribed(false), 5000);
-            } else {
-              const data = await res.json();
-              setSubscribeError(
-                data.error ||
-                  (isSpanish
-                    ? "Hubo un error al suscribirte. Intenta de nuevo."
-                    : "There was an error subscribing. Please try again.")
-              );
-            }
-          }}
-          aria-label={isSpanish ? "Formulario de suscripción al boletín" : "Newsletter signup form"}
-        >
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="flex-1 min-w-[140px] p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
-            placeholder={isSpanish ? "Nombre" : "First name"}
-            disabled={subscribed || subscribing}
-            required
-            autoComplete="given-name"
-          />
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="flex-1 min-w-[140px] p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
-            placeholder={isSpanish ? "Apellido" : "Last name"}
-            disabled={subscribed || subscribing}
-            required
-            autoComplete="family-name"
-          />
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 min-w-[180px] p-3 rounded-xl border border-brand-green/30 bg-white text-brand-green placeholder:text-brand-green/70 focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition"
-            placeholder={isSpanish ? "Ingresa tu correo..." : "Enter your email..."}
-            disabled={subscribed || subscribing}
-            autoComplete="email"
-          />
-          <button
-            type="submit"
-            className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition text-lg min-w-[120px]"
-            disabled={subscribed || subscribing}
-            aria-busy={subscribing ? "true" : undefined}
-          >
-            {subscribing
-              ? isSpanish
-                ? "Enviando..."
-                : "Sending..."
-              : isSpanish
-                ? "Suscribirme"
-                : "Subscribe"}
-          </button>
-        </form>
-        <div className="text-xs text-brand-beige mt-2 text-center">
-          {isSpanish
-            ? "Recibe recursos y consejos de bienestar financiero. Sin spam."
-            : "Get holistic financial tips & resources. No spam ever."}
-        </div>
-
-        {/* Feedback messages, aria-live for accessibility */}
-        <div aria-live="polite">
-          {subscribed && (
-            <div className="mt-4 animate-fade-in">
-              <div className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg text-center text-lg border border-brand-green/20 transition-all duration-500">
-                {isSpanish
-                  ? "¡Gracias por suscribirte! 🎉"
-                  : "Thank you for subscribing! 🎉"}
-              </div>
-            </div>
+      {/* Compliance & legal line */}
+      <div className="text-[11px] leading-relaxed text-gray-600 px-4 max-w-content mx-auto pb-3">
+        <p>
+          {t(
+            "Licensed Mortgage Agent (Level 2). Coaching and advice-only services are independent from lender compensation and do not replace legal, tax, or accounting advice. Human Design is optional, used only to personalize communication and cadence.",
+            "Agente Hipotecaria con licencia (Nivel 2). El coaching y la asesoría independiente no sustituyen la asesoría legal, fiscal o contable. Human Design es opcional y solo se usa para personalizar comunicación y ritmo."
           )}
-          {subscribeError && (
-            <div className="mt-4">
-              <div className="px-6 py-3 bg-red-100 text-red-700 font-serif font-bold rounded-full shadow text-center text-lg border border-red-200">
-                {subscribeError}
-              </div>
-            </div>
-          )}
-        </div>
+        </p>
       </div>
 
-      {/* Language Switcher with Highlight */}
-      <div className="mt-10 text-center flex items-center justify-center gap-2">
-        <Link
-          href="/en"
-          className={`inline-block px-5 py-2 rounded-full border font-bold text-lg transition
-            ${!isSpanish
-              ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
-              : "border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-white"}
-          `}
-          aria-current={!isSpanish ? "true" : undefined}
-        >
-          English
-        </Link>
-        <Link
-          href="/es"
-          className={`inline-block px-5 py-2 rounded-full border font-bold text-lg transition
-            ${isSpanish
-              ? "bg-brand-blue text-white border-brand-blue shadow-md pointer-events-none"
-              : "border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-white"}
-          `}
-          aria-current={isSpanish ? "true" : undefined}
-        >
-          Español
-        </Link>
+      {/* Bottom line */}
+      <div className="text-xs text-gray-500 text-center py-4 border-t">
+        © {new Date().getFullYear()} Fanny Samaniego • {t("All rights reserved.", "Todos los derechos reservados.")}
       </div>
     </footer>
   );

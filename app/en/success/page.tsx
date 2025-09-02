@@ -1,18 +1,20 @@
-export default function SuccessPage() {
+export default function SuccessPageEs() {
   return (
     <main className="bg-brand-beige min-h-screen flex items-center justify-center">
       <div className="bg-white/90 p-10 rounded-3xl shadow-xl border border-brand-gold max-w-xl text-center">
-        <h1 className="text-3xl font-serif text-brand-green font-bold mb-4">Thank You for Your Payment!</h1>
+        <h1 className="text-3xl font-serif text-brand-green font-bold mb-4">
+          ¡Gracias por tu pago!
+        </h1>
         <p className="text-brand-body mb-6">
-          Your payment was successful. A confirmation and receipt will be sent to your email. 
+          Tu pago se realizó con éxito. Recibirás una confirmación y tu recibo por correo electrónico.
           <br />
-          We look forward to supporting your financial wellness journey!
+          ¡Esperamos acompañarte en tu camino hacia el bienestar financiero!
         </p>
         <a
-          href="/en"
+          href="/es"
           className="inline-block px-6 py-3 bg-brand-gold text-brand-green rounded-full font-semibold shadow hover:bg-brand-blue hover:text-white transition"
         >
-          Return Home
+          Volver al inicio
         </a>
       </div>
     </main>

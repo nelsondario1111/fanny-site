@@ -1,201 +1,591 @@
-import Link from "next/link";
+// app/en/page.tsx
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
 
-export default function Home() {
+/* ---------------------- Motion helpers ---------------------- */
+const easing: number[] = [0.22, 1, 0.36, 1];
+
+function useAnims() {
+  const prefersReduced = useReducedMotion();
+
+  const fade = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+    },
+  };
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+    },
+  };
+
+  const stagger = {
+    hidden: {},
+    visible: {
+      transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.05 },
+    },
+  };
+
+  return { fade, fadeUp, stagger };
+}
+
+/* ---------------- Panel primitives (aligned with Services/Tools) ---------------- */
+function Panel({
+  children,
+  className = "",
+  as: Tag = "section" as const,
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: any;
+}) {
   return (
-    <main className="bg-brand-beige min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative min-h-[65vh] flex items-center justify-center overflow-hidden
-        bg-[url('/nature.jpg')] bg-cover bg-center bg-no-repeat bg-fixed"
-        aria-label="Hero background with nature theme"
+    <Tag
+      className={[
+        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
+        "bg-white/95 rounded-[28px] border border-brand-gold/70 shadow-xl",
+        "backdrop-blur-[1px]",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+function MotionPanel({
+  children,
+  className = "",
+  viewportAmount = 0.18,
+}: {
+  children: ReactNode;
+  className?: string;
+  viewportAmount?: number;
+}) {
+  const { fadeUp } = useAnims();
+  return (
+    <motion.section
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: viewportAmount }}
+      className={className}
+    >
+      <Panel>{children}</Panel>
+    </motion.section>
+  );
+}
+
+/* Section title with brand divider */
+function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
+  const { fade, fadeUp } = useAnims();
+  return (
+    <motion.div
+      variants={fade}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      className="text-center mb-8"
+    >
+      {kicker && (
+        <motion.div variants={fade} className="text-brand-blue/80 text-base md:text-lg mb-2">
+          {kicker}
+        </motion.div>
+      )}
+      <motion.h2
+        variants={fadeUp}
+        className="font-serif text-3xl md:text-4xl text-brand-green font-bold tracking-tight"
       >
-        <div className="z-10 relative bg-white/80 backdrop-blur-lg p-12 rounded-3xl shadow-2xl text-center max-w-2xl mx-auto border border-brand-gold">
-          <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 drop-shadow-md">
+        {title}
+      </motion.h2>
+      <motion.div variants={fade} className="flex justify-center mt-3" aria-hidden="true">
+        <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------- Page ------------------------------- */
+export default function Home() {
+  const { fade, fadeUp, stagger } = useAnims();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Fanny Samaniego",
+    "url": "https://www.fannysamaniego.com/",
+    "logo": "https://www.fannysamaniego.com/apple-touch-icon.png",
+    "founder": {
+      "@type": "Person",
+      "name": "Fanny Samaniego",
+      "jobTitle": "Financial Advisor & Mortgage Agent",
+      "worksFor": { "@type": "Organization", "name": "Fanny Samaniego" }
+    },
+    "makesOffer": [
+      { "@type": "Offer", "category": "Financial Coaching", "itemOffered": { "@type": "Service", "name": "Premium Financial Coaching & Planning" }},
+      { "@type": "Offer", "category": "Mortgage Services", "itemOffered": { "@type": "Service", "name": "Mortgage Readiness & Pre-Approval" }},
+      { "@type": "Offer", "category": "Tax Planning", "itemOffered": { "@type": "Service", "name": "Holistic Tax Rhythm & Strategy" }}
+    ]
+  };
+
+  return (
+    <main className="bg-brand-beige min-h-dvh">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* ======================= HERO ======================= */}
+      <header className="relative min-h-[62dvh] flex items-center justify-center overflow-hidden" aria-label="Hero">
+        <div className="absolute inset-0 -z-10">
+          <Image src="/nature.jpg" alt="" aria-hidden fill priority sizes="100vw" className="object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
+        </div>
+
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="z-10 relative bg-white/88 backdrop-blur-lg px-6 sm:px-10 py-10 rounded-3xl shadow-2xl text-center max-w-3xl mx-auto border border-brand-gold"
+        >
+          <motion.h1
+            variants={fadeUp}
+            className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight"
+          >
             Guidance by Invitation. Clarity by Design.
-          </h1>
-          <p className="font-sans text-2xl text-brand-blue mb-8">
-            When you’re ready for holistic, heart-centered financial guidance, I’m here to walk alongside you—offering support that honors your unique journey.
-          </p>
-          <Link href="/en/contact" legacyBehavior>
-            <a aria-label="Request an Invitation to work with Fanny Samaniego, Financial Advisor in Toronto">
-              <button className="px-10 py-4 rounded-full bg-gradient-to-r from-brand-green to-brand-blue text-white font-semibold text-lg shadow-xl hover:scale-105 hover:from-brand-gold hover:to-brand-green transition-all duration-200 border-none">
-                <span className="mr-2" aria-hidden="true">🤝</span>Request an Invitation
-              </button>
-            </a>
-          </Link>
-        </div>
-      </section>
+          </motion.h1>
 
-      {/* About Brief */}
-      <section className="py-24 bg-white flex flex-col md:flex-row items-center max-w-6xl mx-auto gap-12" aria-label="About Fanny Samaniego">
-        <div className="md:w-1/2 flex justify-center">
-          <Image
-            src="/fanny.jpg"
-            alt="Portrait of Fanny Samaniego, Toronto Financial Advisor and Mortgage Agent"
-            width={340}
-            height={340}
-            className="rounded-full shadow-xl object-cover border-4 border-brand-green"
-            priority
-          />
-        </div>
-        <div className="md:w-1/2 md:pl-12">
-          <h2 className="font-serif text-3xl md:text-4xl text-brand-green mb-4 font-bold">
-            Invited Wisdom, Shared with Heart
-          </h2>
-          <p className="font-sans text-lg md:text-xl text-brand-body mb-8 leading-relaxed">
-            I’m Fanny Samaniego—a bilingual <b>Financial Advisor, Holistic Financial Coach, and licensed Mortgage Agent</b> based in Toronto. My deepest work happens in true partnership with those who are ready for change—not just in their finances, but in their entire approach to abundance.
-            <br /><br />
-            Over the years, I’ve learned that real prosperity is about aligning your numbers with your heart, your values, and your vision for the future. I work with a limited number of clients at a time, so each receives focused, present guidance and genuine support.
-          </p>
-          <Link href="/en/about" legacyBehavior>
-            <a aria-label="Discover Fanny Samaniego's Journey as a Financial Advisor">
-              <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-green hover:text-brand-blue border-2 border-brand-gold transition-all">
+          <motion.p variants={fade} className="font-sans text-xl md:text-2xl text-brand-blue mb-6">
+            Bilingual <b>Mortgage Guidance</b>, <b>Financial Coaching</b>, and <b>Holistic Tax Planning</b>—delivered by a coordinated team and tailored to how you naturally make decisions, so your plan actually sticks.
+          </motion.p>
+
+          {/* Primary CTA — unified label with header button */}
+          <motion.div variants={fade} className="flex flex-col items-center gap-2">
+            <Link
+              href="/en/contact?intent=consult"
+              aria-label="Book a Free Discovery Call"
+              className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+            >
+              Book a Free Discovery Call
+            </Link>
+            <Link
+              href="/en/contact?intent=question"
+              className="text-[15px] text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green"
+            >
+              Have questions?
+            </Link>
+          </motion.div>
+
+          {/* Trust chips (visible above the fold) */}
+          <motion.div
+            variants={fade}
+            className="mt-5 flex flex-wrap items-center justify-center gap-2"
+            aria-label="Trust badges"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+              <FaShieldAlt aria-hidden /> Private &amp; Confidential
+            </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+              <FaGlobeAmericas aria-hidden /> Bilingual (EN/ES)
+            </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+              <FaIdBadge aria-hidden /> Licensed Mortgage Agent (L2)
+            </span>
+          </motion.div>
+        </motion.div>
+      </header>
+
+      {/* ============================ ABOUT ============================ */}
+      <MotionPanel className="mt-10" aria-label="About Fanny Samaniego">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col md:flex-row items-center gap-10"
+        >
+          <motion.div variants={fadeUp} className="md:w-1/2 flex justify-center">
+            <Image
+              src="/fanny.jpg"
+              alt="Fanny Samaniego — Financial Advisor & Mortgage Agent in Toronto"
+              width={360}
+              height={360}
+              className="rounded-full shadow-xl object-cover border-4 border-brand-green"
+              priority
+            />
+          </motion.div>
+          <motion.div variants={fadeUp} className="md:w-1/2">
+            <h2 className="font-serif text-3xl md:text-4xl text-brand-green mb-4 font-bold">
+              Invited Wisdom, Shared with Heart
+            </h2>
+            <p className="font-sans text-lg md:text-xl text-brand-body mb-6 leading-relaxed">
+              I’m Fanny Samaniego—a bilingual <b>Financial Advisor, holistic coach, and licensed Mortgage Agent</b> in Toronto. With a coordinated team, we guide professional families, executives, and business owners who want practical results without losing sight of peace of mind and values.
+            </p>
+            <ul className="list-disc pl-6 text-brand-body text-base md:text-lg space-y-2 mb-8">
+              <li>Plans that fit your life—rooted in how you naturally decide and follow through.</li>
+              <li>Optional Human Design lens to personalize communication and cadence—never replacing financial or legal fundamentals.</li>
+              <li>Clear next steps after every call—no overwhelm.</li>
+            </ul>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/en/about"
+                aria-label="Discover Fanny Samaniego's Journey"
+                className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition-all inline-block"
+              >
                 Discover My Journey
-              </button>
-            </a>
+              </Link>
+              <Link
+                href="/en/contact?intent=question"
+                aria-label="Start a conversation"
+                className="self-center text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green"
+              >
+                Let’s explore your options
+              </Link>
+            </div>
+          </motion.div>
+        </motion.div>
+      </MotionPanel>
+
+      {/* ==================== INVITATION PHILOSOPHY ==================== */}
+      <MotionPanel className="mt-8" aria-label="Why We Work by Invitation">
+        <SectionTitle title="Why We Work by Invitation" />
+        <motion.p
+          variants={fade}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto"
+        >
+          Strong financial outcomes come from relationships built on trust and the right fit. Every client journey begins with a conversation.
+        </motion.p>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="text-left max-w-2xl mx-auto"
+        >
+          <motion.ul variants={fadeUp} className="list-disc pl-6 text-brand-body text-base space-y-2">
+            <li>We confirm your goals and timing before we start.</li>
+            <li>You meet the right specialist on our team for each step.</li>
+            <li>
+              We craft a plan around your strengths and decision style (Human Design available on request), while staying grounded in financial, tax, and legal basics.
+            </li>
+          </motion.ul>
+        </motion.div>
+        <motion.div
+          variants={fade}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="mt-6 text-center"
+        >
+          <Link href="/en/contact?intent=consult" className="text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green">
+            When you’re ready, send a note →
           </Link>
-        </div>
-      </section>
+        </motion.div>
+      </MotionPanel>
 
-      {/* Why I Work by Invitation */}
-      <section className="py-10 bg-brand-beige max-w-3xl mx-auto text-center rounded-2xl shadow-sm border border-brand-green my-8" aria-label="Why I Work by Invitation">
-        <h3 className="font-serif text-2xl text-brand-green font-bold mb-3">
-          Why I Work by Invitation
-        </h3>
-        <p className="font-sans text-lg text-brand-body mb-2">
-          After years of experience, I’ve found that the most meaningful results happen when there’s genuine connection and trust. That’s why I work by invitation: every client relationship begins with a real conversation, so we can both feel if it’s the right fit.
-        </p>
-        <p className="text-brand-body text-base mt-3 opacity-60">
-          <em>(My approach is inspired by a philosophy that values deep recognition and the right timing. If you’re curious, feel free to ask me more!)</em>
-        </p>
-      </section>
+      {/* ============================ BADGES ============================ */}
+      <MotionPanel className="mt-8" aria-label="Professional Certifications and Partners">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center"
+        >
+          {[
+            { icon: <FaIdBadge aria-hidden className="text-xl" />, text: "Licensed Mortgage Agent (Level 2)" },
+            { icon: <FaUsers aria-hidden className="text-xl" />, text: "Coordinated Team of Specialists" },
+            { icon: <FaLeaf aria-hidden className="text-xl" />, text: "Optional Human Design Personalization" },
+          ].map((b) => (
+            <motion.div
+              key={b.text}
+              variants={fadeUp}
+              className="rounded-2xl border border-brand-gold p-6 shadow-sm transition-transform duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="text-2xl text-brand-green flex items-center justify-center">{b.icon}</div>
+              <p className="font-semibold text-brand-blue mt-2">{b.text}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </MotionPanel>
 
-      {/* Core Services */}
-      <section className="py-24 bg-gradient-to-b from-brand-beige to-white" aria-label="Core Services as Financial Advisor and Mortgage Agent">
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-16 font-bold">
-          Ways I Can Guide You
-        </h2>
-        <div className="flex flex-col md:flex-row gap-10 justify-center max-w-6xl mx-auto">
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
-              💡
-            </div>
-            <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
-              Financial Guidance
-            </h3>
-            <p className="font-sans text-brand-body">
-              Find clarity and confidence through honest, heart-centered conversations—no formulas, no pressure, just support for your unique path.
-            </p>
-          </div>
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-blue flex items-center justify-center text-white text-2xl">
-              🌱
-            </div>
-            <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
-              Holistic Tax Planning
-            </h3>
-            <p className="font-sans text-brand-body">
-              Explore practical strategies rooted in your values. Together, we’ll co-create a plan that brings you lasting peace of mind.
-            </p>
-          </div>
-          <div className="flex-1 bg-white rounded-2xl p-10 shadow-lg text-center border border-brand-gold flex flex-col items-center">
-            <div className="w-14 h-14 mb-4 rounded-full bg-brand-gold flex items-center justify-center text-brand-green text-2xl">
-              🏡
-            </div>
-            <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
-              Mortgage Guidance
-            </h3>
-            <p className="font-sans text-brand-body">
-              Guidance for every kind of mortgage journey—including investment and multi-unit properties—always with holistic, personalized care.
-            </p>
-          </div>
-        </div>
-        <div className="mt-16 text-center">
-          <Link href="/en/services" legacyBehavior>
-            <a aria-label="Explore Financial and Mortgage Services">
-              <button className="px-10 py-4 bg-brand-gold text-brand-green rounded-full font-semibold shadow-lg hover:bg-brand-green hover:text-white border-2 border-brand-blue transition-all duration-200">
-                Ways to Invite Me In
-              </button>
-            </a>
+      {/* ======================= SERVICES PREVIEW ======================= */}
+      <MotionPanel className="mt-8" aria-label="Core Services">
+        <SectionTitle title="Ways We Can Guide You" />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid md:grid-cols-3 gap-8"
+        >
+          {[
+            {
+              icon: "💡",
+              title: "Financial Guidance",
+              body:
+                "Clear, heart-centered support for your financial goals—anchored in your natural strengths.",
+              bullets: [
+                "Budget & cash-flow plans you’ll actually use",
+                "Debt strategy, credit repair & savings systems",
+                "Optional Human Design to fine-tune cadence & accountability",
+              ],
+              href: "/en/services#foundations",
+              label: "Explore Financial Guidance",
+              secondary: { label: "Have questions?", href: "/en/contact?intent=question" },
+            },
+            {
+              icon: "🌱",
+              title: "Holistic Tax Planning",
+              body: "Practical, values-aligned strategies to keep more of what you earn.",
+              bullets: [
+                "Personal & small-business considerations",
+                "Cash-flow friendly, compliance-first planning",
+                "Seasonal reminders and prep checklists",
+              ],
+              href: "/en/services#legacy",
+              label: "Explore Tax Planning",
+              secondary: { label: "Have questions?", href: "/en/contact?intent=question" },
+            },
+            {
+              icon: "🏡",
+              title: "Mortgage Guidance",
+              body: "Licensed advice for first homes, upgrades, refinancing, and multi-unit investments.",
+              bullets: [
+                "Pre-approval & readiness check",
+                "4–10 unit properties & investment strategy",
+                "Rate, term & structure optimization",
+              ],
+              href: "/en/services#mortgage",
+              label: "Explore Mortgage Guidance",
+              secondary: { label: "Start Mortgage Pre-Approval", href: "/en/contact?intent=preapproval" },
+            },
+          ].map((c) => (
+            <motion.div
+              key={c.title}
+              variants={fadeUp}
+              className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 will-change-transform hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
+                <span aria-hidden>{c.icon}</span>
+              </div>
+              <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">{c.title}</h3>
+              <p className="font-sans text-brand-body mb-4">{c.body}</p>
+              <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
+                {c.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+              <div className="mt-auto space-y-2">
+                <Link
+                  href={c.href}
+                  aria-label={c.label}
+                  className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all inline-block"
+                >
+                  {c.label}
+                </Link>
+                {c.secondary && (
+                  <div>
+                    <Link
+                      href={c.secondary.href}
+                      className="text-sm text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
+                    >
+                      {c.secondary.label}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </MotionPanel>
+
+      {/* ================ KITCHEN TABLE — 4-week program ================ */}
+      <MotionPanel className="mt-8" aria-label="Kitchen Table Conversations — 4-week small-group program">
+        <SectionTitle title="Kitchen Table Conversations" kicker="4-week small-group program" />
+        <motion.p
+          variants={fade}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="text-center text-brand-body mt-2 max-w-3xl mx-auto"
+        >
+          Intimate, small-group circles led by Fanny and her team—like sitting around a kitchen table—where you can ask questions, get clear answers, and leave with next steps you’ll actually follow.
+        </motion.p>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid md:grid-cols-3 gap-6 mt-8"
+        >
+          {[
+            {
+              title: "Who it’s for",
+              items: ["First-time buyers & newcomers", "Families aligning values & budgets", "Investors exploring multi-unit (4–10)"],
+            },
+            {
+              title: "What we cover",
+              items: ["Mortgage steps, rates & readiness", "Cash-flow, debt & credit strategy", "Values-aligned, stress-free planning"],
+            },
+            {
+              title: "How it works",
+              items: ["Small groups (friendly & focused)", "4 weekly sessions • 45–60 min", "Simple next-steps after each call"],
+            },
+          ].map((col) => (
+            <motion.div
+              key={col.title}
+              variants={fadeUp}
+              className="rounded-2xl border border-brand-green/30 p-6 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <h4 className="font-serif text-xl text-brand-blue font-bold mb-2">{col.title}</h4>
+              <ul className="list-disc pl-5 text-brand-body space-y-1">
+                {col.items.map((it) => (
+                  <li key={it}>{it}</li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          variants={fade}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="text-center mt-8 flex flex-col sm:flex-row gap-3 justify-center"
+        >
+          <Link
+            href="/en/services#family"
+            className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block"
+          >
+            View program details
           </Link>
-        </div>
-      </section>
+          <Link
+            href={`/en/contact?intent=package&package=${encodeURIComponent("Holistic Family Conversations — 4-Week Cohort")}`}
+            className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+          >
+            Talk to us
+          </Link>
+        </motion.div>
+      </MotionPanel>
 
-      {/* Kitchen Table */}
-      <section className="py-14 bg-white max-w-4xl mx-auto rounded-2xl shadow border border-brand-green my-8 text-center" aria-label="Kitchen Table Conversations with Financial Advisor">
-        <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">
-          Kitchen Table Conversations
+      {/* ======================= TOOLS & ARTICLES ======================= */}
+      <MotionPanel className="mt-8" aria-label="Helpful tools and articles">
+        <SectionTitle title="Helpful Tools & Articles" />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
+          <motion.div
+            variants={fadeUp}
+            className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Tools</h3>
+            <p className="text-brand-body mb-6">
+              Simple calculators, checklists, and decision helpers to keep things moving—made to match how you actually follow through.
+            </p>
+            <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
+              <li>Budget & cash-flow worksheet</li>
+              <li>Mortgage readiness checklist</li>
+              <li>Tax season prep list</li>
+            </ul>
+            <Link
+              href="/en/tools"
+              aria-label="Browse tools"
+              className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block"
+            >
+              Browse Tools
+            </Link>
+          </motion.div>
+
+          <motion.div
+            variants={fadeUp}
+            className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Articles</h3>
+            <p className="text-brand-body mb-6">
+              Short, practical reads on mortgages, money behavior, and tax basics—no jargon, just next steps.
+            </p>
+            <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
+              <li>First-home roadmap (Toronto edition)</li>
+              <li>Debt strategy without the shame spiral</li>
+              <li>Small-business taxes: what to track</li>
+            </ul>
+            <Link
+              href="/en/resources"
+              aria-label="Read articles"
+              className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block"
+            >
+              Read Articles
+            </Link>
+          </motion.div>
+        </motion.div>
+      </MotionPanel>
+
+      {/* ============================ SUBSCRIBE ============================ */}
+      <MotionPanel className="mt-8" aria-label="Subscribe to financial tips and resources">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="text-center max-w-3xl mx-auto"
+        >
+          <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">Stay in the Loop</h3>
+          <p className="text-brand-body mb-6">
+            Get monthly tips, checklists, and gentle reminders—bilingual and spam-free.
+          </p>
+          <Link
+            href="/en/subscribe"
+            aria-label="Go to subscription page"
+            className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+          >
+            Subscribe
+          </Link>
+        </motion.div>
+      </MotionPanel>
+
+      {/* =========================== FINAL BAND =========================== */}
+      <motion.section
+        variants={fade}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-16 text-center"
+        aria-label="Primary call to action"
+      >
+        <h3 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-4">
+          Ready for clarity—and a plan you’ll actually follow?
         </h3>
-        <p className="font-sans text-lg text-brand-body mb-4">
-          Join a small group session—just like gathering around a kitchen table—where we share stories, answer questions, and support each other’s journeys. If you’d like to be invited to a future circle, reach out below.
-        </p>
-        <Link href="/en/contact" legacyBehavior>
-          <a aria-label="Request to Join a Circle with Fanny Samaniego, Financial Advisor">
-            <button className="px-8 py-3 bg-brand-blue text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition-all">
-              Request to Join a Circle
-            </button>
-          </a>
+        <Link
+          href="/en/contact?intent=consult"
+          aria-label="Book a Free Discovery Call"
+          className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+        >
+          Book a Free Discovery Call
         </Link>
-      </section>
-
-      {/* Tools */}
-      <section className="py-20 bg-white max-w-6xl mx-auto" aria-label="Financial Tools and Calculators">
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green text-center mb-12 font-bold">
-          Tools to Nourish Your Financial Journey
-        </h2>
-        <div className="flex flex-col md:flex-row gap-10">
-          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold">
-            <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
-              Holistic Budget Planner
-            </h3>
-            <p className="font-sans text-brand-body mb-6">
-              Create a budget that feels nourishing, not restrictive—aligned with your values and unique life.
-            </p>
-            <Link href="/en/budget-calculator" legacyBehavior>
-              <a aria-label="Try Holistic Budget Calculator">
-                <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
-                  Try the Budget Tool
-                </button>
-              </a>
-            </Link>
-          </div>
-          <div className="flex-1 bg-brand-blue/10 rounded-2xl p-10 shadow text-center border border-brand-gold">
-            <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">
-              Mortgage Insights
-            </h3>
-            <p className="font-sans text-brand-body mb-6">
-              Estimate your payments and explore holistic strategies for your property journey—whether buying, refinancing, or investing.
-            </p>
-            <Link href="/en/mortgage-calculator" legacyBehavior>
-              <a aria-label="Explore Mortgage Tools and Calculators">
-                <button className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition">
-                  Explore Mortgage Tools
-                </button>
-              </a>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-24 bg-brand-beige" aria-label="Client Testimonials for Financial Advisor">
-        <div className="max-w-2xl mx-auto text-center">
-          <blockquote className="font-serif italic text-2xl text-brand-blue mb-8 border-l-4 border-brand-gold pl-6">
-            “Being invited to work with Fanny brought me so much more than numbers—it brought me a sense of peace, security, and trust in my path. She listens, guides, and sees what you need, even before you do.”
-          </blockquote>
-          <div className="font-sans font-semibold text-lg text-brand-green mb-8">
-            – Maria & Carlos, Toronto
-          </div>
-          <Link href="/en/testimonials" legacyBehavior>
-            <a aria-label="Read Client Testimonials for Financial Advisor Fanny Samaniego">
-              <button className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow-md hover:bg-brand-gold hover:text-brand-green border-2 border-brand-gold transition-all duration-200">
-                Stories of Invitation & Guidance
-              </button>
-            </a>
-          </Link>
-        </div>
-      </section>
+        <p className="text-xs text-brand-blue/70 mt-3 max-w-xl mx-auto">
+          Human Design is optional—used only to personalize communication and pacing. It never replaces financial, tax, or legal fundamentals.
+        </p>
+      </motion.section>
     </main>
   );
 }

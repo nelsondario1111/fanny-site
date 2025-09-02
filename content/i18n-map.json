@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "en": { "services": "services", "tools": "tools", "resources": "resources", "about": "about", "contact": "contact" },
+    "es": { "services": "servicios", "tools": "herramientas", "resources": "recursos", "about": "sobre-mi", "contact": "contacto" }
+  },
+  "slugs": {
+    "resources": {
+      "5-steps-to-financial-freedom": { "en": "5-steps-to-financial-freedom", "es": "5-pasos-hacia-la-libertad-financiera" },
+      "buying-your-first-multi-unit-property": { "en": "buying-your-first-multi-unit-property", "es": "comprar-tu-primer-multipropiedad" }
+    },
+    "tools": {
+      "mortgage-calculator": { "en": "mortgage-calculator", "es": "calculadora-hipotecaria" },
+      "affordability-stress-test": { "en": "affordability-stress-test", "es": "prueba-de-esfuerzo-de-accesibilidad" },
+      "budget-and-cashflow": { "en": "budget-and-cashflow", "es": "presupuesto-y-flujo" }
+    },
+    "static": {
+      "home": { "en": "", "es": "" },
+      "services": { "en": "services", "es": "servicios" },
+      "about": { "en": "about", "es": "sobre-mi" }
+    }
+  }
+}

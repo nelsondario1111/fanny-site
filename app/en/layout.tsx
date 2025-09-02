@@ -1,34 +1,26 @@
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
-import BackToTopButton from "../../components/BackToTopButton";
-import "../globals.css";
-import { lato, playfair, pacifico } from "../fonts";
+// app/en/layout.tsx
+import * as React from "react";
+import type { Metadata } from "next";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
-// Metadata (title, description, viewport) should live in metadata.ts, not here.
+// Optional: locale metadata (you also have app/en/metadata.ts; keep whichever you prefer)
+export const metadata: Metadata = {
+  title: {
+    default: "Fanny Samaniego — English",
+    template: "%s • Fanny Samaniego",
+  },
+  description:
+    "Human-centered financial coaching & mortgage solutions (EN).",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function EnLayout({ children }: { children: React.ReactNode }) {
+  // ❗ Do NOT render <html> or <body> here — only in app/layout.tsx
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={[
-          lato.variable,
-          playfair.variable,
-          pacifico.variable,
-          "font-sans bg-brand-beige text-brand-body min-h-screen flex flex-col antialiased",
-        ].join(" ")}
-      >
-        {/* Sticky Top Navigation */}
-        <NavBar lang="en" />
-
-        {/* Main Content Area */}
-        <main className="flex-1 pt-16 sm:pt-16">{children}</main>
-
-        {/* Footer */}
-        <Footer lang="en" />
-
-        {/* Back to Top Button */}
-        <BackToTopButton />
-      </body>
-    </html>
+    <>
+      <NavBar />
+      <main>{children}</main>
+      <Footer />
+    </>
   );
 }

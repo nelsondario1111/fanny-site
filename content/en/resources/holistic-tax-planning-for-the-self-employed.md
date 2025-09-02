@@ -1,118 +1,107 @@
 ---
-title: "Holistic Tax Planning for the Self-Employed: From Side Hustle to Sustainable Income"
-summary: "A practical, calming guide to year-round tax planning for freelancers, solopreneurs, and self-employed professionals in Toronto and beyond."
-category: "Taxes"
-date: "2025-06-04"
-author: "Fanny Samaniego"
-image: "/Self-Employed.png"
+title: 'Holistic Tax Planning for the Self-Employed: Calm, Clear, and Year-Round'
+summary: Practical and holistic guidance for freelancers, consultants, and entrepreneurs
+  in Canada to stay ahead of taxes without stress.
+category: Taxes & Self-Employment
+date: '2025-08-14'
+updated: '2025-08-27'
+author: Fanny Samaniego — Former Tax Auditor, Mortgage Agent Level 2 & Holistic Financial
+  Coach
+slug: holistic-tax-planning-for-the-self-employed
+tags:
+- tax-planning
+- self-employed
+- hst
+- cra
+- bookkeeping
+lang: en
+image: /images/resources/holistic-tax-planning-for-the-self-employed-card.jpg
+hero: /images/resources/holistic-tax-planning-for-the-self-employed-hero.jpg
+heroAlt: A calm desk with laptop, receipts, and coffee cup, symbolizing self-employed
+  tax planning with clarity and order
 ---
 
-![Holistic Tax Planning for the Self-Employed](/Self-Employed.png)
+I’m Fanny — a heart-centered financial coach and licensed Mortgage Agent (Level 2) in Toronto. If you’re self-employed (consultant, wellness practitioner, creative, tradesperson, or entrepreneur), taxes can feel overwhelming. With the right systems, habits, and clarity, tax season becomes calm and predictable.
 
-By Fanny Samaniego – Holistic Financial Coach & Mortgage Agent | Toronto, Ontario
+> My approach: technical precision + nervous-system calm. We design money routines that fit your life — not someone else’s spreadsheet.
 
-Stepping into self-employment is empowering — you're building your own path, following your passion, and growing something of your own. But with that freedom also comes new responsibility, especially when it comes to taxes.
+- Book your free discovery call: [/en/contact](/en/contact)
 
-Whether you’re freelancing, consulting, creating content, driving for Uber, or running your own wellness business, one of the most important ways to stay in control is to plan ahead — not just at tax time, but throughout the year.
+## Quick Snapshot: What “Good” Looks Like
 
-As a holistic financial coach with years of experience supporting self-employed individuals in Toronto and beyond, I help entrepreneurs like you stay organized, reduce stress, and build sustainable income — one mindful step at a time.
+- Three accounts: Income → Operating → Tax Reserve (automated transfers)
+- One tracker: income, invoices, receipts, mileage (update weekly 10–15 min)
+- Monthly: reconcile bank/credit, label expenses, top up Tax Reserve
+- Quarterly: review profit, file HST (if registered), adjust pricing
+- Year-end: clean receipts, check RRSP/TFSA, deliver a neat package to your tax pro
 
-Here’s your guide to tax planning the holistic way.
+## 1) Set Up Your Core System (30–60 Minutes)
 
----
+Three accounts: Income (deposits only), Operating (spending), Tax Reserve (no card). Automation: move 25–30% of every deposit into Tax Reserve; pay yourself on a schedule; transfer operating costs.
 
-## 🌱 Why Holistic Tax Planning Matters
+Weekly 15 minutes: enter payments, snap receipts, tag categories, record mileage, glance at Tax Reserve.
 
-Being self-employed means you wear many hats — creator, marketer, bookkeeper, and CEO. That can be exciting, but also overwhelming.
+## 2) What to Track (Simplify)
 
-Holistic tax planning is about more than deductions — it’s about building calm, clarity, and confidence into your business finances. It connects your taxes to your goals, your time, and your wellbeing.
+Income (date, client, invoice #, amount), expenses (vendor, category, amount, receipt link), home office (sq ft %, rent/mortgage interest, utilities, internet), vehicle (business km vs total), HST/GST (collected vs paid), CRA notices, bank/credit statements, contracts.
 
-Ask yourself:
+Suggested folders:
+Taxes-2025/
+01-Income
+02-Expenses
+03-Home-Office
+04-Vehicle
+05-HST
+06-CRA-Notices
+07-To-Accountant
 
-- Do I feel organized when it’s time to file, or panicked?
-- Do I understand what I owe and why?
-- Am I building habits now that will help me grow later?
 
-If the answer is no, this guide will help you shift.
 
----
+## 3) Deductions You Can Claim
 
-## 🧾 Step 1: Know What Counts as Business Income
+Home office %, phone/internet/software/subscriptions, marketing (design, ads, coaching), equipment & tools, supplies, payment fees, professional fees, business insurance, travel & meals (limits apply), vehicle (lease/CCA etc. prorated by km). Keep business and personal separate.
 
-In Canada, self-employment income includes anything you earn outside of a regular paycheck. This could be:
+## 4) HST / GST — When to Register
 
-- Freelance or contract work
-- Client sessions (coaching, healing, design, etc.)
-- Product or digital sales
-- Rental of equipment or space
-- Tips or bonuses from platforms like Uber, DoorDash, or Etsy
+Mandatory when taxable revenue exceeds $30,000 in a single quarter or 4 consecutive quarters. Optional early registration can unlock input tax credits. If registered: add 13% (Ontario) to invoices, track collected vs paid, file and remit on time, and park HST in your Tax Reserve.
 
-You must report all income, even if you’re paid in cash or through apps. The CRA expects accuracy and transparency.
+## 5) How Much to Set Aside for Taxes
 
----
+25–30% of net income is a safe baseline. Factor in CPP (both halves). CRA may require quarterly installments — normal. Keep Tax Reserve in high-interest savings with automatic transfers.
 
-## 📁 Step 2: Track Everything (Yes, Everything)
+## 6) Sole Prop vs. Incorporation
 
-Start a simple system to track income and expenses monthly — not just at tax time. You’ll thank yourself later.
+Consider incorporation when you earn more than you need personally (retain earnings), want liability protections, or client contracts require it. Decide after a calm numbers review.
 
-**Suggested setup:**
+## 7) Year-End Checklist
 
-- A business bank account (even if it’s just for separation)
-- A spreadsheet or app (like QuickBooks, Wave, or Notion)
-- A Google Drive folder with receipts, invoices, and tax docs
-- A shared note for mileage, tips, or cash transactions
+Reconcile statements, ensure receipts are stored, update home office % and vehicle log, confirm RRSP/TFSA/FHSA contributions, pull outstanding invoices/WIP, deliver one clean “To-Accountant” folder.
 
-💡 *Tip: Don’t wait until you’re “big enough” — building good habits now creates sustainable growth later.*
+## 8) Common CRA Letters (Don’t Panic)
 
----
+Installment reminders (schedule), pre-assessment review (reply with neat PDF), HST notice (file & pay).
 
-## 💸 Step 3: Understand Deductions You Can Claim
+Reply script:
+> “Please find attached the requested receipts/statements for period __ to __. Totals reconcile to filed return. Let me know if further clarification is needed.”
 
-As a business owner, you can deduct reasonable expenses that support your work. These may include:
+## 9) Your Quarterly Rhythm
 
-✅ Home office (a portion of rent, internet, utilities)  
-✅ Phone or data used for work  
-✅ Business-related travel or meals  
-✅ Professional software or subscriptions  
-✅ Marketing or design services  
-✅ Coaching, education, or training  
-✅ Equipment, tools, packaging, delivery costs
+Jan–Mar: new tracker, automate transfers, check TFSA room.  
+Apr–Jun: HST filing, pricing review, cash-flow check.  
+Jul–Sep: adjust set-aside % if income shifts; mid-year tidy.  
+Oct–Dec: year-end planning (RRSPs, investments, equipment), prep accountant package.
 
-Your expenses should be directly related to earning business income — not personal.
+## Tools & Templates
 
----
+Self-Employed Cash-Flow & Tax Tracker, Pricing Worksheet, and Checklists (home office, vehicle, year-end) at [/en/tools](/en/tools).
 
-## 🗓️ Step 4: Plan for Taxes Throughout the Year
+## Work With Us
 
-Unlike salaried employees, no one is deducting taxes for you. That means you need to:
+You deserve a calm, repeatable system that respects your time, lowers stress, and grows your wealth.
 
-- Set aside 20–30% of your income for taxes
-- Make quarterly installments if your income grows
-- Keep track of GST/HST if you earn over $30,000/year
-- Plan for CPP contributions (self-employed pay double)
+- Book a free discovery call: [/en/contact](/en/contact)  
+- Explore all our Tools: [/en/tools](/en/tools)
 
-💡 *Tip: Open a “tax savings” account and transfer a % of every payment you receive. Treat it like rent — non-negotiable.*
+Holistic. Professional. Bilingual. Toronto-based.
 
----
-
-## 🧘 Step 5: Stay Grounded and Get Support
-
-You don’t have to figure it all out alone. Taxes are important, yes — but they’re not your identity. You’re allowed to ask for help, and you deserve support that meets you where you are.
-
-I help self-employed clients:
-
-- Set up simple, sustainable tax systems
-- Translate CRA letters and deadlines
-- Plan for tax season with peace and purpose
-- Grow their side hustle into a stable, income-generating business
-
-Whether you're just starting or ready to scale, I’ll help you connect the dots between your money, your mindset, and your mission.
-
----
-
-## Ready to Feel Empowered — Not Overwhelmed?
-
-👉 [Book a free discovery call](/contact) and let’s build a tax strategy that brings clarity, calm, and confidence to your business finances.
-
-Serving self-employed professionals across Toronto & the GTA.  
-English & Spanish support. Always heart-centered. Always practical.
+*Educational only — not legal or tax advice.*

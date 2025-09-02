@@ -1,12 +1,19 @@
-import NavBar from "../../components/NavBar";
-import Footer from "../../components/Footer";
-import BackToTopButton from "../../components/BackToTopButton";
+// app/es/layout.tsx
 import "../globals.css";
+import type { Metadata } from "next";
 import { lato, playfair, pacifico } from "../fonts";
 
-// Metadata and viewport should live in metadata.ts, not here.
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/BackToTopButton";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const metadata: Metadata = {
+  title: "Fanny Samaniego — Coaching & Soluciones Hipotecarias",
+  description:
+    "Coaching financiero con enfoque humano y soluciones hipotecarias en Toronto.",
+};
+
+export default function LayoutEs({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className="scroll-smooth">
       <body
@@ -14,19 +21,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           lato.variable,
           playfair.variable,
           pacifico.variable,
-          "font-sans bg-brand-beige text-brand-body min-h-screen flex flex-col antialiased",
+          // token-aligned base styles
+          "font-sans bg-brand-beige text-brand-body min-h-dvh flex flex-col antialiased",
         ].join(" ")}
       >
-        {/* Barra de navegación principal */}
-        <NavBar lang="es" />
+        {/* Unified, locale-aware header */}
+        <NavBar />
 
-        {/* Contenido principal */}
-        <main className="flex-1 pt-16">{children}</main>
+        {/* Sticky header already reserves space; no extra padding needed */}
+        <main id="main" className="flex-1">
+          {children}
+        </main>
 
-        {/* Pie de página */}
+        {/* Unified, locale-aware footer */}
         <Footer lang="es" />
-
-        {/* Botón para volver arriba */}
         <BackToTopButton />
       </body>
     </html>

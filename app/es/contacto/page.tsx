@@ -1,62 +1,125 @@
-import ContactForm from "./ContactForm";
+import Link from "next/link";
+import ContactoForm from "./ContactoForm";
+import ClientFade from "@/components/ui/ClientFade";
 
-// --- SEO METADATA (Next.js 13/14 App Router) --- //
-export const metadata = {
-  title: "Contacto | Fanny Samaniego Coaching – Agenda tu Sesión de Descubrimiento Gratis",
-  description:
-    "Ponte en contacto con Fanny Samaniego para coaching financiero holístico. Agenda tu sesión gratis, envía preguntas o comunícate por WhatsApp o correo electrónico—español o inglés.",
-  openGraph: {
-    title: "Contacto | Fanny Samaniego Coaching",
-    description:
-      "Contacta a Fanny para coaching financiero holístico. Agenda una sesión gratis, envía preguntas o escribe por WhatsApp/correo.",
-    url: "https://fannysamaniego.com/es/contacto",
-    siteName: "Fanny Samaniego Coaching",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Contacto | Fanny Samaniego Coaching",
-    description:
-      "Agenda tu llamada gratis o envía tu mensaje a Fanny Samaniego, coach financiera holística.",
-  },
-};
+function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={["bg-white/95 rounded-[28px] border border-brand-gold shadow-xl backdrop-blur-[1px]", className].join(" ")}>
+      {children}
+    </div>
+  );
+}
 
 export default function Contacto() {
   return (
-    <main className="bg-brand-beige min-h-screen py-12 px-2">
-      <section className="max-w-3xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-8 text-center tracking-tight">
-          Conectemos y Transforma tu Vida Financiera
-        </h1>
-         <div className="flex justify-center mb-8">
-            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
-          </div>
-        <p className="mb-10 text-brand-green text-center text-lg">
-          Me encantaría escucharte. Agenda una sesión de descubrimiento gratis, envía tus preguntas o comunícate directamente por WhatsApp.
-        </p>
+    <main className="bg-brand-beige min-h-screen">
+      {/* Hero */}
+      <section className="px-4 pt-12">
+        <ClientFade>
+          <div className="max-w-5xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green tracking-tight">
+              Conectemos y transforma tu vida financiera
+            </h1>
+            <div className="flex justify-center my-5" aria-hidden="true">
+              <div className="w-20 h-[3px] rounded-full bg-brand-gold" />
+            </div>
+            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+              Reserva una llamada de descubrimiento o cuéntanos en qué estás trabajando. Te responderemos con los próximos pasos claros.
+            </p>
 
-        <ContactForm />
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Link
+                href="/es/book"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold shadow bg-brand-green text-white hover:opacity-90 transition"
+              >
+                Reservar llamada gratuita
+              </Link>
+              <a
+                href="mailto:info@fannysamaniego.com"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              >
+                Escribir un email
+              </a>
+            </div>
+          </div>
+        </ClientFade>
+      </section>
 
-        {/* Contacto Directo */}
-        <div className="bg-white rounded-2xl p-6 shadow text-brand-green text-center space-y-2 border border-brand-gold/40">
-          <div>
-            <span className="font-semibold">Correo:</span>{" "}
-            <a className="underline hover:text-brand-blue transition" href="mailto:info@fannysamaniego.com">
-              info@fannysamaniego.com
-            </a>
-          </div>
-          <div>
-            <span className="font-semibold">WhatsApp:</span>{" "}
-            <a className="underline hover:text-brand-blue transition" href="https://wa.me/14167268420" target="_blank" rel="noopener noreferrer">
-              (416) 726-8420
-            </a>
-          </div>
-          <div>
-            <span className="font-semibold">Teléfono:</span>{" "}
-            <a className="underline hover:text-brand-blue transition" href="tel:4167268420">
-              (416) 726-8420
-            </a>
-          </div>
+      {/* Grid */}
+      <section className="px-4 py-10">
+        <div className="max-w-5xl mx-auto grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
+          <ClientFade>
+            <Panel className="p-6 sm:p-8">
+              <h2 className="sr-only">Formulario de contacto</h2>
+              {/* El formulario ya preselecciona servicio/paquete según ?intent=&package= */}
+              <ContactoForm />
+              <p className="mt-4 text-xs text-brand-body/70">
+                Al enviar aceptas ser contactad@ respecto a tu consulta. Respetamos tu privacidad y no compartimos tu información.
+              </p>
+            </Panel>
+          </ClientFade>
+
+          <ClientFade delay={0.08}>
+            <div className="space-y-6">
+              <Panel className="p-6 sm:p-8">
+                <h2 className="text-xl font-serif font-bold text-brand-green">Datos de contacto</h2>
+                <ul className="mt-4 space-y-3 text-brand-green">
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold">Email</span>
+                    <a className="underline hover:text-brand-blue transition" href="mailto:info@fannysamaniego.com">
+                      info@fannysamaniego.com
+                    </a>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold">WhatsApp</span>
+                    <a className="underline hover:text-brand-blue transition" href="https://wa.me/14167268420" target="_blank" rel="noopener noreferrer">
+                      (416) 726-8420
+                    </a>
+                  </li>
+                  <li className="flex items-center justify-between gap-3">
+                    <span className="font-semibold">Teléfono</span>
+                    <a className="underline hover:text-brand-blue transition" href="tel:14167268420">
+                      (416) 726-8420
+                    </a>
+                  </li>
+                </ul>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-2 text-sm">
+                  <div className="rounded-2xl border border-brand-gold/50 bg-white p-4">
+                    <div className="text-brand-body/70">Horario</div>
+                    <div className="mt-1 font-medium text-brand-green">Lun–Vie · 9:00–17:00 (ET)</div>
+                  </div>
+                  <div className="rounded-2xl border border-brand-gold/50 bg-white p-4">
+                    <div className="text-brand-body/70">Idiomas</div>
+                    <div className="mt-1 font-medium text-brand-green">Español · English</div>
+                  </div>
+                </div>
+              </Panel>
+
+              <Panel className="p-6 sm:p-8">
+                <h2 className="text-xl font-serif font-bold text-brand-green">¿Por qué reservar una llamada?</h2>
+                <ul className="mt-3 space-y-2 text-brand-body">
+                  <li className="flex gap-2"><span className="mt-1">•</span><span>Un siguiente paso claro y accionable en 15–20 minutos.</span></li>
+                  <li className="flex gap-2"><span className="mt-1">•</span><span>Conversamos sobre flujo, deudas, hipotecas o inversiones.</span></li>
+                  <li className="flex gap-2"><span className="mt-1">•</span><span>Guía holística y consciente del comportamiento, a tu medida.</span></li>
+                </ul>
+                <div className="mt-5 rounded-2xl border border-brand-gold/50 bg-brand-beige/60 p-4">
+                  <p className="italic text-brand-green">
+                    “La mezcla de claridad, estructura y calidez nos ayudó a seguir un plan que sí se sentía natural.”
+                  </p>
+                  <p className="mt-1 text-sm text-brand-body/70">— Clienta, Toronto</p>
+                </div>
+                <div className="mt-6">
+                  <Link
+                    href="/es/testimonios"
+                    className="inline-flex items-center rounded-full border bg-white px-4 py-2 text-sm font-medium text-brand-green border-brand-green hover:bg-brand-green hover:text-white transition"
+                  >
+                    Leer historias de clientes →
+                  </Link>
+                </div>
+              </Panel>
+            </div>
+          </ClientFade>
         </div>
       </section>
     </main>

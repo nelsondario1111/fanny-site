@@ -1,148 +1,1263 @@
 "use client";
-import Link from "next/link";
-import { useState, useMemo } from "react";
-import type { Article } from "@/lib/getArticles";
 
-type Props = {
-  articles: Article[];
-  categories: string[];
+import * as React from "react";
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+
+/* =============================== Tipos =============================== */
+export type ClientArticle = {
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  summary?: string | null;
+  category?: string | null;
+  tags?: string[] | null;
+  date?: string | Date | null;
+  readingTime?: string | number | null;
+  image?: string | null;
+  hero?: string | null;
+  ogImage?: string | null;
 };
 
-export default function RecursosClient({ articles, categories }: Props) {
-  const [selected, setSelected] = useState("Todos");
-  const [search, setSearch] = useState("");
+type TagsIndex = {
+  articles: { slug: string; title: string; category: string; tags: string[] }[];
+  tags: Record<string, { count: number; slugs: string[] }>;
+  categories: Record<string, { count: number; slugs: string[] }>;
+  personas: Record<string, { label: string; slugs: string[]; count: number }>;
+};
 
-  const filteredArticles = useMemo(() => {
-    return articles.filter(
-      (a) =>
-        (selected === "Todos" || a.category === selected) &&
-        ((a.title?.toLowerCase() ?? "").includes(search.toLowerCase()) ||
-          (a.summary?.toLowerCase() ?? "").includes(search.toLowerCase()))
-    );
-  }, [articles, selected, search]);
+type PersonaKey =
+  | "families"
+  | "professionals"
+  | "newcomers"
+  | "entrepreneurs"
+  | "investors"
+  | "holistic";
 
+type PersonaIndex = {
+  key: PersonaKey;
+  label: string;
+  count: number;
+  slugs: (string | undefined)[];
+};
+
+/* ============================ Motion helpers ============================ */
+const easing: number[] = [0.22, 1, 0.36, 1];
+function useAnims() {
+  const prefersReduced = useReducedMotion();
+  const fade = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
+    },
+  };
+  const fadeUp = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
+    },
+  };
+  return { fade, fadeUp };
+}
+
+/* ============================== UI Compartida ============================== */
+function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <main className="bg-brand-beige min-h-screen py-12 px-2">
-      <section className="max-w-6xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold mb-16">
-        {/* Encabezado */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green mb-4 tracking-tight flex items-center justify-center gap-2">
-            
-            Empodérate con Sabiduría Financiera Holística
-          </h1>
-          <div className="flex justify-center mb-8">
-            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
-          </div>
-        </div>
+    <section
+      className={[
+        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
+        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </section>
+  );
+}
 
-        {/* Descarga CTA */}
-        <section className="mb-12">
-          <div className="bg-brand-beige/80 p-8 rounded-2xl flex flex-col md:flex-row items-center md:justify-between shadow-lg border border-brand-gold/30">
-            <div>
-              <h2 className="text-2xl font-serif font-semibold mb-2 text-brand-blue">
-                Descarga tu Planificador de Presupuesto Holístico
-              </h2>
-              <p className="mb-4 text-brand-green">
-                Una guía práctica en PDF para alinear tu dinero con tus valores.
-              </p>
-              <a
-                href="/Planificador-Holístico-Presupuesto.pdf"
-                download
-                className="inline-block px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label="Descargar Planificador de Presupuesto PDF"
-              >
-                Descargar ahora
-              </a>
-            </div>
-          </div>
-        </section>
+function SectionTitle({
+  title,
+  subtitle,
+  id,
+  level = "h2",
+}: {
+  title: string;
+  subtitle?: React.ReactNode;
+  id: string;
+  level?: "h1" | "h2";
+}) {
+  const { fade, fadeUp } = useAnims();
+  const Tag = level as any;
+  return (
+    <div id={id} className="scroll-mt-24">
+      <motion.div
+        variants={fade}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className="text-center mb-6"
+      >
+        <motion.div variants={fadeUp}>
+          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+            {title}
+          </Tag>
+        </motion.div>
+        <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
+          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+        </motion.div>
+        {subtitle && (
+          <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+            {subtitle}
+          </motion.p>
+        )}
+      </motion.div>
+    </div>
+  );
+}
 
-        {/* Búsqueda + Categorías */}
-        <section className="mb-8 flex flex-col md:flex-row items-center md:justify-between gap-6">
-          {/* Categorías */}
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              className={`px-4 py-2 rounded-full font-semibold border shadow-sm transition
-                ${selected === "Todos"
+function TagBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
+      {children}
+    </span>
+  );
+}
+
+const CARD =
+  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+
+/* ============================== Utilidades ============================== */
+const normalize = (v: unknown) => String(v ?? "").toLowerCase();
+const parseDate = (d?: string | Date | null) => {
+  if (!d) return 0;
+  const t = d instanceof Date ? d.getTime() : Date.parse(String(d));
+  return Number.isFinite(t) ? t : 0;
+};
+
+const stripYaml = (s: string) => s.replace(/^---[\s\S]*?---\s*/m, "");
+const stripMd = (s: string) =>
+  s
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_~`>#-]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+const clamp = (s: string, n = 220) => {
+  if (s.length <= n) return s;
+  const slice = s.slice(0, n);
+  const cut = slice.lastIndexOf(" ");
+  return (cut > 0 ? slice.slice(0, cut) : slice).trim() + "…";
+};
+const getBlurb = (a: ClientArticle) => {
+  const base = a.summary || a.excerpt || "";
+  const safe = stripYaml(base);
+  return clamp(stripMd(safe));
+};
+const rt = (v: ClientArticle["readingTime"]) => {
+  if (typeof v === "number" && Number.isFinite(v)) return `${v} min de lectura`;
+  if (typeof v === "string" && v.trim()) return v.trim();
+  return null;
+};
+const getImg = (a: ClientArticle) => a.image || a.hero || a.ogImage || null;
+const initials = (s?: string | null) => {
+  if (!s) return "FS";
+  const words = s.split(/\s+/).filter(Boolean);
+  const chars = (words[0]?.[0] || "") + (words[1]?.[0] || "");
+  return chars.toUpperCase() || "FS";
+};
+const normTag = (t: string) => t.trim().toLowerCase().replace(/\s+/g, "-");
+const titleCase = (kebab: string) =>
+  kebab
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+/* ====================== Búsqueda inteligente: sinónimos mínimos ====================== */
+function deburr(s: string) {
+  try {
+    return s.normalize("NFD").replace(/\p{Diacritic}+/gu, "");
+  } catch {
+    return s;
+  }
+}
+function tokens(s: string) {
+  return deburr(s.toLowerCase()).match(/[a-z0-9]+/g) ?? [];
+}
+
+// Nota: los slugs de tags siguen siendo canónicos en inglés para alinear EN/ES.
+// Aquí mapeamos términos comunes en ES a esos slugs.
+const SYNONYMS_ES: Record<string, string[]> = {
+  duelo: ["grief", "bereavement", "loss", "death"],
+  "pérdida": ["grief", "loss", "bereavement"],
+  hipoteca: ["mortgage", "mortgages", "pre-approval", "preapproval", "first-time-buyer", "downpayment", "down-payment"],
+  "comprar casa": ["first-time-buyer", "pre-approval", "downpayment"],
+  "puntaje crediticio": ["credit-score", "equifax", "transunion", "credit report", "fico", "credit"],
+  presupuesto: ["budget", "budgeting", "spending plan", "cash flow", "cashflow"],
+  impuestos: ["tax", "taxes", "tax-planning", "tax return", "refund", "rrsp", "tfsa", "hst", "cra"],
+  "recién llegado": ["newcomers", "new-to-canada", "immigrant", "credit history", "canadian-banking"],
+  "trabajador autónomo": ["self-employed", "contractor", "small business", "entrepreneurs"],
+};
+function expandQuery(q: string): Set<string> {
+  const out = new Set<string>();
+  const base = tokens(q);
+  for (const t of base) out.add(t);
+  const qlc = deburr(q.toLowerCase());
+  for (const [k, arr] of Object.entries(SYNONYMS_ES)) {
+    const key = deburr(k.toLowerCase());
+    if (qlc.includes(key)) arr.flatMap(tokens).forEach((t) => out.add(t));
+  }
+  for (const t of [...out]) (SYNONYMS_ES[t] ?? []).flatMap(tokens).forEach((x) => out.add(x));
+  return out;
+}
+
+/* ===================== Filtros curados (superficie mínima) ===================== */
+type QuickFilter = { key: string; label: string; tags: string[] };
+
+const OBJETIVOS: QuickFilter[] = [
+  { key: "buy", label: "Comprar vivienda", tags: ["mortgage", "first-time-buyer", "pre-approval", "preapproval", "downpayment", "down-payment", "rent-vs-buy"] },
+  { key: "refi", label: "Refinanciar / Renovar", tags: ["refinancing", "renewal", "mortgage-refinancing", "home-equity", "heloc", "rate-hold"] },
+  { key: "credit", label: "Construir crédito", tags: ["credit", "credit-score", "equifax", "transunion", "credit-building", "fico", "credit-report"] },
+  { key: "cashflow", label: "Flujo de caja y deudas", tags: ["budget", "budgeting", "cash-flow", "cashflow", "spending-plan", "emergency-fund", "debt-snowball", "debt-avalanche", "debt-management", "payoff"] },
+  { key: "tax", label: "Optimizar impuestos", tags: ["tax", "taxes", "tax-planning", "tax-return", "refund", "rrsp", "tfsa", "hst", "cra", "stress-free-taxes"] },
+  { key: "invest", label: "Invertir en bienes raíces", tags: ["real-estate-investing", "investing", "landlord", "rental-property", "multiplex", "cap-rate", "ontario-real-estate"] },
+];
+
+const EVENTOS: QuickFilter[] = [
+  { key: "newcomer", label: "Recién llegado a Canadá", tags: ["newcomers", "new-to-canada", "immigrant", "settlement", "credit-history", "canadian-banking"] },
+  { key: "self", label: "Autónomo / Emprendedor", tags: ["self-employed", "contractor", "small-business", "entrepreneurs", "income-verification"] },
+  { key: "baby", label: "Nuevo bebé", tags: ["new-baby", "parental-leave", "family-finances", "education-planning", "resp"] },
+  { key: "separation", label: "Separación / Divorcio", tags: ["divorce", "separation", "spousal", "couples-and-money"] },
+  { key: "grief", label: "Duelo y pérdida", tags: ["grief", "bereavement", "mourning", "passing", "death", "funeral", "legacy", "estate-planning"] },
+  { key: "moving", label: "Mudanza / Reubicación", tags: ["moving", "relocation", "rent-vs-buy", "toronto-real-estate", "home-renovations"] },
+];
+
+/* ============================== Componente ============================== */
+export default function RecursosClient({
+  articles,
+  categories,
+  ctaHref = "/es/contacto?intent=pregunta",
+  newsletterHref = "/es/suscribirse",
+  personas,
+  featuredSlugs,
+  views,
+  tagsUrl = "/data/resources-tags-es.json",
+  tagsData,
+}: {
+  articles: ClientArticle[];
+  categories: string[];
+  ctaHref?: string;
+  newsletterHref?: string;
+  personas?: PersonaIndex[];
+  featuredSlugs?: string[];
+  views?: Array<{ key: "grid" | "list" | string; label: string }>;
+  tagsUrl?: string;
+  tagsData?: TagsIndex | null;
+}) {
+  /* ----------------------------- Estado local ----------------------------- */
+  const [query, setQuery] = React.useState("");
+  const [selectedMode, setSelectedMode] = React.useState<"Todo" | "Guardados">("Todo");
+  const [sort, setSort] = React.useState<"new" | "old" | "az">("new");
+  const [view, setView] = React.useState<"grid" | "list">(
+    (views?.[0]?.key as "grid" | "list") || "grid"
+  );
+  const [selectedPersona, setSelectedPersona] = React.useState<PersonaKey | "all">("all");
+
+  // Guardados
+  const [saved, setSaved] = React.useState<Record<string, true>>({});
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem("resource:saved");
+      if (raw) setSaved(JSON.parse(raw));
+    } catch {}
+  }, []);
+  const toggleSave = React.useCallback((slug: string) => {
+    setSaved((prev) => {
+      const next = { ...prev };
+      if (next[slug]) delete next[slug];
+      else next[slug] = true;
+      try {
+        localStorage.setItem("resource:saved", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+  const savedSlugs = React.useMemo(() => new Set(Object.keys(saved)), [saved]);
+  const savedCount = React.useMemo(
+    () => [...savedSlugs].filter((s) => articles.some((a) => a.slug === s)).length,
+    [savedSlugs, articles]
+  );
+
+  /* ---------------------- Índice de etiquetas (prefer memoria) ---------------------- */
+  const [tagIndex, setTagIndex] = React.useState<TagsIndex | null>(tagsData ?? null);
+  React.useEffect(() => {
+    if (tagsData) { setTagIndex(tagsData); return; }
+    let alive = true;
+    fetch(tagsUrl, { cache: "force-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (alive && j) setTagIndex(j as TagsIndex); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [tagsUrl, tagsData]);
+
+  /* ------------------------- Personas (según índice) ------------------------- */
+  const personaIndex: PersonaIndex[] = React.useMemo(() => {
+    if (personas?.length) return personas;
+
+    if (tagIndex?.personas) {
+      const entries = Object.entries(tagIndex.personas) as Array<
+        [PersonaKey, { label: string; slugs: string[]; count: number }]
+      >;
+      return entries.map(([key, p]) => ({
+        key,
+        label: p.label,
+        count: p.count,
+        slugs: p.slugs,
+      }));
+    }
+
+    // Fallback aproximado por tags
+    const by = (pred: (a: ClientArticle) => boolean): string[] =>
+      articles.filter(pred).map((a) => a.slug);
+    const hasAny = (a: ClientArticle, keys: string[]) => {
+      const tagset = (a.tags ?? []).map(normTag);
+      return keys.some((k) => tagset.includes(k));
+    };
+
+    const families = by((a) => hasAny(a, ["financial-planning", "wealth-building", "mortgages"]));
+    const professionals = by((a) => hasAny(a, ["financial-planning", "wealth-building", "tax-planning"]));
+    const newcomers = by((a) => hasAny(a, ["newcomers", "mortgages", "financial-planning"]));
+    const entrepreneurs = by((a) => hasAny(a, ["entrepreneurs", "tax-planning", "financial-planning"]));
+    const investors = by((a) => hasAny(a, ["real-estate-investing", "mortgages", "wealth-building"]));
+    const holistic = by((a) => hasAny(a, ["holistic-approach", "human-design", "financial-planning"]));
+
+    const mk = (key: PersonaKey, label: string, slugs: string[]) => ({
+      key,
+      label,
+      count: slugs.length,
+      slugs,
+    });
+
+    return [
+      mk("families", "Familias y Parejas", families),
+      mk("professionals", "Profesionales", professionals),
+      mk("newcomers", "Recién Llegados", newcomers),
+      mk("entrepreneurs", "Emprendedores y Autónomos", entrepreneurs),
+      mk("investors", "Inversionistas Inmobiliarios", investors),
+      mk("holistic", "Holístico y Diseño Humano", holistic),
+    ];
+  }, [articles, personas, tagIndex]);
+
+  /* ------------------------- Filtros rápidos (curados) ------------------------- */
+  const [quickKeys, setQuickKeys] = React.useState<Set<string>>(new Set());
+  const toggleQuick = React.useCallback((k: string) => {
+    setQuickKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k); else next.add(k);
+      return next;
+    });
+  }, []);
+  const clearQuick = React.useCallback(() => setQuickKeys(new Set()), []);
+
+  const quickTagSet = React.useMemo(() => {
+    const all = [...OBJETIVOS, ...EVENTOS];
+    const picked = all.filter((q) => quickKeys.has(q.key));
+    const tags = picked.flatMap((q) => q.tags);
+    return new Set(tags.map(normTag));
+  }, [quickKeys]);
+
+  /* ---------------------------- Cajón de filtros ---------------------------- */
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerSelectedTags, setDrawerSelectedTags] = React.useState<Set<string>>(new Set());
+  const toggleTag = React.useCallback((k: string) => {
+    setDrawerSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
+  }, []);
+  const clearTags = React.useCallback(() => setDrawerSelectedTags(new Set()), []);
+  const allSelectedTagKeys = React.useMemo(
+    () => new Set<string>([...quickTagSet, ...drawerSelectedTags]),
+    [quickTagSet, drawerSelectedTags]
+  );
+
+  /* ------------------------------ Búsqueda + orden ------------------------------ */
+  function scoreArticle(a: ClientArticle, qset: Set<string>, phrase: string) {
+    if (qset.size === 0) return 0;
+    const hayTitle = deburr(`${a.title}`.toLowerCase());
+    const hayTags = deburr(((a.tags ?? []).join(" ")).toLowerCase());
+    const hayMeta = deburr(`${a.excerpt ?? ""} ${a.summary ?? ""} ${a.category ?? ""}`.toLowerCase());
+    const hayAll = `${hayTitle} ${hayTags} ${hayMeta}`;
+    let score = 0;
+    for (const t of qset) {
+      if (hayTitle.includes(t)) score += 6;
+      if (hayTags.includes(t)) score += 3;
+      if (hayMeta.includes(t)) score += 2;
+    }
+    if (phrase && hayAll.includes(phrase)) score += 2;
+    return score;
+  }
+
+  const filtered = React.useMemo(() => {
+    let rows = [...articles];
+
+    // Persona
+    if (selectedPersona !== "all") {
+      const persona = personaIndex.find((p) => p.key === selectedPersona);
+      const set = new Set(persona?.slugs ?? []);
+      rows = rows.filter((a) => set.has(a.slug));
+    }
+
+    // Guardados
+    if (selectedMode === "Guardados") rows = rows.filter((a) => savedSlugs.has(a.slug));
+
+    // Tags seleccionados (rápidos + cajón)
+    if (allSelectedTagKeys.size > 0) {
+      rows = rows.filter((a) => {
+        const tset = (a.tags ?? []).map(normTag);
+        for (const k of allSelectedTagKeys) if (tset.includes(k)) return true;
+        return false;
+      });
+    }
+
+    // Búsqueda con expansión
+    const q = query.trim();
+    const qset = expandQuery(q);
+    const phrase = deburr(q.toLowerCase());
+    if (q) {
+      const withScores = rows
+        .map((a) => ({ a, s: scoreArticle(a, qset, phrase) }))
+        .filter(({ s }) => s > 0);
+      rows = withScores
+        .sort((x, y) => (y.s !== x.s ? y.s - x.s : parseDate(y.a.date) - parseDate(x.a.date)))
+        .map(({ a }) => a);
+    }
+
+    // Orden
+    rows.sort((a, b) => {
+      if (sort === "az") return a.title.localeCompare(b.title, "es");
+      const ad = parseDate(a.date);
+      const bd = parseDate(b.date);
+      return sort === "new" ? bd - ad : ad - bd;
+    });
+
+    return rows;
+  }, [
+    articles,
+    query,
+    sort,
+    selectedMode,
+    savedSlugs,
+    selectedPersona,
+    personaIndex,
+    allSelectedTagKeys,
+  ]);
+
+  const hasActiveFilters =
+    query.trim() !== "" ||
+    selectedMode !== "Todo" ||
+    sort !== "new" ||
+    selectedPersona !== "all" ||
+    quickKeys.size > 0 ||
+    drawerSelectedTags.size > 0;
+
+  /* ------------------------------ Nav de secciones ------------------------------ */
+  const SECTIONS = [
+    { id: "overview", label: "Resumen" },
+    { id: "featured", label: "Destacados" },
+    { id: "browse", label: "Explorar Todo" },
+    { id: "faq", label: "Cómo Usar y Preguntas" },
+  ] as const;
+
+  function SectionNav() {
+    const [active, setActive] = React.useState<string>("overview");
+    React.useEffect(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          if (visible[0]) setActive(visible[0].target.id);
+        },
+        { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
+      );
+      SECTIONS.forEach((s) => {
+        const el = document.getElementById(s.id);
+        if (el) observer.observe(el);
+      });
+      return () => observer.disconnect();
+    }, []);
+    return (
+      <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
+        <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="En esta página">
+          {SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={[
+                "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
+                active === s.id
                   ? "bg-brand-green text-white border-brand-green"
-                  : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
-                }`}
-              onClick={() => setSelected("Todos")}
-              aria-pressed={selected === "Todos"}
+                  : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+              ].join(" ")}
             >
-              Todos
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`px-4 py-2 rounded-full font-semibold border shadow-sm transition
-                  ${selected === cat
-                    ? "bg-brand-green text-white border-brand-green"
-                    : "bg-brand-green/10 text-brand-green border-brand-green/30 hover:bg-brand-gold/30 hover:text-brand-blue"
-                  }`}
-                onClick={() => setSelected(cat)}
-                aria-pressed={selected === cat}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-          {/* Buscador */}
-          <input
-            className="mt-2 md:mt-0 px-4 py-2 rounded-xl border-2 border-brand-green focus:border-brand-blue w-full md:w-72 font-sans text-base"
-            type="text"
-            placeholder="Buscar artículos…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            aria-label="Buscar artículos"
-          />
-        </section>
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    );
+  }
 
-        {/* Grid de Artículos */}
-        <section className="mb-10">
-          <div className="grid md:grid-cols-3 gap-6">
-            {filteredArticles.length === 0 && (
-              <div className="md:col-span-3 text-center text-brand-blue font-semibold">
-                No se encontraron artículos.
-              </div>
-            )}
-            {filteredArticles.map((a, idx) => (
-              <div
-                key={a.slug ?? idx}
-                className="p-6 border border-brand-green/20 rounded-2xl bg-white shadow-md hover:shadow-xl transition flex flex-col"
+  /* --------------------------------- Render --------------------------------- */
+  return (
+    <main className="bg-brand-beige min-h-screen pb-16">
+      <SectionNav />
+
+      {/* HERO / RESUMEN */}
+      <section id="overview" className="pt-10 px-4 scroll-mt-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <Panel>
+            <SectionTitle
+              title="Artículos y Guías Útiles"
+              subtitle={
+                <>
+                  Lecturas cortas y prácticas sobre hipotecas, comportamiento del dinero e impuestos,
+                  pensadas para familias y profesionales con poco tiempo. Guarda lo que necesites,
+                  comparte enlaces y contáctanos cuando quieras un plan personal.
+                </>
+              }
+              id="overview"
+              level="h1"
+            />
+
+            {/* CTAs */}
+            <div className="mt-2 flex flex-wrap items-center gap-3 justify-center">
+              <Link
+                href={ctaHref}
+                className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
               >
-                <h3 className="font-bold font-serif mb-2 text-lg text-brand-green">
-                  {a.title}
-                </h3>
-                <p className="mb-3 text-brand-green/90 text-sm flex-1">{a.summary}</p>
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="text-xs text-brand-blue bg-brand-gold/20 rounded-full px-3 py-1">{a.category}</span>
-                  <Link href={`/es/recursos/${a.slug}`}>
-                    <span className="text-brand-blue font-semibold hover:underline cursor-pointer" tabIndex={0}>
-                      Leer más
-                    </span>
-                  </Link>
+                Habla con Fanny
+              </Link>
+              <Link
+                href={newsletterHref}
+                className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              >
+                Recibir el Boletín
+              </Link>
+            </div>
+
+            {/* Personas */}
+            <div className="mt-6 flex flex-wrap gap-2 justify-center">
+              <button
+                onClick={() => setSelectedPersona("all")}
+                className={[
+                  "px-3 py-1.5 rounded-full border text-sm transition",
+                  selectedPersona === "all"
+                    ? "bg-brand-green text-white border-brand-green"
+                    : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                ].join(" ")}
+              >
+                Todas las personas
+              </button>
+              {personaIndex.map((p) => (
+                <button
+                  key={p.key}
+                  onClick={() => setSelectedPersona(p.key)}
+                  className={[
+                    "px-3 py-1.5 rounded-full border text-sm transition",
+                    selectedPersona === p.key
+                      ? "bg-brand-green text-white border-brand-green"
+                      : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                  ].join(" ")}
+                >
+                  {p.label} {p.count > 0 && <span className="opacity-70">({p.count})</span>}
+                </button>
+              ))}
+            </div>
+
+            {/* Controles */}
+            <div className="mt-8 grid gap-4 md:grid-cols-[1fr,auto,auto]">
+              {/* Buscar */}
+              <div>
+                <label className="sr-only" htmlFor="search">Buscar</label>
+                <input
+                  id="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Busca temas: hipoteca, RRSP, flujo de caja…"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                />
+              </div>
+
+              {/* Orden / Vista / Reset */}
+              <div className="flex gap-2">
+                <label className="sr-only" htmlFor="sort">Ordenar</label>
+                <select
+                  id="sort"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as any)}
+                  className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                >
+                  <option value="new">Más nuevos primero</option>
+                  <option value="old">Más antiguos primero</option>
+                  <option value="az">A–Z</option>
+                </select>
+
+                <div className="isolate inline-flex rounded-xl overflow-hidden border-2 border-brand-green/30">
+                  <button
+                    type="button"
+                    onClick={() => setView("grid")}
+                    className={[
+                      "px-3 py-3 text-sm",
+                      view === "grid" ? "bg-brand-green text-white" : "bg-white text-brand-green",
+                    ].join(" ")}
+                    aria-pressed={view === "grid"}
+                  >
+                    Cuadrícula
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setView("list")}
+                    className={[
+                      "px-3 py-3 text-sm border-l-2 border-brand-green/30",
+                      view === "list" ? "bg-brand-green text-white" : "bg-white text-brand-green",
+                    ].join(" ")}
+                    aria-pressed={view === "list"}
+                  >
+                    Lista
+                  </button>
+
+                  {hasActiveFilters && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery("");
+                        setSelectedMode("Todo");
+                        setSort("new");
+                        setSelectedPersona("all");
+                        clearQuick();
+                        clearTags();
+                      }}
+                      className="ml-2 px-4 py-3 rounded-xl border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition"
+                      aria-label="Limpiar filtros"
+                    >
+                      Reset
+                    </button>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Explorar todos */}
-        <div className="text-center mt-12">
-          <Link href="#">
-            <button
-              type="button"
-              className="px-10 py-4 bg-brand-green text-white font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-brand-gold transition tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
-              aria-label="Explorar todos los recursos"
+              {/* Guardados / Cajón */}
+              <div className="flex gap-2">
+                <div className="isolate inline-flex rounded-xl overflow-hidden border-2 border-brand-green/30">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMode("Todo")}
+                    className={["px-3 py-3 text-sm", selectedMode === "Todo" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")}
+                  >
+                    Todo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMode("Guardados")}
+                    className={["px-3 py-3 text-sm border-l-2 border-brand-green/30", selectedMode === "Guardados" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")}
+                  >
+                    Guardados {savedCount > 0 && <span className="opacity-80">({savedCount})</span>}
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDrawerOpen(true)}
+                  className="px-4 py-3 rounded-xl border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition text-sm"
+                >
+                  Más filtros {(drawerSelectedTags.size > 0 || quickKeys.size > 0) && <span className="opacity-80">({drawerSelectedTags.size + quickKeys.size})</span>}
+                </button>
+              </div>
+            </div>
+
+            {/* Filtros rápidos: Objetivos */}
+            <div className="mt-6">
+              <div className="mb-2 text-sm font-semibold text-brand-green">Objetivos</div>
+              <div className="flex flex-wrap gap-2">
+                {OBJETIVOS.map((g) => {
+                  const active = quickKeys.has(g.key);
+                  return (
+                    <button
+                      key={g.key}
+                      onClick={() => toggleQuick(g.key)}
+                      className={[
+                        "px-3 py-1.5 rounded-full border text-sm transition",
+                        active ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                      ].join(" ")}
+                      aria-pressed={active}
+                    >
+                      {g.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Filtros rápidos: Eventos de vida */}
+            <div className="mt-4">
+              <div className="mb-2 text-sm font-semibold text-brand-green">Eventos de vida</div>
+              <div className="flex flex-wrap gap-2">
+                {EVENTOS.map((g) => {
+                  const active = quickKeys.has(g.key);
+                  return (
+                    <button
+                      key={g.key}
+                      onClick={() => toggleQuick(g.key)}
+                      className={[
+                        "px-3 py-1.5 rounded-full border text-sm transition",
+                        active ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                      ].join(" ")}
+                      aria-pressed={active}
+                    >
+                      {g.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* DESTACADOS */}
+      {(() => {
+        const defaults = [
+          "5-steps-to-financial-freedom",
+          "smart-money-newcomers-canada-2025",
+          "wealth-with-confidence-women-toronto-2025",
+          "buying-your-first-multi-unit-property",
+          "rent-vs-buy-toronto-2025",
+        ];
+        const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
+          articles.some((a) => a.slug === slug)
+        );
+        const map = new Map(articles.map((a) => [a.slug, a]));
+        const featured = chosen.map((s) => map.get(s)!).filter(Boolean);
+
+        return featured.length > 0 ? (
+          <section id="featured" className="px-4 mt-8 scroll-mt-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}
             >
-              Explorar todos los recursos
+              <Panel className="bg-white">
+                <div className="flex items-baseline justify-between mb-4">
+                  <h2 className="font-serif text-2xl text-brand-green font-bold">Empieza aquí</h2>
+                  <span className="text-sm text-brand-body/70">Guías curadas para recorridos comunes</span>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {featured.map((a) => (
+                    <ArticleCard
+                      key={`feat-${a.slug}`}
+                      article={a}
+                      saved={savedSlugs.has(a.slug)}
+                      onToggleSave={() => toggleSave(a.slug)}
+                    />
+                  ))}
+                </div>
+              </Panel>
+            </motion.div>
+          </section>
+        ) : null;
+      })()}
+
+      {/* RESULTADOS */}
+      <section id="browse" className="px-4 mt-8 scroll-mt-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+        >
+          <Panel>
+            <div className="flex items-baseline justify-between mb-6">
+              <h2 className="font-serif text-2xl text-brand-green font-bold">
+                {selectedMode === "Todo" ? "Todos los Recursos" : "Guardados"}
+                {(quickKeys.size > 0 || drawerSelectedTags.size > 0) && (
+                  <span className="ml-2 text-base text-brand-body/70">
+                    • {quickKeys.size + drawerSelectedTags.size} filtro{quickKeys.size + drawerSelectedTags.size === 1 ? "" : "s"}
+                  </span>
+                )}
+              </h2>
+              <div className="text-brand-body/80 text-sm">
+                {filtered.length} {filtered.length === 1 ? "artículo" : "artículos"}
+              </div>
+            </div>
+
+            {filtered.length === 0 ? (
+              <EmptyState
+                query={query}
+                onClear={() => {
+                  setQuery("");
+                  setSelectedMode("Todo");
+                  setSort("new");
+                  setSelectedPersona("all");
+                  clearQuick();
+                  clearTags();
+                }}
+                ctaHref={ctaHref}
+              />
+            ) : view === "grid" ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {filtered.map((a) => (
+                  <ArticleCard
+                    key={a.slug}
+                    article={a}
+                    saved={savedSlugs.has(a.slug)}
+                    onToggleSave={() => toggleSave(a.slug)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="divide-y divide-brand-gold/40 bg-white/70 rounded-2xl border border-brand-gold">
+                {filtered.map((a) => (
+                  <ListRow
+                    key={`row-${a.slug}`}
+                    article={a}
+                    saved={savedSlugs.has(a.slug)}
+                    onToggleSave={() => toggleSave(a.slug)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Bloque de ayuda */}
+            <div className="mt-12 rounded-2xl border border-brand-gold bg-neutral-50 p-6">
+              <h3 className="text-base font-serif font-bold text-brand-green">
+                ¿No encuentras justo lo que necesitas?
+              </h3>
+              <p className="mt-1 text-sm text-brand-blue/90">
+                Cuéntanos en qué estás trabajando y te recomendaremos la herramienta adecuada—o la creamos para ti.
+              </p>
+              <div className="mt-4">
+                <Link
+                  href={ctaHref}
+                  className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                >
+                  Solicitar un Recurso
+                </Link>
+              </div>
+            </div>
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="px-4 mt-8 scroll-mt-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.18 }}
+        >
+          <Panel>
+            <SectionTitle
+              title="Cómo Usar y Preguntas"
+              subtitle="Consejos rápidos para buscar, guardar, imprimir y compartir."
+              id="faq"
+            />
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Buscar y Filtrar</h3>
+                <p className="text-brand-blue/90 text-sm">
+                  Usa la barra de búsqueda, elige una persona y aplica uno o dos filtros rápidos. Abre <em>Más filtros</em> para ver la lista completa.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Guardar para Después</h3>
+                <p className="text-brand-blue/90 text-sm">
+                  Pulsa <strong>Guardar</strong> en cualquier artículo para tenerlo a mano en este dispositivo.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Compartir</h3>
+                <p className="text-brand-blue/90 text-sm">
+                  Envía un enlace con el botón <strong>Compartir</strong>—usa el sistema nativo de tu dispositivo.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Habla con Fanny</h3>
+                <p className="text-brand-blue/90 text-sm">
+                  ¿Lista/o para un plan personal? Usa el botón verde para reservar una consulta privada.
+                </p>
+              </div>
+            </div>
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* Cajón de Filtros (lista completa, con búsqueda) */}
+      <FilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        tags={tagIndex?.tags ?? {}}
+        selected={drawerSelectedTags}
+        toggleTag={toggleTag}
+        clearTags={clearTags}
+      />
+    </main>
+  );
+}
+
+/* ============================== Cajón de Filtros ============================== */
+function FilterDrawer({
+  open,
+  onClose,
+  tags,
+  selected,
+  toggleTag,
+  clearTags,
+}: {
+  open: boolean;
+  onClose: () => void;
+  tags: Record<string, { count: number; slugs: string[] }>;
+  selected: Set<string>;
+  toggleTag: (key: string) => void;
+  clearTags: () => void;
+}) {
+  const [q, setQ] = React.useState("");
+  React.useEffect(() => { if (!open) setQ(""); }, [open]);
+
+  const list = React.useMemo(() => {
+    const entries = Object.entries(tags);
+    if (!q.trim()) return entries.sort((a, b) => (b[1]?.count ?? 0) - (a[1]?.count ?? 0));
+    const needle = q.trim().toLowerCase();
+    return entries
+      .filter(([k]) => k.includes(needle))
+      .sort((a, b) => (b[1]?.count ?? 0) - (a[1]?.count ?? 0));
+  }, [q, tags]);
+
+  if (!open) return null;
+
+  return (
+    <div role="dialog" aria-modal="true" aria-labelledby="filter-heading" className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="absolute right-0 top-0 h-full w-full sm:w-[520px] bg-white shadow-xl border-l border-brand-gold overflow-hidden">
+        <div className="p-5 border-b border-brand-gold/50 flex items-center justify-between">
+          <h2 id="filter-heading" className="font-serif text-xl text-brand-green font-bold">Filtros</h2>
+          <button onClick={onClose} className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm">Listo</button>
+        </div>
+
+        <div className="p-5 space-y-5 h-[calc(100%-60px)] overflow-auto">
+          <div>
+            <label htmlFor="tag-search" className="sr-only">Buscar etiquetas</label>
+            <input
+              id="tag-search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Busca etiquetas…"
+              className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-brand-body/80">{selected.size} seleccionadas</div>
+            <div className="flex gap-2">
+              <button type="button" onClick={clearTags} className="px-3 py-1.5 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition text-sm">Limpiar</button>
+              <button type="button" onClick={onClose} className="px-3 py-1.5 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition text-sm">Aplicar</button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {list.map(([key, obj]) => {
+              const id = `tag-${key}`;
+              const checked = selected.has(key);
+              return (
+                <label key={key} htmlFor={id} className={["flex items-center gap-2 px-3 py-2 rounded-xl border", checked ? "bg-brand-green/10 border-brand-green" : "border-brand-gold/40"].join(" ")}>
+                  <input id={id} type="checkbox" checked={checked} onChange={() => toggleTag(key)} className="h-4 w-4 accent-brand-green" />
+                  <span className="text-sm text-brand-green flex-1">{titleCase(key)}</span>
+                  <span className="text-xs text-brand-body/70">{obj.count ?? 0}</span>
+                </label>
+              );
+            })}
+            {list.length === 0 && <div className="text-sm text-brand-body/70 italic col-span-full">Sin resultados para “{q}”.</div>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================== Tarjetas ============================== */
+
+function ArticleCard({
+  article,
+  saved,
+  onToggleSave,
+}: {
+  article: ClientArticle;
+  saved: boolean;
+  onToggleSave: () => void;
+}) {
+  const href = `/es/recursos/${article.slug}`;
+  const dateStr = article.date
+    ? new Date(parseDate(article.date)).toLocaleDateString("es-CA", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
+
+  const minutes = rt(article.readingTime);
+  const blurb = getBlurb(article);
+
+  const maxTags = 3;
+  const tags = Array.isArray(article.tags) ? article.tags.slice(0, maxTags) : [];
+  const extraCount =
+    Array.isArray(article.tags) && article.tags.length > maxTags
+      ? article.tags.length - maxTags
+      : 0;
+
+  const img = getImg(article);
+  const hasImg = Boolean(img);
+
+  const share = async () => {
+    const url =
+      typeof window !== "undefined"
+        ? new URL(href, window.location.origin).toString()
+        : href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: article.title, url });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        alert("Enlace copiado al portapapeles");
+      }
+    } catch {}
+  };
+
+  return (
+    <article className={CARD + " overflow-hidden min-h-[420px] flex flex-col"}>
+      {/* Media */}
+      <div className="relative aspect-[16/9] bg-gradient-to-br from-brand-blue/10 via-brand-gold/15 to-brand-green/10">
+        {hasImg ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={img as string}
+            alt={article.title}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 border border-brand-gold text-brand-green font-serif text-lg">
+              {initials(article.category)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center gap-2 text-sm mb-2">
+          {article.category && <TagBadge>{article.category}</TagBadge>}
+          {minutes && <TagBadge>{minutes}</TagBadge>}
+          {dateStr && <time className="text-brand-body/70 ml-auto">{dateStr}</time>}
+        </div>
+
+        <h3 className="font-serif text-xl md:text-2xl text-brand-blue font-bold mb-2 leading-snug">
+          <Link href={href} className="hover:underline">
+            {article.title}
+          </Link>
+        </h3>
+
+        {blurb && <p className="text-brand-body mb-3 line-clamp-3">{blurb}</p>}
+
+        {(tags.length > 0 || extraCount > 0) && (
+          <div className="mt-auto pt-2 flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <span
+                key={t}
+                className="text-xs px-2.5 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30"
+              >
+                #{t}
+              </span>
+            ))}
+            {extraCount > 0 && (
+              <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-green/40">
+                +{extraCount} más
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link href={href} className="inline-block">
+            <button
+              className="px-6 py-2 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow hover:bg-brand-blue hover:text-white transition"
+              onClick={() => {
+                try {
+                  const key = "resource:recent";
+                  const raw = localStorage.getItem(key);
+                  const list: string[] = raw ? JSON.parse(raw) : [];
+                  const next = [article.slug, ...list.filter((s) => s !== article.slug)].slice(0, 20);
+                  localStorage.setItem(key, JSON.stringify(next));
+                } catch {}
+              }}
+            >
+              Leer Artículo
             </button>
           </Link>
+
+          <button
+            type="button"
+            onClick={share}
+            className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition text-sm"
+          >
+            Compartir
+          </button>
+
+          <button
+            type="button"
+            onClick={onToggleSave}
+            aria-label={saved ? "Quitar de guardados" : "Guardar para después"}
+            className={[
+              "px-4 py-2 rounded-full border-2 transition text-sm",
+              saved
+                ? "border-brand-blue bg-brand-blue text-white"
+                : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white",
+            ].join(" ")}
+          >
+            {saved ? "Guardado ★" : "Guardar ☆"}
+          </button>
         </div>
-      </section>
-    </main>
+      </div>
+    </article>
+  );
+}
+
+function ListRow({
+  article,
+  saved,
+  onToggleSave,
+}: {
+  article: ClientArticle;
+  saved: boolean;
+  onToggleSave: () => void;
+}) {
+  const href = `/es/recursos/${article.slug}`;
+  const minutes = rt(article.readingTime);
+  const dateStr = article.date
+    ? new Date(parseDate(article.date)).toLocaleDateString("es-CA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
+  const tags = (article.tags ?? []).slice(0, 4);
+
+  return (
+    <div className="flex items-center gap-4 p-4">
+      {/* Miniatura */}
+      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0">
+        {getImg(article) ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={getImg(article) as string}
+            alt={article.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-brand-green font-serif">{initials(article.category)}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Texto */}
+      <div className="flex-1 min-w-0">
+        <Link href={href} className="block">
+          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline truncate">
+            {article.title}
+          </h3>
+        </Link>
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+          {article.category && <TagBadge>{article.category}</TagBadge>}
+          {minutes && <span className="text-brand-body/80">{minutes}</span>}
+          {dateStr && <time className="text-brand-body/60">{dateStr}</time>}
+          {tags.map((t) => (
+            <span
+              key={t}
+              className="text-xs px-2 py-0.5 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30"
+            >
+              #{t}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Acciones */}
+      <div className="flex items-center gap-2 shrink-0">
+        <Link
+          href={href}
+          className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm"
+        >
+          Leer
+        </Link>
+        <button
+          type="button"
+          onClick={onToggleSave}
+          className={[
+            "px-3 py-1.5 rounded-full border text-sm",
+            saved
+              ? "border-brand-blue bg-brand-blue text-white"
+              : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white",
+          ].join(" ")}
+        >
+          {saved ? "Guardado" : "Guardar"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  query,
+  onClear,
+  ctaHref,
+}: {
+  query: string;
+  onClear: () => void;
+  ctaHref: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-brand-green/30 p-8 text-center">
+      <p className="text-brand-body">
+        Sin resultados para <span className="font-semibold">“{query}”</span>.
+      </p>
+      <p className="mt-2 text-sm text-brand-body/80">
+        Prueba un objetivo como <em>Comprar vivienda</em> o abre <em>Más filtros</em>.
+      </p>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={onClear}
+          className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+        >
+          Limpiar filtros
+        </button>
+        <Link
+          href={ctaHref}
+          className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+        >
+          Pedir una recomendación
+        </Link>
+      </div>
+    </div>
   );
 }

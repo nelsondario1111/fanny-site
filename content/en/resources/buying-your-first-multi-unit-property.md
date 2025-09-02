@@ -1,111 +1,95 @@
 ---
-title: "Buying Your First Multi-Unit Property (4–10 Units): A Holistic Guide"
-summary: "Everything you need to know about investing in small rental buildings — the mindful way, for first-time buyers, newcomers, and everyday Canadians."
-category: "Real Estate"
-date: "2025-06-04"
-author: "Fanny Samaniego"
-image: "/First-Multi-Unit-Property.png"
+title: 'Buying Your First 4–10 Unit Property: Calm, Clear, Doable'
+summary: Step-by-step guidance for Toronto professionals and families investing in
+  4–10 unit properties — with safe conditions, clear math, and peace of mind.
+category: Real Estate Investment
+date: '2025-08-14'
+updated: '2025-08-27'
+author: Fanny Samaniego — Mortgage Agent Level 2 & Holistic Financial Coach
+slug: buying-your-first-multi-unit-property
+tags:
+- real-estate
+- multiplex-investing
+- mortgage-planning
+- investing
+- toronto
+lang: en
+image: /images/resources/buying-your-first-multi-unit-property/card.jpg
+hero: /images/resources/buying-your-first-multi-unit-property/hero.jpg
+heroAlt: Bright Toronto street view beyond a calm desk with a building sketch and
+  calculator, symbolizing multifamily investing
 ---
 
-![Buying Your First Multi-Unit Property](/First-Multi-Unit-Property.png)
+I’m Fanny — a heart-centered financial coach and licensed Mortgage Agent (Level 2) in Toronto. Many clients I work with are professionals or families seeking to expand into small apartment buildings (4–10 units) as part of their wealth strategy.
 
-Everything you need to know about investing in small rental buildings — the mindful way.
+This guide gives you practical steps, clean math, and safe conditions so you can move confidently from “curious” to “owner.”
 
-For many aspiring homeowners and investors in Toronto, the dream isn’t just about owning property — it’s about creating financial freedom, building community, and doing it in a way that aligns with your values.
+> My approach: numbers + nervous-system calm. Decisions that fit your life — not someone else’s spreadsheet.
 
-That’s where multi-unit properties come in.
+- Book your free discovery call: [/en/contact](/en/contact)
 
-Buying your first fourplex or other 4–10 unit residential building is one of the smartest — yet most misunderstood — paths to financial growth. As both a heart-centered financial coach and a licensed Mortgage Agent, I specialize in guiding first-time buyers through this unique journey. And as an immigrant myself, I’m especially passionate about helping newcomers and everyday Canadians access wealth-building tools that were once reserved for the few.
+## Quick Check (60 Seconds Before Falling in Love)
 
-If you’ve been thinking about owning a small rental building, this guide is for you.
+**Core Formulas:**
+- **GMR:** total rent from all units  
+- **OPEX:** taxes, insurance, utilities you pay, maintenance, lawn/snow, garbage, mgmt fees (estimate **35–45% of GMR** if unknown)  
+- **NOI:** GMR − OPEX  
+- **ADS:** annual debt service = mortgage payment × 12  
+- **Cash Flow:** NOI − ADS (build a cushion)  
+- **DSCR:** NOI ÷ ADS → target **≥ 1.20**  
+- **Cap Rate:** (NOI ÷ Price) × 100
 
----
+If DSCR < 1.0 or cash flow is negative, pause and renegotiate or revisit expenses.
 
-## Why Multi-Unit Properties Are Toronto’s Hidden Gem
+## 1) Choose Your Investment Strategy
 
-While the headlines often focus on condos or single-family homes, the real opportunity lies in Toronto’s “missing middle” — multi-unit buildings that offer:
+House-hack (live in one unit), pure investment (rent all), or stabilize & improve (safety/systems).  
+If you value flexibility and learning, house-hack; if you want separation, budget for management.
 
-✅ Rental income to offset your mortgage  
-✅ House hacking (live in one unit, rent out the others)  
-✅ Long-term appreciation in a growing city  
-✅ More affordability per unit than buying several homes  
-✅ Community impact by offering fair housing to local families
+## 2) Build Your Financing Plan
 
-In Ontario, buildings with up to 6 units often qualify for residential financing — making them easier to access than commercial real estate.
+Typical down payment: **20–25%**. Lenders stress-test rates.  
+**Pre-approval checklist:** ID/SIN, income proof, down payment & closing cost proof, existing debts/taxes, draft rent roll with utility responsibilities. I’ll match you to the right lender and walk you from appraisal to close.
 
----
+## 3) Analyze the Building (Before You Offer)
 
-## 1. Start with a Clear, Holistic Vision
+Request **rent roll**, **12-month income/expense**, **fire/electrical reports**, **insurance declaration**, **service contracts**.
 
-Buying a fourplex or similar property isn’t just about returns — it’s about lifestyle, growth, and alignment. Before looking at listings, ask yourself:
+**Example:** 6 units @ $1,950 → **GMR $11,700/mo**; **OPEX @ 40% = $4,680/mo**; **NOI $7,020/mo ($84,240/yr)**; Price **$1.45M → Cap ≈ 5.8%**; **ADS ≈ $70k/yr → DSCR 1.20**; **Cash Flow ≈ $14,240/yr (~$198/unit/mo)**.  
+If tight, negotiate price/vendor credits or reduce OPEX (separate hydro, efficiency upgrades).
 
-- Do I want to live in one unit and rent the rest, or rent all units?
-- Am I comfortable being a landlord, or do I want support managing tenants?
-- How does this investment fit into my life goals — freedom, family, impact?
+## 4) Write a Safe Offer (Conditions Protect You)
 
-💡 *Tip: When your investment reflects your personal values, you’re more likely to succeed long-term.*
+Include **financing**, **inspection**, **review of leases/estoppel**, **insurance quote**, and **fire code/zoning comfort letters**.
 
----
+Email script to your agent:  
+> “We’d like to submit $___ subject to financing, inspection, review of leases/estoppel, and insurance. Please request utility/property-tax statements and recent fire/electrical reports. We’re aiming for a smooth, professional close.”
 
-## 2. Get Financially Grounded
+## 5) First 90 Days as a Landlord
 
-Multi-unit investing takes planning — but with the right guidance, it becomes empowering.
+**Pre-closing:** lawyer, insurance, utilities, maintenance.  
+**Days 1–7:** tenant intro letter; confirm rent payment, rules, emergency contact.  
+**Days 8–30:** safety upgrades; bookkeeping system.  
+**Days 31–90:** plan capital repairs; build a **3–6 month** reserve.
 
-As your coach and mortgage agent, I help you:
+**Welcome Note (sample):**  
+> “Hi, I’m Fanny (or your property manager). We value safe, respectful housing. Repairs: text/email ___. Emergencies: call ___. Rent due on __. Thank you for being part of this community.”
 
-📊 Understand your budget and cash flow  
-💳 Improve your credit profile for better rates  
-🧾 Plan for down payments (typically 20–25%)  
-🛠️ Prepare for maintenance and vacancy reserves
+## Risks & Mitigations
 
-Whether you’re employed, self-employed, or new to Canada, we’ll build a financial plan that works for your real life.
+Vacancy (keep **1 month/unit** in reserve; market early), unexpected repairs (prioritize safety + maintenance calendar), rate changes (underwrite conservatively; accelerate principal when rates dip).
 
----
+## Tools to Simplify
 
-## 3. Understand the Mortgage Process
+Cash-flow worksheet, property folder checklist, weekly 20-min review — available at [/en/tools](/en/tools).
 
-As a Mortgage Agent Level 2, I work with a wide network of lenders — from banks to private options — to find the right mortgage for your property and vision.
+## Work With Us
 
-Together, we will:
+Buying a small apartment building can feel overwhelming — but with the right math, scripts, and strategy, it’s calm, clear, and doable.
 
-✔️ Get pre-approved confidently  
-✔️ Compare rates and loan terms  
-✔️ Navigate documents, insurance, appraisals, and closing  
-✔️ Create a sustainable cash flow plan for your new property
+- Book your free discovery call: [/en/contact](/en/contact)  
+- Explore our Tools: [/en/tools](/en/tools)
 
-Throughout it all, I explain everything in plain, clear language — and in English or Spanish.
+Holistic. Bilingual. Toronto-based.
 
----
-
-## 4. Think Beyond the Purchase
-
-Owning a multi-unit property is just the beginning.
-
-I provide holistic support for:
-
-🧘‍♀️ New landlord coaching  
-🏠 Creating welcoming rental spaces  
-📈 Tracking income, expenses, and equity  
-💬 Quick support via WhatsApp voice notes and messages
-
-This isn’t just about transactions. It’s about building long-term, values-driven success.
-
----
-
-## 5. Build Wealth — and Community
-
-You’re not just buying a building. You’re planting seeds for the future — for yourself, your family, and your community.
-
-Whether you’re a newcomer, couple, or solo investor, you deserve to be supported every step of the way. I offer bilingual workshops, one-on-one sessions, and personalized guidance to help you feel empowered, not overwhelmed.
-
----
-
-## You Don’t Have to Do This Alone
-
-Whether you’re exploring your first investment, looking for the right mortgage, or seeking ongoing landlord support — I’m here to help, in English or Spanish.
-
-Let’s create a property plan that reflects your values, vision, and goals.
-
-👉 [Book your free discovery call today](/contact)
-
-Toronto-based. Bilingual. Heart-centered. Ready to walk with you.
+*Educational only. Not legal, tax, or individualized investment advice.*

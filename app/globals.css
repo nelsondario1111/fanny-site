@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------- Base color vars (kept minimal; Tailwind handles most theming) ---------- */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,35 +15,51 @@
   }
 }
 
+/* Apply system foreground/background only if you actually use these vars */
 body {
-  color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--foreground);
 }
 
-html, body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent;
+/* ---------- A11y focus ring helpers (optional, keep if you already use them) ---------- */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* ---------- Print helpers (kept very light) ---------- */
 @media print {
-  nav,
-  footer,
-  .print\:hidden,
-  .print\:hidden * {
-    display: none !important;
-  }
-  .print\:block {
-    display: block !important;
-  }
-  body {
-    background: #fff !important;
-    color: #171717 !important;
-  }
-  main, section, article, .max-w-xl, .max-w-5xl, .rounded-2xl, .rounded-3xl, .shadow, .shadow-xl {
-    background: #fff !important;
-    box-shadow: none !important;
-    border: none !important;
-  }
+  /* Ensure animated elements don’t hide in print */
+  .fade-in { animation: none !important; }
 }
 
+/* =======================================================================================
+   Safe fade-in animation (JS-gated)
+   ---------------------------------------------------------------------------------------
+   - Content is VISIBLE by default (no opacity:0 flash).
+   - Only animates once <html> has .js class, which your root layout adds before hydration.
+   - Respects prefers-reduced-motion.
+   - If JS fails or is disabled, content stays visible (no animation).
+   ======================================================================================= */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Visible baseline — do NOT hide by default */
+.fade-in {}
+
+/* Animate only after JS sets the .js flag on <html> */
+html.js .fade-in {
+  animation: fadeIn 0.6s ease-out both;
+  will-change: opacity;
+}
+
+/* No-JS / early render fallback: keep content visible */
+html:not(.js) .fade-in { animation: none !important; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { animation: none !important; }
 }

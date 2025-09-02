@@ -1,102 +1,926 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FaCalculator, FaHome, FaBook } from "react-icons/fa";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
+  FaFileExcel, FaFileCsv, FaPercent, FaBuilding, FaChartLine, FaBalanceScale,
+  FaMoneyBillWave, FaPiggyBank, FaRobot, FaSignInAlt, FaPrint, FaListUl, FaThLarge
+} from "react-icons/fa";
 
-export default function Tools() {
-  const pathname = usePathname();
-  const langPrefix = pathname.startsWith("/en") ? "/en" : "/es";
+/* ============================ Helpers de animación ============================ */
+const easing: number[] = [0.22, 1, 0.36, 1];
+function useAnims() {
+  const prefersReduced = useReducedMotion();
+  const fade = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
+    },
+  };
+  const fadeUp = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
+    },
+  };
+  const stagger = {
+    hidden: {},
+    visible: {
+      transition: prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 },
+    },
+  };
+  return { fade, fadeUp, stagger };
+}
+
+/* ================================= UI compartida ================================= */
+function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <section
+      className={[
+        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
+        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
+        className,
+      ].join(" ")}
+    >
+      {children}
+    </section>
+  );
+}
+
+function SectionTitle({
+  title,
+  subtitle,
+  id,
+  level = "h2",
+}: {
+  title: string;
+  subtitle?: ReactNode;
+  id: string;
+  level?: "h1" | "h2";
+}) {
+  const { fade, fadeUp } = useAnims();
+  const Tag = level as any;
+  return (
+    <div id={id} className="scroll-mt-24">
+      <motion.div
+        variants={fade}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className="text-center mb-6"
+      >
+        <motion.div variants={fadeUp}>
+          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+            {title}
+          </Tag>
+        </motion.div>
+        <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
+          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+        </motion.div>
+        {subtitle && (
+          <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+            {subtitle}
+          </motion.p>
+        )}
+      </motion.div>
+    </div>
+  );
+}
+
+function TagBadge({ children }: { children: ReactNode }) {
+  return (
+    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
+      {children}
+    </span>
+  );
+}
+
+const CARD =
+  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+
+/* ============================== Modelo de datos ============================== */
+type Categoria =
+  | "Hipoteca"
+  | "Planificación"
+  | "Inversionistas"
+  | "Plantillas"
+  | "Utilidades";
+
+type Tipo = "calculator" | "worksheet" | "utility";
+type CTA = { label: string; href: string; variant?: "primary" | "ghost" | "ghostGold" };
+
+type ToolItem = {
+  id: string;
+  title: string;
+  desc: string;
+  href: string;       // destino bajo /es/herramientas/*
+  category: Categoria;
+  type: Tipo;
+  icon: JSX.Element;
+  ctas?: CTA[];
+  extra?: JSX.Element;
+  tags?: string[];
+};
+
+/* ================================ Botones ================================ */
+const ButtonPrimary =
+  "px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition";
+const ButtonGhost =
+  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition";
+const ButtonGhostGold =
+  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition";
+
+/* ================================ Herramientas ================================ */
+/** IMPORTANTE: los href usan exactamente los nombres de carpeta que mostraste en la captura */
+const TOOLS: ToolItem[] = [
+  // ---- HIPOTECA / CIERRE ----
+  {
+    id: "impuesto-transferencia",
+    title: "Impuesto de Transferencia (ON + Toronto)",
+    desc: "Calcula el LTT de Ontario y el MLTT de Toronto, con reembolsos para primera compra.",
+    href: "/es/herramientas/impuesto-transferencia",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaPercent className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/impuesto-transferencia", variant: "primary" }],
+    tags: ["costos de cierre", "ontario", "toronto", "primer hogar"],
+  },
+  {
+    id: "costos-cierre",
+    title: "Costos de Cierre",
+    desc: "Legales, título, inspecciones, ajustes y opciones LTT/NRST donde apliquen.",
+    href: "/es/herramientas/costos-cierre",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaPiggyBank className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/costos-cierre", variant: "primary" }],
+    tags: ["cierre", "legal", "título", "nrst"],
+  },
+  {
+    id: "pago-inicial-seguro",
+    title: "Seguro por Pago Inicial (CMHC)",
+    desc: "Pago inicial mínimo, prima estimada de CMHC y elegibilidad asegurada.",
+    href: "/es/herramientas/pago-inicial-seguro",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaMoneyBillWave className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/pago-inicial-seguro", variant: "primary" }],
+    tags: ["pago inicial", "seguro", "cmhc"],
+  },
+
+  // ---- CALIFICACIÓN / ASEQUIBILIDAD ----
+  {
+    id: "prueba-esfuerzo",
+    title: "Asequibilidad y Prueba de Esfuerzo",
+    desc: "Verifica calificación con la tasa de *stress test* exigida por el gobierno.",
+    href: "/es/herramientas/prueba-esfuerzo",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaBalanceScale className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/prueba-esfuerzo", variant: "primary" }],
+    tags: ["calificación", "mqr", "gds", "tds"],
+  },
+  {
+    id: "asequibilidad-hipotecaria",
+    title: "Asequibilidad Hipotecaria (Rápida)",
+    desc: "Estimación rápida con tus ingresos, deudas y supuestos de tasa.",
+    href: "/es/herramientas/asequibilidad-hipotecaria",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaHome className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/asequibilidad-hipotecaria", variant: "primary" }],
+    tags: ["asequibilidad", "pre-calificación"],
+  },
+  {
+    id: "accesibilidad-hipotecaria",
+    title: "Accesibilidad Hipotecaria",
+    desc: "Variación lingüística disponible en el sitio para consistencia con SEO.",
+    href: "/es/herramientas/accesibilidad-hipotecaria",
+    category: "Hipoteca",
+    type: "calculator",
+    icon: <FaHome className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/accesibilidad-hipotecaria", variant: "primary" }],
+    tags: ["asequibilidad", "alternativa"],
+  },
+
+  // ---- PAGOS / PLANIFICACIÓN ----
+  {
+    id: "calculadora-hipotecaria",
+    title: "Calculadora Hipotecaria",
+    desc: "Pagos estimados en mensual, quincenal y semanal.",
+    href: "/es/herramientas/calculadora-hipotecaria",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaHome className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/calculadora-hipotecaria", variant: "primary" }],
+    tags: ["hipoteca", "pagos"],
+  },
+  {
+    id: "tabla-amortizacion",
+    title: "Tabla de Amortización y Prepagos",
+    desc: "Detalle mes a mes; impacto de prepagos; exportar resumen/tabla.",
+    href: "/es/herramientas/tabla-amortizacion",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaChartLine className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/tabla-amortizacion", variant: "primary" }],
+    tags: ["amortización", "prepagos", "csv"],
+  },
+  {
+    id: "penalidad-hipotecaria",
+    title: "Penalidad Hipotecaria",
+    desc: "Estimación simple de IRD o 3 meses de interés antes de refinanciar/romper plazo.",
+    href: "/es/herramientas/penalidad-hipotecaria",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaMoneyBillWave className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/penalidad-hipotecaria", variant: "primary" }],
+    tags: ["penalidad", "refinanciación"],
+  },
+
+  // ---- REFINANCIACIÓN / RENT VS BUY ----
+  {
+    id: "refinanciar-blend",
+    title: "Refinanciación y Blend & Extend",
+    desc: "Compara blend-and-extend vs. romper y refinanciar.",
+    href: "/es/herramientas/refinanciar-blend",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaBalanceScale className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/refinanciar-blend", variant: "primary" }],
+    tags: ["refi", "blend"],
+  },
+  {
+    id: "alquilar-vd-comprar",
+    title: "Alquilar vs Comprar",
+    desc: "Comparación lado a lado de flujo, egreso total y patrimonio al horizonte.",
+    href: "/es/herramientas/alquilar-vd-comprar", // slug EXACTO de la carpeta
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaCalculator className="text-brand-gold text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/alquilar-vd-comprar", variant: "primary" }],
+    tags: ["alquiler", "compra", "comparar"],
+  },
+
+  // ---- PRESUPUESTO / PATRIMONIO ----
+  {
+    id: "calculadora-presupuesto",
+    title: "Calculadora de Presupuesto",
+    desc: "Plan mensual realista (necesidades, deseos, ahorro/deuda).",
+    href: "/es/herramientas/calculadora-presupuesto",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaCalculator className="text-brand-gold text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/calculadora-presupuesto", variant: "primary" }],
+    tags: ["presupuesto", "flujo"],
+  },
+  {
+    id: "presupuesto-flujo",
+    title: "Flujo de Caja Personal",
+    desc: "Seguimiento de ingresos/egresos por categoría; exportar/impresión.",
+    href: "/es/herramientas/presupuesto-flujo",
+    category: "Planificación",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir hoja", href: "/es/herramientas/presupuesto-flujo", variant: "primary" }],
+    extra: (
+      <div className="flex flex-wrap gap-2 mt-3">
+        <a href="/tools/Budget_Cashflow_Pro.xlsx" download className={ButtonGhost} aria-label="Descargar Flujo de Caja XLSX">
+          <FaFileExcel aria-hidden /> XLSX
+        </a>
+        <a href="/tools/Budget_Cashflow_Pro.csv" download className={ButtonGhostGold} aria-label="Descargar Flujo de Caja CSV">
+          <FaFileCsv aria-hidden /> CSV
+        </a>
+      </div>
+    ),
+    tags: ["hoja", "csv", "xlsx"],
+  },
+  {
+    id: "patrimonio-neto",
+    title: "Patrimonio Neto (simple)",
+    desc: "Activos − pasivos en un vistazo.",
+    href: "/es/herramientas/patrimonio-neto",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaPiggyBank className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir herramienta", href: "/es/herramientas/patrimonio-neto", variant: "primary" }],
+    tags: ["patrimonio"],
+  },
+  {
+    id: "seguimiento-patrimonio",
+    title: "Seguimiento de Patrimonio",
+    desc: "Registros manuales y exportables de tu patrimonio.",
+    href: "/es/herramientas/seguimiento-patrimonio",
+    category: "Planificación",
+    type: "worksheet",
+    icon: <FaChartLine className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir herramienta", href: "/es/herramientas/seguimiento-patrimonio", variant: "primary" }],
+    tags: ["patrimonio", "tracking"],
+  },
+  {
+    id: "seguimiento-patrimonio-neto",
+    title: "Seguimiento de Patrimonio Neto",
+    desc: "Versionado con fechas, impresión y exportación.",
+    href: "/es/herramientas/seguimiento-patrimonio-neto",
+    category: "Planificación",
+    type: "worksheet",
+    icon: <FaChartLine className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [
+      { label: "Abrir Patrimonio", href: "/es/herramientas/seguimiento-patrimonio-neto", variant: "primary" },
+      { label: "Abrir Pago de Deudas", href: "/es/herramientas/deuda-bola-nieve", variant: "ghost" },
+    ],
+    tags: ["patrimonio", "deuda"],
+  },
+  {
+    id: "deuda-bola-nieve",
+    title: "Pago de Deudas (Bola de Nieve / Avalancha)",
+    desc: "Prioriza deudas, proyecta fechas de término y momentum.",
+    href: "/es/herramientas/deuda-bola-nieve",
+    category: "Planificación",
+    type: "calculator",
+    icon: <FaChartLine className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/deuda-bola-nieve", variant: "primary" }],
+    tags: ["deuda", "bola de nieve", "avalancha"],
+  },
+
+  // ---- INVERSIONISTAS ----
+  {
+    id: "flujo-de-caja-de-alquileres",
+    title: "Flujo de Caja de Alquileres",
+    desc: "Proyecta ingresos/gastos (vacancia, capex, gestión) para decisiones de *hold*.",
+    href: "/es/herramientas/flujo-de-caja-de-alquileres",
+    category: "Inversionistas",
+    type: "calculator",
+    icon: <FaBuilding className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/flujo-de-caja-de-alquileres", variant: "primary" }],
+    tags: ["renta", "noi", "dscr"],
+  },
+  {
+    id: "calculadora-dscr",
+    title: "Calculadora DSCR",
+    desc: "Cobertura de servicio de deuda para underwriting de 2–10 unidades.",
+    href: "/es/herramientas/calculadora-dscr",
+    category: "Inversionistas",
+    type: "calculator",
+    icon: <FaBalanceScale className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/calculadora-dscr", variant: "primary" }],
+    tags: ["dscr", "underwriting"],
+  },
+  {
+    id: "tasa-cap",
+    title: "Tasa de Capitalización (Cap Rate)",
+    desc: "Evalúa oportunidades con cap rate y *cash-on-cash*.",
+    href: "/es/herramientas/tasa-cap",
+    category: "Inversionistas",
+    type: "calculator",
+    icon: <FaChartLine className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir calculadora", href: "/es/herramientas/tasa-cap", variant: "primary" }],
+    tags: ["cap rate", "valoración"],
+  },
+
+  // ---- PLANTILLAS / CHECKLISTS ----
+  {
+    id: "lista-recien-llegados",
+    title: "Checklist Recién Llegados",
+    desc: "Banca, crédito, CRA, cobertura de salud y primeros pasos de hipoteca.",
+    href: "/es/herramientas/lista-recien-llegados",
+    category: "Plantillas",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/lista-recien-llegados", variant: "primary" }],
+    tags: ["nuevo en Canadá", "checklist"],
+  },
+  {
+    id: "lista-autonomos",
+    title: "Checklist Autónomos",
+    desc: "Documentos, ingresos y *add-backs* esperados por los prestamistas.",
+    href: "/es/herramientas/lista-autonomos",
+    category: "Plantillas",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/lista-autonomos", variant: "primary" }],
+    tags: ["autónomos", "checklist"],
+  },
+  {
+    id: "preparacion-hipoteca",
+    title: "Preparación Hipoteca",
+    desc: "Checklist de preaprobación: crédito, documentos y pago inicial.",
+    href: "/es/herramientas/preparacion-hipoteca",
+    category: "Plantillas",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/preparacion-hipoteca", variant: "primary" }],
+    extra: (
+      <div className="flex flex-wrap gap-2 mt-3">
+        <a href="/tools/Mortgage_Readiness_Pro.xlsx" download className={ButtonGhost} aria-label="Descargar Preparación Hipoteca XLSX">
+          <FaFileExcel aria-hidden /> XLSX
+        </a>
+        <a href="/tools/Mortgage_Readiness_Pro.csv" download className={ButtonGhostGold} aria-label="Descargar Preparación Hipoteca CSV">
+          <FaFileCsv aria-hidden /> CSV
+        </a>
+      </div>
+    ),
+    tags: ["preaprobación", "documentos"],
+  },
+  {
+    id: "preparacion-impuestos",
+    title: "Kit de Impuestos",
+    desc: "Lista de documentos y calendario de temporada fiscal.",
+    href: "/es/herramientas/preparacion-impuestos",
+    category: "Plantillas",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/preparacion-impuestos", variant: "primary" }],
+    extra: (
+      <div className="flex flex-wrap gap-2 mt-3">
+        <a href="/tools/Tax_Prep_Pro.xlsx" download className={ButtonGhost} aria-label="Descargar Kit Impuestos XLSX">
+          <FaFileExcel aria-hidden /> XLSX
+        </a>
+        <a href="/tools/Tax_Prep_Pro.csv" download className={ButtonGhostGold} aria-label="Descargar Kit Impuestos CSV">
+          <FaFileCsv aria-hidden /> CSV
+        </a>
+      </div>
+    ),
+    tags: ["impuestos", "checklist"],
+  },
+  {
+    id: "preparacion-multiplex",
+    title: "Preparación Multiplex (4–10 Uds.)",
+    desc: "Rent roll, estado operativo, impuestos/servicios, seguro y *underwriting* básico.",
+    href: "/es/herramientas/preparacion-multiplex",
+    category: "Plantillas",
+    type: "worksheet",
+    icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/preparacion-multiplex", variant: "primary" }],
+    tags: ["multiplex", "checklist"],
+  },
+
+  // ---- OTRAS UTILIDADES ----
+  {
+    id: "asistente",
+    title: "Asistente",
+    desc: "Asistente IA para dudas rápidas sobre tus números.",
+    href: "/es/herramientas/asistente",
+    category: "Utilidades",
+    type: "utility",
+    icon: <FaRobot className="text-brand-blue text-2xl" aria-hidden />,
+    ctas: [{ label: "Abrir herramienta", href: "/es/herramientas/asistente", variant: "primary" }],
+    tags: ["ai", "asistente"],
+  },
+];
+
+/* =============================== Filtros =============================== */
+const TIPOS: { key: "all" | Tipo; label: string }[] = [
+  { key: "all", label: "Todos los tipos" },
+  { key: "calculator", label: "Calculadoras" },
+  { key: "worksheet", label: "Hojas / Checklists" },
+  { key: "utility", label: "Utilidades" },
+];
+
+const CATS: Categoria[] = ["Hipoteca", "Planificación", "Inversionistas", "Plantillas", "Utilidades"];
+
+function matchesQuery(t: ToolItem, q: string) {
+  if (!q) return true;
+  const hay = (t.title + " " + t.desc + " " + (t.tags || []).join(" ")).toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+/* ======================== Subnavegación pegajosa ======================== */
+const SECTIONS = [
+  { id: "resumen", label: "Resumen" },
+  { id: "hipoteca", label: "Hipoteca" },
+  { id: "planificacion", label: "Planificación" },
+  { id: "inversionistas", label: "Inversionistas" },
+  { id: "plantillas", label: "Plantillas" },
+  { id: "utilidades", label: "Utilidades" },
+  { id: "faq", label: "Cómo usar & Avisos" },
+] as const;
+
+function SectionNav() {
+  const [active, setActive] = useState<string>("resumen");
+  const refs = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
+    );
+
+    SECTIONS.forEach((s) => {
+      const el = document.getElementById(s.id);
+      refs.current[s.id] = el;
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <main className="bg-brand-beige min-h-screen py-12 px-2">
-      {/* Tarjeta Principal */}
-      <section className="max-w-5xl mx-auto bg-white/90 rounded-3xl shadow-xl p-10 border border-brand-gold mb-16">
-        {/* Título y Línea Dorada */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-brand-green tracking-tight flex items-center gap-3 justify-center">
-           
-            Herramientas para tu Bienestar Financiero
+    <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
+      <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="En esta página">
+        {SECTIONS.map((s) => (
+          <a
+            key={s.id}
+            href={`#${s.id}`}
+            className={[
+              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
+              active === s.id
+                ? "bg-brand-green text-white border-brand-green"
+                : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+            ].join(" ")}
+          >
+            {s.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+/* ============================== Tarjeta / Grilla ============================== */
+function ToolCard({ t }: { t: ToolItem }) {
+  const { fadeUp } = useAnims();
+  return (
+    <motion.article variants={fadeUp} className={CARD} aria-labelledby={`${t.id}-title`}>
+      <div className="mb-3 flex items-center gap-4">
+        <div className="w-14 h-14 rounded-full bg-brand-green/10 border flex items-center justify-center">
+          {t.icon}
+        </div>
+        <h3 id={`${t.id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
+          {t.title}
+        </h3>
+      </div>
+      <p className="text-brand-blue/90">{t.desc}</p>
+
+      {t.tags && t.tags.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {t.tags.map((tag) => (
+            <TagBadge key={tag}>{tag}</TagBadge>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {(t.ctas || []).map((c, i) => {
+          const cls =
+            c.variant === "ghost"
+              ? ButtonGhost
+              : c.variant === "ghostGold"
+              ? ButtonGhostGold
+              : ButtonPrimary;
+          return (
+            <Link key={i} href={c.href} className={cls} aria-label={c.label}>
+              {c.label}
+            </Link>
+          );
+        })}
+      </div>
+
+      {t.extra}
+    </motion.article>
+  );
+}
+
+function ToolsGrid({ items }: { items: ToolItem[] }) {
+  const { stagger } = useAnims();
+  if (!items.length) {
+    return <p className="text-brand-blue/70">No hay herramientas que coincidan con el filtro actual.</p>;
+  }
+  return (
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {items.map((t) => (
+        <ToolCard key={t.id} t={t} />
+      ))}
+    </motion.div>
+  );
+}
+
+/* ================================= Página ================================= */
+export default function ToolsPage() {
+  const [query, setQuery] = useState("");
+  const [activeCats, setActiveCats] = useState<Categoria[]>([]);
+  const [typeKey, setTypeKey] = useState<"all" | Tipo>("all");
+  const [listMode, setListMode] = useState<"grid" | "list">("grid");
+
+  const filtered = useMemo(() => {
+    return TOOLS
+      .filter((t) => matchesQuery(t, query))
+      .filter((t) => (typeKey === "all" ? true : t.type === typeKey))
+      .filter((t) => (activeCats.length ? activeCats.includes(t.category) : true));
+  }, [query, activeCats, typeKey]);
+
+  const grouped = useMemo(() => {
+    const by = (cat: Categoria) => filtered.filter((t) => t.category === cat);
+    return {
+      hipoteca: by("Hipoteca"),
+      planificacion: by("Planificación"),
+      inversionistas: by("Inversionistas"),
+      plantillas: by("Plantillas"),
+      utilidades: by("Utilidades"),
+    };
+  }, [filtered]);
+
+  const toggleCat = (c: Categoria) =>
+    setActiveCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+
+  const handlePrint = () => window.print();
+
+  return (
+    <main id="main" className="bg-white min-h-screen">
+      {/* Encabezado */}
+      <section className="bg-brand-green/5 border-b border-brand-gold/30">
+        <div className="max-w-content mx-auto px-4 py-10">
+          <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Miga de pan">
+            <a href="/es" className="hover:underline">Inicio</a>
+            <span className="mx-2">/</span>
+            <span className="text-brand-green">Herramientas</span>
+          </nav>
+          <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+            Herramientas y calculadoras
           </h1>
-          <div className="flex justify-center mb-8">
-            <div className="w-20 border-t-4 border-brand-gold rounded-full"></div>
-          </div>
-          <p className="text-lg text-brand-blue mb-3">
-            Toma decisiones financieras con confianza y alineadas a tus valores usando estas herramientas prácticas y amigables.
+          <p className="mt-2 max-w-3xl text-brand-blue/90">
+            Calculadoras y plantillas prácticas, bilingües y privadas—pensadas para ayudarte a decidir alineado con tus valores (sin registrarte).
           </p>
-          <p className="text-brand-body mb-2">
-            Calculadoras y recursos para apoyarte en cada etapa de tu camino—siempre privado, siempre gratis.
-          </p>
-        </div>
-
-        {/* Grid de Herramientas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mb-12">
-          {/* Calculadora de Presupuesto */}
-          <div className="rounded-2xl border border-brand-gold/30 bg-white/95 shadow-xl p-8 flex flex-col items-center text-center hover:-translate-y-1 hover:shadow-2xl transition">
-            <div className="mb-4 w-14 h-14 flex items-center justify-center rounded-full bg-brand-green/10 shadow-lg border">
-              <FaCalculator className="text-brand-gold text-3xl" />
-            </div>
-            <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2">
-              Calculadora de Presupuesto Holístico
-            </h2>
-            <p className="text-brand-green mb-4">
-              Crea un presupuesto que refleje verdaderamente tu vida y valores—simple, intuitivo y privado.
-            </p>
-            <Link href={`${langPrefix}/calculadora-presupuesto`}>
-              <button
-                type="button"
-                className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label="Usar Calculadora de Presupuesto"
-              >
-                Usar Calculadora
-              </button>
-            </Link>
-          </div>
-
-          {/* Calculadora Hipotecaria */}
-          <div className="rounded-2xl border border-brand-gold/30 bg-white/95 shadow-xl p-8 flex flex-col items-center text-center hover:-translate-y-1 hover:shadow-2xl transition">
-            <div className="mb-4 w-14 h-14 flex items-center justify-center rounded-full bg-brand-blue/10 shadow-lg border">
-              <FaHome className="text-brand-blue text-3xl" />
-            </div>
-            <h2 className="text-2xl font-serif font-bold text-brand-blue mb-2">
-              Calculadora Hipotecaria
-            </h2>
-            <p className="text-brand-green mb-4">
-              Calcula al instante tus pagos hipotecarios—aún para propiedades de inversión o multi-unidad.
-            </p>
-            <Link href={`${langPrefix}/calculadora-hipotecaria`}>
-              <button
-                type="button"
-                className="px-7 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                aria-label="Usar Calculadora Hipotecaria"
-              >
-                Usar Calculadora
-              </button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Más Recursos */}
-        <div className="rounded-2xl border-l-4 border-brand-gold bg-brand-beige p-8 shadow text-center">
-          <FaBook className="inline-block text-brand-green text-2xl mb-2" />
-          <h3 className="text-xl font-serif font-bold text-brand-green mb-2 flex items-center gap-2 justify-center">
-            
-            ¿Buscas más recursos?
-          </h3>
-          <p className="text-brand-body mb-4">
-            Explora guías, hojas de trabajo y artículos prácticos en la sección de recursos.
-          </p>
-          <Link href={`${langPrefix}/recursos`}>
-            <button
-              type="button"
-              className="px-8 py-3 bg-brand-green text-white font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-brand-gold transition-all text-lg focus:outline-none focus:ring-2 focus:ring-brand-green"
-              aria-label="Ir a Recursos"
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link
+              href="/es/reservar?intent=consult"
+              className={ButtonPrimary}
+              aria-label="Reservar consulta privada"
             >
-              Ir a Recursos
+              Reservar consulta privada
+            </Link>
+            <button
+              onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
+              className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
+              title={listMode === "grid" ? "Cambiar a vista lista" : "Cambiar a vista cuadrícula"}
+              type="button"
+            >
+              {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />} {listMode === "grid" ? "Lista" : "Cuadrícula"}
             </button>
-          </Link>
+            <button
+              onClick={handlePrint}
+              className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+              title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
+              type="button"
+            >
+              <FaPrint aria-hidden /> Imprimir / Guardar PDF
+            </button>
+          </div>
+
+          {/* Chips de confianza */}
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+              <FaShieldAlt className="text-brand-gold" aria-hidden /> Privadas
+            </span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+              <FaCheckCircle className="text-brand-gold" aria-hidden /> Gratuitas
+            </span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-gree n">
+              <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingües
+            </span>
+          </div>
         </div>
       </section>
+
+      {/* Subnav pegajoso */}
+      <SectionNav />
+
+      {/* Resumen: búsqueda + filtros */}
+      <Panel>
+        <SectionTitle
+          id="resumen"
+          title="Encuentra la herramienta adecuada"
+          subtitle="Busca por palabra clave, filtra por tipo o acota por categoría."
+        />
+        <div className="grid gap-4">
+          {/* Búsqueda */}
+          <div className="flex flex-col sm:flex-row items-stretch gap-3">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder='Buscar herramientas (ej.: “hipoteca”, “DSCR”, “impuestos”)'
+              className="w-full rounded-full border border-brand-gold/60 bg-white px-5 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              aria-label="Buscar herramientas"
+            />
+            <div className="text-sm text-brand-blue/70 self-center">
+              Mostrando <b>{filtered.length}</b> de {TOOLS.length}
+            </div>
+          </div>
+
+          {/* Filtro por tipo */}
+          <div className="mt-2 flex flex-wrap gap-2">
+            {TIPOS.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                onClick={() => setTypeKey(t.key)}
+                className={[
+                  "px-4 py-2 rounded-full border-2 transition",
+                  typeKey === t.key
+                    ? "border-brand-blue bg-brand-blue text-white"
+                    : "border-brand-green text-brand-green hover:bg-brand-green hover:text-white",
+                ].join(" ")}
+                aria-pressed={typeKey === t.key}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Chips por categoría */}
+          <div className="mt-1 flex flex-wrap gap-2">
+            {CATS.map((c) => {
+              const active = (activeCats || []).includes(c);
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => toggleCat(c)}
+                  className={[
+                    "px-3 py-2 rounded-full border-2 text-sm transition",
+                    active
+                      ? "border-brand-gold bg-brand-gold text-white"
+                      : "border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white",
+                  ].join(" ")}
+                  aria-pressed={active}
+                  title={`Filtrar por ${c}`}
+                >
+                  {c}
+                </button>
+              );
+            })}
+            {activeCats.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setActiveCats([])}
+                className="px-3 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition text-sm"
+              >
+                Limpiar categorías
+              </button>
+            )}
+          </div>
+        </div>
+      </Panel>
+
+      {/* Hipoteca */}
+      <Panel className="mt-8">
+        <SectionTitle id="hipoteca" title="Hipoteca" subtitle="Costos de cierre, pago inicial, seguro y calificación" />
+        {listMode === "grid" ? (
+          <ToolsGrid items={grouped.hipoteca} />
+        ) : (
+          <ListBlock items={grouped.hipoteca} />
+        )}
+      </Panel>
+
+      {/* Planificación */}
+      <Panel className="mt-8">
+        <SectionTitle id="planificacion" title="Planificación" subtitle="Pagos, amortización, penalidades, *refi* y alquilar vs comprar" />
+        {listMode === "grid" ? (
+          <ToolsGrid items={grouped.planificacion} />
+        ) : (
+          <ListBlock items={grouped.planificacion} />
+        )}
+      </Panel>
+
+      {/* Inversionistas */}
+      <Panel className="mt-8">
+        <SectionTitle id="inversionistas" title="Inversionistas" subtitle="Flujo, DSCR y valoración" />
+        {listMode === "grid" ? (
+          <ToolsGrid items={grouped.inversionistas} />
+        ) : (
+          <ListBlock items={grouped.inversionistas} />
+        )}
+      </Panel>
+
+      {/* Plantillas */}
+      <Panel className="mt-8">
+        <SectionTitle id="plantillas" title="Plantillas / Checklists" subtitle="Presupuestos, preparación de hipoteca e impuestos, y multiplex" />
+        {listMode === "grid" ? (
+          <ToolsGrid items={grouped.plantillas} />
+        ) : (
+          <ListBlock items={grouped.plantillas} />
+        )}
+      </Panel>
+
+      {/* Utilidades */}
+      <Panel className="mt-8">
+        <SectionTitle id="utilidades" title="Utilidades" subtitle="Asistente y herramientas de apoyo" />
+        {listMode === "grid" ? (
+          <ToolsGrid items={grouped.utilidades} />
+        ) : (
+          <ListBlock items={grouped.utilidades} />
+        )}
+      </Panel>
+
+      {/* Cómo usar & Avisos */}
+      <Panel className="mt-8">
+        <SectionTitle id="faq" title="Cómo usar estas herramientas" subtitle="Privadas, educativas y bilingües" />
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className={CARD}>
+            <h3 className="font-serif text-xl text-brand-green font-bold">Qué esperar</h3>
+            <p className="mt-2 text-brand-blue/90">
+              Las herramientas corren en tu navegador, no requieren cuenta. Los archivos exportados se guardan en tu equipo.
+            </p>
+            <p className="mt-2 text-brand-blue/90">
+              Podemos adaptar una herramienta a tu caso o guiarte a la indicada durante una llamada de descubrimiento.
+            </p>
+          </div>
+          <div className={CARD}>
+            <h3 className="font-serif text-xl text-brand-green font-bold">Avisos</h3>
+            <p className="mt-2 text-brand-blue/90">
+              Son herramientas educativas—<em>no</em> constituyen asesoría de inversión, legal ni fiscal. Reglas de hipoteca alineadas a Canadá 2025 (stress test, CMHC y LTT ON/Toronto).
+            </p>
+            <p className="mt-2 text-brand-blue/90">Soporte bilingüe (ES/EN). Coordinamos con tu CPA y tu abogada/o si es necesario.</p>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/es/reservar?intent=consult" className="inline-flex" aria-label="Agendar llamada de descubrimiento">
+            <span className="px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold">
+              Agendar llamada de descubrimiento
+            </span>
+          </Link>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <Link href="/es/cuenta" className="inline-flex" aria-label="Abrir portal de clientes">
+              <span className={ButtonGhost}>
+                <FaSignInAlt aria-hidden /> Portal de clientes
+              </span>
+            </Link>
+            <Link href="/es/contacto?intent=pregunta" className="text-sm text-brand-blue underline hover:text-brand-green">
+              O haz una pregunta rápida →
+            </Link>
+          </div>
+        </div>
+      </Panel>
+
+      {/* Estilos de impresión */}
+      <style jsx global>{`
+        @media print {
+          .print\\:hidden { display: none !important; }
+          main { background: white !important; }
+          section { break-inside: avoid; page-break-inside: avoid; }
+          .${CARD.split(" ").join(".")} { box-shadow: none !important; }
+        }
+      `}</style>
     </main>
+  );
+}
+
+/* ============================ Render en lista ============================ */
+function ListBlock({ items }: { items: ToolItem[] }) {
+  if (!items.length) return <p className="text-brand-blue/70">No hay herramientas que coincidan con el filtro actual.</p>;
+  return (
+    <div className="rounded-[28px] border border-brand-gold bg-white shadow-sm p-4 sm:p-6">
+      <ul className="divide-y">
+        {items.map((t) => (
+          <li key={t.id} className="py-4 flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-brand-green/10 border flex items-center justify-center shrink-0">
+              {t.icon}
+            </div>
+            <div className="grow">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h4 className="font-serif text-lg text-brand-green font-bold m-0">{t.title}</h4>
+                <span className="px-3 py-1 rounded-full text-xs border border-brand-gold text-brand-green">
+                  {t.category} • {t.type}
+                </span>
+              </div>
+              <p className="text-brand-blue/90 mt-1">{t.desc}</p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                {(t.ctas || []).map((c, i) => {
+                  const cls =
+                    c.variant === "ghost"
+                      ? ButtonGhost
+                      : c.variant === "ghostGold"
+                      ? ButtonGhostGold
+                      : ButtonPrimary;
+                  return (
+                    <Link key={i} href={c.href} className={cls} aria-label={c.label}>
+                      {c.label}
+                    </Link>
+                  );
+                })}
+                {t.extra}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

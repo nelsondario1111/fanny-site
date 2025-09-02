@@ -1,0 +1,228 @@
+.
+├── .env.local
+├── .gitignore
+├── README.md
+├── app
+│   ├── api
+│   │   ├── contact
+│   │   │   └── route.ts
+│   │   ├── create-checkout-session
+│   │   │   └── route.ts
+│   │   └── subscribe
+│   │       └── route.ts
+│   ├── en
+│   │   ├── about
+│   │   │   └── page.tsx
+│   │   ├── account
+│   │   │   └── page.tsx
+│   │   ├── apply
+│   │   │   └── page.tsx
+│   │   ├── book
+│   │   │   └── page.tsx
+│   │   ├── budget-calculator
+│   │   │   └── page.tsx
+│   │   ├── cancel
+│   │   │   └── page.tsx
+│   │   ├── contact
+│   │   │   ├── ContactForm.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── thanks
+│   │   │       └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── login
+│   │   │   └── page.tsx
+│   │   ├── metadata.ts
+│   │   ├── mortgage-calculator
+│   │   │   └── page.tsx
+│   │   ├── page.tsx
+│   │   ├── privacy
+│   │   │   └── page.tsx
+│   │   ├── resources
+│   │   │   ├── ResourcesClient.tsx
+│   │   │   ├── [article]
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── services
+│   │   │   └── page.tsx
+│   │   ├── subscribe
+│   │   │   └── page.tsx
+│   │   ├── success
+│   │   │   └── page.tsx
+│   │   ├── terms
+│   │   │   └── page.tsx
+│   │   ├── testimonials
+│   │   │   └── page.tsx
+│   │   ├── thank-you
+│   │   │   └── page.tsx
+│   │   └── tools
+│   │       ├── budget-cashflow
+│   │       │   └── page.tsx
+│   │       ├── mortgage-readiness
+│   │       │   └── page.tsx
+│   │       ├── page.tsx
+│   │       └── tax-prep
+│   │           └── page.tsx
+│   ├── es
+│   │   ├── aplicar
+│   │   │   └── page.tsx
+│   │   ├── calculadora-hipotecaria
+│   │   │   └── page.tsx
+│   │   ├── calculadora-presupuesto
+│   │   │   └── page.tsx
+│   │   ├── cancel
+│   │   │   └── page.tsx
+│   │   ├── contacto
+│   │   │   ├── ContactoForm.tsx
+│   │   │   ├── gracias
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── cuenta
+│   │   │   └── page.tsx
+│   │   ├── gracias
+│   │   │   └── page.tsx
+│   │   ├── herramientas
+│   │   │   ├── page.tsx
+│   │   │   ├── preparacion-hipoteca
+│   │   │   │   └── page.tsx
+│   │   │   ├── preparacion-impuestos
+│   │   │   │   └── page.tsx
+│   │   │   └── presupuesto-flujo
+│   │   │       └── page.tsx
+│   │   ├── iniciar-sesion
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── metadata.ts
+│   │   ├── page.tsx
+│   │   ├── privacidad
+│   │   │   └── page.tsx
+│   │   ├── recursos
+│   │   │   ├── RecursosClient.tsx
+│   │   │   ├── [article]
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── reservar
+│   │   │   └── page.tsx
+│   │   ├── servicios
+│   │   │   └── page.tsx
+│   │   ├── sobre-mi
+│   │   │   └── page.tsx
+│   │   ├── success
+│   │   │   └── page.tsx
+│   │   ├── suscribir
+│   │   │   └── page.tsx
+│   │   ├── terminos
+│   │   │   └── page.tsx
+│   │   └── testimonios
+│   │       └── page.tsx
+│   ├── fonts.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── not-found.tsx
+│   └── page.tsx
+├── components
+│   ├── ArticleActions.tsx
+│   ├── BackToTopButton.tsx
+│   ├── Checklist.tsx
+│   ├── ChecklistEs.tsx
+│   ├── Footer.tsx
+│   ├── FooterReveal.tsx
+│   ├── LanguageSwitchLink.tsx
+│   ├── NavBar.tsx
+│   ├── PrimaryCtaButton.tsx
+│   ├── Reveal.tsx
+│   ├── Scheduler.tsx
+│   ├── SubscribeForm.tsx
+│   ├── ToContactButtons.tsx
+│   ├── layout
+│   │   ├── FooterLangLinks.tsx
+│   │   └── LangSwitcher.tsx
+│   ├── products.ts
+│   └── ui
+│       ├── AIBadge.tsx
+│       ├── Button.tsx
+│       ├── ClientFade.tsx
+│       ├── PageHeader.tsx
+│       ├── PageHero.tsx
+│       ├── Panel.tsx
+│       ├── PillRow.tsx
+│       └── Section.tsx
+├── content
+│   ├── en
+│   │   └── resources
+│   │       ├── 5-steps-to-financial-freedom.md
+│   │       ├── buying-your-first-multi-unit-property.md
+│   │       ├── holistic-tax-planning-for-the-self-employed.md
+│   │       ├── mindful-spending-aligning-your-budget-with-your-values.md
+│   │       ├── rental-property-and-taxes-what-first-time-landlords-need-to-know.md
+│   │       └── tax-planning-for-peace-of-mind.md
+│   └── es
+│       └── recursos
+│           ├── 5-pasos-libertad-financiera.md
+│           ├── como-comprar-tu-primera-propiedad-multifamiliar.md
+│           ├── gasto-consciente-alinea-tu-presupuesto-con-tus-valores.md
+│           ├── planificacion-fiscal-holistica-para-trabajadores-independientes.md
+│           ├── planificacion-fiscal-para-la-tranquilidad.md
+│           └── propiedades-en-renta-e-impuestos-lo-que-deben-saber-los-arrendadores-primerizos-en-ontario.md
+├── eslint.config.mjs
+├── google320e84e904b06ff2.html
+├── lib
+│   ├── articlesAdapter.ts
+│   ├── cta.ts
+│   ├── getArticles.ts
+│   └── i18nRoutes.ts
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── 5-steps.png
+│   ├── First-Multi-Unit-Property.png
+│   ├── First-Time-Landlords.png
+│   ├── Mindful-Spending.png
+│   ├── Monthly-Budget-Planner.pdf
+│   ├── Rental-Property-and-Taxes.png
+│   ├── Self-Employed.png
+│   ├── Tax-Planning.png
+│   ├── android-chrome-192x192.png
+│   ├── android-chrome-512x512.png
+│   ├── apple-touch-icon.png
+│   ├── fanny-logo-footer.png
+│   ├── fanny-logo.png
+│   ├── fanny-portrait.jpg
+│   ├── fanny.jpg
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── investment-og.png
+│   ├── logo.png
+│   ├── nature.jpg
+│   ├── next.svg
+│   ├── og-fanny-coaching.png
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   ├── tools
+│   │   ├── Budget_Cashflow_Pro.csv
+│   │   ├── Budget_Cashflow_Pro.xlsx
+│   │   ├── Mortgage_Readiness_Pro.csv
+│   │   ├── Mortgage_Readiness_Pro.xlsx
+│   │   ├── Preparacion_Hipoteca_Pro.csv
+│   │   ├── Preparacion_Hipoteca_Pro.xlsx
+│   │   ├── Preparacion_Impuestos_Pro.csv
+│   │   ├── Preparacion_Impuestos_Pro.xlsx
+│   │   ├── Presupuesto_Flujo_Pro.csv
+│   │   ├── Presupuesto_Flujo_Pro.xlsx
+│   │   ├── Tax_Prep_Pro.csv
+│   │   └── Tax_Prep_Pro.xlsx
+│   ├── vercel.svg
+│   └── window.svg
+├── scripts
+│   └── print-tree.mjs
+├── tailwind.config.ts
+├── tree.txt
+└── tsconfig.json
+
+66 directories, 160 files

@@ -1,0 +1,1167 @@
+{
+  "generatedAt": "2025-08-29T18:28:57.753977Z",
+  "articles": [
+    {
+      "slug": "5-steps-to-financial-freedom",
+      "title": "5 Steps to Financial Freedom (Toronto Edition \u2014 2025 Update)",
+      "category": "Personal Finance",
+      "tags": [
+        "budgeting",
+        "cash-flow",
+        "debt-management",
+        "investing",
+        "emergency-fund"
+      ],
+      "date": "2025-06-04",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "buying-your-first-multi-unit-property",
+      "title": "Buying Your First 4\u201310 Unit Property: Calm, Clear, Doable",
+      "category": "Real Estate Investment",
+      "tags": [
+        "real-estate",
+        "multiplex-investing",
+        "mortgage-planning",
+        "investing",
+        "toronto"
+      ],
+      "date": "2025-08-14",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "debt-with-dignity-canada-2025",
+      "title": "Debt with Dignity: A Holistic Guide to Paying Down Debt Without Losing Peace of Mind (Canada 2025)",
+      "category": "Debt & Cash Flow Planning",
+      "tags": [
+        "debt-management",
+        "cash-flow",
+        "refinancing",
+        "credit-building"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "emergency-funds-canada-2025",
+      "title": "Emergency Funds Made Simple: How Much Canadians Really Need in 2025",
+      "category": "Personal Finance & Security",
+      "tags": [
+        "emergency-fund",
+        "cash-flow",
+        "self-employed",
+        "toronto",
+        "holistic-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "entrepreneur-finance-101-canada-2025",
+      "title": "Entrepreneur Finance 101: A Holistic Guide for Self-Employed Canadians (2025)",
+      "category": "Entrepreneur & Small Business Finance",
+      "tags": [
+        "self-employed",
+        "cash-flow",
+        "tax-planning",
+        "small-business",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "from-renting-to-owning-toronto-2025",
+      "title": "From Renting to Owning: A Holistic Roadmap for First-Time Buyers in Toronto (2025)",
+      "category": "Real Estate & Homeownership",
+      "tags": [
+        "first-time-buyers",
+        "mortgage-planning",
+        "real-estate",
+        "down-payment",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "holistic-mortgage-planning-life-vision",
+      "title": "Holistic Mortgage Planning: How to Align Your Property Goals With Your Life Vision (Toronto 2025)",
+      "category": "Mortgage & Wealth Strategy",
+      "tags": [
+        "mortgage-planning",
+        "real-estate",
+        "wealth-strategy",
+        "toronto",
+        "holistic-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "holistic-protection-insurance-toronto-2025",
+      "title": "Holistic Protection: Insurance and Safety Nets Every Toronto Family Should Consider (2025)",
+      "category": "Financial Protection & Insurance",
+      "tags": [
+        "insurance-planning",
+        "life-insurance",
+        "disability-insurance",
+        "toronto",
+        "holistic-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "holistic-retirement-planning-canada-2025",
+      "title": "Holistic Retirement Planning: Building Security and Freedom in Canada (2025)",
+      "category": "Retirement & Long-Term Planning",
+      "tags": [
+        "retirement-planning",
+        "tax-planning",
+        "long-term-wealth",
+        "toronto",
+        "holistic-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "holistic-tax-planning-for-the-self-employed",
+      "title": "Holistic Tax Planning for the Self-Employed: Calm, Clear, and Year-Round",
+      "category": "Taxes & Self-Employment",
+      "tags": [
+        "tax-planning",
+        "self-employed",
+        "hst",
+        "cra",
+        "bookkeeping"
+      ],
+      "date": "2025-08-14",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "human-design-holistic-financial-coaching",
+      "title": "What Is Human Design? A Holistic Tool to Align Your Finances and Life Decisions",
+      "category": "Holistic Financial Coaching",
+      "tags": [
+        "human-design",
+        "holistic-finance",
+        "financial-alignment",
+        "stress-free-money",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "investing-101-toronto-families",
+      "title": "Investing 101 for Toronto Families: A Holistic Guide to Starting With Confidence (2025)",
+      "category": "Investing & Wealth Building",
+      "tags": [
+        "investing",
+        "wealth-building",
+        "beginner-investing",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "kitchen-table-conversations-money-family",
+      "title": "Kitchen Table Conversations: How to Talk About Money With Your Partner and Family (Toronto 2025)",
+      "category": "Family Finance & Coaching",
+      "tags": [
+        "family-finance",
+        "communication",
+        "couples-and-money",
+        "holistic-coaching",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "legacy-with-love-estate-planning-canada-2025",
+      "title": "Legacy with Love: A Holistic Guide to Wills, Estates, and Passing on Wealth (Canada 2025)",
+      "category": "Estate & Legacy Planning",
+      "tags": [
+        "estate-planning",
+        "wills-and-trusts",
+        "legacy",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "mindful-spending-aligning-your-budget-with-your-values",
+      "title": "Mindful Spending: Aligning Your Budget with Your Values (Toronto 2025)",
+      "category": "Personal Finance",
+      "tags": [
+        "values-based-budgeting",
+        "conscious-spending",
+        "family-finance",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-06-04",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "money-and-stress-calm-financial-habits",
+      "title": "Money and Stress: How to Create Calm Financial Habits That Support Your Wellbeing (Toronto 2025)",
+      "category": "Holistic Financial Coaching",
+      "tags": [
+        "financial-stress",
+        "calm-money-habits",
+        "holistic-coaching",
+        "human-design",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "preparing-your-finances-for-2026",
+      "title": "Preparing Your Finances for 2026: Smart Moves Before Year-End 2025",
+      "category": "Financial Planning",
+      "tags": [
+        "year-end-planning",
+        "tax-strategy",
+        "wealth-building",
+        "mortgage-planning",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "raising-financially-confident-kids-toronto-2025",
+      "title": "Raising Financially Confident Kids: A Holistic Guide for Toronto Families (2025)",
+      "category": "Family Finance & Coaching",
+      "tags": [
+        "family-finance",
+        "raising-kids",
+        "financial-education",
+        "holistic-coaching",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "renovation-incentives-toronto-2025",
+      "title": "Renovate with Purpose: Unlocking Government Incentives for Home Upgrades in Toronto (2025)",
+      "category": "Real Estate & Home Planning",
+      "tags": [
+        "home-renovations",
+        "government-incentives",
+        "energy-efficiency",
+        "multigenerational-living",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "rent-vs-buy-toronto-2025",
+      "title": "Rent vs. Buy in Toronto (2025): A Holistic Guide to Making the Right Decision",
+      "category": "Real Estate & Financial Planning",
+      "tags": [
+        "rent-vs-buy",
+        "toronto-real-estate",
+        "mortgage-planning",
+        "holistic-finance",
+        "family-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+      "title": "Rental Property and Taxes: What First-Time Landlords Need to Know in Ontario (2025)",
+      "category": "Real Estate & Tax Planning",
+      "tags": [
+        "rental-property",
+        "landlord-taxes",
+        "ontario-real-estate",
+        "wealth-building",
+        "holistic-finance"
+      ],
+      "date": "2025-06-04",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "smart-education-planning-canada-2025",
+      "title": "Smart Education Planning: How to Fund Your Child\u2019s Future Without Sacrificing Your Own (Canada 2025)",
+      "category": "Family Finance & Education",
+      "tags": [
+        "education-planning",
+        "resp",
+        "grants-and-scholarships",
+        "family-finance",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "smart-money-newcomers-canada-2025",
+      "title": "Smart Money for Newcomers in Canada: A Holistic Financial Guide for 2025",
+      "category": "Newcomer Financial Planning",
+      "tags": [
+        "newcomer-finance",
+        "canadian-banking",
+        "building-credit",
+        "holistic-coaching",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "tax-planning-for-peace-of-mind",
+      "title": "Tax Planning for Peace of Mind (Canada 2025)",
+      "category": "Personal Finance & Tax Strategy",
+      "tags": [
+        "tax-planning",
+        "stress-free-taxes",
+        "professionals",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-06-04",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "using-home-equity-wisely-toronto-2025",
+      "title": "Using Home Equity Wisely: A Holistic Guide to Refinancing and Wealth Building (Toronto 2025)",
+      "category": "Mortgage & Wealth Strategy",
+      "tags": [
+        "home-equity",
+        "mortgage-refinancing",
+        "wealth-building",
+        "toronto-real-estate",
+        "holistic-finance"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "wealth-building-beyond-basics-toronto",
+      "title": "Wealth Building Beyond Basics: Advanced Strategies for Toronto Professionals and Families (2025)",
+      "category": "Advanced Wealth Strategy",
+      "tags": [
+        "wealth-building",
+        "advanced-strategies",
+        "multiplex-investing",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    },
+    {
+      "slug": "wealth-with-confidence-women-toronto-2025",
+      "title": "Wealth with Confidence: A Holistic Money Guide for Women in Toronto (2025)",
+      "category": "Women & Wealth",
+      "tags": [
+        "women-and-money",
+        "financial-confidence",
+        "wealth-building",
+        "holistic-finance",
+        "toronto"
+      ],
+      "date": "2025-08-27",
+      "updated": "2025-08-27"
+    }
+  ],
+  "tags": {
+    "budgeting": {
+      "count": 1,
+      "slugs": [
+        "5-steps-to-financial-freedom"
+      ]
+    },
+    "cash-flow": {
+      "count": 4,
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "debt-with-dignity-canada-2025",
+        "emergency-funds-canada-2025",
+        "entrepreneur-finance-101-canada-2025"
+      ]
+    },
+    "debt-management": {
+      "count": 2,
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "debt-with-dignity-canada-2025"
+      ]
+    },
+    "investing": {
+      "count": 3,
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "buying-your-first-multi-unit-property",
+        "investing-101-toronto-families"
+      ]
+    },
+    "emergency-fund": {
+      "count": 2,
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "emergency-funds-canada-2025"
+      ]
+    },
+    "real-estate": {
+      "count": 3,
+      "slugs": [
+        "buying-your-first-multi-unit-property",
+        "from-renting-to-owning-toronto-2025",
+        "holistic-mortgage-planning-life-vision"
+      ]
+    },
+    "multiplex-investing": {
+      "count": 2,
+      "slugs": [
+        "buying-your-first-multi-unit-property",
+        "wealth-building-beyond-basics-toronto"
+      ]
+    },
+    "mortgage-planning": {
+      "count": 5,
+      "slugs": [
+        "buying-your-first-multi-unit-property",
+        "from-renting-to-owning-toronto-2025",
+        "holistic-mortgage-planning-life-vision",
+        "preparing-your-finances-for-2026",
+        "rent-vs-buy-toronto-2025"
+      ]
+    },
+    "toronto": {
+      "count": 21,
+      "slugs": [
+        "buying-your-first-multi-unit-property",
+        "emergency-funds-canada-2025",
+        "entrepreneur-finance-101-canada-2025",
+        "from-renting-to-owning-toronto-2025",
+        "holistic-mortgage-planning-life-vision",
+        "holistic-protection-insurance-toronto-2025",
+        "holistic-retirement-planning-canada-2025",
+        "human-design-holistic-financial-coaching",
+        "investing-101-toronto-families",
+        "kitchen-table-conversations-money-family",
+        "legacy-with-love-estate-planning-canada-2025",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "money-and-stress-calm-financial-habits",
+        "preparing-your-finances-for-2026",
+        "raising-financially-confident-kids-toronto-2025",
+        "renovation-incentives-toronto-2025",
+        "smart-education-planning-canada-2025",
+        "smart-money-newcomers-canada-2025",
+        "tax-planning-for-peace-of-mind",
+        "wealth-building-beyond-basics-toronto",
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    },
+    "refinancing": {
+      "count": 1,
+      "slugs": [
+        "debt-with-dignity-canada-2025"
+      ]
+    },
+    "credit-building": {
+      "count": 1,
+      "slugs": [
+        "debt-with-dignity-canada-2025"
+      ]
+    },
+    "self-employed": {
+      "count": 3,
+      "slugs": [
+        "emergency-funds-canada-2025",
+        "entrepreneur-finance-101-canada-2025",
+        "holistic-tax-planning-for-the-self-employed"
+      ]
+    },
+    "holistic-finance": {
+      "count": 14,
+      "slugs": [
+        "emergency-funds-canada-2025",
+        "holistic-mortgage-planning-life-vision",
+        "holistic-protection-insurance-toronto-2025",
+        "holistic-retirement-planning-canada-2025",
+        "human-design-holistic-financial-coaching",
+        "investing-101-toronto-families",
+        "legacy-with-love-estate-planning-canada-2025",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "rent-vs-buy-toronto-2025",
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+        "tax-planning-for-peace-of-mind",
+        "using-home-equity-wisely-toronto-2025",
+        "wealth-building-beyond-basics-toronto",
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    },
+    "tax-planning": {
+      "count": 4,
+      "slugs": [
+        "entrepreneur-finance-101-canada-2025",
+        "holistic-retirement-planning-canada-2025",
+        "holistic-tax-planning-for-the-self-employed",
+        "tax-planning-for-peace-of-mind"
+      ]
+    },
+    "small-business": {
+      "count": 1,
+      "slugs": [
+        "entrepreneur-finance-101-canada-2025"
+      ]
+    },
+    "first-time-buyers": {
+      "count": 1,
+      "slugs": [
+        "from-renting-to-owning-toronto-2025"
+      ]
+    },
+    "down-payment": {
+      "count": 1,
+      "slugs": [
+        "from-renting-to-owning-toronto-2025"
+      ]
+    },
+    "wealth-strategy": {
+      "count": 1,
+      "slugs": [
+        "holistic-mortgage-planning-life-vision"
+      ]
+    },
+    "insurance-planning": {
+      "count": 1,
+      "slugs": [
+        "holistic-protection-insurance-toronto-2025"
+      ]
+    },
+    "life-insurance": {
+      "count": 1,
+      "slugs": [
+        "holistic-protection-insurance-toronto-2025"
+      ]
+    },
+    "disability-insurance": {
+      "count": 1,
+      "slugs": [
+        "holistic-protection-insurance-toronto-2025"
+      ]
+    },
+    "retirement-planning": {
+      "count": 1,
+      "slugs": [
+        "holistic-retirement-planning-canada-2025"
+      ]
+    },
+    "long-term-wealth": {
+      "count": 1,
+      "slugs": [
+        "holistic-retirement-planning-canada-2025"
+      ]
+    },
+    "hst": {
+      "count": 1,
+      "slugs": [
+        "holistic-tax-planning-for-the-self-employed"
+      ]
+    },
+    "cra": {
+      "count": 1,
+      "slugs": [
+        "holistic-tax-planning-for-the-self-employed"
+      ]
+    },
+    "bookkeeping": {
+      "count": 1,
+      "slugs": [
+        "holistic-tax-planning-for-the-self-employed"
+      ]
+    },
+    "human-design": {
+      "count": 2,
+      "slugs": [
+        "human-design-holistic-financial-coaching",
+        "money-and-stress-calm-financial-habits"
+      ]
+    },
+    "financial-alignment": {
+      "count": 1,
+      "slugs": [
+        "human-design-holistic-financial-coaching"
+      ]
+    },
+    "stress-free-money": {
+      "count": 1,
+      "slugs": [
+        "human-design-holistic-financial-coaching"
+      ]
+    },
+    "wealth-building": {
+      "count": 6,
+      "slugs": [
+        "investing-101-toronto-families",
+        "preparing-your-finances-for-2026",
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+        "using-home-equity-wisely-toronto-2025",
+        "wealth-building-beyond-basics-toronto",
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    },
+    "beginner-investing": {
+      "count": 1,
+      "slugs": [
+        "investing-101-toronto-families"
+      ]
+    },
+    "family-finance": {
+      "count": 5,
+      "slugs": [
+        "kitchen-table-conversations-money-family",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "raising-financially-confident-kids-toronto-2025",
+        "rent-vs-buy-toronto-2025",
+        "smart-education-planning-canada-2025"
+      ]
+    },
+    "communication": {
+      "count": 1,
+      "slugs": [
+        "kitchen-table-conversations-money-family"
+      ]
+    },
+    "couples-and-money": {
+      "count": 1,
+      "slugs": [
+        "kitchen-table-conversations-money-family"
+      ]
+    },
+    "holistic-coaching": {
+      "count": 4,
+      "slugs": [
+        "kitchen-table-conversations-money-family",
+        "money-and-stress-calm-financial-habits",
+        "raising-financially-confident-kids-toronto-2025",
+        "smart-money-newcomers-canada-2025"
+      ]
+    },
+    "estate-planning": {
+      "count": 1,
+      "slugs": [
+        "legacy-with-love-estate-planning-canada-2025"
+      ]
+    },
+    "wills-and-trusts": {
+      "count": 1,
+      "slugs": [
+        "legacy-with-love-estate-planning-canada-2025"
+      ]
+    },
+    "legacy": {
+      "count": 1,
+      "slugs": [
+        "legacy-with-love-estate-planning-canada-2025"
+      ]
+    },
+    "values-based-budgeting": {
+      "count": 1,
+      "slugs": [
+        "mindful-spending-aligning-your-budget-with-your-values"
+      ]
+    },
+    "conscious-spending": {
+      "count": 1,
+      "slugs": [
+        "mindful-spending-aligning-your-budget-with-your-values"
+      ]
+    },
+    "financial-stress": {
+      "count": 1,
+      "slugs": [
+        "money-and-stress-calm-financial-habits"
+      ]
+    },
+    "calm-money-habits": {
+      "count": 1,
+      "slugs": [
+        "money-and-stress-calm-financial-habits"
+      ]
+    },
+    "year-end-planning": {
+      "count": 1,
+      "slugs": [
+        "preparing-your-finances-for-2026"
+      ]
+    },
+    "tax-strategy": {
+      "count": 1,
+      "slugs": [
+        "preparing-your-finances-for-2026"
+      ]
+    },
+    "raising-kids": {
+      "count": 1,
+      "slugs": [
+        "raising-financially-confident-kids-toronto-2025"
+      ]
+    },
+    "financial-education": {
+      "count": 1,
+      "slugs": [
+        "raising-financially-confident-kids-toronto-2025"
+      ]
+    },
+    "home-renovations": {
+      "count": 1,
+      "slugs": [
+        "renovation-incentives-toronto-2025"
+      ]
+    },
+    "government-incentives": {
+      "count": 1,
+      "slugs": [
+        "renovation-incentives-toronto-2025"
+      ]
+    },
+    "energy-efficiency": {
+      "count": 1,
+      "slugs": [
+        "renovation-incentives-toronto-2025"
+      ]
+    },
+    "multigenerational-living": {
+      "count": 1,
+      "slugs": [
+        "renovation-incentives-toronto-2025"
+      ]
+    },
+    "rent-vs-buy": {
+      "count": 1,
+      "slugs": [
+        "rent-vs-buy-toronto-2025"
+      ]
+    },
+    "toronto-real-estate": {
+      "count": 2,
+      "slugs": [
+        "rent-vs-buy-toronto-2025",
+        "using-home-equity-wisely-toronto-2025"
+      ]
+    },
+    "rental-property": {
+      "count": 1,
+      "slugs": [
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know"
+      ]
+    },
+    "landlord-taxes": {
+      "count": 1,
+      "slugs": [
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know"
+      ]
+    },
+    "ontario-real-estate": {
+      "count": 1,
+      "slugs": [
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know"
+      ]
+    },
+    "education-planning": {
+      "count": 1,
+      "slugs": [
+        "smart-education-planning-canada-2025"
+      ]
+    },
+    "resp": {
+      "count": 1,
+      "slugs": [
+        "smart-education-planning-canada-2025"
+      ]
+    },
+    "grants-and-scholarships": {
+      "count": 1,
+      "slugs": [
+        "smart-education-planning-canada-2025"
+      ]
+    },
+    "newcomer-finance": {
+      "count": 1,
+      "slugs": [
+        "smart-money-newcomers-canada-2025"
+      ]
+    },
+    "canadian-banking": {
+      "count": 1,
+      "slugs": [
+        "smart-money-newcomers-canada-2025"
+      ]
+    },
+    "building-credit": {
+      "count": 1,
+      "slugs": [
+        "smart-money-newcomers-canada-2025"
+      ]
+    },
+    "stress-free-taxes": {
+      "count": 1,
+      "slugs": [
+        "tax-planning-for-peace-of-mind"
+      ]
+    },
+    "professionals": {
+      "count": 1,
+      "slugs": [
+        "tax-planning-for-peace-of-mind"
+      ]
+    },
+    "home-equity": {
+      "count": 1,
+      "slugs": [
+        "using-home-equity-wisely-toronto-2025"
+      ]
+    },
+    "mortgage-refinancing": {
+      "count": 1,
+      "slugs": [
+        "using-home-equity-wisely-toronto-2025"
+      ]
+    },
+    "advanced-strategies": {
+      "count": 1,
+      "slugs": [
+        "wealth-building-beyond-basics-toronto"
+      ]
+    },
+    "women-and-money": {
+      "count": 1,
+      "slugs": [
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    },
+    "financial-confidence": {
+      "count": 1,
+      "slugs": [
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    }
+  },
+  "categories": {
+    "Personal Finance": {
+      "count": 2,
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "mindful-spending-aligning-your-budget-with-your-values"
+      ]
+    },
+    "Real Estate Investment": {
+      "count": 1,
+      "slugs": [
+        "buying-your-first-multi-unit-property"
+      ]
+    },
+    "Debt & Cash Flow Planning": {
+      "count": 1,
+      "slugs": [
+        "debt-with-dignity-canada-2025"
+      ]
+    },
+    "Personal Finance & Security": {
+      "count": 1,
+      "slugs": [
+        "emergency-funds-canada-2025"
+      ]
+    },
+    "Entrepreneur & Small Business Finance": {
+      "count": 1,
+      "slugs": [
+        "entrepreneur-finance-101-canada-2025"
+      ]
+    },
+    "Real Estate & Homeownership": {
+      "count": 1,
+      "slugs": [
+        "from-renting-to-owning-toronto-2025"
+      ]
+    },
+    "Mortgage & Wealth Strategy": {
+      "count": 2,
+      "slugs": [
+        "holistic-mortgage-planning-life-vision",
+        "using-home-equity-wisely-toronto-2025"
+      ]
+    },
+    "Financial Protection & Insurance": {
+      "count": 1,
+      "slugs": [
+        "holistic-protection-insurance-toronto-2025"
+      ]
+    },
+    "Retirement & Long-Term Planning": {
+      "count": 1,
+      "slugs": [
+        "holistic-retirement-planning-canada-2025"
+      ]
+    },
+    "Taxes & Self-Employment": {
+      "count": 1,
+      "slugs": [
+        "holistic-tax-planning-for-the-self-employed"
+      ]
+    },
+    "Holistic Financial Coaching": {
+      "count": 2,
+      "slugs": [
+        "human-design-holistic-financial-coaching",
+        "money-and-stress-calm-financial-habits"
+      ]
+    },
+    "Investing & Wealth Building": {
+      "count": 1,
+      "slugs": [
+        "investing-101-toronto-families"
+      ]
+    },
+    "Family Finance & Coaching": {
+      "count": 2,
+      "slugs": [
+        "kitchen-table-conversations-money-family",
+        "raising-financially-confident-kids-toronto-2025"
+      ]
+    },
+    "Estate & Legacy Planning": {
+      "count": 1,
+      "slugs": [
+        "legacy-with-love-estate-planning-canada-2025"
+      ]
+    },
+    "Financial Planning": {
+      "count": 1,
+      "slugs": [
+        "preparing-your-finances-for-2026"
+      ]
+    },
+    "Real Estate & Home Planning": {
+      "count": 1,
+      "slugs": [
+        "renovation-incentives-toronto-2025"
+      ]
+    },
+    "Real Estate & Financial Planning": {
+      "count": 1,
+      "slugs": [
+        "rent-vs-buy-toronto-2025"
+      ]
+    },
+    "Real Estate & Tax Planning": {
+      "count": 1,
+      "slugs": [
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know"
+      ]
+    },
+    "Family Finance & Education": {
+      "count": 1,
+      "slugs": [
+        "smart-education-planning-canada-2025"
+      ]
+    },
+    "Newcomer Financial Planning": {
+      "count": 1,
+      "slugs": [
+        "smart-money-newcomers-canada-2025"
+      ]
+    },
+    "Personal Finance & Tax Strategy": {
+      "count": 1,
+      "slugs": [
+        "tax-planning-for-peace-of-mind"
+      ]
+    },
+    "Advanced Wealth Strategy": {
+      "count": 1,
+      "slugs": [
+        "wealth-building-beyond-basics-toronto"
+      ]
+    },
+    "Women & Wealth": {
+      "count": 1,
+      "slugs": [
+        "wealth-with-confidence-women-toronto-2025"
+      ]
+    }
+  },
+  "personas": {
+    "families": {
+      "label": "Families & Couples",
+      "criteria": {
+        "anyTags": [
+          "family-finance",
+          "raising-kids",
+          "financial-education",
+          "education-planning",
+          "resp",
+          "insurance-planning",
+          "retirement-planning",
+          "toronto-families"
+        ],
+        "categoryContains": [
+          "Family Finance",
+          "Financial Protection",
+          "Retirement"
+        ]
+      },
+      "slugs": [
+        "holistic-protection-insurance-toronto-2025",
+        "holistic-retirement-planning-canada-2025",
+        "kitchen-table-conversations-money-family",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "raising-financially-confident-kids-toronto-2025",
+        "rent-vs-buy-toronto-2025",
+        "smart-education-planning-canada-2025"
+      ],
+      "count": 7
+    },
+    "womenPros": {
+      "label": "Women & Professionals",
+      "criteria": {
+        "anyTags": [
+          "women-and-money",
+          "financial-confidence",
+          "values-based-budgeting",
+          "conscious-spending",
+          "stress-free-taxes"
+        ],
+        "categoryContains": [
+          "Women",
+          "Personal Finance",
+          "Financial Planning"
+        ]
+      },
+      "slugs": [
+        "5-steps-to-financial-freedom",
+        "emergency-funds-canada-2025",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "preparing-your-finances-for-2026",
+        "rent-vs-buy-toronto-2025",
+        "smart-money-newcomers-canada-2025",
+        "tax-planning-for-peace-of-mind",
+        "wealth-with-confidence-women-toronto-2025"
+      ],
+      "count": 8
+    },
+    "newcomers": {
+      "label": "Newcomers",
+      "criteria": {
+        "anyTags": [
+          "newcomer-finance",
+          "canadian-banking",
+          "building-credit",
+          "first-time-buyers",
+          "fhsa"
+        ],
+        "categoryContains": [
+          "Newcomer"
+        ]
+      },
+      "slugs": [
+        "from-renting-to-owning-toronto-2025",
+        "smart-money-newcomers-canada-2025"
+      ],
+      "count": 2
+    },
+    "entrepreneurs": {
+      "label": "Entrepreneurs & Self-Employed",
+      "criteria": {
+        "anyTags": [
+          "self-employed",
+          "entrepreneur-finance",
+          "small-business",
+          "tax-planning",
+          "hst",
+          "cra"
+        ],
+        "categoryContains": [
+          "Entrepreneur",
+          "Taxes & Self-Employment"
+        ]
+      },
+      "slugs": [
+        "emergency-funds-canada-2025",
+        "entrepreneur-finance-101-canada-2025",
+        "holistic-retirement-planning-canada-2025",
+        "holistic-tax-planning-for-the-self-employed",
+        "tax-planning-for-peace-of-mind"
+      ],
+      "count": 5
+    },
+    "investors": {
+      "label": "Real Estate Investors",
+      "criteria": {
+        "anyTags": [
+          "real-estate",
+          "multiplex-investing",
+          "rental-property",
+          "landlord-taxes",
+          "mortgage-planning",
+          "rent-vs-buy",
+          "home-equity"
+        ],
+        "categoryContains": [
+          "Real Estate"
+        ]
+      },
+      "slugs": [
+        "buying-your-first-multi-unit-property",
+        "from-renting-to-owning-toronto-2025",
+        "holistic-mortgage-planning-life-vision",
+        "preparing-your-finances-for-2026",
+        "renovation-incentives-toronto-2025",
+        "rent-vs-buy-toronto-2025",
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+        "using-home-equity-wisely-toronto-2025",
+        "wealth-building-beyond-basics-toronto"
+      ],
+      "count": 9
+    },
+    "holistic": {
+      "label": "Holistic & Human Design",
+      "criteria": {
+        "anyTags": [
+          "holistic-finance",
+          "human-design",
+          "calm-money-habits",
+          "financial-stress",
+          "financial-alignment"
+        ],
+        "categoryContains": []
+      },
+      "slugs": [
+        "emergency-funds-canada-2025",
+        "holistic-mortgage-planning-life-vision",
+        "holistic-protection-insurance-toronto-2025",
+        "holistic-retirement-planning-canada-2025",
+        "human-design-holistic-financial-coaching",
+        "investing-101-toronto-families",
+        "legacy-with-love-estate-planning-canada-2025",
+        "mindful-spending-aligning-your-budget-with-your-values",
+        "money-and-stress-calm-financial-habits",
+        "rent-vs-buy-toronto-2025",
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+        "tax-planning-for-peace-of-mind",
+        "using-home-equity-wisely-toronto-2025",
+        "wealth-building-beyond-basics-toronto",
+        "wealth-with-confidence-women-toronto-2025"
+      ],
+      "count": 15
+    }
+  }
+}

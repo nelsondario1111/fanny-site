@@ -1,0 +1,31 @@
+{
+  "resources": {},
+  "tools": {
+    "affordability-stress-test": { "en": "affordability-stress-test", "es": "prueba-esfuerzo" },
+    "amortization-schedule":    { "en": "amortization-schedule",    "es": "tabla-amortizacion" },
+    "assistant":                { "en": "assistant",                "es": "asistente" },
+    "budget-calculator":        { "en": "budget-calculator",        "es": "calculadora-presupuesto" },
+    "budget-cashflow":          { "en": "budget-cashflow",          "es": "presupuesto-flujo" },
+    "cap-rate-calculator":      { "en": "cap-rate-calculator",      "es": "tasa-cap" },
+    "closing-costs":            { "en": "closing-costs",            "es": "costos-cierre" },
+    "debt-snowball":            { "en": "debt-snowball",            "es": "deuda-bola-nieve" },
+    "down-payment-insurance":   { "en": "down-payment-insurance",   "es": "pago-inicial-seguro" },
+    "dscr-calculator":          { "en": "dscr-calculator",          "es": "calculadora-dscr" },
+    "land-transfer-tax":        { "en": "land-transfer-tax",        "es": "impuesto-transferencia" },
+    "mortgage-affordability":   { "en": "mortgage-affordability",   "es": "asequibilidad-hipotecaria" },
+    "mortgage-affordability-alt": { "en": "mortgage-affordability", "es": "accesibilidad-hipotecaria" },
+    "mortgage-calculator":      { "en": "mortgage-calculator",      "es": "calculadora-hipotecaria" },
+    "mortgage-penalty":         { "en": "mortgage-penalty",         "es": "penalidad-hipotecaria" },
+    "mortgage-readiness":       { "en": "mortgage-readiness",       "es": "preparacion-hipoteca" },
+    "multiplex-readiness":      { "en": "multiplex-readiness",      "es": "preparacion-multiplex" },
+    "net-worth":                { "en": "net-worth",                "es": "patrimonio-neto" },
+    "net-worth-tracker":        { "en": "net-worth-tracker",        "es": "seguimiento-patrimonio-neto" },
+    "net-worth-tracker-alt":    { "en": "net-worth-tracker",        "es": "seguimiento-patrimonio" },
+    "newcomer-checklist":       { "en": "newcomer-checklist",       "es": "lista-recien-llegados" },
+    "refinance-blend":          { "en": "refinance-blend",          "es": "refinanciar-blend" },
+    "rent-vs-buy":              { "en": "rent-vs-buy",              "es": "alquilar-vs-comprar" },
+    "rental-cashflow":          { "en": "rental-cashflow",          "es": "flujo-de-caja-de-alquileres" },
+    "self-employed-checklist":  { "en": "self-employed-checklist",  "es": "lista-autonomos" },
+    "tax-prep":                 { "en": "tax-prep",                 "es": "preparacion-impuestos" }
+  }
+}
