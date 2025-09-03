@@ -1,0 +1,216 @@
+// app/_og/render.tsx
+import { ImageResponse } from "next/og";
+
+export type RenderOpts = {
+  title?: string;
+  subtitle?: string;
+  locale?: "en" | "es";
+  path?: string;
+};
+
+export const OG_SIZE = { width: 1200, height: 630 } as const;
+export const OG_CONTENT_TYPE = "image/png";
+
+const BRAND = {
+  name: "Fanny — Mortgages & Money",
+  nameES: "Fanny — Hipotecas y Dinero",
+  url: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "http://localhost:3000",
+  green: "#1b6b5f",
+  gold: "#d1a954",
+  blue: "#184f7d",
+  beige: "#fbf7f2",
+};
+
+// Simple TitleCase from slug
+function prettify(slugOrTitle?: string) {
+  if (!slugOrTitle) return "";
+  const raw = slugOrTitle.replace(/^\/+|\/+$/g, "");
+  const last = raw.split("/").pop() || raw;
+  return last
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+// Background stripes
+function Background() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: `linear-gradient(135deg, ${BRAND.beige} 0%, #ffffff 100%)`,
+      }}
+    >
+      {/* accents */}
+      <div
+        style={{
+          position: "absolute",
+          top: -120,
+          right: -120,
+          width: 360,
+          height: 360,
+          borderRadius: 999,
+          background: `${BRAND.gold}22`,
+          filter: "blur(6px)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: -160,
+          left: -160,
+          width: 420,
+          height: 420,
+          borderRadius: 999,
+          background: `${BRAND.blue}18`,
+          filter: "blur(10px)",
+        }}
+      />
+    </div>
+  );
+}
+
+export async function renderOG({
+  title,
+  subtitle,
+  locale = "en",
+  path,
+}: RenderOpts = {}) {
+  const site = locale === "es" ? BRAND.nameES : BRAND.name;
+
+  const finalTitle =
+    title?.trim() ||
+    (path ? prettify(path) : "") ||
+    (locale === "es"
+      ? "Artículos, Herramientas y Guías"
+      : "Articles, Tools & Guides");
+
+  const finalSubtitle =
+    subtitle ??
+    (locale === "es"
+      ? "Hipotecas • Dinero • Impuestos"
+      : "Mortgages • Money • Taxes");
+
+  // System fonts are fine; custom fonts optional.
+  const fontFamily =
+    "ui-sans-serif, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial";
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: OG_SIZE.width,
+          height: OG_SIZE.height,
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          fontFamily,
+        }}
+      >
+        <Background />
+
+        {/* Top brand bar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            padding: "28px 36px",
+          }}
+        >
+          <div
+            style={{
+              width: 18,
+              height: 18,
+              borderRadius: 6,
+              background: BRAND.green,
+              border: `2px solid ${BRAND.gold}`,
+              boxShadow: "0 2px 0 rgba(0,0,0,0.06)",
+            }}
+          />
+          <div
+            style={{
+              fontSize: 28,
+              fontWeight: 800,
+              color: BRAND.green,
+              letterSpacing: -0.2,
+            }}
+          >
+            {site}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "0 64px",
+            gap: 18,
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignSelf: "flex-start",
+              padding: "6px 12px",
+              borderRadius: 999,
+              border: `2px solid ${BRAND.gold}`,
+              color: BRAND.green,
+              fontSize: 24,
+              fontWeight: 700,
+              background: "#fff",
+            }}
+          >
+            {finalSubtitle}
+          </div>
+
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: 900,
+              color: BRAND.blue,
+              lineHeight: 1.05,
+              letterSpacing: -0.5,
+              maxWidth: 980,
+            }}
+          >
+            {finalTitle}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "20px 36px",
+            borderTop: `2px solid ${BRAND.gold}55`,
+            color: BRAND.green,
+            fontSize: 22,
+            background: "#fff8",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div style={{ fontWeight: 700 }}>
+            {locale === "es"
+              ? "Asesoría clara para decisiones seguras."
+              : "Clear advice for confident decisions."}
+          </div>
+          <div style={{ opacity: 0.85 }}>
+            {BRAND.url.replace(/^https?:\/\//, "")}
+          </div>
+        </div>
+      </div>
+    ),
+    {
+      width: OG_SIZE.width,
+      height: OG_SIZE.height,
+    }
+  );
+}
