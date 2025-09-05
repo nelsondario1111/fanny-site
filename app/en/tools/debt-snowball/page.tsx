@@ -93,7 +93,6 @@ function simulate(
 
   // Working copies
   const debts = debtsInput.map(d => ({ ...d }));
-  // const nDebts = debts.length; // removed: unused
 
   // Per-debt tallies
   const interestPaid: Record<number, number> = {};

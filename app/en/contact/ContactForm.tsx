@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Intent = "consult" | "preapproval" | "question" | "package";
@@ -101,10 +101,15 @@ const TITLE_TO_SLUG_EN: Record<string, string> = {
 
 function usePlainSearch() {
   const sp = useSearchParams();
+  // Clone to a stable URLSearchParams we control (avoids hydration mismatch)
   return new URLSearchParams(sp?.toString() ?? "");
 }
 const safeDecode = (v: string | null) => {
-  try { return v ? decodeURIComponent(v) : undefined; } catch { return v ?? undefined; }
+  try {
+    return v ? decodeURIComponent(v) : undefined;
+  } catch {
+    return v ?? undefined;
+  }
 };
 
 export default function ContactForm(props: Props) {
@@ -115,7 +120,8 @@ export default function ContactForm(props: Props) {
   const effectiveIntent: Intent = props.defaultIntent ?? urlIntent ?? "consult";
   const effectivePackage = props.defaultPackage ?? urlPackage;
 
-  const initialSlug = useMemo(() => {
+  // Derive the initial slug just once for first render
+  const derivedInitialSlug = useMemo(() => {
     if (effectiveIntent === "preapproval") return "mortgage-concierge-preapproval";
     if (effectiveIntent === "consult") return "private-discovery-call";
     if (effectiveIntent === "question") return "just-connect";
@@ -126,8 +132,17 @@ export default function ContactForm(props: Props) {
     return "private-discovery-call";
   }, [effectiveIntent, effectivePackage]);
 
+  // Make the select controlled (prevents “shows after refresh” issues)
+  const [serviceSlug, setServiceSlug] = useState<string>(derivedInitialSlug);
+
+  // If props/URL change (client-side nav), sync once
+  useEffect(() => {
+    setServiceSlug(derivedInitialSlug);
+  }, [derivedInitialSlug]);
+
   const defaultMessage = useMemo(() => {
     if (!effectivePackage) return "";
+    // Prefill so users see what they clicked
     return `Regarding: ${effectivePackage}\n`;
   }, [effectivePackage]);
 
@@ -136,28 +151,26 @@ export default function ContactForm(props: Props) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (status === "sending") return;
+
     setStatus("sending");
     setError(null);
 
     const form = e.currentTarget;
-    const serviceSlug =
-      (form.elements.namedItem("serviceSlug") as HTMLInputElement)?.value || "";
-    const serviceLabel =
-      SERVICE_OPTIONS.find((o) => o.slug === serviceSlug)?.label || "";
 
     const payload = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
-      service: serviceLabel || (form.elements.namedItem("service") as HTMLSelectElement)?.value,
+      service: SERVICE_OPTIONS.find((o) => o.slug === serviceSlug)?.label || "",
       serviceSlug,
       intent: effectiveIntent,
       pkg: effectivePackage ?? "",
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
       preferredContact:
         (form.elements.namedItem("preferredContact") as RadioNodeList)?.value || "email",
-      pagePath: window.location.pathname + window.location.search,
-      referrer: document.referrer || "",
+      pagePath: typeof window !== "undefined" ? window.location.pathname + window.location.search : "",
+      referrer: typeof document !== "undefined" ? document.referrer || "" : "",
     };
 
     try {
@@ -165,16 +178,21 @@ export default function ContactForm(props: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        // keepalive helps if user navigates away quickly
+        keepalive: true as any,
       });
+
       if (res.ok) {
         setStatus("success");
-        (form as HTMLFormElement).reset();
+        form.reset();
+        // Keep the selected option after success so context isn’t lost
+        setServiceSlug(derivedInitialSlug);
         return;
-      } else {
-        const { error } = await res.json().catch(() => ({ error: "" }));
-        setStatus("error");
-        setError(error || "Something went wrong. Please try again.");
       }
+
+      const data = await res.json().catch(() => ({}));
+      setStatus("error");
+      setError(data?.error || "Something went wrong. Please try again.");
     } catch {
       setStatus("error");
       setError("There was an issue sending your message. Please try again.");
@@ -185,36 +203,58 @@ export default function ContactForm(props: Props) {
 
   return (
     <form
-      className="bg-brand-beige/70 rounded-2xl p-8 mb-12 shadow-lg border border-brand-gold/40 space-y-5 max-w-xl mx-auto"
+      className={[
+        // Match the site “panel/table” look for perfect consistency
+        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
+        "p-8 mb-12 space-y-5 max-w-xl mx-auto",
+      ].join(" ")}
       onSubmit={handleSubmit}
       aria-label="Contact Fanny and her Team"
+      noValidate
     >
       {/* Hidden fields for backend context */}
       <input type="hidden" name="intent" value={effectiveIntent} />
       {effectivePackage ? <input type="hidden" name="package" value={effectivePackage} /> : null}
-      <input type="hidden" id="serviceSlug" name="serviceSlug" value={initialSlug} />
 
       <div>
-        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="name">Name</label>
+        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="name">
+          Name
+        </label>
         <input
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          type="text" id="name" name="name" autoComplete="name" required
+          type="text"
+          id="name"
+          name="name"
+          autoComplete="name"
+          required
         />
       </div>
 
       <div>
-        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="email">Email</label>
+        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="email">
+          Email
+        </label>
         <input
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          type="email" id="email" name="email" autoComplete="email" required
+          type="email"
+          id="email"
+          name="email"
+          autoComplete="email"
+          required
         />
       </div>
 
       <div>
-        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="phone">Phone</label>
+        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="phone">
+          Phone
+        </label>
         <input
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          type="tel" id="phone" name="phone" inputMode="tel" autoComplete="tel"
+          type="tel"
+          id="phone"
+          name="phone"
+          inputMode="tel"
+          autoComplete="tel"
         />
       </div>
 
@@ -225,16 +265,20 @@ export default function ContactForm(props: Props) {
         </label>
         <select
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          id="service" name="service" defaultValue={initialSlug}
-          onChange={(e) => {
-            const hidden = document.getElementById("serviceSlug") as HTMLInputElement | null;
-            if (hidden) hidden.value = e.currentTarget.value;
-          }}
+          id="service"
+          name="service"
+          value={serviceSlug}
+          onChange={(e) => setServiceSlug(e.currentTarget.value)}
           required
         >
-          <option value="" disabled>Please select...</option>
+          {/* Accessible prompt */}
+          <option value="" disabled>
+            Please select...
+          </option>
           {SERVICE_OPTIONS.map((opt) => (
-            <option key={opt.slug} value={opt.slug}>{opt.label}</option>
+            <option key={opt.slug} value={opt.slug}>
+              {opt.label}
+            </option>
           ))}
         </select>
 
@@ -250,22 +294,29 @@ export default function ContactForm(props: Props) {
         <legend className="px-1 text-sm text-brand-blue/80">Preferred contact method</legend>
         <div className="flex flex-wrap gap-4 mt-1">
           <label className="inline-flex items-center gap-2">
-            <input type="radio" name="preferredContact" value="email" defaultChecked /><span>Email</span>
+            <input type="radio" name="preferredContact" value="email" defaultChecked />
+            <span>Email</span>
           </label>
           <label className="inline-flex items-center gap-2">
-            <input type="radio" name="preferredContact" value="whatsapp" /><span>WhatsApp</span>
+            <input type="radio" name="preferredContact" value="whatsapp" />
+            <span>WhatsApp</span>
           </label>
           <label className="inline-flex items-center gap-2">
-            <input type="radio" name="preferredContact" value="phone" /><span>Phone</span>
+            <input type="radio" name="preferredContact" value="phone" />
+            <span>Phone</span>
           </label>
         </div>
       </fieldset>
 
       <div>
-        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="message">Message</label>
+        <label className="block font-semibold mb-1 text-brand-blue" htmlFor="message">
+          Message
+        </label>
         <textarea
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          id="message" name="message" rows={4}
+          id="message"
+          name="message"
+          rows={4}
           placeholder="Tell us how we can help or ask any questions."
           defaultValue={defaultMessage}
         />
@@ -284,8 +335,9 @@ export default function ContactForm(props: Props) {
       )}
 
       <button
-        type="submit" disabled={status === "sending"}
-        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg"
+        type="submit"
+        disabled={status === "sending"}
+        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg disabled:opacity-70"
       >
         {status === "sending" ? "Sending..." : "Request Info / Book"}
       </button>
