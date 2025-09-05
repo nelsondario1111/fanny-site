@@ -17,14 +17,10 @@ export const metadata: Metadata = {
 export default function EnLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Unified, locale-aware header */}
       <NavBar />
-
       <main id="main" className="flex-1">
         {children}
       </main>
-
-      {/* Unified, locale-aware footer */}
       <Footer lang="en" />
       <BackToTopButton />
     </>

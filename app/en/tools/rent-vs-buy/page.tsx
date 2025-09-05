@@ -51,6 +51,11 @@ function remainingBalance(P: number, annualRatePct: number, years: number, month
   const pow = Math.pow(1 + i, m);
   return P * pow - (M * (pow - 1)) / i;
 }
+/** Convert annual percentage rate to effective monthly rate */
+function monthlyRateFromAnnualPct(annualPct: number) {
+  const r = (annualPct || 0) / 100;
+  return Math.pow(1 + r, 1 / 12) - 1;
+}
 
 /* =========================================================
    Page
@@ -97,12 +102,12 @@ export default function Page() {
     const principal = Math.max(0, price - downPayment);
 
     const nMonths = Math.max(1, Math.round((horizonYears || 0) * 12));
-    const i_mort = Math.max(0, ratePct) / 100 / 12;
-    const i_rent = Math.max(0, rentGrowthPctAnnual) / 100 / 12;
-    const g_home = Math.max(0, homeAppreciationPctAnnual) / 100 / 12;
-    const i_inv = Math.max(0, investmentReturnPctAnnual) / 100 / 12;
+    const i_rent = monthlyRateFromAnnualPct(rentGrowthPctAnnual || 0);
+    const g_home = monthlyRateFromAnnualPct(homeAppreciationPctAnnual || 0); // can be negative
+    const i_inv = monthlyRateFromAnnualPct(investmentReturnPctAnnual || 0);
 
     const M = monthlyPayment(principal, ratePct || 0, amortYears || 25);
+    const mortgageMonths = Math.max(1, Math.round((amortYears || 25) * 12));
 
     let houseValue = price;
     let rent = Math.max(0, rentMonthly || 0);
@@ -111,25 +116,29 @@ export default function Page() {
     let totalOwnerCashOut = 0;
     let totalRenterCashOut = 0;
 
-    // Renter investment account (starts with down + closing; contributions = monthly savings if any)
+    // Renter investment account starts with avoided up-front cash.
     let renterFV = (downPayment + Math.max(0, closingCosts || 0));
-    // grow the initial lump for the first month to line up with month-end compounding
-    renterFV *= 1 + i_inv;
 
     // Monthly cashflow (month 1) snapshot
     let ownerCashMonth1 = 0;
     let renterCashMonth1 = 0;
 
     for (let m = 1; m <= nMonths; m++) {
-      // Owner recurring costs
       const propertyTaxM = (taxPctOfValue * houseValue) / 12;
       const maintenanceM = (Math.max(0, maintenancePctAnnual || 0) / 100) * houseValue / 12;
-      const ownerMonthlyCash = M + propertyTaxM + maintenanceM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
 
-      // Renter recurring costs
+      // Stop mortgage payments once loan is fully amortized
+      const pmtThisMonth = m <= mortgageMonths ? M : 0;
+
+      const ownerMonthlyCash =
+        pmtThisMonth +
+        propertyTaxM +
+        maintenanceM +
+        Math.max(0, hoaMonthly || 0) +
+        Math.max(0, homeInsMonthly || 0);
+
       const renterMonthlyCash = rent + Math.max(0, renterInsMonthly || 0);
 
-      // Snapshot month 1
       if (m === 1) {
         ownerCashMonth1 = ownerMonthlyCash;
         renterCashMonth1 = renterMonthlyCash;
@@ -138,13 +147,9 @@ export default function Page() {
       totalOwnerCashOut += ownerMonthlyCash;
       totalRenterCashOut += renterMonthlyCash;
 
-      // If renting is cheaper this month, invest the difference
-      const diff = ownerMonthlyCash - renterMonthlyCash;
-      if (diff > 0) {
-        renterFV = (renterFV + diff) * (1 + i_inv);
-      } else {
-        renterFV = renterFV * (1 + i_inv); // still compounds
-      }
+      // Contributions at month end, then compounding
+      const diff = ownerMonthlyCash - renterMonthlyCash; // positive = renting is cheaper
+      renterFV = (renterFV + (diff > 0 ? diff : 0)) * (1 + i_inv);
 
       // Grow rent & house value for next month
       rent = rent * (1 + i_rent);
@@ -162,30 +167,34 @@ export default function Page() {
     // Net advantage = owner equity - renter investments
     const netAdvantage = ownerNetWorth - renterNetWorth;
 
-    // Simple break-even year scan
-    let breakEvenYear: number | null = null;
-    let cumulativeMonths = 0;
-    for (let y = 1; y <= Math.ceil(nMonths / 12); y++) {
-      cumulativeMonths = Math.min(nMonths, y * 12);
-      const rb = remainingBalance(principal, ratePct || 0, amortYears || 25, cumulativeMonths);
-      const sp = price * Math.pow(1 + g_home, cumulativeMonths);
-      const sc = sp * Math.max(0, sellingCostPct || 0) / 100;
+    // Interest/principal paid over the horizon
+    const monthsPaid = Math.min(nMonths, mortgageMonths);
+    const principalPaid = Math.max(0, principal - remainingBalance(principal, ratePct || 0, amortYears || 25, monthsPaid));
+    const totalPaid = M * monthsPaid;
+    const interestPaid = Math.max(0, totalPaid - principalPaid);
 
-      // Recreate a renter FV up to this year
+    // Simple break-even year scan (consistent with above model)
+    let breakEvenYear: number | null = null;
+    for (let y = 1; y <= Math.ceil(nMonths / 12); y++) {
+      const months = Math.min(nMonths, y * 12);
       let rentY = Math.max(0, rentMonthly || 0);
       let hvY = price;
-      let renterFVY = (downPayment + Math.max(0, closingCosts || 0)) * (1 + i_inv); // month 1 comp
-      for (let m = 1; m <= cumulativeMonths; m++) {
+      let renterFVY = (downPayment + Math.max(0, closingCosts || 0));
+
+      for (let m = 1; m <= months; m++) {
         const taxM = (taxPctOfValue * hvY) / 12;
         const maintM = (Math.max(0, maintenancePctAnnual || 0) / 100) * hvY / 12;
-        const ownerCash = M + taxM + maintM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
+        const pmtY = m <= mortgageMonths ? M : 0;
+        const ownerCash = pmtY + taxM + maintM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
         const renterCash = rentY + Math.max(0, renterInsMonthly || 0);
         const dif = ownerCash - renterCash;
-        if (dif > 0) renterFVY = (renterFVY + dif) * (1 + i_inv);
-        else renterFVY = renterFVY * (1 + i_inv);
+        renterFVY = (renterFVY + (dif > 0 ? dif : 0)) * (1 + i_inv);
         rentY *= 1 + i_rent;
         hvY *= 1 + g_home;
       }
+      const rb = remainingBalance(principal, ratePct || 0, amortYears || 25, months);
+      const sp = price * Math.pow(1 + g_home, months);
+      const sc = sp * Math.max(0, sellingCostPct || 0) / 100;
       const ownerNWy = Math.max(0, sp - sc - Math.max(0, rb));
       const renterNWy = Math.max(0, renterFVY);
       if (ownerNWy >= renterNWy) { breakEvenYear = y; break; }
@@ -206,6 +215,8 @@ export default function Page() {
       downPayment,
       principal,
       breakEvenYear,
+      principalPaid,
+      interestPaid,
     };
   }, [
     purchasePrice, downPct, ratePct, amortYears, closingCosts,
@@ -260,6 +271,8 @@ export default function Page() {
       ["Selling Costs @ horizon", r.saleCosts.toFixed(2)],
       ["Down Payment (CAD)", r.downPayment.toFixed(2)],
       ["Starting Principal (loan)", r.principal.toFixed(2)],
+      ["Principal Paid (horizon)", r.principalPaid.toFixed(2)],
+      ["Interest Paid (horizon)", r.interestPaid.toFixed(2)],
     ];
     downloadCSV("rent_vs_buy_summary", rows);
   }
@@ -480,7 +493,7 @@ export default function Page() {
           <details className="mt-4 rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-4">
             <summary className="cursor-pointer font-semibold text-brand-green">What’s included?</summary>
             <ul className="list-disc ml-5 mt-2 text-sm text-brand-blue/80 space-y-1">
-              <li>Owner: monthly P&amp;I + property taxes + maintenance (% of value) + HOA/condo + home insurance.</li>
+              <li>Owner: monthly P&amp;I (stops once fully paid) + property taxes + maintenance (% of value) + HOA/condo + home insurance.</li>
               <li>Renter: monthly rent with growth + renter’s insurance.</li>
               <li>Up-front down payment and closing costs are accounted for in net-worth (not double-counted here).</li>
             </ul>
@@ -499,6 +512,14 @@ export default function Page() {
             <div className="flex justify-between">
               <span>Break-even (first year Buy ≥ Rent)</span>
               <span className="font-medium">{results.breakEvenYear ?? "Not reached"}</span>
+            </div>
+            <div className="flex justify-between border-t pt-2 mt-2">
+              <span>Principal paid (horizon)</span>
+              <span className="font-medium">{money(results.principalPaid, 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Interest paid (horizon)</span>
+              <span className="font-medium">{money(results.interestPaid, 0)}</span>
             </div>
           </div>
           <p className="text-xs text-brand-blue/70 mt-2">

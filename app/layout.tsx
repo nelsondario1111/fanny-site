@@ -7,7 +7,7 @@ import Script from "next/script";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#7D9A7E", // brand green (adjust if needed)
+  themeColor: "#7D9A7E",
   colorScheme: "light",
 };
 
@@ -26,11 +26,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="no-js" suppressHydrationWarning>
       <head>
-        {/* Add the .js class ASAP so fade-ins only run after JS is available */}
+        {/* Flip no-js -> js before hydration so CSS can key off it */}
         <Script id="set-js-flag" strategy="beforeInteractive">
-          {`document.documentElement.classList.add('js');`}
+          {`document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');`}
         </Script>
 
         {/* No-JS fallback: never hide content */}
@@ -44,10 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           lato.variable,
           playfair.variable,
           pacifico.variable,
-          "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased",
+          // ✅ make body a flex column so <main class="flex-1"> works on every page
+          "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >
-        {/* Header/Footer are rendered by locale layouts at app/((en)) and app/((es)).
+        {/* Header/Footer are rendered by locale layouts at app/(en) and app/(es).
             Keeping root neutral avoids duplicate headers/footers and hydration issues. */}
         {children}
       </body>

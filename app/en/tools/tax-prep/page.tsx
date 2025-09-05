@@ -73,17 +73,38 @@ function ymd(d: Date) {
   return `${y}-${m}-${day}`;
 }
 
-function rrspDeadlineForTaxYear(taxYear: number) {
-  // RRSP deadline is the 60th day of the following calendar year
-  const d = new Date(taxYear + 1, 0, 60); // Jan=0; JS handles leap years
-  return d;
+// Robust CSV (quotes + CRLF + BOM for Excel)
+function toCSV(rows: Array<Array<string | number>>) {
+  const esc = (v: string | number) => {
+    const s = String(v ?? "");
+    const needs = /[",\n]/.test(s);
+    const q = s.replace(/"/g, '""');
+    return needs ? `"${q}"` : q;
+  };
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
+}
+function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
+  const iso = new Date().toISOString().slice(0, 10);
+  const csv = toCSV(rows);
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${baseName}_${iso}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
+// Key date helpers
+function rrspDeadlineForTaxYear(taxYear: number) {
+  // RRSP deadline is the 60th day of the following calendar year
+  const d = new Date(taxYear + 1, 0, 60); // Jan=0; handles leap years
+  return d;
+}
 function filingDueDate(taxYear: number) {
   // Most individuals: April 30 of following year
   return new Date(taxYear + 1, 3, 30); // Apr=3
 }
-
 function selfEmployedDueDate(taxYear: number) {
   // Self-employed filing due: June 15 of following year (balance still due Apr 30)
   return new Date(taxYear + 1, 5, 15); // Jun=5
@@ -154,10 +175,42 @@ const toneToText: Record<string, string> = {
   gold: "text-amber-700",
 };
 
-// ---------- Default tasks (Canada-centric, service-aligned) ----------
+// ---------- Default tasks (now include dated “deadline” items) ----------
 function defaultTasks(taxYear: number): Task[] {
+  const rrsp = rrspDeadlineForTaxYear(taxYear);
+  const apr30 = filingDueDate(taxYear);
+  const jun15 = selfEmployedDueDate(taxYear);
+
   return [
-    // YEAR SETUP
+    // YEAR SETUP — dated reminders
+    {
+      id: uid(),
+      section: "year_setup",
+      title: `RRSP contribution deadline for ${taxYear}`,
+      note: "First 60 days of the following year count toward this tax year.",
+      done: false,
+      due: ymd(rrsp),
+      priority: "high",
+    },
+    {
+      id: uid(),
+      section: "year_setup",
+      title: `File tax return (most individuals) — ${taxYear}`,
+      note: "Balance owing still due by April 30.",
+      done: false,
+      due: ymd(apr30),
+      priority: "high",
+    },
+    {
+      id: uid(),
+      section: "year_setup",
+      title: `Self-employed filing deadline — ${taxYear}`,
+      note: "If self-employed, filing due by June 15; any balance still due April 30.",
+      done: false,
+      due: ymd(jun15),
+    },
+
+    // YEAR SETUP — general
     {
       id: uid(),
       section: "year_setup",
@@ -385,29 +438,23 @@ export default function Page() {
   };
 
   const exportCSV = () => {
-    const headers = ["Tax Year", "Section", "Task", "Done", "Due", "Note", "Link"];
-    const lines = [headers.join(",")];
-    tasks.forEach((t) => {
-      const cells = [
-        String(taxYear),
+    const rows: Array<Array<string | number>> = [
+      ["Tax Year", taxYear],
+      ["RRSP Deadline", ymd(keyDates.rrsp)],
+      ["Filing Deadline (most)", ymd(keyDates.apr30)],
+      ["Self-employed Filing", ymd(keyDates.jun15)],
+      ["—", "—"],
+      ["Section", "Task", "Done", "Due", "Note", "Link"],
+      ...tasks.map((t) => [
         SECTION_META[t.section].title,
-        t.title.replace(/"/g, '""'),
+        t.title,
         t.done ? "Yes" : "No",
         t.due || "",
-        (t.note || "").replace(/"/g, '""'),
+        t.note || "",
         t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ];
-      lines.push(
-        cells.map((c) => (c.includes(",") || c.includes('"') ? `"${c}"` : c)).join(",")
-      );
-    });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Tax_Prep_${taxYear}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+      ]),
+    ];
+    downloadCSV(`Tax_Prep_${taxYear}`, rows);
   };
 
   const toggleAll = (val: boolean) =>
@@ -441,9 +488,9 @@ export default function Page() {
             onChange={(e) => setTaxYear(parseInt(e.target.value))}
             className="border-2 border-brand-gold/60 rounded-full bg-white px-3 py-1.5"
           >
-            {/* Offer a few recent years plus current */}
+            {/* Offer a few recent years plus current (filing is for prior year) */}
             {[currentYear, currentYear - 1, currentYear - 2, currentYear - 3].map((y) => (
-              <option key={y} value={y - 1}>{y - 1}</option> // filing for prior year
+              <option key={y} value={y - 1}>{y - 1}</option>
             ))}
           </select>
 
@@ -492,7 +539,7 @@ export default function Page() {
           <DateCard label="Self-employed filing" date={keyDates.jun15} helper={`June 15, ${taxYear + 1} (balance due April 30)`} />
           <div className="rounded-xl border border-brand-gold/50 bg-brand-beige/40 p-3 md:p-4 flex items-center justify-between">
             <div>
-              <div className="text-xs md:text-sm text-brand-blue/80">Overall progress</div>
+              <div className="text-xs md:text-sm text-brand-blue/80">Checklist</div>
               <div className="mt-2"><ProgressBar value={overall.done} total={overall.total} /></div>
               <div className="text-xs text-brand-blue/70 mt-1">{overall.done}/{overall.total} completed</div>
             </div>

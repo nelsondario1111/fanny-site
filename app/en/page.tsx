@@ -54,7 +54,6 @@ function Panel({
     <Tag
       className={[
         "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        // Softer, less boxy panels
         "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
         "backdrop-blur-[1px]",
         className,
@@ -78,7 +77,7 @@ function MotionPanel({
   return (
     <motion.section
       variants={fadeUp}
-      initial="hidden"
+      initial={false}                         // <<< prevents hidden state on first paint
       whileInView="visible"
       viewport={{ once: true, amount: viewportAmount }}
       className={className}
@@ -94,7 +93,7 @@ function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
   return (
     <motion.div
       variants={fade}
-      initial="hidden"
+      initial={false}                         // <<< never render invisible on first paint
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       className="text-center mb-8"
@@ -124,31 +123,28 @@ export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Fanny Samaniego",
-    "url": "https://www.fannysamaniego.com/",
-    "logo": "https://www.fannysamaniego.com/apple-touch-icon.png",
-    "founder": {
+    name: "Fanny Samaniego",
+    url: "https://www.fannysamaniego.com/",
+    logo: "https://www.fannysamaniego.com/apple-touch-icon.png",
+    founder: {
       "@type": "Person",
-      "name": "Fanny Samaniego",
-      "jobTitle": "Financial Advisor & Mortgage Agent",
-      "worksFor": { "@type": "Organization", "name": "Fanny Samaniego" }
+      name: "Fanny Samaniego",
+      jobTitle: "Financial Advisor & Mortgage Agent",
+      worksFor: { "@type": "Organization", name: "Fanny Samaniego" },
     },
-    "makesOffer": [
-      { "@type": "Offer", "category": "Financial Coaching", "itemOffered": { "@type": "Service", "name": "Premium Financial Coaching & Planning" }},
-      { "@type": "Offer", "category": "Mortgage Services", "itemOffered": { "@type": "Service", "name": "Mortgage Readiness & Pre-Approval" }},
-      { "@type": "Offer", "category": "Tax Planning", "itemOffered": { "@type": "Service", "name": "Holistic Tax Rhythm & Strategy" }}
-    ]
+    makesOffer: [
+      { "@type": "Offer", category: "Financial Coaching", itemOffered: { "@type": "Service", name: "Premium Financial Coaching & Planning" } },
+      { "@type": "Offer", category: "Mortgage Services", itemOffered: { "@type": "Service", name: "Mortgage Readiness & Pre-Approval" } },
+      { "@type": "Offer", category: "Tax Planning", itemOffered: { "@type": "Service", name: "Holistic Tax Rhythm & Strategy" } },
+    ],
   };
 
   return (
     <main className="bg-brand-beige min-h-dvh">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* ======================= HERO ======================= */}
-<header
+      <header
         className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6"
         aria-label="Hero"
       >
@@ -165,91 +161,82 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
         </div>
 
-        <motion.div
+        {/* Consistent table/card: use Panel via MotionPanel */}
+        <motion.section
           variants={stagger}
-          initial="hidden"
+          initial={false}                      // <<< no hidden state on SSR
           animate="visible"
-          className="z-10 relative px-6 sm:px-10 py-10 rounded-[32px] text-center max-w-3xl mx-auto"
-          style={{
-            background: "rgba(255,255,255,0.9)",
-            boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
-            backdropFilter: "blur(6px)",
-          }}
+          className="w-full px-4"
         >
-          {/* subtle gold accent */}
-          <div
-            aria-hidden
-            className="absolute -top-1 left-8 right-8 h-[3px] rounded-full bg-brand-gold/80 shadow-[0_1px_0_rgba(0,0,0,0.06)]"
-          />
-          <motion.h1
-            variants={fadeUp}
-            className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight"
-          >
-            Guidance by Invitation. Clarity by Design.
-          </motion.h1>
-
-          <motion.p
-            variants={fade}
-            className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed"
-          >
-            When you’re ready for holistic, heart-centered financial guidance, I’m here to walk
-            alongside you—offering support that honors your unique journey.
-          </motion.p>
-
-          {/* Clear CTA hierarchy */}
-          <motion.nav
-            variants={fade}
-            aria-label="Primary actions"
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/en/services"
-                aria-label="Explore services"
-                className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition inline-block"
-              >
-                Explore Services
-              </Link>
-              <Link
-                href="/en/tools"
-                aria-label="Browse tools"
-                className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
-              >
-                Browse Tools
-              </Link>
-            </div>
-            <Link
-              href="/en/contact?intent=hello"
-              className="px-4 py-2 mt-1 rounded-full border border-brand-blue text-[15px] text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          <Panel className="text-center relative">
+            {/* subtle gold accent */}
+            <div
+              aria-hidden
+              className="absolute -top-1 left-8 right-8 h-[3px] rounded-full bg-brand-gold/80 shadow-[0_1px_0_rgba(0,0,0,0.06)]"
+            />
+            <motion.h1
+              variants={fadeUp}
+              className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight"
             >
-              Start a conversation
-            </Link>
-          </motion.nav>
+              Guidance by Invitation. Clarity by Design.
+            </motion.h1>
 
-          {/* Trust chips */}
-          <motion.div
-            variants={fade}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2"
-            aria-label="Trust badges"
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-              <FaShieldAlt aria-hidden /> Private &amp; Confidential
-            </span>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-              <FaGlobeAmericas aria-hidden /> Bilingual (EN/ES)
-            </span>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-              <FaIdBadge aria-hidden /> Licensed Mortgage Agent (L2)
-            </span>
-          </motion.div>
-        </motion.div>
+            <motion.p variants={fade} className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
+              When you’re ready for holistic, heart-centered financial guidance, I’m here to walk
+              alongside you—offering support that honors your unique journey.
+            </motion.p>
+
+            {/* Clear CTA hierarchy */}
+            <motion.nav variants={fade} aria-label="Primary actions" className="flex flex-col items-center gap-2">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  href="/en/services"
+                  aria-label="Explore services"
+                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition inline-block"
+                >
+                  Explore Services
+                </Link>
+                <Link
+                  href="/en/tools"
+                  aria-label="Browse tools"
+                  className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+                >
+                  Browse Tools
+                </Link>
+              </div>
+              <Link
+                href="/en/contact?intent=hello"
+                className="px-4 py-2 mt-1 rounded-full border border-brand-blue text-[15px] text-brand-blue hover:bg-brand-blue hover:text-white transition"
+              >
+                Start a conversation
+              </Link>
+            </motion.nav>
+
+            {/* Trust chips */}
+            <motion.div
+              variants={fade}
+              className="mt-6 flex flex-wrap items-center justify-center gap-2"
+              aria-label="Trust badges"
+            >
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+                <FaShieldAlt aria-hidden /> Private &amp; Confidential
+              </span>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+                <FaGlobeAmericas aria-hidden /> Bilingual (EN/ES)
+              </span>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
+                <FaIdBadge aria-hidden /> Licensed Mortgage Agent (L2)
+              </span>
+            </motion.div>
+          </Panel>
+        </motion.section>
       </header>
 
       {/* ============================ ABOUT ============================ */}
       <MotionPanel className="mt-10" aria-label="About Fanny Samaniego">
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="flex flex-col md:flex-row items-center gap-8"
@@ -307,7 +294,7 @@ export default function Home() {
         <SectionTitle title="Why We Work by Invitation" />
         <motion.p
           variants={fade}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto leading-relaxed"
@@ -317,7 +304,7 @@ export default function Home() {
         </motion.p>
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           className="text-left max-w-2xl mx-auto"
@@ -333,7 +320,7 @@ export default function Home() {
         </motion.div>
         <motion.div
           variants={fade}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           className="mt-6 text-center"
@@ -351,7 +338,7 @@ export default function Home() {
       <MotionPanel className="mt-8" aria-label="Professional Certifications and Partners">
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center"
@@ -378,7 +365,7 @@ export default function Home() {
         <SectionTitle title="Ways We Can Guide You" />
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="grid md:grid-cols-3 gap-8"
@@ -469,7 +456,7 @@ export default function Home() {
         <SectionTitle title="Kitchen Table Conversations" kicker="4-week small-group program" />
         <motion.p
           variants={fade}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="text-center text-brand-body mt-2 max-w-3xl mx-auto"
@@ -480,7 +467,7 @@ export default function Home() {
         </motion.p>
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="grid md:grid-cols-3 gap-6 mt-8"
@@ -516,7 +503,7 @@ export default function Home() {
 
         <motion.div
           variants={fade}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="text-center mt-8 flex flex-col sm:flex-row gap-3 justify-center"
@@ -543,7 +530,7 @@ export default function Home() {
         <SectionTitle title="Helpful Tools & Articles" />
         <motion.div
           variants={stagger}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -600,7 +587,7 @@ export default function Home() {
       <MotionPanel className="mt-8" aria-label="Subscribe to financial tips and resources">
         <motion.div
           variants={fadeUp}
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           className="text-center max-w-3xl mx-auto"
@@ -622,7 +609,7 @@ export default function Home() {
       {/* =========================== FINAL BAND =========================== */}
       <motion.section
         variants={fade}
-        initial="hidden"
+        initial={false}
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         className="py-16 text-center"

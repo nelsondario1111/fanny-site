@@ -90,7 +90,7 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
+  const Tag: React.ElementType = level;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -130,7 +130,6 @@ const CARD =
   "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
 
 /* ============================== Utilidades ============================== */
-const normalize = (v: unknown) => String(v ?? "").toLowerCase();
 const parseDate = (d?: string | Date | null) => {
   if (!d) return 0;
   const t = d instanceof Date ? d.getTime() : Date.parse(String(d));
@@ -140,8 +139,8 @@ const parseDate = (d?: string | Date | null) => {
 const stripYaml = (s: string) => s.replace(/^---[\s\S]*?---\s*/m, "");
 const stripMd = (s: string) =>
   s
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/!\[[^\]]*\]\([^\)]+\)/g, "")
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
     .replace(/[*_~`>#-]/g, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -237,7 +236,7 @@ const EVENTOS: QuickFilter[] = [
 /* ============================== Componente ============================== */
 export default function RecursosClient({
   articles,
-  categories,
+  _categories, // unused but accepted from parent
   ctaHref = "/es/contacto?intent=pregunta",
   newsletterHref = "/es/suscribirse",
   personas,
@@ -247,7 +246,7 @@ export default function RecursosClient({
   tagsData,
 }: {
   articles: ClientArticle[];
-  categories: string[];
+  _categories?: string[]; // renamed from categories to avoid unused-var lint
   ctaHref?: string;
   newsletterHref?: string;
   personas?: PersonaIndex[];
@@ -604,7 +603,7 @@ export default function RecursosClient({
                 <select
                   id="sort"
                   value={sort}
-                  onChange={(e) => setSort(e.target.value as any)}
+                  onChange={(e) => setSort(e.target.value as "new" | "old" | "az")}
                   className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
                 >
                   <option value="new">Más nuevos primero</option>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
 import {
@@ -15,16 +15,20 @@ import {
   ShieldCheck,
   CreditCard,
   Building2,
-  FileText,
-  Info,
+  X,
+  Upload,
+  Filter,
   Search,
+  AlertTriangle,
+  Flag,
 } from "lucide-react";
 
 /**
  * Mortgage Readiness Checklist
  * - Sections with tasks, due dates, notes, custom items
  * - Autosave (localStorage) + "Saved" indicator
- * - CSV export, Print, Reset
+ * - CSV/JSON export, JSON import, Print, Reset
+ * - Overdue/due-soon highlights, priority chips, inline quick-add
  * - Mobile: stacked cards; Desktop: clean tables
  *
  * Educational only. Lender rules vary; confirm details with your broker/lender.
@@ -39,6 +43,8 @@ type SectionKey =
   | "timeline_steps"
   | "custom";
 
+type Priority = "high" | "normal";
+
 type Task = {
   id: string;
   section: SectionKey;
@@ -49,11 +55,13 @@ type Task = {
   linkHref?: string; // prefer internal routes
   linkLabel?: string;
   isCustom?: boolean;
-  priority?: "high" | "normal";
+  priority?: Priority;
 };
 
 // ---------- Storage ----------
 const LS_KEY = "tools.mortgage_readiness.v1";
+const LS_COLLAPSE = "tools.mortgage_readiness.collapse.v1";
+const LS_FILTERS = "tools.mortgage_readiness.filters.v1";
 
 // ---------- Helpers ----------
 const uid = () =>
@@ -63,6 +71,35 @@ const uid = () =>
 
 function classNames(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
+}
+
+function daysUntil(dateISO?: string) {
+  if (!dateISO) return null;
+  const d = new Date(`${dateISO}T00:00:00`);
+  if (Number.isNaN(+d)) return null;
+  const today = new Date();
+  const diff = Math.ceil((d.getTime() - new Date(today.toDateString()).getTime()) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function toCSV(rows: Array<Array<string | number>>) {
+  const esc = (v: string | number) => {
+    const s = String(v ?? "");
+    const needs = /[",\n]/.test(s);
+    const q = s.replace(/"/g, '""');
+    return needs ? `"${q}"` : q;
+  };
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
+}
+
+function downloadFile(filename: string, mime: string, data: string | Blob) {
+  const blob = data instanceof Blob ? data : new Blob([data], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ---------- Section metadata ----------
@@ -172,11 +209,21 @@ function ProgressBar({ value, total }: { value: number; total: number }) {
   );
 }
 
+function PriorityBadge({ p }: { p?: Priority }) {
+  if (p !== "high") return null;
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-red-700 bg-red-50 border border-red-200 rounded-full px-2 py-0.5 ml-2">
+      <Flag className="h-3 w-3" /> High
+    </span>
+  );
+}
+
 // ---------- Page ----------
 export default function Page() {
   const [tasks, setTasks] = useState<Task[]>(defaultTasks());
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [filter, setFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<"all" | "high" | "normal">("all");
   const [collapse, setCollapse] = useState<Record<SectionKey, boolean>>({
     credit_score: false,
     income_employment: false,
@@ -186,6 +233,8 @@ export default function Page() {
     custom: false,
   });
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Restore
   useEffect(() => {
     try {
@@ -193,6 +242,16 @@ export default function Page() {
       if (raw) {
         const v = JSON.parse(raw);
         if (Array.isArray(v)) setTasks(v as Task[]);
+      }
+      const rawC = localStorage.getItem(LS_COLLAPSE);
+      if (rawC) {
+        const cc = JSON.parse(rawC);
+        if (cc && typeof cc === "object") setCollapse(cc);
+      }
+      const rawF = localStorage.getItem(LS_FILTERS);
+      if (rawF) {
+        const f = JSON.parse(rawF);
+        if (f?.priority) setPriorityFilter(f.priority);
       }
     } catch {}
   }, []);
@@ -205,17 +264,31 @@ export default function Page() {
     } catch {}
   }, [tasks]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(LS_COLLAPSE, JSON.stringify(collapse));
+    } catch {}
+  }, [collapse]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LS_FILTERS, JSON.stringify({ priority: priorityFilter }));
+    } catch {}
+  }, [priorityFilter]);
+
   // Derived
   const overall = useMemo(() => {
-    const filtered = filter
-      ? tasks.filter((t) =>
-          [t.title, t.note, t.linkLabel]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase()
-            .includes(filter.toLowerCase())
-        )
-      : tasks;
+    let filtered = tasks;
+
+    if (filter.trim()) {
+      const q = filter.toLowerCase();
+      filtered = filtered.filter((t) =>
+        [t.title, t.note, t.linkLabel].filter(Boolean).join(" ").toLowerCase().includes(q)
+      );
+    }
+    if (priorityFilter !== "all") {
+      filtered = filtered.filter((t) => (priorityFilter === "high" ? t.priority === "high" : (t.priority || "normal") === "normal"));
+    }
 
     const bySection = (key: SectionKey) => filtered.filter((t) => t.section === key);
     const sections = (Object.keys(SECTION_META) as SectionKey[]).map((key) => {
@@ -242,19 +315,20 @@ export default function Page() {
       .slice(0, 8);
 
     return { filtered, sections, total, done, pct, upcoming };
-  }, [tasks, filter]);
+  }, [tasks, filter, priorityFilter]);
 
   // Actions
   const toggle = (id: string) =>
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   const update = (id: string, patch: Partial<Task>) =>
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
-  const addCustom = (section: SectionKey) =>
+  const addCustom = (section: SectionKey, title = "") =>
     setTasks((prev) => [
       ...prev,
-      { id: uid(), section, title: "", note: "", done: false, isCustom: true },
+      { id: uid(), section, title, note: "", done: false, isCustom: true },
     ]);
   const removeTask = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
+  const clearDue = (id: string) => update(id, { due: undefined });
 
   const resetAll = () => {
     const ok = confirm("Reset the checklist to the default template? This clears your saved progress.");
@@ -267,27 +341,60 @@ export default function Page() {
   };
 
   const exportCSV = () => {
-    const headers = ["Section", "Task", "Done", "Due", "Note", "Link"];
-    const lines = [headers.join(",")];
-    tasks.forEach((t) => {
-      const cells = [
+    const rows: Array<Array<string | number>> = [
+      ["Section", "Task", "Done", "Due", "Priority", "Note", "LinkLabel", "LinkHref"],
+      ...tasks.map((t) => [
         SECTION_META[t.section].title,
-        t.title.replace(/"/g, '""'),
+        t.title,
         t.done ? "Yes" : "No",
         t.due || "",
-        (t.note || "").replace(/"/g, '""'),
-        t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ];
-      lines.push(
-        cells.map((c) => (c.includes(",") || c.includes('"') ? `"${c}"` : c)).join(",")
-      );
-    });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "Mortgage_Readiness_Checklist.csv"; a.click();
-    URL.revokeObjectURL(url);
+        t.priority || "normal",
+        t.note || "",
+        t.linkLabel || "",
+        t.linkHref || "",
+      ]),
+    ];
+    const csv = "\uFEFF" + toCSV(rows);
+    downloadFile("Mortgage_Readiness_Checklist.csv", "text/csv;charset=utf-8", csv);
   };
+
+  const exportJSON = () => {
+    const json = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), tasks }, null, 2);
+    downloadFile("Mortgage_Readiness_Checklist.json", "application/json", json);
+  };
+
+  const importJSON = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        const arr = parsed?.tasks || parsed;
+        if (!Array.isArray(arr)) throw new Error("Invalid file format");
+        // Minimal validation
+        const cleaned: Task[] = arr
+          .map((t: any) => ({
+            id: typeof t.id === "string" ? t.id : uid(),
+            section: (["credit_score","income_employment","down_payment_closing","documents","timeline_steps","custom"] as SectionKey[]).includes(t.section) ? t.section : "custom",
+            title: String(t.title ?? "").slice(0, 300),
+            note: typeof t.note === "string" ? t.note.slice(0, 2000) : "",
+            done: Boolean(t.done),
+            due: typeof t.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.due) ? t.due : undefined,
+            linkHref: typeof t.linkHref === "string" ? t.linkHref : undefined,
+            linkLabel: typeof t.linkLabel === "string" ? t.linkLabel : undefined,
+            isCustom: Boolean(t.isCustom ?? true),
+            priority: t.priority === "high" ? "high" : "normal",
+          }))
+          .filter((t: Task) => t.title.trim().length > 0);
+        if (!cleaned.length) throw new Error("No tasks found");
+        setTasks(cleaned);
+      } catch (e: any) {
+        alert(`Could not import JSON: ${e?.message || e}`);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const openImport = () => fileInputRef.current?.click();
 
   const toggleAll = (val: boolean) =>
     setCollapse({
@@ -300,6 +407,8 @@ export default function Page() {
     });
 
   // ---------- Render ----------
+  const printDate = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+
   return (
     <ToolShell
       title="Mortgage Readiness Checklist"
@@ -308,7 +417,7 @@ export default function Page() {
     >
       {/* Header actions */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-blue/60" />
             <input
@@ -319,6 +428,22 @@ export default function Page() {
               aria-label="Filter tasks"
             />
           </div>
+
+          <div className="inline-flex items-center gap-2 text-sm px-3 py-2 rounded-full border border-brand-gold/60 bg-white">
+            <Filter className="h-4 w-4 text-brand-blue/70" />
+            <label className="text-brand-blue/80">Priority:</label>
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value as typeof priorityFilter)}
+              className="bg-transparent outline-none"
+              aria-label="Filter by priority"
+            >
+              <option value="all">All</option>
+              <option value="high">High</option>
+              <option value="normal">Normal</option>
+            </select>
+          </div>
+
           <button type="button" onClick={() => toggleAll(true)} className="text-sm underline text-brand-blue">
             Collapse all
           </button>
@@ -338,6 +463,36 @@ export default function Page() {
             <Download className="h-4 w-4" />
             Export CSV
           </button>
+          <button
+            type="button"
+            onClick={exportJSON}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+            title="Export as JSON"
+          >
+            <Download className="h-4 w-4" />
+            Export JSON
+          </button>
+          <button
+            type="button"
+            onClick={openImport}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition"
+            title="Import JSON"
+          >
+            <Upload className="h-4 w-4" />
+            Import
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) importJSON(f);
+              e.currentTarget.value = "";
+            }}
+          />
+
           <button
             type="button"
             onClick={() => window.print()}
@@ -398,12 +553,32 @@ export default function Page() {
         )}
       </section>
 
+      {/* Print header */}
+      <div className="hidden print:block mt-2 mb-3 text-center">
+        <div className="font-serif font-bold text-brand-green text-2xl">Mortgage Readiness — Checklist</div>
+        <div className="text-xs text-brand-blue">Prepared {printDate}</div>
+        <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
+      </div>
+
       {/* Sections */}
       <form className="grid grid-cols-1 gap-6">
         {(Object.keys(SECTION_META) as SectionKey[]).map((key) => {
           const meta = SECTION_META[key];
           const list = overall.sections.find((s) => s.key === key)!;
           const isCollapsed = collapse[key];
+
+          // Quick-add local state (per section)
+          const [titleValue, setTitleValue] = useState("");
+          const [priorityValue, setPriorityValue] = useState<Priority>("normal");
+
+          const quickAdd = () => {
+            const title = titleValue.trim();
+            if (!title) return;
+            const t: Task = { id: uid(), section: key, title, note: "", done: false, isCustom: true, priority: priorityValue };
+            setTasks((prev) => [...prev, t]);
+            setTitleValue("");
+            setPriorityValue("normal");
+          };
 
           return (
             <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
@@ -416,17 +591,6 @@ export default function Page() {
                 </div>
                 <div className="flex items-center gap-3">
                   <ProgressBar value={list.done} total={list.total} />
-                  {key !== "custom" && (
-                    <button
-                      type="button"
-                      onClick={() => addCustom(key)}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
-                      title="Add a custom task to this section"
-                    >
-                      <PlusCircle className="h-4 w-4" />
-                      Add task
-                    </button>
-                  )}
                   <button
                     type="button"
                     onClick={() => setCollapse((c) => ({ ...c, [key]: !c[key] }))}
@@ -448,159 +612,290 @@ export default function Page() {
                       <tr className="bg-brand-beige/40 text-left">
                         <th className="p-2 rounded-l-xl w-[44px]">Done</th>
                         <th className="p-2">Task</th>
-                        <th className="p-2 w-[130px]">Due date</th>
+                        <th className="p-2 w-[120px]">Priority</th>
+                        <th className="p-2 w-[160px]">Due date</th>
                         <th className="p-2 w-[36%]">Notes</th>
                         <th className="p-2 rounded-r-xl w-[44px]"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {list.list.map((t) => (
-                        <tr key={t.id} className="border-b border-brand-green/20">
-                          <td className="p-2 align-top">
-                            <input
-                              id={`chk-${t.id}`}
-                              type="checkbox"
-                              checked={t.done}
-                              onChange={() => toggle(t.id)}
-                              className="h-4 w-4 accent-brand-green"
-                              aria-label={`Mark "${t.title}" as done`}
-                            />
-                          </td>
-                          <td className="p-2 align-top">
-                            <label htmlFor={`chk-${t.id}`} className="font-medium cursor-pointer">
-                              {t.title}
-                            </label>
-                            {t.linkHref && (
-                              <>
-                                {" "}
-                                <Link
-                                  href={t.linkHref}
-                                  className="inline-flex items-center gap-1 underline text-brand-blue ml-1"
-                                  title={t.linkLabel || "Open link"}
-                                >
-                                  {t.linkLabel || "Learn more"}
-                                  <ExternalLink className="h-3.5 w-3.5" />
-                                </Link>
-                              </>
-                            )}
-                          </td>
-                          <td className="p-2 align-top">
-                            <input
-                              type="date"
-                              value={t.due || ""}
-                              onChange={(e) => update(t.id, { due: e.target.value })}
-                              className="border rounded-lg p-2 w-full bg-white"
-                              aria-label={`Set due date for ${t.title}`}
-                            />
-                          </td>
-                          <td className="p-2 align-top">
-                            <input
-                              value={t.note || ""}
-                              onChange={(e) => updateRowNote(t.id, e.target.value)}
-                              className="w-full border rounded-lg p-2"
-                              placeholder="Add a note, contact, or link…"
-                              aria-label={`Notes for ${t.title}`}
-                            />
-                          </td>
-                          <td className="p-2 align-top text-right">
-                            {(t.isCustom || key === "custom") && (
-                              <button
-                                type="button"
-                                onClick={() => removeTask(t.id)}
-                                title="Remove task"
-                                aria-label="Remove task"
-                                className="inline-flex items-center justify-center p-1.5 rounded-md text-red-600 hover:bg-red-50"
+                      {list.list.map((t) => {
+                        const du = daysUntil(t.due);
+                        const overdue = du !== null && du < 0 && !t.done;
+                        const dueSoon = du !== null && du >= 0 && du <= 7 && !t.done;
+
+                        return (
+                          <tr key={t.id} className={classNames("border-b border-brand-green/20", overdue && "bg-red-50/50", dueSoon && "bg-amber-50/50")}>
+                            <td className="p-2 align-top">
+                              <input
+                                id={`chk-${t.id}`}
+                                type="checkbox"
+                                checked={t.done}
+                                onChange={() => toggle(t.id)}
+                                className="h-4 w-4 accent-brand-green"
+                                aria-label={`Mark "${t.title}" as done`}
+                              />
+                            </td>
+                            <td className="p-2 align-top">
+                              <label htmlFor={`chk-${t.id}`} className="font-medium cursor-pointer">
+                                {t.title}
+                              </label>
+                              <PriorityBadge p={t.priority} />
+                              {t.linkHref && (
+                                <>
+                                  {" "}
+                                  <Link
+                                    href={t.linkHref}
+                                    className="inline-flex items-center gap-1 underline text-brand-blue ml-1"
+                                    title={t.linkLabel || "Open link"}
+                                  >
+                                    {t.linkLabel || "Learn more"}
+                                    <ExternalLink className="h-3.5 w-3.5" />
+                                  </Link>
+                                </>
+                              )}
+                              {overdue && (
+                                <div className="mt-1 text-xs text-red-700 flex items-center gap-1">
+                                  <AlertTriangle className="h-3.5 w-3.5" /> Overdue
+                                </div>
+                              )}
+                              {dueSoon && !overdue && (
+                                <div className="mt-1 text-xs text-amber-700 flex items-center gap-1">
+                                  <CalendarDays className="h-3.5 w-3.5" /> Due soon ({du}d)
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-2 align-top">
+                              <select
+                                value={t.priority || "normal"}
+                                onChange={(e) => update(t.id, { priority: e.target.value as Priority })}
+                                className="border rounded-lg p-2 w-full bg-white"
+                                aria-label={`Priority for ${t.title}`}
                               >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                              </select>
+                            </td>
+                            <td className="p-2 align-top">
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="date"
+                                  value={t.due || ""}
+                                  onChange={(e) => update(t.id, { due: e.target.value })}
+                                  className="border rounded-lg p-2 w-full bg-white"
+                                  aria-label={`Set due date for ${t.title}`}
+                                />
+                                {t.due && (
+                                  <button
+                                    type="button"
+                                    onClick={() => clearDue(t.id)}
+                                    className="p-1 rounded-md hover:bg-brand-beige/60"
+                                    title="Clear due date"
+                                    aria-label="Clear due date"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-2 align-top">
+                              <input
+                                value={t.note || ""}
+                                onChange={(e) => updateRowNote(t.id, e.target.value)}
+                                className="w-full border rounded-lg p-2"
+                                placeholder="Add a note, contact, or link…"
+                                aria-label={`Notes for ${t.title}`}
+                              />
+                            </td>
+                            <td className="p-2 align-top text-right">
+                              {(t.isCustom || key === "custom") && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeTask(t.id)}
+                                  title="Remove task"
+                                  aria-label="Remove task"
+                                  className="inline-flex items-center justify-center p-1.5 rounded-md text-red-600 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {/* Quick add row */}
+                      <tr>
+                        <td />
+                        <td className="p-2">
+                          <input
+                            value={titleValue}
+                            onChange={(e) => setTitleValue(e.target.value)}
+                            placeholder="Add a new task…"
+                            className="w-full border rounded-lg p-2"
+                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), quickAdd())}
+                          />
+                        </td>
+                        <td className="p-2">
+                          <select
+                            value={priorityValue}
+                            onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                            className="border rounded-lg p-2 w-full bg-white"
+                          >
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                          </select>
+                        </td>
+                        <td className="p-2" />
+                        <td className="p-2" />
+                        <td className="p-2">
+                          <button
+                            type="button"
+                            onClick={quickAdd}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
+                          >
+                            <PlusCircle className="h-4 w-4" />
+                            Add
+                          </button>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
 
                 {/* Mobile stacked cards */}
                 <div className="md:hidden grid gap-2">
-                  {list.list.map((t) => (
-                    <div key={t.id} className="relative rounded-xl border border-brand-gold/50 bg-white p-3">
-                      {(t.isCustom || key === "custom") && (
-                        <button
-                          type="button"
-                          onClick={() => removeTask(t.id)}
-                          title="Remove task"
-                          aria-label="Remove task"
-                          className="absolute right-2 top-2 p-1 rounded-md text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
+                  {list.list.map((t) => {
+                    const du = daysUntil(t.due);
+                    const overdue = du !== null && du < 0 && !t.done;
+                    const dueSoon = du !== null && du >= 0 && du <= 7 && !t.done;
 
-                      <div className="flex items-start gap-3">
-                        <input
-                          id={`mchk-${t.id}`}
-                          type="checkbox"
-                          checked={t.done}
-                          onChange={() => toggle(t.id)}
-                          className="mt-1 h-4 w-4 accent-brand-green"
-                          aria-label={`Mark "${t.title}" as done`}
-                        />
-                        <div className="flex-1">
-                          <label htmlFor={`mchk-${t.id}`} className="font-medium">
-                            {t.title}
-                          </label>
-                          {t.linkHref && (
-                            <div className="mt-1">
-                              <Link
-                                href={t.linkHref}
-                                className="inline-flex items-center gap-1 underline text-brand-blue"
-                                title={t.linkLabel || "Open link"}
-                              >
-                                {t.linkLabel || "Learn more"}
-                                <ExternalLink className="h-3.5 w-3.5" />
-                              </Link>
-                            </div>
-                          )}
-                          <div className="grid grid-cols-2 gap-2 mt-2">
-                            <div>
-                              <div className="text-[11px] text-brand-blue/70">Due</div>
-                              <input
-                                type="date"
-                                value={t.due || ""}
-                                onChange={(e) => update(t.id, { due: e.target.value })}
-                                className="border rounded-lg p-2 w-full bg-white"
-                              />
-                            </div>
-                            <div className="col-span-2">
-                              <div className="text-[11px] text-brand-blue/70">Notes</div>
-                              <input
-                                value={t.note || ""}
-                                onChange={(e) => updateRowNote(t.id, e.target.value)}
-                                className="w-full border rounded-lg p-2"
-                                placeholder="Add a note, contact, or link…"
-                              />
+                    return (
+                      <div key={t.id} className={classNames("relative rounded-xl border border-brand-gold/50 bg-white p-3", overdue && "bg-red-50/50", dueSoon && "bg-amber-50/50")}>
+                        {(t.isCustom || key === "custom") && (
+                          <button
+                            type="button"
+                            onClick={() => removeTask(t.id)}
+                            title="Remove task"
+                            aria-label="Remove task"
+                            className="absolute right-2 top-2 p-1 rounded-md text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+
+                        <div className="flex items-start gap-3">
+                          <input
+                            id={`mchk-${t.id}`}
+                            type="checkbox"
+                            checked={t.done}
+                            onChange={() => toggle(t.id)}
+                            className="mt-1 h-4 w-4 accent-brand-green"
+                            aria-label={`Mark "${t.title}" as done`}
+                          />
+                          <div className="flex-1">
+                            <label htmlFor={`mchk-${t.id}`} className="font-medium">
+                              {t.title}
+                            </label>
+                            <PriorityBadge p={t.priority} />
+                            {t.linkHref && (
+                              <div className="mt-1">
+                                <Link
+                                  href={t.linkHref}
+                                  className="inline-flex items-center gap-1 underline text-brand-blue"
+                                  title={t.linkLabel || "Open link"}
+                                >
+                                  {t.linkLabel || "Learn more"}
+                                  <ExternalLink className="h-3.5 w-3.5" />
+                                </Link>
+                              </div>
+                            )}
+
+                            {(overdue || dueSoon) && (
+                              <div className={classNames("mt-1 text-xs flex items-center gap-1", overdue ? "text-red-700" : "text-amber-700")}>
+                                {overdue ? <AlertTriangle className="h-3.5 w-3.5" /> : <CalendarDays className="h-3.5 w-3.5" />}
+                                {overdue ? "Overdue" : `Due soon (${du}d)`}
+                              </div>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-2 mt-2">
+                              <div>
+                                <div className="text-[11px] text-brand-blue/70">Priority</div>
+                                <select
+                                  value={t.priority || "normal"}
+                                  onChange={(e) => update(t.id, { priority: e.target.value as Priority })}
+                                  className="w-full border rounded-lg p-2 bg-white"
+                                >
+                                  <option value="normal">Normal</option>
+                                  <option value="high">High</option>
+                                </select>
+                              </div>
+                              <div>
+                                <div className="text-[11px] text-brand-blue/70">Due</div>
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="date"
+                                    value={t.due || ""}
+                                    onChange={(e) => update(t.id, { due: e.target.value })}
+                                    className="w-full border rounded-lg p-2 bg-white"
+                                  />
+                                  {t.due && (
+                                    <button
+                                      type="button"
+                                      onClick={() => clearDue(t.id)}
+                                      className="p-1 rounded-md hover:bg-brand-beige/60"
+                                      title="Clear due date"
+                                      aria-label="Clear due date"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="col-span-2">
+                                <div className="text-[11px] text-brand-blue/70">Notes</div>
+                                <input
+                                  value={t.note || ""}
+                                  onChange={(e) => updateRowNote(t.id, e.target.value)}
+                                  className="w-full border rounded-lg p-2"
+                                  placeholder="Add a note, contact, or link…"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    );
+                  })}
 
-                {/* Add button for Custom section */}
-                {key === "custom" && (
-                  <div className="mt-3">
-                    <button
-                      type="button"
-                      onClick={() => addCustom("custom")}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
-                    >
-                      <PlusCircle className="h-4 w-4" />
-                      Add custom task
-                    </button>
+                  {/* Quick add on mobile */}
+                  <div className="rounded-xl border border-brand-gold/50 bg-white p-3">
+                    <div className="text-[11px] text-brand-blue/70 mb-1">Add task</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        value={titleValue}
+                        onChange={(e) => setTitleValue(e.target.value)}
+                        placeholder="Task title…"
+                        className="w-full border rounded-lg p-2 col-span-2"
+                      />
+                      <select
+                        value={priorityValue}
+                        onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                        className="w-full border rounded-lg p-2"
+                      >
+                        <option value="normal">Normal</option>
+                        <option value="high">High</option>
+                      </select>
+                      <button
+                        type="button"
+                        onClick={quickAdd}
+                        className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
+                      >
+                        <PlusCircle className="h-4 w-4" />
+                        Add
+                      </button>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             </section>
           );

@@ -93,7 +93,7 @@ function simulate(
 
   // Working copies
   const debts = debtsInput.map(d => ({ ...d }));
-  const nDebts = debts.length;
+  // const nDebts = debts.length; // removed: unused
 
   // Per-debt tallies
   const interestPaid: Record<number, number> = {};
@@ -132,7 +132,7 @@ function simulate(
         month,
         dateLabel: curDate ? curDate.toLocaleDateString("en-CA", DATE_FMT) : null,
         totalPayment: 0,
-        totalInterest: monthInterest,
+        totalInterest: 0, // monthInterest was just accrued; with zero pool, payment is 0
         totalPrincipal: 0,
         remainingBalance: totalBalance(),
         focus: null,
@@ -506,7 +506,7 @@ export default function Page() {
               <p className="text-sm text-brand-blue/70">Add debts to see the plan.</p>
             ) : (
               <ol className="list-decimal ml-5 space-y-1 text-sm text-brand-blue/80">
-                {sim.payoffInfo.map((p, idx) => (
+                {sim.payoffInfo.map((p) => (
                   <li key={p.id} className="flex justify-between">
                     <span>{p.name}</span>
                     <span>

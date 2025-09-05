@@ -376,7 +376,8 @@ export default function Page() {
             {pieHasValues ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Tooltip formatter={(val: any) => CAD0.format(Math.round(Number(val)))} />
+                  {/* typed formatter to avoid explicit any */}
+                  <Tooltip formatter={(val: number | string) => CAD0.format(Math.round(Number(val)))} />
                   <Pie
                     data={m.chartData}
                     dataKey="value"
@@ -416,8 +417,8 @@ export default function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {m.termSchedule.rows.slice(0, 24).map((r, i) => (
-                    <tr key={i} className="border-t">
+                  {m.termSchedule.rows.slice(0, 24).map((r) => (
+                    <tr key={r.period} className="border-t">
                       <td className="px-3 py-2">{r.period}</td>
                       <td className="px-3 py-2 text-right">{CAD2.format(r.interest)}</td>
                       <td className="px-3 py-2 text-right">{CAD2.format(r.principal)}</td>

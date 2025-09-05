@@ -19,9 +19,6 @@ function money(n: number, digits = 0) {
     maximumFractionDigits: digits,
   });
 }
-function pct(n: number) {
-  return `${(n * 100).toFixed(2)}%`;
-}
 /** Monthly payment factor for fully-amortizing loan */
 function monthlyPaymentFactor(annualRatePct: number, years: number) {
   const i = Math.max(0, annualRatePct) / 100 / 12;
@@ -207,7 +204,6 @@ export default function Page() {
     maxPmtTDS,
     bindingConstraint,
     maxPmtAllowed,
-    pmtFactorQual,
     maxSupportableLoan,
     downPaymentCAD,
     maxPriceResult,
@@ -271,7 +267,6 @@ export default function Page() {
       maxPmtTDS,
       bindingConstraint,
       maxPmtAllowed,
-      pmtFactorQual,
       maxSupportableLoan,
       downPaymentCAD,
       maxPriceResult,

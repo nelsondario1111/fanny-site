@@ -48,7 +48,7 @@ function useAnims() {
   return { fade, fadeUp, stagger };
 }
 
-/* --- Shared “panel” look (strictly typed, no `any`) --- */
+/* --- Shared “panel” look (consistent with rest of site) --- */
 type PanelProps<T extends ElementType = "section"> = {
   children: ReactNode;
   className?: string;
@@ -65,8 +65,8 @@ function Panel<T extends ElementType = "section">({
   return (
     <Tag
       className={[
-        "max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold shadow-xl",
+        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
+        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
         "backdrop-blur-[1px]",
         className,
       ].join(" ")}
@@ -91,7 +91,7 @@ function MotionPanel({
   return (
     <motion.section
       variants={fadeUp}
-      initial="hidden"
+      initial={false} // avoid hidden SSR
       whileInView="visible"
       viewport={{ once: true, amount: viewportAmount }}
       className={className}
@@ -112,7 +112,7 @@ function SectionTitle({
   return (
     <motion.div
       variants={fade}
-      initial="hidden"
+      initial={false} // avoid hidden SSR
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       className="text-center mb-6"
@@ -123,18 +123,11 @@ function SectionTitle({
       >
         {title}
       </motion.h1>
-      <motion.div
-        variants={fade}
-        className="flex justify-center my-4"
-        aria-hidden="true"
-      >
+      <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
         <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
       </motion.div>
       {subtitle && (
-        <motion.p
-          variants={fadeUp}
-          className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto"
-        >
+        <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
           {subtitle}
         </motion.p>
       )}
@@ -164,7 +157,7 @@ export default function About() {
           />
           <motion.div
             variants={stagger}
-            initial="hidden"
+            initial={false}
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
             className="mt-10 flex flex-col md:flex-row items-center gap-10"
@@ -218,6 +211,9 @@ export default function About() {
         <MotionPanel>
           <motion.h2
             variants={fadeUp}
+            initial={false}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.25 }}
             className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
           >
             Credentials & Quick Facts
@@ -225,7 +221,7 @@ export default function About() {
 
           <motion.ul
             variants={stagger}
-            initial="hidden"
+            initial={false}
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
             className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10"
@@ -251,6 +247,9 @@ export default function About() {
         <MotionPanel>
           <motion.h2
             variants={fadeUp}
+            initial={false}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
             className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
           >
             A Multidisciplinary Team—Under One Umbrella
@@ -258,6 +257,9 @@ export default function About() {
 
           <motion.p
             variants={fade}
+            initial={false}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.25 }}
             className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center"
           >
             Alongside Fanny, you’ll have coordinated access to qualified professionals. Each specialist operates
@@ -267,7 +269,7 @@ export default function About() {
 
           <motion.div
             variants={stagger}
-            initial="hidden"
+            initial={false}
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             className="mt-6 grid gap-4 md:grid-cols-3"
@@ -320,6 +322,8 @@ export default function About() {
 
           <motion.div
             variants={fade}
+            initial={false}
+            whileInView="visible"
             className="mt-6 flex items-center justify-center gap-2 text-sm text-brand-blue/70"
           >
             <Users size={16} />{" "}
@@ -350,16 +354,20 @@ export default function About() {
         <MotionPanel className="text-center">
           <motion.h3
             variants={fadeUp}
+            initial={false}
+            whileInView="visible"
             className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2"
           >
             Why “Guidance by Invitation”?
           </motion.h3>
-          <motion.p variants={fade} className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
+          <motion.p variants={fade} initial={false} whileInView="visible" className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
             The most meaningful work happens when both client and guide feel a natural fit. We start
             with a brief conversation—no pressure, just clarity—to confirm goals, timing, and scope.
           </motion.p>
           <motion.p
             variants={fade}
+            initial={false}
+            whileInView="visible"
             className="text-brand-body text-base mt-3 opacity-75 max-w-3xl mx-auto"
           >
             <em>
@@ -380,13 +388,16 @@ export default function About() {
         <MotionPanel>
           <motion.h2
             variants={fadeUp}
+            initial={false}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
             className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
           >
             Who We Serve Best
           </motion.h2>
           <motion.ul
             variants={stagger}
-            initial="hidden"
+            initial={false}
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             className="grid gap-3 text-brand-blue/90 max-w-3xl mx-auto list-disc ml-6 md:ml-10"
@@ -436,11 +447,13 @@ export default function About() {
         <MotionPanel className="text-center">
           <motion.h2
             variants={fadeUp}
+            initial={false}
+            whileInView="visible"
             className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3"
           >
             Ready to start the conversation?
           </motion.h2>
-          <motion.p variants={fade} className="text-brand-body mb-6">
+          <motion.p variants={fade} initial={false} whileInView="visible" className="text-brand-body mb-6">
             A 20–30 minute discovery call will give you 2–3 clear next steps—no pressure.
           </motion.p>
           <div className="flex flex-wrap gap-3 justify-center">

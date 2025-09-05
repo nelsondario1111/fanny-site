@@ -1,4 +1,3 @@
-// components/NavBar.tsx
 "use client";
 
 import * as React from "react";
@@ -25,16 +24,27 @@ import {
 import { buildAlternateHref, detectLang, type Locale } from "@/lib/i18nRoutes";
 
 /* ======================= Language Toggle (uses slug mapping) ======================= */
-function LangToggle({ invert = false }: { invert?: boolean }) {
+function LangToggle({
+  invert = false,
+  lang: propLang,
+}: {
+  invert?: boolean;
+  lang?: Locale;
+}) {
   const pathname = usePathname() || "/en";
   const search = useSearchParams();
-  const cur = detectLang(pathname) || "en";
+
+  const cur: Locale = propLang ?? (detectLang(pathname) || "en");
 
   const qs = search?.toString() ? `?${search!.toString()}` : "";
-  const hash =
-    typeof window !== "undefined" && window.location?.hash
-      ? window.location.hash
-      : "";
+
+  // Append hash only on the client (SSR-safe)
+  const [hash, setHash] = React.useState("");
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && window.location?.hash) {
+      setHash(window.location.hash);
+    }
+  }, []);
 
   const altEn = buildAlternateHref(pathname, "en") + qs + hash;
   const altEs = buildAlternateHref(pathname, "es") + qs + hash;
@@ -123,9 +133,9 @@ const SERVICES_ES: ServiceItem[] = [
 ];
 
 /* ======================= NavBar Component ======================= */
-export default function NavBar() {
+export default function NavBar({ lang: propLang }: { lang?: Locale }) {
   const pathname = usePathname() || "/";
-  const lang: Locale = pathname.startsWith("/es") ? "es" : "en";
+  const lang: Locale = propLang ?? (pathname.startsWith("/es") ? "es" : "en");
   const NAV = navFor(lang);
   const SERVICES = lang === "en" ? SERVICES_EN : SERVICES_ES;
 
@@ -260,8 +270,8 @@ export default function NavBar() {
               </a>
             </div>
             <div className="flex items-center gap-3">
-              <LangToggle invert />
-              {/* Removed CTA from utility bar per request */}
+              <LangToggle invert lang={lang} />
+              {/* CTA intentionally omitted */}
             </div>
           </div>
         </motion.div>
@@ -294,7 +304,8 @@ export default function NavBar() {
           {/* Desktop nav (≥ lg) */}
           <nav className="hidden lg:flex items-center gap-5 xl:gap-7 font-sans">
             {NAV.map((n) => {
-              const isServicesLink = lang === "en" ? n.href === "/en/services" : n.href === "/es/servicios";
+              const isServicesLink =
+                lang === "en" ? n.href === "/en/services" : n.href === "/es/servicios";
               if (!isServicesLink) {
                 return (
                   <Link
@@ -377,7 +388,8 @@ export default function NavBar() {
             >
               <div className="max-w-content mx-auto px-4 py-4 flex flex-col gap-2">
                 {NAV.map((n) => {
-                  const isServicesLink = lang === "en" ? n.href === "/en/services" : n.href === "/es/servicios";
+                  const isServicesLink =
+                    lang === "en" ? n.href === "/en/services" : n.href === "/es/servicios";
                   if (!isServicesLink) {
                     return (
                       <Link
@@ -433,7 +445,7 @@ export default function NavBar() {
                   );
                 })}
                 <div className="flex items-center justify-between pt-2">
-                  <LangToggle />
+                  <LangToggle lang={lang} />
                   <Link
                     href={convoHref}
                     className="inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
