@@ -104,6 +104,7 @@ function usePlainSearch() {
   // Clone to a stable URLSearchParams we control (avoids hydration mismatch)
   return new URLSearchParams(sp?.toString() ?? "");
 }
+
 const safeDecode = (v: string | null) => {
   try {
     return v ? decodeURIComponent(v) : undefined;
@@ -111,6 +112,9 @@ const safeDecode = (v: string | null) => {
     return v ?? undefined;
   }
 };
+
+// Local helper type to allow keepalive without `any`
+type RequestInitWithKeepAlive = RequestInit & { keepalive?: boolean };
 
 export default function ContactForm(props: Props) {
   const ps = usePlainSearch();
@@ -168,19 +172,28 @@ export default function ContactForm(props: Props) {
       pkg: effectivePackage ?? "",
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
       preferredContact:
-        (form.elements.namedItem("preferredContact") as RadioNodeList)?.value || "email",
-      pagePath: typeof window !== "undefined" ? window.location.pathname + window.location.search : "",
+        ((form.elements.namedItem("preferredContact") as RadioNodeList | null)?.value as
+          | "email"
+          | "whatsapp"
+          | "phone"
+          | undefined) || "email",
+      pagePath:
+        typeof window !== "undefined"
+          ? window.location.pathname + window.location.search
+          : "",
       referrer: typeof document !== "undefined" ? document.referrer || "" : "",
     };
 
     try {
-      const res = await fetch("/api/contact", {
+      const fetchOpts: RequestInitWithKeepAlive = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-        // keepalive helps if user navigates away quickly
-        keepalive: true as any,
-      });
+        // use keepalive in browsers that support it, without `any`
+        ...(typeof window !== "undefined" ? { keepalive: true } : {}),
+      };
+
+      const res = await fetch("/api/contact", fetchOpts);
 
       if (res.ok) {
         setStatus("success");
@@ -190,7 +203,7 @@ export default function ContactForm(props: Props) {
         return;
       }
 
-      const data = await res.json().catch(() => ({}));
+      const data: { error?: string } = await res.json().catch(() => ({} as { error?: string }));
       setStatus("error");
       setError(data?.error || "Something went wrong. Please try again.");
     } catch {

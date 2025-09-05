@@ -67,7 +67,7 @@ function irdSimple(
   remainingMonths: number
 ) {
   const diff = Math.max(0, contractRatePct - comparisonRatePct) / 100;
-  return Math.max(0, balance) * diff * Math.max(0, remainingMonths) / 12;
+  return (Math.max(0, balance) * diff * Math.max(0, remainingMonths)) / 12;
 }
 
 /* =========================================================
@@ -104,7 +104,9 @@ export default function Page() {
         setComparisonRatePct(Number(v.comparisonRatePct ?? 3.39));
         setAdminFee(Number(v.adminFee ?? 300));
       }
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, []);
 
   // Persist state
@@ -124,7 +126,9 @@ export default function Page() {
           adminFee,
         })
       );
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [
     mortgageType,
     outstandingBalance,
@@ -158,8 +162,6 @@ export default function Page() {
     penalty3mo,
     penaltyIRD,
     basePenalty,
-    recommendedPenalty,
-    ruleText,
     totalWithFees,
   } = useMemo(() => {
     const effectiveBalance = Math.max(0, (outstandingBalance || 0) - Math.max(0, prepayAmount || 0));
@@ -172,24 +174,16 @@ export default function Page() {
       effRemainingMonths || 0
     );
 
-    // Lender rule of thumb
-    const rule =
-      mortgageType === "fixed"
-        ? "For fixed-rate mortgages, lenders typically charge the greater of IRD or 3 months’ interest."
-        : "For variable-rate mortgages, lenders typically charge 3 months’ interest.";
-
+    // Lender rule of thumb (rendered directly in UI by type)
     const base = mortgageType === "fixed" ? Math.max(ird, p3) : p3;
 
-    const recommended = base;
-    const total = Math.max(0, recommended) + Math.max(0, adminFee || 0);
+    const total = Math.max(0, base) + Math.max(0, adminFee || 0);
 
     return {
       effectiveBalance,
       penalty3mo: p3,
       penaltyIRD: ird,
       basePenalty: base,
-      recommendedPenalty: recommended,
-      ruleText: rule,
       totalWithFees: total,
     };
   }, [
@@ -509,7 +503,7 @@ export default function Page() {
           </div>
         </div>
 
-        <details className="mt-4 rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-4">
+        <details className="mt-4 rounded-2xl border border-brand-gold/40 bg-brand-beige/40 p-4">
           <summary className="cursor-pointer font-semibold text-brand-green">Assumptions & Notes</summary>
           <ul className="list-disc ml-5 mt-2 text-sm text-brand-blue/80 space-y-1">
             <li>
