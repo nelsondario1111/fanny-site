@@ -64,7 +64,7 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
+  const Tag: keyof JSX.IntrinsicElements = level;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div

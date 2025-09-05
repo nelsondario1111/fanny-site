@@ -25,25 +25,32 @@ export default function Reveal({
   const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
 
+  // Callback ref that works for any intrinsic element without `any`
+  const setNodeRef = (node: Element | null) => {
+    ref.current = node as HTMLElement | null;
+  };
+
   useEffect(() => {
     // Respect user's reduced motion setting
-    if (typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       setShown(true);
       return;
     }
 
-    const el = ref.current as Element | null;
+    const el = ref.current;
     if (!el) return;
+
+    let timeoutId: number | null = null;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // small programmable delay for nice staggering
-            const t = window.setTimeout(() => setShown(true), delay);
+            timeoutId = window.setTimeout(() => setShown(true), delay);
             io.unobserve(entry.target);
-            return () => window.clearTimeout(t);
           }
         });
       },
@@ -51,12 +58,16 @@ export default function Reveal({
     );
 
     io.observe(el);
-    return () => io.disconnect();
+
+    return () => {
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+      io.disconnect();
+    };
   }, [delay, threshold]);
 
   return (
     <Tag
-      ref={ref as any}
+      ref={setNodeRef}
       className={[
         "will-change-transform transition-all duration-700 ease-out",
         shown ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",

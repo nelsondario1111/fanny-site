@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -90,7 +91,6 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -101,9 +101,15 @@ function SectionTitle({
         className="text-center mb-6"
       >
         <motion.div variants={fadeUp}>
-          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </Tag>
+          {level === "h1" ? (
+            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h1>
+          ) : (
+            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h2>
+          )}
         </motion.div>
         <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
           <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
@@ -130,7 +136,6 @@ const CARD =
   "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
 
 /* ============================== Utilities ============================== */
-const normalize = (v: unknown) => String(v ?? "").toLowerCase();
 const parseDate = (d?: string | Date | null) => {
   if (!d) return 0;
   const t = d instanceof Date ? d.getTime() : Date.parse(String(d));
@@ -212,7 +217,6 @@ function expandQuery(q: string): Set<string> {
 }
 
 /* ===================== Curated quick filters (minimal surface) ===================== */
-// Each quick filter maps to a set of tag keys (aliases OK). We OR-match.
 type QuickFilter = { key: string; label: string; tags: string[] };
 
 const GOALS: QuickFilter[] = [
@@ -236,7 +240,6 @@ const LIFE_EVENTS: QuickFilter[] = [
 /* ============================== Component ============================== */
 export default function ResourcesClient({
   articles,
-  categories,
   ctaHref = "/en/contact?intent=question",
   newsletterHref = "/en/subscribe",
   personas,
@@ -246,7 +249,6 @@ export default function ResourcesClient({
   tagsData,
 }: {
   articles: ClientArticle[];
-  categories: string[];
   ctaHref?: string;
   newsletterHref?: string;
   personas?: PersonaIndex[];
@@ -256,11 +258,11 @@ export default function ResourcesClient({
   tagsData?: TagsIndex | null;
 }) {
   /* ----------------------------- Local UI state ----------------------------- */
-  const [query, setQuery] = React.useState("");
+  const [query, setQuery] = React.useState<string>("");
   const [selectedMode, setSelectedMode] = React.useState<"All" | "Saved">("All");
   const [sort, setSort] = React.useState<"new" | "old" | "az">("new");
   const [view, setView] = React.useState<"grid" | "list">(
-    (views?.[0]?.key as "grid" | "list") || "grid"
+    ((views?.[0]?.key === "grid" || views?.[0]?.key === "list") ? (views?.[0]?.key as "grid" | "list") : "grid")
   );
   const [selectedPersona, setSelectedPersona] = React.useState<PersonaKey | "all">("all");
 
@@ -353,7 +355,7 @@ export default function ResourcesClient({
   }, [quickKeys]);
 
   /* ---------------------------- Drawer for tags ---------------------------- */
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
   const [drawerSelectedTags, setDrawerSelectedTags] = React.useState<Set<string>>(new Set());
   const toggleTag = React.useCallback((k: string) => {
     setDrawerSelectedTags((prev) => {
@@ -535,7 +537,7 @@ export default function ResourcesClient({
                 <input
                   id="search"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                   placeholder="Search topics, e.g., grief, mortgage, RRSP, cash flow…"
                   className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
                 />
@@ -544,7 +546,15 @@ export default function ResourcesClient({
               {/* Sort / View / Reset */}
               <div className="flex gap-2">
                 <label className="sr-only" htmlFor="sort">Sort</label>
-                <select id="sort" value={sort} onChange={(e) => setSort(e.target.value as any)} className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none">
+                <select
+                  id="sort"
+                  value={sort}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    const v = e.target.value as "new" | "old" | "az";
+                    setSort(v);
+                  }}
+                  className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                >
                   <option value="new">Newest first</option>
                   <option value="old">Oldest first</option>
                   <option value="az">A–Z</option>
@@ -784,7 +794,7 @@ function FilterDrawer({
   toggleTag: (key: string) => void;
   clearTags: () => void;
 }) {
-  const [q, setQ] = React.useState("");
+  const [q, setQ] = React.useState<string>("");
   React.useEffect(() => { if (!open) setQ(""); }, [open]);
 
   const list = React.useMemo(() => {
@@ -813,7 +823,7 @@ function FilterDrawer({
             <input
               id="tag-search"
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQ(e.target.value)}
               placeholder="Search tags…"
               className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
             />
@@ -883,7 +893,14 @@ function ArticleCard({
     <article className={CARD + " overflow-hidden min-h-[420px] flex flex-col"}>
       <div className="relative aspect-[16/9] bg-gradient-to-br from-brand-blue/10 via-brand-gold/15 to-brand-green/10">
         {hasImg ? (
-          <img src={img as string} alt={article.title} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+          <Image
+            src={img as string}
+            alt={article.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            loading="lazy"
+          />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 border border-brand-gold text-brand-green font-serif text-lg">
@@ -966,12 +983,20 @@ function ListRow({
     ? new Date(parseDate(article.date)).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" })
     : null;
   const tags = (article.tags ?? []).slice(0, 4);
+  const thumb = getImg(article);
 
   return (
     <div className="flex items-center gap-4 p-4">
-      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0">
-        {getImg(article) ? (
-          <img src={getImg(article) as string} alt={article.title} className="w-full h-full object-cover" loading="lazy" />
+      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0 relative">
+        {thumb ? (
+          <Image
+            src={thumb}
+            alt={article.title}
+            fill
+            sizes="96px"
+            className="object-cover"
+            loading="lazy"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <span className="text-brand-green font-serif">{initials(article.category)}</span>

@@ -26,23 +26,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      {/* Add the .js class ASAP so fade-ins only run after JS is available */}
-      <Script id="set-js-flag" strategy="beforeInteractive">
-        {`document.documentElement.classList.add('js');`}
-      </Script>
+    <html lang="en">
+      <head>
+        {/* Add the .js class ASAP so fade-ins only run after JS is available */}
+        <Script id="set-js-flag" strategy="beforeInteractive">
+          {`document.documentElement.classList.add('js');`}
+        </Script>
 
-      {/* No-JS fallback: never hide content */}
-      <noscript>
-        <style>{`.fade-in{animation:none!important}`}</style>
-      </noscript>
+        {/* No-JS fallback: never hide content */}
+        <noscript>
+          <style>{`.fade-in{animation:none!important}`}</style>
+        </noscript>
+      </head>
 
       <body
         className={[
           lato.variable,
           playfair.variable,
           pacifico.variable,
-          // Keep your existing body utility classes:
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased",
         ].join(" ")}
       >

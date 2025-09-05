@@ -11,16 +11,19 @@ import RelatedArticles from "@/components/RelatedArticles";
 type PairDict = Record<string, { en: string; es: string }>;
 type I18nMap = { resources?: PairDict; tools?: PairDict };
 
-let I18N_MAP: I18nMap = {};
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  I18N_MAP = require("@/content/i18n-slugs.json");
-} catch {
-  // sin mapa — usamos fallback
+async function loadI18nMap(): Promise<I18nMap> {
+  try {
+    // If resolveJsonModule is enabled in tsconfig (recommended), .default will be the JSON object.
+    const mod = await import("@/content/i18n-slugs.json");
+    return (mod as { default: I18nMap }).default ?? (mod as unknown as I18nMap);
+  } catch {
+    // sin mapa — usamos fallback
+    return {};
+  }
 }
 
-function altResourceSlug(currentSlug: string, target: "en" | "es"): string | null {
-  const dict = I18N_MAP?.resources || {};
+function altResourceSlug(i18n: I18nMap, currentSlug: string, target: "en" | "es"): string | null {
+  const dict = i18n?.resources || {};
   for (const [, v] of Object.entries(dict)) {
     if (v.en === currentSlug || v.es === currentSlug) {
       return v[target] || null;
@@ -97,7 +100,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const a = await getArticle("es", params.article);
   if (!a) return {};
 
-  const mappedEn = altResourceSlug(params.article, "en");
+  const i18n = await loadI18nMap();
+  const mappedEn = altResourceSlug(i18n, params.article, "en");
   const hasSameSlugEn = await getArticle("en", params.article).then(Boolean).catch(() => false);
 
   const languages: Record<string, string> = { es: `/es/recursos/${params.article}` };
@@ -133,14 +137,14 @@ export default async function ArticlePage({ params }: Params) {
   const a = await getArticle("es", params.article);
   if (!a) notFound();
 
+  const i18n = await loadI18nMap();
+
   // Resolver el slug en inglés correspondiente.
-  const mappedEn = altResourceSlug(params.article, "en");
+  const mappedEn = altResourceSlug(i18n, params.article, "en");
   const aEn = mappedEn
     ? await getArticle("en", mappedEn).catch(() => null)
     : await getArticle("en", params.article).catch(() => null);
-  const enHref = aEn
-    ? `/en/resources/${mappedEn || params.article}`
-    : null;
+  const enHref = aEn ? `/en/resources/${mappedEn || params.article}` : null;
 
   const all = (await getAllArticles("es")) as SimpleArticle[];
   const { prev, next } = getPrevNext(all, a.slug, a.category);
@@ -167,9 +171,9 @@ export default async function ArticlePage({ params }: Params) {
         <div className="max-w-screen-xl mx-auto px-4 py-8 lg:py-10">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <nav className="print:hidden mb-3 text-sm text-brand-blue/80">
-              <a href="/es" className="hover:underline">Inicio</a>
+              <Link href="/es" className="hover:underline">Inicio</Link>
               <span className="mx-2">/</span>
-              <a href="/es/recursos" className="hover:underline">Recursos</a>
+              <Link href="/es/recursos" className="hover:underline">Recursos</Link>
               <span className="mx-2">/</span>
               <span className="text-brand-green">{a.title}</span>
             </nav>

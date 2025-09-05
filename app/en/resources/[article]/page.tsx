@@ -2,26 +2,29 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getArticle, getAllArticles } from "@/lib/getArticles";
 import ArticleActions from "@/components/ArticleActions";
 import ArticleTOC from "@/components/ArticleTOC";
 import RelatedArticles from "@/components/RelatedArticles";
 
-/** Read the generated i18n slug map on the server (if present). */
+/** i18n map types */
 type PairDict = Record<string, { en: string; es: string }>;
 type I18nMap = { resources?: PairDict; tools?: PairDict };
 
-let I18N_MAP: I18nMap = {};
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  I18N_MAP = require("@/content/i18n-slugs.json");
-} catch {
-  // no map yet — safe fallback below
+/** Load JSON map safely at runtime (no require, no build break if missing) */
+async function loadI18nMap(): Promise<I18nMap> {
+  try {
+    const mod = await import("@/content/i18n-slugs.json");
+    return (mod.default || mod) as I18nMap;
+  } catch {
+    return {};
+  }
 }
 
-/** Find counterpart slug for resources. */
-function altResourceSlug(currentSlug: string, target: "en" | "es"): string | null {
-  const dict = I18N_MAP?.resources || {};
+/** Find counterpart slug for resources from a given map. */
+function altResourceSlug(map: I18nMap, currentSlug: string, target: "en" | "es"): string | null {
+  const dict = map?.resources || {};
   for (const [, v] of Object.entries(dict)) {
     if (v.en === currentSlug || v.es === currentSlug) {
       return v[target] || null;
@@ -97,11 +100,14 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const a = await getArticle("en", params.article);
+  const [a, map] = await Promise.all([
+    getArticle("en", params.article),
+    loadI18nMap(),
+  ]);
   if (!a) return {};
 
   // Prefer the generated mapping; if missing, try same-slug existence.
-  const mappedEs = altResourceSlug(params.article, "es");
+  const mappedEs = altResourceSlug(map, params.article, "es");
   const hasSameSlugEs = await getArticle("es", params.article).then(Boolean).catch(() => false);
 
   const languages: Record<string, string> = { en: `/en/resources/${params.article}` };
@@ -136,11 +142,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
    Page
 ------------------------------------------------------------ */
 export default async function ArticlePage({ params }: Params) {
-  const a = await getArticle("en", params.article);
+  const [a, map] = await Promise.all([
+    getArticle("en", params.article),
+    loadI18nMap(),
+  ]);
   if (!a) notFound();
 
   // Resolve the Spanish counterpart slug safely.
-  const mappedEs = altResourceSlug(params.article, "es");
+  const mappedEs = altResourceSlug(map, params.article, "es");
   const aEs = mappedEs
     ? await getArticle("es", mappedEs).catch(() => null)
     : await getArticle("es", params.article).catch(() => null);
@@ -174,9 +183,9 @@ export default async function ArticlePage({ params }: Params) {
           {/* Breadcrumbs + language switch */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <nav className="print:hidden mb-3 text-sm text-brand-blue/80">
-              <a href="/en" className="hover:underline">Home</a>
+              <Link href="/en" className="hover:underline">Home</Link>
               <span className="mx-2">/</span>
-              <a href="/en/resources" className="hover:underline">Resources</a>
+              <Link href="/en/resources" className="hover:underline">Resources</Link>
               <span className="mx-2">/</span>
               <span className="text-brand-green">{a.title}</span>
             </nav>
@@ -241,12 +250,18 @@ export default async function ArticlePage({ params }: Params) {
           >
             {/* Optional hero */}
             {a.hero && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={a.hero}
-                alt={a.heroAlt ?? a.title ?? "Article hero"}
-                className="w-full rounded-2xl mb-6"
-              />
+              <div className="relative w-full mb-6 rounded-2xl overflow-hidden">
+                <div className="relative w-full aspect-[16/9]">
+                  <Image
+                    src={a.hero}
+                    alt={a.heroAlt ?? a.title ?? "Article hero"}
+                    fill
+                    className="object-cover"
+                    sizes="100vw"
+                    priority={false}
+                  />
+                </div>
+              </div>
             )}
 
             <div dangerouslySetInnerHTML={{ __html: cleanedHtml }} />

@@ -22,11 +22,7 @@ import {
   Presentation,
 } from "lucide-react";
 
-import {
-  buildAlternateHref,
-  detectLang,
-  type Locale,
-} from "@/lib/i18nRoutes";
+import { buildAlternateHref, detectLang, type Locale } from "@/lib/i18nRoutes";
 
 /* ======================= Language Toggle (uses slug mapping) ======================= */
 function LangToggle({ invert = false }: { invert?: boolean }) {
@@ -35,14 +31,20 @@ function LangToggle({ invert = false }: { invert?: boolean }) {
   const cur = detectLang(pathname) || "en";
 
   const qs = search?.toString() ? `?${search!.toString()}` : "";
-  const hash = typeof window !== "undefined" && window.location?.hash ? window.location.hash : "";
+  const hash =
+    typeof window !== "undefined" && window.location?.hash
+      ? window.location.hash
+      : "";
 
   const altEn = buildAlternateHref(pathname, "en") + qs + hash;
   const altEs = buildAlternateHref(pathname, "es") + qs + hash;
 
-  const linkClsBase = invert ? "text-white/85 hover:text-white" : "text-brand-blue hover:text-brand-green";
-  const activeCls =
-    invert ? "text-white font-semibold pointer-events-none" : "text-brand-green font-semibold pointer-events-none";
+  const linkClsBase = invert
+    ? "text-white/85 hover:text-white"
+    : "text-brand-blue hover:text-brand-green";
+  const activeCls = invert
+    ? "text-white font-semibold pointer-events-none"
+    : "text-brand-green font-semibold pointer-events-none";
   const sepCls = invert ? "text-white/40" : "text-gray-400";
 
   return (
@@ -89,7 +91,12 @@ function navFor(lang: Locale): Item[] {
       ];
 }
 
-type ServiceItem = { href: string; label: string; icon: React.ReactNode; desc: string };
+type ServiceItem = {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  desc: string;
+};
 
 const SERVICES_EN: ServiceItem[] = [
   { href: "/en/services#signature", label: "Signature Packages", icon: <Sparkles size={14} />, desc: "Premium, coordinated support" },
@@ -104,7 +111,7 @@ const SERVICES_EN: ServiceItem[] = [
 ];
 
 const SERVICES_ES: ServiceItem[] = [
-  { href: "/es/servicios#signature", label: "Paquetes Firmas", icon: <Sparkles size={14} />, desc: "Acompañamiento premium" },
+  { href: "/es/servicios#signature", label: "Paquetes Firma", icon: <Sparkles size={14} />, desc: "Acompañamiento premium" },
   { href: "/es/servicios#fundamentos", label: "Fundamentos de Riqueza", icon: <HandCoins size={14} />, desc: "Ahorro, crédito y preparación" },
   { href: "/es/servicios#hipoteca", label: "Hipoteca & Propiedades", icon: <Landmark size={14} />, desc: "De la preaprobación al cierre" },
   { href: "/es/servicios#negocios", label: "Negocios & Profesionales", icon: <Briefcase size={14} />, desc: "Pago del dueño, registros y banca" },
@@ -208,7 +215,8 @@ export default function NavBar() {
 
   const base = `/${lang}`;
   const t = (en: string, es: string) => (lang === "en" ? en : es);
-  const ctaHref = `${base}/${t("contact", "contacto")}?intent=consult`;
+
+  const convoHref = `${base}/${t("contact", "contacto")}?intent=${t("hello", "hola")}`;
 
   const servicesButtonId = "services-trigger";
   const servicesPanelId = "services-panel";
@@ -223,7 +231,7 @@ export default function NavBar() {
         {t("Skip to content", "Ir al contenido")}
       </a>
 
-      {/* Utility bar */}
+      {/* Utility bar (top green) */}
       <AnimatePresence initial={false}>
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -253,12 +261,7 @@ export default function NavBar() {
             </div>
             <div className="flex items-center gap-3">
               <LangToggle invert />
-              <Link
-                href={ctaHref}
-                className="hidden sm:inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-green px-3 py-1.5 text-xs font-semibold hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
-              >
-                <Calendar size={12} /> {t("Book a Free Discovery Call", "Llamada de descubrimiento")}
-              </Link>
+              {/* Removed CTA from utility bar per request */}
             </div>
           </div>
         </motion.div>
@@ -323,7 +326,9 @@ export default function NavBar() {
                     aria-haspopup="menu"
                     aria-expanded={servicesOpen}
                     aria-controls={servicesPanelId}
-                    className={[LINK_BASE, servicesOpen || isActive(n.href) ? LINK_ACTIVE : LINK_IDLE, "group"].join(" ")}
+                    className={[LINK_BASE, servicesOpen || isActive(n.href) ? LINK_ACTIVE : LINK_IDLE, "group"].join(
+                      " ",
+                    )}
                   >
                     <span className={UNDERLINE}>{n.label}</span>
                     <ChevronDown
@@ -339,12 +344,12 @@ export default function NavBar() {
               );
             })}
 
-            {/* Persistent desktop CTA */}
+            {/* Gentle desktop action (kept) */}
             <Link
-              href={ctaHref}
-              className="ml-1 inline-flex items-center gap-1 rounded-full bg-brand-green text-white px-3 py-1.5 text-xs font-semibold hover:bg-brand-gold hover:text-brand-green transition"
+              href={convoHref}
+              className="ml-1 inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition"
             >
-              <Calendar size={12} /> {t("Book a Free Discovery Call", "Llamada de descubrimiento")}
+              <Calendar size={12} /> {t("Start a conversation", "Iniciar conversación")}
             </Link>
           </nav>
 
@@ -400,10 +405,7 @@ export default function NavBar() {
                         ].join(" ")}
                       >
                         <span>{n.label}</span>
-                        <ChevronDown
-                          size={18}
-                          className={servicesMobileOpen ? "rotate-180 transition" : "transition"}
-                        />
+                        <ChevronDown size={18} className={servicesMobileOpen ? "rotate-180 transition" : "transition"} />
                       </button>
                       <AnimatePresence initial={false}>
                         {servicesMobileOpen && (
@@ -433,11 +435,11 @@ export default function NavBar() {
                 <div className="flex items-center justify-between pt-2">
                   <LangToggle />
                   <Link
-                    href={ctaHref}
-                    className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-green px-3 py-1.5 text-xs font-semibold hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                    href={convoHref}
+                    className="inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
                     onClick={() => setOpen(false)}
                   >
-                    <Calendar size={12} /> {t("Book a Free Discovery Call", "Llamada de descubrimiento")}
+                    <Calendar size={12} /> {t("Start a conversation", "Iniciar conversación")}
                   </Link>
                 </div>
               </div>
@@ -451,7 +453,7 @@ export default function NavBar() {
         {servicesOpen && (
           <motion.div
             key="services-panel"
-            id={servicesPanelId}
+            id="services-panel"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
@@ -464,7 +466,7 @@ export default function NavBar() {
             }}
             onPointerLeave={() => requestClose(120)}
             role="menu"
-            aria-labelledby={servicesButtonId}
+            aria-labelledby="services-trigger"
           >
             <div className="bg-white border border-brand-gold/70 rounded-2xl shadow-xl p-3 max-h-[80vh] overflow-auto overscroll-contain">
               <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
@@ -480,7 +482,9 @@ export default function NavBar() {
                       {s.icon}
                       <span className="text-[15px] leading-tight">{s.label}</span>
                     </div>
-                    <p className="text-[12px] leading-snug text-brand-blue/80 mt-1 whitespace-normal">{s.desc}</p>
+                    <p className="text-[12px] leading-snug text-brand-blue/80 mt-1 whitespace-normal">
+                      {s.desc}
+                    </p>
                   </Link>
                 ))}
               </div>
@@ -493,11 +497,11 @@ export default function NavBar() {
                   {lang === "en" ? "See all services" : "Ver todos los servicios"}
                 </Link>
                 <Link
-                  href={ctaHref}
-                  className="inline-flex items-center gap-1 rounded-full bg-brand-green text-white px-3 py-1.5 text-xs font-semibold hover:bg-brand-gold hover:text-brand-green transition"
+                  href={convoHref}
+                  className="inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition"
                   onClick={() => setServicesOpen(false)}
                 >
-                  <Calendar size={12} /> {lang === "en" ? "Book a call" : "Agendar llamada"}
+                  <Calendar size={12} /> {lang === "en" ? "Start a conversation" : "Iniciar conversación"}
                 </Link>
               </div>
             </div>

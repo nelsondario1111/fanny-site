@@ -19,6 +19,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  scroll-behavior: smooth; /* ✅ replaces scroll-smooth class */
 }
 
 /* ---------- A11y focus ring helpers (optional, keep if you already use them) ---------- */

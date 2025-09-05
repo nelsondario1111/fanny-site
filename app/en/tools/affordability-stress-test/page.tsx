@@ -1,3 +1,4 @@
+// app/en/tools/affordability-stress-test/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -102,7 +103,6 @@ export default function Page() {
         }
       }
     } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -210,9 +210,8 @@ export default function Page() {
       title="Affordability & Stress Test"
       subtitle="Check your GDS/TDS at the qualifying rate and estimate your maximum affordable mortgage — or test a specific scenario."
       lang="en"
-      // If your ToolShell supports actions, pass them here; otherwise the buttons render below.
     >
-      {/* Top actions (shown even if ToolShell doesn’t expose actions slot) */}
+      {/* Top actions */}
       <div className="flex flex-wrap gap-2 mb-4 print:hidden">
         <button
           type="button"
@@ -354,7 +353,7 @@ export default function Page() {
 
           <div className="grid sm:grid-cols-2 gap-3">
             <label className="block">
-              <span className="block text-sm text-brand-blue/80">GDS limit (%)</span>
+              <span className="block text sm text-brand-blue/80">GDS limit (%)</span>
               <input
                 value={gdsPct}
                 onChange={(e) => setGdsPct(e.target.value)}
@@ -364,7 +363,7 @@ export default function Page() {
               />
             </label>
             <label className="block">
-              <span className="block text-sm text-brand-blue/80">TDS limit (%)</span>
+              <span className="block text sm text-brand-blue/80">TDS limit (%)</span>
               <input
                 value={tdsPct}
                 onChange={(e) => setTdsPct(e.target.value)}

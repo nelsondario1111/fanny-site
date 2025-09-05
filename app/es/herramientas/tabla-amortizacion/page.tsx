@@ -96,8 +96,8 @@ function buildSchedule(opts: {
     period += 1;
 
     const interest = bal * r;
-    let scheduledPayment = Math.min(pay, bal + interest); // último pago puede ser menor
-    let principalPart = scheduledPayment - interest;
+    const scheduledPayment = Math.min(pay, bal + interest); // último pago puede ser menor
+    const principalPart = scheduledPayment - interest;
 
     // Extras
     let extra = 0;

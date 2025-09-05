@@ -19,45 +19,46 @@ async function pathExists(url: string) {
   }
 }
 
+/** Stable base map (module scope to avoid re-creation per render) */
+const BASE_MAP: Record<string, string> = {
+  // EN -> ES
+  "/en": "/es",
+  "/en/about": "/es/sobre-mi",
+  "/en/services": "/es/servicios",
+  "/en/resources": "/es/recursos",
+  "/en/tools": "/es/herramientas",
+  "/en/testimonials": "/es/testimonios",
+  "/en/contact": "/es/contacto",
+  "/en/privacy": "/es/privacidad",
+  "/en/terms": "/es/terminos",
+  // ES -> EN
+  "/es": "/en",
+  "/es/sobre-mi": "/en/about",
+  "/es/servicios": "/en/services",
+  "/es/recursos": "/en/resources",
+  "/es/herramientas": "/en/tools",
+  "/es/testimonios": "/en/testimonials",
+  "/es/contacto": "/en/contact",
+  "/es/privacidad": "/en/privacy",
+  "/es/terminos": "/en/terms",
+};
+
 export default function FooterLangLinks({ className }: { className?: string }) {
   const pathname = usePathname() || "/";
   const [toEn, setToEn] = useState("/en");
   const [toEs, setToEs] = useState("/es");
 
-  const baseMap: Record<string, string> = {
-    // EN -> ES
-    "/en": "/es",
-    "/en/about": "/es/sobre-mi",
-    "/en/services": "/es/servicios",
-    "/en/resources": "/es/recursos",
-    "/en/tools": "/es/herramientas",
-    "/en/testimonials": "/es/testimonios",
-    "/en/contact": "/es/contacto",
-    "/en/privacy": "/es/privacidad",
-    "/en/terms": "/es/terminos",
-    // ES -> EN
-    "/es": "/en",
-    "/es/sobre-mi": "/en/about",
-    "/es/servicios": "/en/services",
-    "/es/recursos": "/en/resources",
-    "/es/herramientas": "/en/tools",
-    "/es/testimonios": "/en/testimonials",
-    "/es/contacto": "/en/contact",
-    "/es/privacidad": "/en/privacy",
-    "/es/terminos": "/en/terms",
-  };
-
   const initialTargets = useMemo(() => {
     const toEnDefault =
-      baseMap[pathname] && isEs(pathname)
-        ? baseMap[pathname]
+      BASE_MAP[pathname] && isEs(pathname)
+        ? BASE_MAP[pathname]
         : isEs(pathname)
         ? "/en" + pathname.slice(3)
         : "/en";
 
     const toEsDefault =
-      baseMap[pathname] && isEn(pathname)
-        ? baseMap[pathname]
+      BASE_MAP[pathname] && isEn(pathname)
+        ? BASE_MAP[pathname]
         : isEn(pathname)
         ? "/es" + pathname.slice(3)
         : "/es";
@@ -96,7 +97,7 @@ export default function FooterLangLinks({ className }: { className?: string }) {
 
     resolve();
     return () => { cancelled = true; };
-  }, [pathname, initialTargets.safeToEn, initialTargets.safeToEs]);
+  }, [pathname, initialTargets]);
 
   return (
     <div className={className}>

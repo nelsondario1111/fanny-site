@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Building2,
@@ -48,16 +48,20 @@ function useAnims() {
   return { fade, fadeUp, stagger };
 }
 
-/* --- Shared “panel” look --- */
-function Panel({
-  children,
-  className = "",
-  as: Tag = "section" as const,
-}: {
+/* --- Shared “panel” look (strictly typed, no `any`) --- */
+type PanelProps<T extends ElementType = "section"> = {
   children: ReactNode;
   className?: string;
-  as?: any;
-}) {
+  as?: T;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+
+function Panel<T extends ElementType = "section">({
+  children,
+  className = "",
+  as,
+  ...rest
+}: PanelProps<T>) {
+  const Tag = (as ?? "section") as ElementType;
   return (
     <Tag
       className={[
@@ -66,6 +70,7 @@ function Panel({
         "backdrop-blur-[1px]",
         className,
       ].join(" ")}
+      {...rest}
     >
       {children}
     </Tag>
@@ -152,7 +157,7 @@ export default function About() {
               <>
                 I’m a bilingual Mortgage Agent (Level 2) and holistic financial consultant based in Toronto.
                 My work blends lending experience, tax cadence, and accounting discipline so you can make
-                clear, values‑aligned decisions—and feel calm about money. We serve a select roster of
+                clear, values-aligned decisions—and feel calm about money. We serve a select roster of
                 professional families, executives, and business owners.
               </>
             }
@@ -176,8 +181,8 @@ export default function About() {
             </motion.div>
             <motion.div variants={fadeUp} className="flex-1 md:pl-4">
               <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
-                I specialize in aligning mortgage strategy, cash‑flow systems, and tax‑season readiness—so
-                your near‑term steps support long‑term goals. Day to day, I assess financial situations,
+                I specialize in aligning mortgage strategy, cash-flow systems, and tax-season readiness—so
+                your near-term steps support long-term goals. Day to day, I assess financial situations,
                 clarify mortgage options, and coordinate with lenders so applications move forward without drama.
               </p>
               <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
@@ -256,7 +261,7 @@ export default function About() {
             className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center"
           >
             Alongside Fanny, you’ll have coordinated access to qualified professionals. Each specialist operates
-            independently—we bring them in when timing serves your plan, so your mortgage, cash‑flow, and tax
+            independently—we bring them in when timing serves your plan, so your mortgage, cash-flow, and tax
             cadence actually work together.
           </motion.p>
 
@@ -271,38 +276,32 @@ export default function About() {
               {
                 icon: <Building2 className="text-brand-green" size={22} />,
                 title: "Mortgage Lenders & Underwriters",
-                body:
-                  "Policy clarity and product fit—packaging that earns lender confidence.",
+                body: "Policy clarity and product fit—packaging that earns lender confidence.",
               },
               {
                 icon: <Calculator className="text-brand-green" size={22} />,
                 title: "Tax Advisors / CPAs",
-                body:
-                  "Proactive strategies, audit‑ready records, and calm filing seasons.",
+                body: "Proactive strategies, audit-ready records, and calm filing seasons.",
               },
               {
                 icon: <PiggyBank className="text-brand-green" size={22} />,
-                title: "Cash‑Flow & Bookkeeping",
-                body:
-                  "Behavior‑friendly systems rooted in accounting best practice.",
+                title: "Cash-Flow & Bookkeeping",
+                body: "Behavior-friendly systems rooted in accounting best practice.",
               },
               {
                 icon: <Scale className="text-brand-green" size={22} />,
                 title: "Real Estate Lawyers",
-                body:
-                  "Clean closings and clear communication—no drama on possession day.",
+                body: "Clean closings and clear communication—no drama on possession day.",
               },
               {
                 icon: <Shield className="text-brand-green" size={22} />,
                 title: "Insurance Brokers",
-                body:
-                  "Coverage aligned to your risk profile and lender requirements.",
+                body: "Coverage aligned to your risk profile and lender requirements.",
               },
               {
                 icon: <FileText className="text-brand-green" size={22} />,
                 title: "CRA Audit Support",
-                body:
-                  "Preparation and representation when the CRA needs a closer look.",
+                body: "Preparation and representation when the CRA needs a closer look.",
               },
             ].map((card, i) => (
               <motion.div
@@ -337,7 +336,7 @@ export default function About() {
               How We Use AI (with human review)
             </h3>
             <p className="mt-2 text-brand-blue/90 max-w-3xl mx-auto">
-              We use privacy‑respecting AI tools to speed up prep: summarizing documents, organizing checklists,
+              We use privacy-respecting AI tools to speed up prep: summarizing documents, organizing checklists,
               EN/ES translation, and drafting budgets. Every recommendation and all numbers are reviewed by
               Fanny or a qualified professional. We do <strong>not</strong> automate credit decisions—lenders
               always make final approvals. You can opt out anytime—just tell us.
@@ -355,10 +354,7 @@ export default function About() {
           >
             Why “Guidance by Invitation”?
           </motion.h3>
-          <motion.p
-            variants={fade}
-            className="font-sans text-lg text-brand-body max-w-3xl mx-auto"
-          >
+          <motion.p variants={fade} className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
             The most meaningful work happens when both client and guide feel a natural fit. We start
             with a brief conversation—no pressure, just clarity—to confirm goals, timing, and scope.
           </motion.p>
@@ -372,10 +368,7 @@ export default function About() {
             </em>
           </motion.p>
           <div className="mt-6">
-            <Link
-              href="/en/services"
-              className="text-brand-blue underline hover:text-brand-green"
-            >
+            <Link href="/en/services" className="text-brand-blue underline hover:text-brand-green">
               See how we work and what we offer →
             </Link>
           </div>
@@ -400,8 +393,8 @@ export default function About() {
           >
             {[
               "Newcomers and first-time buyers building readiness",
-              "Families balancing cash‑flow with long‑term goals",
-              "Self‑employed professionals needing lender‑credible documentation",
+              "Families balancing cash-flow with long-term goals",
+              "Self-employed professionals needing lender-credible documentation",
               "Small investors optimizing financing and tax rhythm",
             ].map((item, i) => (
               <motion.li key={i} variants={fadeUp}>
@@ -422,11 +415,11 @@ export default function About() {
             <p>
               Prices (where shown) are in CAD and may be subject to HST. Mortgage services are typically
               free for qualified residential borrowers because compensation is paid by the lender on closing.
-              Fees may apply in non‑prime/private/commercial scenarios and will always be disclosed in advance.
+              Fees may apply in non-prime/private/commercial scenarios and will always be disclosed in advance.
               All mortgages are O.A.C. (on approved credit).
             </p>
             <p>
-              Coaching and advice‑only services are independent of mortgage compensation and do not replace legal,
+              Coaching and advice-only services are independent of mortgage compensation and do not replace legal,
               tax, or accounting advice. We coordinate with your chosen professionals as needed. Documents are
               collected via secure links. Bilingual support (EN/ES).
             </p>
@@ -451,7 +444,11 @@ export default function About() {
             A 20–30 minute discovery call will give you 2–3 clear next steps—no pressure.
           </motion.p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Link href="/en/contact?intent=consult&package=Private%20Discovery%20Call" aria-label="Book a Private Discovery Call" className="inline-block">
+            <Link
+              href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
+              aria-label="Book a Private Discovery Call"
+              className="inline-block"
+            >
               <motion.button
                 type="button"
                 variants={fadeUp}

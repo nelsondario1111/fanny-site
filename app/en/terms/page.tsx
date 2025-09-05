@@ -1,7 +1,8 @@
+// app/en/terms/page.tsx
 "use client";
 
-import React from "react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /* ---------------------- Animation helpers ---------------------- */
@@ -34,7 +35,7 @@ function useAnims() {
 }
 
 /* ---------------------- UI primitives ---------------------- */
-function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <section
       className={[
@@ -53,7 +54,7 @@ function MotionPanel({
   children,
   viewportAmount = 0.2,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   viewportAmount?: number;
 }) {
   const { fadeUp } = useAnims();
@@ -74,21 +75,16 @@ function SectionTitle({
   subtitle,
 }: {
   title: string;
-  subtitle?: React.ReactNode;
+  subtitle?: ReactNode;
 }) {
   const { fade, fadeUp } = useAnims();
   return (
-    <motion.div
-      variants={fade}
-      initial="hidden"
-      animate="visible"
-      className="text-center mb-6"
-    >
+    <motion.div variants={fade} initial="hidden" animate="visible" className="text-center mb-6">
       <motion.h1
         variants={fadeUp}
         className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
       >
-        Terms of Service
+        {title}
       </motion.h1>
       <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
         <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
@@ -109,23 +105,19 @@ function TermSection({
 }: {
   id: string;
   heading: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const { fadeUp } = useAnims();
   return (
     <motion.div variants={fadeUp} className="space-y-3" id={id}>
       <h2 className="font-serif text-2xl font-semibold text-brand-green">{heading}</h2>
-      <div className="prose prose-brand max-w-none">
-        {children}
-      </div>
+      <div className="prose prose-brand max-w-none">{children}</div>
     </motion.div>
   );
 }
 
 /* ---------------------- Page ---------------------- */
 export default function TermsPage() {
-  const { fade, fadeUp, stagger } = useAnims();
-
   return (
     <main id="main" className="bg-brand-beige min-h-screen px-4 py-10">
       <SectionTitle
@@ -140,21 +132,15 @@ export default function TermsPage() {
 
       {/* Intro + ToC */}
       <MotionPanel>
-        <motion.div variants={fadeUp} initial="hidden" animate="visible" className="text-sm text-brand-blue/80">
+        <div className="text-sm text-brand-blue/80">
           This English version is provided for convenience. If you are viewing the Spanish site, the{" "}
           <Link className="text-brand-green font-semibold hover:underline" href="/es/terminos">
             Spanish Terms
           </Link>{" "}
           apply equally; if there is any inconsistency, the English version governs.
-        </motion.div>
+        </div>
 
-        <motion.nav
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="mt-6 grid sm:grid-cols-2 gap-2 text-sm"
-          aria-label="Table of contents"
-        >
+        <nav className="mt-6 grid sm:grid-cols-2 gap-2 text-sm" aria-label="Table of contents">
           {[
             ["scope", "1. Scope of Services"],
             ["eligibility", "2. Client Eligibility"],
@@ -181,13 +167,13 @@ export default function TermsPage() {
               {label}
             </Link>
           ))}
-        </motion.nav>
+        </nav>
       </MotionPanel>
 
       {/* Sections */}
       <div className="mt-8 space-y-6">
         <MotionPanel>
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-8">
+          <div className="space-y-8">
             <TermSection id="scope" heading="1. Scope of Services">
               <p>
                 We provide holistic financial coaching, mortgage guidance, and tax planning support
@@ -210,7 +196,11 @@ export default function TermsPage() {
             <TermSection id="fees" heading="3. Fees & Payments">
               <ul>
                 <li>Current prices are shown on the site or communicated in writing.</li>
-                <li>Mortgage brokering is typically lender-paid for standard residential files; if a client fee applies (e.g., private/complex financing), it will be disclosed in writing and authorized before proceeding.</li>
+                <li>
+                  Mortgage brokering is typically lender-paid for standard residential files; if a
+                  client fee applies (e.g., private/complex financing), it will be disclosed in
+                  writing and authorized before proceeding.
+                </li>
                 <li>Payments for coaching/tax planning programs are due as indicated at checkout or invoice.</li>
               </ul>
             </TermSection>
@@ -261,8 +251,14 @@ export default function TermsPage() {
 
             <TermSection id="compliance" heading="9. Licensing & Compliance">
               <ul>
-                <li>Mortgage services are offered by a licensed Mortgage Agent (Level 2) in Ontario, subject to FSRA and brokerage compliance requirements.</li>
-                <li>When applicable, tax filing is performed by an associated, independent accountant under their own engagement and terms.</li>
+                <li>
+                  Mortgage services are offered by a licensed Mortgage Agent (Level 2) in Ontario,
+                  subject to FSRA and brokerage compliance requirements.
+                </li>
+                <li>
+                  When applicable, tax filing is performed by an associated, independent accountant
+                  under their own engagement and terms.
+                </li>
               </ul>
             </TermSection>
 
@@ -325,7 +321,7 @@ export default function TermsPage() {
                 .
               </p>
             </TermSection>
-          </motion.div>
+          </div>
         </MotionPanel>
       </div>
     </main>

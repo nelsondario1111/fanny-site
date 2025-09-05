@@ -27,16 +27,6 @@ function pmt(principal: number, annualRatePct: number, years: number) {
   if (i === 0) return principal / n;
   return (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
-/** Saldo remanente tras m meses (hipoteca de pago nivelado) */
-function balAfterMonths(principal: number, annualRatePct: number, years: number, monthsElapsed: number) {
-  const i = Math.max(0, annualRatePct) / 100 / 12;
-  const n = Math.max(1, Math.round(years * 12));
-  const m = Math.min(Math.max(0, Math.floor(monthsElapsed)), n);
-  if (i === 0) return Math.max(0, principal - (principal / n) * m);
-  const M = pmt(principal, annualRatePct, years);
-  const pow = Math.pow(1 + i, m);
-  return principal * pow - (M * (pow - 1)) / i;
-}
 /** Interés total pagado en k meses; devuelve también balance final */
 function interestOverMonths(principal: number, annualRatePct: number, years: number, months: number) {
   const i = Math.max(0, annualRatePct) / 100 / 12;
@@ -133,7 +123,7 @@ export default function Page() {
     const analysisM = Math.max(1, Math.round((analysisYears || 0) * 12));
 
     // Estimación de penalidad
-    let penalty =
+    const penalty =
       penaltyMode === "none"
         ? 0
         : penaltyMode === "manual"
@@ -206,7 +196,8 @@ export default function Page() {
       const blendedRatePct = (curRatePct * w1 + (offerRatePct || 0) * w2) / (w1 + w2);
 
       const amort = blendResetAmort ? Math.max(1, blendAmortYears || 1) : remAmort;
-      const costs = Math.max(0, blendCosts || 0) + (blendPenaltyWaived ? 0 : penalty) + (blendPenaltyWaived ? 0 : discharge);
+      const costs =
+        Math.max(0, blendCosts || 0) + (blendPenaltyWaived ? 0 : penalty) + (blendPenaltyWaived ? 0 : discharge);
       const principalUsed = blendCapitaliseCosts ? curP + costs : curP;
       const upfrontCash = blendCapitaliseCosts ? 0 : costs;
 
@@ -275,7 +266,7 @@ export default function Page() {
       horizonCommonAB,
     };
   }, [
-    mortType,
+    // mortType no se usa dentro del memo; se elimina para evitar advertencia
     curBalance,
     curRatePct,
     remAmortYears,
@@ -523,7 +514,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
+          <div className="rounded-2xl border border-brand-gold/40 bg-brand-beige/40 p-3">
             <div className="flex flex-wrap items-center gap-4">
               <div className="text-sm font-medium text-brand-green">Penalidad por pago anticipado</div>
               <label className="inline-flex items-center gap-2 text-sm">

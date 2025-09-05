@@ -126,6 +126,16 @@ type Persona = {
   includeSlugs?: string[]; // explicit seeds
 };
 
+/* ========= Types for client payloads to avoid `any` ========= */
+type TagsIndex = {
+  articles: Array<{ slug: string; title?: string | null; category: string; tags: string[] }>;
+  tags: Record<CanonTag, { count: number; slugs: string[] }>;
+  categories: Record<string, { count: number; slugs: string[] }>;
+  personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
+};
+
+type ViewOption = { key: "grid" | "list"; label: string };
+
 /* ================================ Page ================================= */
 export default async function Page() {
   // 1) Load articles (English)
@@ -217,7 +227,7 @@ export default async function Page() {
   });
 
   // 5) TagsIndex object consumed by the client
-  const tagsIndex = {
+  const tagsIndex: TagsIndex = {
     articles: processed.map((a) => ({
       slug: a.slug,
       title: a.title,
@@ -251,10 +261,10 @@ export default async function Page() {
   const categories = (CANON_TAGS as readonly CanonTag[]).map((t) => DISPLAY_LABELS[t]);
 
   // 8) View options
-  const views = [
+  const views: ViewOption[] = [
     { key: "grid", label: "Grid" },
     { key: "list", label: "List" },
-  ] as const;
+  ];
 
   return (
     <ResourcesClient
@@ -262,10 +272,10 @@ export default async function Page() {
       categories={categories}
       personas={personaIndex}
       featuredSlugs={featuredSlugs}
-      views={views as unknown as Array<{ key: string; label: string }>}
+      views={views}
       ctaHref="/en/contact?intent=question"
       newsletterHref="/en/subscribe"
-      tagsData={tagsIndex as any}
+      tagsData={tagsIndex}
     />
   );
 }

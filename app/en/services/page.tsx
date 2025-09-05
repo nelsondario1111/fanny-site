@@ -1,3 +1,4 @@
+// app/en/services/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -9,43 +10,43 @@ import { motion, useReducedMotion } from "framer-motion";
 /** Set any price to null to show “Contact for pricing”. HST may apply. */
 const PRICING = {
   // Entry / Mortgage
-  mortgagePreapproval: 0,            // Mortgage Concierge (typ. no fee to qualified borrowers; O.A.C.)
-  refiRenewal: 295,                  // Refinance & Renewal Strategy (60–90 min)
-  firstHomePlan: 395,                // Family Wealth Blueprint (90 min, includes FHSA)
+  mortgagePreapproval: 0,
+  refiRenewal: 295,
+  firstHomePlan: 395,
 
   // Professionals & Business Owners
-  proTuneUp90: 1200,                 // Professional Financial Tune-Up (90 days)
-  bizOwnerExecPlan: 2500,            // Executive Wealth Teaming (from)
-  corpPayrollClinic: 395,            // Incorporation / Pay-Yourself Clinic (60–75 min)
+  proTuneUp90: 1200,
+  bizOwnerExecPlan: 2500,
+  corpPayrollClinic: 395,
 
   // Newcomers
-  newcomerFastTrack: 395,            // Newcomer Wealth Integration (30 days)
+  newcomerFastTrack: 395,
 
   // Mortgage & investment
-  invest4to10: 695,                  // Investment Starter: 4–10 Units (DSCR)
-  annualReviewNonClient: 149,        // Annual Mortgage Review (complimentary for clients)
+  invest4to10: 695,
+  annualReviewNonClient: 149,
 
   // 1:1 (advice-only)
-  discovery: 0,                      // Free discovery call (20–30 min)
-  blueprint90: 395,                  // 90-Minute Blueprint Session
-  align3: 1200,                      // 3-Session Package
-  transform6: 2750,                  // 6-Session Package
-  elevatePremium: 4995,              // Premium package (6 months)
-  alumniRetainerMonthly: 149,        // Alumni Monthly Retainer
+  discovery: 0,
+  blueprint90: 395,
+  align3: 1200,
+  transform6: 2750,
+  elevatePremium: 4995,
+  alumniRetainerMonthly: 149,
 
   // Tax & Legacy
-  taxSession: 395,                   // Personal/Family Tax Strategy Session (75–90 min)
-  taxAnnual: 1295,                   // Legacy & Tax Rhythm (2 sessions + cadence)
-  taxSmallBiz90d: 1995,              // Small-Biz / Independent 90-day Setup
+  taxSession: 395,
+  taxAnnual: 1295,
+  taxSmallBiz90d: 1995,
 
   // Holistic Conversations (groups)
-  ktCohort4w: 795,                   // Kitchen Table Conversations — 4-week cohort
-  ktMonthly: 49,                     // Kitchen Table Conversations — monthly circle
+  ktCohort4w: 795,
+  ktMonthly: 49,
 
   // Workshops
-  workshopPublicSeat: 149,           // Public cohort (per person, 2.5–3h)
-  workshopTeamVirtual: 2400,         // Private team workshop (virtual, up to 20 ppl)
-  workshopTeamInPerson: 2800,        // Private team workshop (in person, up to 20 ppl) + travel
+  workshopPublicSeat: 149,
+  workshopTeamVirtual: 2400,
+  workshopTeamInPerson: 2800,
 } as const;
 
 function price(p: number | null) {
@@ -109,7 +110,6 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -120,9 +120,15 @@ function SectionTitle({
         className="text-center mb-6"
       >
         <motion.div variants={fadeUp}>
-          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </Tag>
+          {level === "h1" ? (
+            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h1>
+          ) : (
+            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h2>
+          )}
         </motion.div>
         <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
           <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
@@ -176,7 +182,7 @@ type Card = {
   section: SectionId;
   title: string;
   desc: string;
-  bullets: string[]; // 3–4 deliverables
+  bullets: string[];
   timeline?: string;
   scope?: string;
   tags: string[];
@@ -718,11 +724,7 @@ export default function ServicesPage() {
 
       {/* Signature Packages */}
       <Panel className="mt-8">
-        <SectionTitle
-          id="signature"
-          title="Signature Packages"
-          subtitle="Start here if you want coordinated, premium support"
-        />
+        <SectionTitle id="signature" title="Signature Packages" subtitle="Start here if you want coordinated, premium support" />
         <Grid cards={sectionsWithCards.signature} />
       </Panel>
 
@@ -834,7 +836,7 @@ function Grid({ cards }: { cards: Card[] }) {
   const { stagger } = useAnims();
   if (!cards.length) {
     return <p className="text-brand-blue/70">No services match the current filters.</p>;
-    }
+  }
   return (
     <motion.div
       variants={stagger}

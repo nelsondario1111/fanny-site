@@ -1,4 +1,3 @@
-// app/en/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -44,17 +43,19 @@ function useAnims() {
 function Panel({
   children,
   className = "",
-  as: Tag = "section" as const,
+  as,
 }: {
   children: ReactNode;
   className?: string;
-  as?: any;
+  as?: React.ElementType;
 }) {
+  const Tag: React.ElementType = as ?? "section";
   return (
     <Tag
       className={[
         "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold/70 shadow-xl",
+        // Softer, less boxy panels
+        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
         "backdrop-blur-[1px]",
         className,
       ].join(" ")}
@@ -147,9 +148,20 @@ export default function Home() {
       />
 
       {/* ======================= HERO ======================= */}
-      <header className="relative min-h-[62dvh] flex items-center justify-center overflow-hidden" aria-label="Hero">
+<header
+        className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6"
+        aria-label="Hero"
+      >
         <div className="absolute inset-0 -z-10">
-          <Image src="/nature.jpg" alt="" aria-hidden fill priority sizes="100vw" className="object-cover object-center" />
+          <Image
+            src="/nature.jpg"
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
         </div>
 
@@ -157,8 +169,18 @@ export default function Home() {
           variants={stagger}
           initial="hidden"
           animate="visible"
-          className="z-10 relative bg-white/88 backdrop-blur-lg px-6 sm:px-10 py-10 rounded-3xl shadow-2xl text-center max-w-3xl mx-auto border border-brand-gold"
+          className="z-10 relative px-6 sm:px-10 py-10 rounded-[32px] text-center max-w-3xl mx-auto"
+          style={{
+            background: "rgba(255,255,255,0.9)",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
+            backdropFilter: "blur(6px)",
+          }}
         >
+          {/* subtle gold accent */}
+          <div
+            aria-hidden
+            className="absolute -top-1 left-8 right-8 h-[3px] rounded-full bg-brand-gold/80 shadow-[0_1px_0_rgba(0,0,0,0.06)]"
+          />
           <motion.h1
             variants={fadeUp}
             className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight"
@@ -166,31 +188,48 @@ export default function Home() {
             Guidance by Invitation. Clarity by Design.
           </motion.h1>
 
-          <motion.p variants={fade} className="font-sans text-xl md:text-2xl text-brand-blue mb-6">
-            Bilingual <b>Mortgage Guidance</b>, <b>Financial Coaching</b>, and <b>Holistic Tax Planning</b>—delivered by a coordinated team and tailored to how you naturally make decisions, so your plan actually sticks.
+          <motion.p
+            variants={fade}
+            className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed"
+          >
+            When you’re ready for holistic, heart-centered financial guidance, I’m here to walk
+            alongside you—offering support that honors your unique journey.
           </motion.p>
 
-          {/* Primary CTA — unified label with header button */}
-          <motion.div variants={fade} className="flex flex-col items-center gap-2">
+          {/* Clear CTA hierarchy */}
+          <motion.nav
+            variants={fade}
+            aria-label="Primary actions"
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/en/services"
+                aria-label="Explore services"
+                className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition inline-block"
+              >
+                Explore Services
+              </Link>
+              <Link
+                href="/en/tools"
+                aria-label="Browse tools"
+                className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+              >
+                Browse Tools
+              </Link>
+            </div>
             <Link
-              href="/en/contact?intent=consult"
-              aria-label="Book a Free Discovery Call"
-              className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+              href="/en/contact?intent=hello"
+              className="px-4 py-2 mt-1 rounded-full border border-brand-blue text-[15px] text-brand-blue hover:bg-brand-blue hover:text-white transition"
             >
-              Book a Free Discovery Call
+              Start a conversation
             </Link>
-            <Link
-              href="/en/contact?intent=question"
-              className="text-[15px] text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green"
-            >
-              Have questions?
-            </Link>
-          </motion.div>
+          </motion.nav>
 
-          {/* Trust chips (visible above the fold) */}
+          {/* Trust chips */}
           <motion.div
             variants={fade}
-            className="mt-5 flex flex-wrap items-center justify-center gap-2"
+            className="mt-6 flex flex-wrap items-center justify-center gap-2"
             aria-label="Trust badges"
           >
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
@@ -213,7 +252,7 @@ export default function Home() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="flex flex-col md:flex-row items-center gap-10"
+          className="flex flex-col md:flex-row items-center gap-8"
         >
           <motion.div variants={fadeUp} className="md:w-1/2 flex justify-center">
             <Image
@@ -230,11 +269,17 @@ export default function Home() {
               Invited Wisdom, Shared with Heart
             </h2>
             <p className="font-sans text-lg md:text-xl text-brand-body mb-6 leading-relaxed">
-              I’m Fanny Samaniego—a bilingual <b>Financial Advisor, holistic coach, and licensed Mortgage Agent</b> in Toronto. With a coordinated team, we guide professional families, executives, and business owners who want practical results without losing sight of peace of mind and values.
+              I’m Fanny Samaniego—a bilingual <b>Financial Advisor, holistic coach, and licensed
+              Mortgage Agent</b> in Toronto. With a coordinated team, we guide professional
+              families, executives, and business owners who want practical results without losing
+              sight of peace of mind and values.
             </p>
             <ul className="list-disc pl-6 text-brand-body text-base md:text-lg space-y-2 mb-8">
               <li>Plans that fit your life—rooted in how you naturally decide and follow through.</li>
-              <li>Optional Human Design lens to personalize communication and cadence—never replacing financial or legal fundamentals.</li>
+              <li>
+                Optional Human Design lens to personalize communication and cadence—never replacing
+                financial or legal fundamentals.
+              </li>
               <li>Clear next steps after every call—no overwhelm.</li>
             </ul>
             <div className="flex flex-wrap gap-3">
@@ -265,9 +310,10 @@ export default function Home() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
-          className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto"
+          className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto leading-relaxed"
         >
-          Strong financial outcomes come from relationships built on trust and the right fit. Every client journey begins with a conversation.
+          Strong financial outcomes come from relationships built on trust and the right fit. Every
+          client journey begins with a conversation.
         </motion.p>
         <motion.div
           variants={stagger}
@@ -280,7 +326,8 @@ export default function Home() {
             <li>We confirm your goals and timing before we start.</li>
             <li>You meet the right specialist on our team for each step.</li>
             <li>
-              We craft a plan around your strengths and decision style (Human Design available on request), while staying grounded in financial, tax, and legal basics.
+              We craft a plan around your strengths and decision style (Human Design available on
+              request), while staying grounded in financial, tax, and legal basics.
             </li>
           </motion.ul>
         </motion.div>
@@ -291,7 +338,10 @@ export default function Home() {
           viewport={{ once: true, amount: 0.25 }}
           className="mt-6 text-center"
         >
-          <Link href="/en/contact?intent=consult" className="text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green">
+          <Link
+            href="/en/contact?intent=hello"
+            className="text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green"
+          >
             When you’re ready, send a note →
           </Link>
         </motion.div>
@@ -372,7 +422,7 @@ export default function Home() {
               ],
               href: "/en/services#mortgage",
               label: "Explore Mortgage Guidance",
-              secondary: { label: "Start Mortgage Pre-Approval", href: "/en/contact?intent=preapproval" },
+              secondary: { label: "Start a conversation", href: "/en/contact?intent=mortgage-question" },
             },
           ].map((c) => (
             <motion.div
@@ -424,7 +474,9 @@ export default function Home() {
           viewport={{ once: true, amount: 0.2 }}
           className="text-center text-brand-body mt-2 max-w-3xl mx-auto"
         >
-          Intimate, small-group circles led by Fanny and her team—like sitting around a kitchen table—where you can ask questions, get clear answers, and leave with next steps you’ll actually follow.
+          Intimate, small-group circles led by Fanny and her team—like sitting around a kitchen
+          table—where you can ask questions, get clear answers, and leave with next steps you’ll
+          actually follow.
         </motion.p>
         <motion.div
           variants={stagger}
@@ -476,7 +528,9 @@ export default function Home() {
             View program details
           </Link>
           <Link
-            href={`/en/contact?intent=package&package=${encodeURIComponent("Holistic Family Conversations — 4-Week Cohort")}`}
+            href={`/en/contact?intent=package&package=${encodeURIComponent(
+              "Holistic Family Conversations — 4-Week Cohort",
+            )}`}
             className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
           >
             Talk to us
@@ -500,7 +554,8 @@ export default function Home() {
           >
             <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Tools</h3>
             <p className="text-brand-body mb-6">
-              Simple calculators, checklists, and decision helpers to keep things moving—made to match how you actually follow through.
+              Simple calculators, checklists, and decision helpers to keep things moving—made to
+              match how you actually follow through.
             </p>
             <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
               <li>Budget & cash-flow worksheet</li>
@@ -522,7 +577,8 @@ export default function Home() {
           >
             <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Articles</h3>
             <p className="text-brand-body mb-6">
-              Short, practical reads on mortgages, money behavior, and tax basics—no jargon, just next steps.
+              Short, practical reads on mortgages, money behavior, and tax basics—no jargon, just
+              next steps.
             </p>
             <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
               <li>First-home roadmap (Toronto edition)</li>
@@ -570,20 +626,23 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
         className="py-16 text-center"
-        aria-label="Primary call to action"
       >
-        <h3 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-4">
-          Ready for clarity—and a plan you’ll actually follow?
+        <h3 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-3">
+          Clarity grows from conversation.
         </h3>
+        <p className="text-brand-body mb-5 max-w-xl mx-auto">
+          No pressure, no rush—just thoughtful guidance when it’s right for you.
+        </p>
         <Link
-          href="/en/contact?intent=consult"
-          aria-label="Book a Free Discovery Call"
-          className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+          href="/en/contact?intent=hello"
+          aria-label="Start a conversation"
+          className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
         >
-          Book a Free Discovery Call
+          Start a conversation
         </Link>
         <p className="text-xs text-brand-blue/70 mt-3 max-w-xl mx-auto">
-          Human Design is optional—used only to personalize communication and pacing. It never replaces financial, tax, or legal fundamentals.
+          Human Design is optional—used only to personalize communication and pacing. It never
+          replaces financial, tax, or legal fundamentals.
         </p>
       </motion.section>
     </main>

@@ -1,6 +1,6 @@
+// app/en/testimonials/page.tsx
 "use client";
 
-// app/en/testimonials/page.tsx
 import * as React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -94,7 +94,7 @@ const itemVariants = {
 /* ------------------------------------------------------------------------- */
 
 export default function TestimonialsPage() {
-  // Build JSON-LD for SEO (Review schema without ratings)
+  // JSON-LD for SEO (Review schema without ratings)
   const jsonLd = React.useMemo(() => {
     const reviews = TESTIMONIALS.map((t) => ({
       "@type": "Review",
@@ -123,11 +123,7 @@ export default function TestimonialsPage() {
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* Hero */}
       <section className="pt-10 px-4">
-        <motion.div
-          initial={fadeUp}
-          animate={fadeUpVisible}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
+        <motion.div initial={fadeUp} animate={fadeUpVisible} transition={{ duration: 0.6, ease: "easeOut" }}>
           <Panel>
             <SectionTitle
               title="Stories of Financial Transformation"
@@ -142,35 +138,20 @@ export default function TestimonialsPage() {
 
       {/* Testimonials list */}
       <section className="px-4 mt-8">
-        <motion.div
-          initial={fadeUp}
-          animate={fadeUpVisible}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-        >
+        <motion.div initial={fadeUp} animate={fadeUpVisible} transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}>
           <Panel>
-            <motion.div
-              variants={listVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-6"
-            >
+            <motion.div variants={listVariants} initial="hidden" animate="show" className="space-y-6">
               {TESTIMONIALS.map(({ quote, name, context, year }, i) => (
                 <motion.figure
                   key={`${name}-${i}`}
                   variants={itemVariants}
                   className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg"
                 >
-                  <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">
-                    “{quote}”
-                  </blockquote>
+                  <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">“{quote}”</blockquote>
                   <figcaption className="font-semibold text-brand-green">
                     — {name}
-                    {context ? (
-                      <span className="text-brand-body/80 font-normal">, {context}</span>
-                    ) : null}
-                    {year ? (
-                      <span className="text-brand-body/60 font-normal"> · {year}</span>
-                    ) : null}
+                    {context ? <span className="text-brand-body/80 font-normal">, {context}</span> : null}
+                    {year ? <span className="text-brand-body/60 font-normal"> · {year}</span> : null}
                   </figcaption>
                 </motion.figure>
               ))}
@@ -191,11 +172,7 @@ export default function TestimonialsPage() {
       </section>
 
       {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </main>
   );
 }

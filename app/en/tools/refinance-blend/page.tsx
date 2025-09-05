@@ -27,16 +27,6 @@ function pmt(principal: number, annualRatePct: number, years: number) {
   if (i === 0) return principal / n;
   return (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
-/** Remaining balance after m months (level-payment mortgage) */
-function balAfterMonths(principal: number, annualRatePct: number, years: number, monthsElapsed: number) {
-  const i = Math.max(0, annualRatePct) / 100 / 12;
-  const n = Math.max(1, Math.round(years * 12));
-  const m = Math.min(Math.max(0, Math.floor(monthsElapsed)), n);
-  if (i === 0) return Math.max(0, principal - (principal / n) * m);
-  const M = pmt(principal, annualRatePct, years);
-  const pow = Math.pow(1 + i, m);
-  return principal * pow - (M * (pow - 1)) / i;
-}
 /** Total interest paid over k months, returning also end balance */
 function interestOverMonths(principal: number, annualRatePct: number, years: number, months: number) {
   const i = Math.max(0, annualRatePct) / 100 / 12;
@@ -62,7 +52,7 @@ function toCSV(rows: Array<Array<string | number>>) {
     const q = s.replace(/"/g, '""');
     return needs ? `"${q}"` : q;
   };
-  return rows.map(r => r.map(esc).join(",")).join("\r\n");
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
 }
 function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
   const iso = new Date().toISOString().slice(0, 10);
@@ -82,8 +72,8 @@ function est3MonthInterest(balance: number, contractRatePct: number) {
   return balance * i * (3 / 12);
 }
 function estIRD(balance: number, contractRatePct: number, comparisonRatePct: number, remainingTermMonths: number) {
-  const diff = Math.max(0, (contractRatePct - comparisonRatePct)) / 100;
-  return balance * diff * Math.max(0, remainingTermMonths) / 12;
+  const diff = Math.max(0, contractRatePct - comparisonRatePct) / 100;
+  return (balance * diff * Math.max(0, remainingTermMonths)) / 12;
 }
 
 /* =========================================================
@@ -112,7 +102,7 @@ export default function Page() {
 
   /* ------------ Blend & Extend option (Optional) ------------ */
   const [useBlend, setUseBlend] = useState<boolean>(true);
-  const [offerRatePct, setOfferRatePct] = useState<number>(3.99);  // lender’s offered rate for the extension portion
+  const [offerRatePct, setOfferRatePct] = useState<number>(3.99); // lender’s offered rate for the extension portion
   const [blendNewTermYears, setBlendNewTermYears] = useState<number>(5); // extend to a new term length
   const [blendPenaltyWaived, setBlendPenaltyWaived] = useState<boolean>(true);
   const [blendResetAmort, setBlendResetAmort] = useState<boolean>(false);
@@ -133,11 +123,14 @@ export default function Page() {
     const analysisM = Math.max(1, Math.round((analysisYears || 0) * 12));
 
     // Penalty estimate
-    let penalty =
-      penaltyMode === "none" ? 0 :
-      penaltyMode === "manual" ? Math.max(0, manualPenalty || 0) :
-      penaltyMode === "est3mo" ? est3MonthInterest(curP, curRatePct || 0) :
-      estIRD(curP, curRatePct || 0, comparisonRatePct || 0, remTermM);
+    const penalty =
+      penaltyMode === "none"
+        ? 0
+        : penaltyMode === "manual"
+        ? Math.max(0, manualPenalty || 0)
+        : penaltyMode === "est3mo"
+        ? est3MonthInterest(curP, curRatePct || 0)
+        : estIRD(curP, curRatePct || 0, comparisonRatePct || 0, remTermM);
 
     // Admin/Discharge fee
     const discharge = Math.max(0, adminFee || 0);
@@ -175,7 +168,10 @@ export default function Page() {
         const ib = interestOverMonths(refiPrincipal, newRatePct || 0, refiAmort, m).interest;
         const diff = Math.max(0, ia - ib) - (m === 1 ? refiUpfrontCash : 0); // subtract cash only once at start
         cum += Math.max(0, diff);
-        if (cum >= refiUpfrontCash) { breakEvenRefi = m; break; }
+        if (cum >= refiUpfrontCash) {
+          breakEvenRefi = m;
+          break;
+        }
       }
     } else {
       breakEvenRefi = 0; // no upfront cash; savings are immediate
@@ -183,15 +179,15 @@ export default function Page() {
 
     /* --- Scenario C: Blend & Extend (optional) --- */
     let blend = null as null | {
-      blendedRatePct: number,
-      monthly: number,
-      interest: number,
-      upfrontCash: number,
-      horizonUsed: number,
-      interestSavedVsStay: number,
-      breakEvenMonths: number | null,
-      principalUsed: number,
-      amortUsed: number,
+      blendedRatePct: number;
+      monthly: number;
+      interest: number;
+      upfrontCash: number;
+      horizonUsed: number;
+      interestSavedVsStay: number;
+      breakEvenMonths: number | null;
+      principalUsed: number;
+      amortUsed: number;
     };
     if (useBlend) {
       const blendTermM = Math.max(1, Math.round((blendNewTermYears || 0) * 12));
@@ -201,7 +197,8 @@ export default function Page() {
       const blendedRatePct = (curRatePct * w1 + (offerRatePct || 0) * w2) / (w1 + w2);
 
       const amort = blendResetAmort ? Math.max(1, blendAmortYears || 1) : remAmort;
-      const costs = Math.max(0, blendCosts || 0) + (blendPenaltyWaived ? 0 : penalty) + (blendPenaltyWaived ? 0 : discharge);
+      const costs =
+        Math.max(0, blendCosts || 0) + (blendPenaltyWaived ? 0 : penalty) + (blendPenaltyWaived ? 0 : discharge);
       const principalUsed = blendCapitaliseCosts ? curP + costs : curP;
       const upfrontCash = blendCapitaliseCosts ? 0 : costs;
 
@@ -223,7 +220,10 @@ export default function Page() {
           const ic = interestOverMonths(principalUsed, blendedRatePct, amort, m).interest;
           const diff = Math.max(0, ia - ic) - (m === 1 ? upfrontCash : 0);
           cum += Math.max(0, diff);
-          if (cum >= upfrontCash) { be = m; break; }
+          if (cum >= upfrontCash) {
+            be = m;
+            break;
+          }
         }
       } else {
         be = 0;
@@ -243,7 +243,8 @@ export default function Page() {
     }
 
     return {
-      penalty, discharge,
+      penalty,
+      discharge,
 
       stay: {
         monthly: stayMonthly,
@@ -266,15 +267,35 @@ export default function Page() {
       horizonCommonAB,
     };
   }, [
-    mortType, curBalance, curRatePct, remAmortYears, remTermYears,
-    penaltyMode, manualPenalty, comparisonRatePct, adminFee,
-    newRatePct, newAmortYears, newTermYears, refiOtherCosts, capitaliseCosts,
-    useBlend, offerRatePct, blendNewTermYears, blendPenaltyWaived, blendResetAmort, blendAmortYears, blendCosts, blendCapitaliseCosts,
-    analysisYears
+    // removed mortType (not used inside the memo)
+    curBalance,
+    curRatePct,
+    remAmortYears,
+    remTermYears,
+    penaltyMode,
+    manualPenalty,
+    comparisonRatePct,
+    adminFee,
+    newRatePct,
+    newAmortYears,
+    newTermYears,
+    refiOtherCosts,
+    capitaliseCosts,
+    useBlend,
+    offerRatePct,
+    blendNewTermYears,
+    blendPenaltyWaived,
+    blendResetAmort,
+    blendAmortYears,
+    blendCosts,
+    blendCapitaliseCosts,
+    analysisYears,
   ]);
 
   /* ------------ Actions ------------ */
-  function handlePrint() { window.print(); }
+  function handlePrint() {
+    window.print();
+  }
   function exportCSV() {
     const r = results;
 
@@ -335,19 +356,21 @@ export default function Page() {
       ["Interest Saved vs Stay (common horizon)", r.refi.interestSavedVsStay.toFixed(2)],
       ["Break-even Months (approx.)", r.refi.breakEvenMonths ?? "—"],
 
-      ...(r.blend ? [
-        ["—", "—"],
-        ["Results — Blend & Extend"],
-        ["Blended Rate (%)", r.blend.blendedRatePct.toFixed(4)],
-        ["Monthly Payment", r.blend.monthly.toFixed(2)],
-        ["Principal Used (incl. capitalised costs)", r.blend.principalUsed.toFixed(2)],
-        ["Amortization Used (years)", r.blend.amortUsed],
-        ["Interest over Horizon (months)", r.blend.horizonUsed],
-        ["Interest over Horizon (CAD)", r.blend.interest.toFixed(2)],
-        ["Upfront Cash (if not capitalised)", r.blend.upfrontCash.toFixed(2)],
-        ["Interest Saved vs Stay (common horizon)", r.blend.interestSavedVsStay.toFixed(2)],
-        ["Break-even Months (approx.)", r.blend.breakEvenMonths ?? "—"],
-      ] : []),
+      ...(r.blend
+        ? [
+            ["—", "—"],
+            ["Results — Blend & Extend"],
+            ["Blended Rate (%)", r.blend.blendedRatePct.toFixed(4)],
+            ["Monthly Payment", r.blend.monthly.toFixed(2)],
+            ["Principal Used (incl. capitalised costs)", r.blend.principalUsed.toFixed(2)],
+            ["Amortization Used (years)", r.blend.amortUsed],
+            ["Interest over Horizon (months)", r.blend.horizonUsed],
+            ["Interest over Horizon (CAD)", r.blend.interest.toFixed(2)],
+            ["Upfront Cash (if not capitalised)", r.blend.upfrontCash.toFixed(2)],
+            ["Interest Saved vs Stay (common horizon)", r.blend.interestSavedVsStay.toFixed(2)],
+            ["Break-even Months (approx.)", r.blend.breakEvenMonths ?? "—"],
+          ]
+        : []),
     ];
 
     downloadCSV("refinance_blend_estimator", rows);
@@ -428,41 +451,67 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Type</label>
               <div className="flex gap-4">
                 <label className="inline-flex items-center gap-2">
-                  <input type="radio" name="mtype" checked={mortType==="fixed"} onChange={()=>setMortType("fixed")} />
+                  <input type="radio" name="mtype" checked={mortType === "fixed"} onChange={() => setMortType("fixed")} />
                   <span>Fixed</span>
                 </label>
                 <label className="inline-flex items-center gap-2">
-                  <input type="radio" name="mtype" checked={mortType==="variable"} onChange={()=>setMortType("variable")} />
+                  <input type="radio" name="mtype" checked={mortType === "variable"} onChange={() => setMortType("variable")} />
                   <span>Variable</span>
                 </label>
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Balance (CAD)</label>
-              <input type="number" min={0} inputMode="decimal"
+              <input
+                type="number"
+                min={0}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={curBalance} onChange={(e)=>setCurBalance(Number(e.target.value || 0))}/>
+                value={curBalance}
+                onChange={(e) => setCurBalance(Number(e.target.value || 0))}
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Rate (annual %)</label>
-              <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
+              <input
+                type="number"
+                min={0}
+                max={25}
+                step={0.01}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={curRatePct} onChange={(e)=>setCurRatePct(Number(e.target.value || 0))}/>
+                value={curRatePct}
+                onChange={(e) => setCurRatePct(Number(e.target.value || 0))}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Remaining Amort. (years)</label>
-              <input type="number" min={1} max={35} step={1} inputMode="decimal"
+              <input
+                type="number"
+                min={1}
+                max={35}
+                step={1}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={remAmortYears} onChange={(e)=>setRemAmortYears(Number(e.target.value || 0))}/>
+                value={remAmortYears}
+                onChange={(e) => setRemAmortYears(Number(e.target.value || 0))}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Remaining Term (years)</label>
-              <input type="number" min={0.25} max={10} step={0.25} inputMode="decimal"
+              <input
+                type="number"
+                min={0.25}
+                max={10}
+                step={0.25}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={remTermYears} onChange={(e)=>setRemTermYears(Number(e.target.value || 0))}/>
+                value={remTermYears}
+                onChange={(e) => setRemTermYears(Number(e.target.value || 0))}
+              />
             </div>
           </div>
 
@@ -470,19 +519,19 @@ export default function Page() {
             <div className="flex flex-wrap items-center gap-4">
               <div className="text-sm font-medium text-brand-green">Prepayment Penalty</div>
               <label className="inline-flex items-center gap-2 text-sm">
-                <input type="radio" name="pen" checked={penaltyMode==="none"} onChange={()=>setPenaltyMode("none")} />
+                <input type="radio" name="pen" checked={penaltyMode === "none"} onChange={() => setPenaltyMode("none")} />
                 <span>None</span>
               </label>
               <label className="inline-flex items-center gap-2 text-sm">
-                <input type="radio" name="pen" checked={penaltyMode==="manual"} onChange={()=>setPenaltyMode("manual")} />
+                <input type="radio" name="pen" checked={penaltyMode === "manual"} onChange={() => setPenaltyMode("manual")} />
                 <span>Enter amount</span>
               </label>
               <label className="inline-flex items-center gap-2 text-sm">
-                <input type="radio" name="pen" checked={penaltyMode==="est3mo"} onChange={()=>setPenaltyMode("est3mo")} />
+                <input type="radio" name="pen" checked={penaltyMode === "est3mo"} onChange={() => setPenaltyMode("est3mo")} />
                 <span>Estimate: 3-month interest</span>
               </label>
               <label className="inline-flex items-center gap-2 text-sm">
-                <input type="radio" name="pen" checked={penaltyMode==="estIRD"} onChange={()=>setPenaltyMode("estIRD")} />
+                <input type="radio" name="pen" checked={penaltyMode === "estIRD"} onChange={() => setPenaltyMode("estIRD")} />
                 <span>Estimate: IRD</span>
               </label>
             </div>
@@ -491,9 +540,14 @@ export default function Page() {
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Penalty amount (CAD)</label>
-                  <input type="number" min={0} inputMode="decimal"
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
                     className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    value={manualPenalty} onChange={(e)=>setManualPenalty(Number(e.target.value || 0))}/>
+                    value={manualPenalty}
+                    onChange={(e) => setManualPenalty(Number(e.target.value || 0))}
+                  />
                 </div>
               </div>
             )}
@@ -502,9 +556,16 @@ export default function Page() {
               <div className="mt-2 grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Comparison Rate (% per year)</label>
-                  <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
+                  <input
+                    type="number"
+                    min={0}
+                    max={25}
+                    step={0.01}
+                    inputMode="decimal"
                     className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    value={comparisonRatePct} onChange={(e)=>setComparisonRatePct(Number(e.target.value || 0))}/>
+                    value={comparisonRatePct}
+                    onChange={(e) => setComparisonRatePct(Number(e.target.value || 0))}
+                  />
                 </div>
                 <div className="col-span-2 text-xs text-brand-blue/70 flex items-center gap-2">
                   <FaInfoCircle /> Simple IRD estimate: Balance × (Contract − Comparison) × (Remaining term ÷ 12).
@@ -515,9 +576,14 @@ export default function Page() {
             <div className="mt-2 grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Admin / Discharge Fee (CAD)</label>
-                <input type="number" min={0} inputMode="decimal"
+                <input
+                  type="number"
+                  min={0}
+                  inputMode="decimal"
                   className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  value={adminFee} onChange={(e)=>setAdminFee(Number(e.target.value || 0))}/>
+                  value={adminFee}
+                  onChange={(e) => setAdminFee(Number(e.target.value || 0))}
+                />
               </div>
             </div>
 
@@ -534,14 +600,24 @@ export default function Page() {
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Rate (annual %)</label>
-              <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
+              <input
+                type="number"
+                min={0}
+                max={25}
+                step={0.01}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={newRatePct} onChange={(e)=>setNewRatePct(Number(e.target.value || 0))}/>
+                value={newRatePct}
+                onChange={(e) => setNewRatePct(Number(e.target.value || 0))}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Amortization (years)</label>
-              <select className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={newAmortYears} onChange={(e)=>setNewAmortYears(Number(e.target.value))}>
+              <select
+                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                value={newAmortYears}
+                onChange={(e) => setNewAmortYears(Number(e.target.value))}
+              >
                 <option value={20}>20</option>
                 <option value={25}>25</option>
                 <option value={30}>30</option>
@@ -550,8 +626,11 @@ export default function Page() {
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Term (years)</label>
-              <select className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={newTermYears} onChange={(e)=>setNewTermYears(Number(e.target.value))}>
+              <select
+                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                value={newTermYears}
+                onChange={(e) => setNewTermYears(Number(e.target.value))}
+              >
                 <option value={1}>1</option>
                 <option value={2}>2</option>
                 <option value={3}>3</option>
@@ -564,13 +643,18 @@ export default function Page() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Other Refi Costs (CAD)</label>
-              <input type="number" min={0} inputMode="decimal"
+              <input
+                type="number"
+                min={0}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={refiOtherCosts} onChange={(e)=>setRefiOtherCosts(Number(e.target.value || 0))}/>
+                value={refiOtherCosts}
+                onChange={(e) => setRefiOtherCosts(Number(e.target.value || 0))}
+              />
             </div>
             <div className="flex items-end">
               <label className="inline-flex items-center gap-2">
-                <input type="checkbox" checked={capitaliseCosts} onChange={(e)=>setCapitaliseCosts(e.target.checked)}/>
+                <input type="checkbox" checked={capitaliseCosts} onChange={(e) => setCapitaliseCosts(e.target.checked)} />
                 <span>Capitalise penalty & costs into new mortgage</span>
               </label>
             </div>
@@ -582,7 +666,7 @@ export default function Page() {
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-serif text-lg text-brand-green font-bold">Blend & Extend (Optional)</h3>
             <label className="inline-flex items-center gap-2">
-              <input type="checkbox" checked={useBlend} onChange={(e)=>setUseBlend(e.target.checked)} />
+              <input type="checkbox" checked={useBlend} onChange={(e) => setUseBlend(e.target.checked)} />
               <span>Include in comparison</span>
             </label>
           </div>
@@ -590,20 +674,34 @@ export default function Page() {
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Offer Rate for Extension (annual %)</label>
-              <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
+              <input
+                type="number"
+                min={0}
+                max={25}
+                step={0.01}
+                inputMode="decimal"
                 className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={offerRatePct} onChange={(e)=>setOfferRatePct(Number(e.target.value || 0))}/>
+                value={offerRatePct}
+                onChange={(e) => setOfferRatePct(Number(e.target.value || 0))}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Extend to New Term (years)</label>
-              <select className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                value={blendNewTermYears} onChange={(e)=>setBlendNewTermYears(Number(e.target.value))}>
-                <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option><option value={5}>5</option>
+              <select
+                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                value={blendNewTermYears}
+                onChange={(e) => setBlendNewTermYears(Number(e.target.value))}
+              >
+                <option value={1}>1</option>
+                <option value={2}>2</option>
+                <option value={3}>3</option>
+                <option value={4}>4</option>
+                <option value={5}>5</option>
               </select>
             </div>
             <div className="flex items-end">
               <label className="inline-flex items-center gap-2">
-                <input type="checkbox" checked={blendPenaltyWaived} onChange={(e)=>setBlendPenaltyWaived(e.target.checked)} />
+                <input type="checkbox" checked={blendPenaltyWaived} onChange={(e) => setBlendPenaltyWaived(e.target.checked)} />
                 <span>Assume penalty waived</span>
               </label>
             </div>
@@ -612,14 +710,21 @@ export default function Page() {
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
               <label className="inline-flex items-center gap-2">
-                <input type="checkbox" checked={blendResetAmort} onChange={(e)=>setBlendResetAmort(e.target.checked)} />
+                <input type="checkbox" checked={blendResetAmort} onChange={(e) => setBlendResetAmort(e.target.checked)} />
                 <span className="font-medium text-brand-green">Reset amortization</span>
               </label>
               <div className="mt-2">
                 <label className="block text-xs text-brand-blue mb-1">Amortization (years, if reset)</label>
-                <input type="number" min={1} max={35} step={1} inputMode="decimal"
+                <input
+                  type="number"
+                  min={1}
+                  max={35}
+                  step={1}
+                  inputMode="decimal"
                   className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                  value={blendAmortYears} onChange={(e)=>setBlendAmortYears(Number(e.target.value || 0))}/>
+                  value={blendAmortYears}
+                  onChange={(e) => setBlendAmortYears(Number(e.target.value || 0))}
+                />
               </div>
             </div>
 
@@ -627,13 +732,18 @@ export default function Page() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Blend Costs (CAD)</label>
-                  <input type="number" min={0} inputMode="decimal"
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
                     className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-                    value={blendCosts} onChange={(e)=>setBlendCosts(Number(e.target.value || 0))}/>
+                    value={blendCosts}
+                    onChange={(e) => setBlendCosts(Number(e.target.value || 0))}
+                  />
                 </div>
                 <div className="flex items-end">
                   <label className="inline-flex items-center gap-2">
-                    <input type="checkbox" checked={blendCapitaliseCosts} onChange={(e)=>setBlendCapitaliseCosts(e.target.checked)} />
+                    <input type="checkbox" checked={blendCapitaliseCosts} onChange={(e) => setBlendCapitaliseCosts(e.target.checked)} />
                     <span>Capitalise blend costs</span>
                   </label>
                 </div>
@@ -654,12 +764,17 @@ export default function Page() {
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Analysis Horizon</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Horizon (years)</label>
-          <input type="number" min={1} max={10} step={1} inputMode="decimal"
+          <input
+            type="number"
+            min={1}
+            max={10}
+            step={1}
+            inputMode="decimal"
             className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
-            value={analysisYears} onChange={(e)=>setAnalysisYears(Number(e.target.value || 0))}/>
-          <p className="text-xs text-brand-blue/70 mt-2">
-            For fairness, each scenario uses the shortest of its term and this horizon.
-          </p>
+            value={analysisYears}
+            onChange={(e) => setAnalysisYears(Number(e.target.value || 0))}
+          />
+          <p className="text-xs text-brand-blue/70 mt-2">For fairness, each scenario uses the shortest of its term and this horizon.</p>
         </section>
       </form>
 
@@ -669,9 +784,18 @@ export default function Page() {
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
           <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Stay (No Change)</h3>
           <div className="text-sm space-y-2">
-            <div className="flex justify-between"><span>Monthly payment</span><span className="font-medium">{money(results.stay.monthly, 2)}</span></div>
-            <div className="flex justify-between"><span>Interest over horizon</span><span className="font-medium">{money(results.stay.interest, 0)}</span></div>
-            <div className="flex justify-between"><span>Horizon used</span><span className="font-medium">{results.stay.horizonUsed} months</span></div>
+            <div className="flex justify-between">
+              <span>Monthly payment</span>
+              <span className="font-medium">{money(results.stay.monthly, 2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Interest over horizon</span>
+              <span className="font-medium">{money(results.stay.interest, 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Horizon used</span>
+              <span className="font-medium">{results.stay.horizonUsed} months</span>
+            </div>
           </div>
         </section>
 
@@ -679,11 +803,18 @@ export default function Page() {
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
           <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Refinance — New Mortgage</h3>
           <div className="text-sm space-y-2">
-            <div className="flex justify-between"><span>Monthly payment</span><span className="font-medium">{money(results.refi.monthly, 2)}</span></div>
             <div className="flex justify-between">
-              <span>Interest over horizon</span><span className="font-medium">{money(results.refi.interest, 0)}</span>
+              <span>Monthly payment</span>
+              <span className="font-medium">{money(results.refi.monthly, 2)}</span>
             </div>
-            <div className="flex justify-between"><span>Horizon used</span><span className="font-medium">{results.refi.horizonUsed} months</span></div>
+            <div className="flex justify-between">
+              <span>Interest over horizon</span>
+              <span className="font-medium">{money(results.refi.interest, 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Horizon used</span>
+              <span className="font-medium">{results.refi.horizonUsed} months</span>
+            </div>
             <div className="flex justify-between border-t pt-2 mt-2">
               <span>Upfront cash (if not capitalised)</span>
               <span className="font-medium">{results.refi.upfrontCash ? money(results.refi.upfrontCash, 0) : "—"}</span>
@@ -694,7 +825,9 @@ export default function Page() {
             </div>
             <div className="flex justify-between">
               <span>Break-even (approx.)</span>
-              <span className="font-medium">{results.refi.breakEvenMonths === null ? "—" : `${results.refi.breakEvenMonths} mo`}</span>
+              <span className="font-medium">
+                {results.refi.breakEvenMonths === null ? "—" : `${results.refi.breakEvenMonths} mo`}
+              </span>
             </div>
           </div>
         </section>
@@ -704,10 +837,22 @@ export default function Page() {
           <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Blend & Extend</h3>
           {results.blend ? (
             <div className="text-sm space-y-2">
-              <div className="flex justify-between"><span>Blended rate</span><span className="font-medium">{results.blend.blendedRatePct.toFixed(3)}%</span></div>
-              <div className="flex justify-between"><span>Monthly payment</span><span className="font-medium">{money(results.blend.monthly, 2)}</span></div>
-              <div className="flex justify-between"><span>Interest over horizon</span><span className="font-medium">{money(results.blend.interest, 0)}</span></div>
-              <div className="flex justify-between"><span>Horizon used</span><span className="font-medium">{results.blend.horizonUsed} months</span></div>
+              <div className="flex justify-between">
+                <span>Blended rate</span>
+                <span className="font-medium">{results.blend.blendedRatePct.toFixed(3)}%</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Monthly payment</span>
+                <span className="font-medium">{money(results.blend.monthly, 2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Interest over horizon</span>
+                <span className="font-medium">{money(results.blend.interest, 0)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Horizon used</span>
+                <span className="font-medium">{results.blend.horizonUsed} months</span>
+              </div>
               <div className="flex justify-between border-t pt-2 mt-2">
                 <span>Upfront cash (if not capitalised)</span>
                 <span className="font-medium">{results.blend.upfrontCash ? money(results.blend.upfrontCash, 0) : "—"}</span>
@@ -718,7 +863,9 @@ export default function Page() {
               </div>
               <div className="flex justify-between">
                 <span>Break-even (approx.)</span>
-                <span className="font-medium">{results.blend.breakEvenMonths === null ? "—" : `${results.blend.breakEvenMonths} mo`}</span>
+                <span className="font-medium">
+                  {results.blend.breakEvenMonths === null ? "—" : `${results.blend.breakEvenMonths} mo`}
+                </span>
               </div>
             </div>
           ) : (
@@ -750,9 +897,16 @@ export default function Page() {
       {/* Print styles */}
       <style jsx global>{`
         @media print {
-          .print\\:hidden { display: none !important; }
-          main { background: white !important; }
-          .avoid-break { break-inside: avoid; page-break-inside: avoid; }
+          .print\\:hidden {
+            display: none !important;
+          }
+          main {
+            background: white !important;
+          }
+          .avoid-break {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
         }
       `}</style>
     </ToolShell>

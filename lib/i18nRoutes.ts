@@ -27,31 +27,53 @@ export const I18N_SECTIONS = {
   },
 } as const;
 
+type SectionKey = keyof typeof I18N_SECTIONS["en"];
+
 /** Load the generated slug map (resources/tools) */
 type PairDict = Record<string, { en: string; es: string }>;
 type GenShape = { resources: PairDict; tools: PairDict };
 
-// If the JSON doesn’t exist yet (first run in dev), fall back to empty maps.
+// Lazy, safe runtime load of the optional JSON.
+// We purposefully *don't* await this at module init — functions work with the
+// empty fallback and will reflect the JSON once it loads.
 let gen: GenShape = { resources: {}, tools: {} };
-try {
-  // Using require so this stays simple in a client file; Next will inline it at build
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  gen = require("@/content/i18n-slugs.json");
-} catch {
-  // no-op: developer hasn’t generated the file yet
+let genLoadStarted = false;
+function ensureGenLoaded(): void {
+  if (genLoadStarted) return;
+  genLoadStarted = true;
+  // fire-and-forget; if the file doesn't exist, we silently keep the fallback
+  import("@/content/i18n-slugs.json")
+    .then((mod) => {
+      const data = (mod as { default?: GenShape }).default ?? (mod as unknown as GenShape);
+      if (data && typeof data === "object") {
+        gen = {
+          resources: data.resources ?? {},
+          tools: data.tools ?? {},
+        };
+      }
+    })
+    .catch(() => {
+      // no-op: developer hasn’t generated the file yet
+    });
 }
+// Kick off the load in the background
+ensureGenLoaded();
 
 /**
  * Slug mappings for dynamic content.
- * `static` stays inline; resources/tools are imported from the generated file.
+ * `static` stays inline; resources/tools are populated from the generated file (if present).
  */
 export const I18N_SLUGS: {
   resources: PairDict;
   tools: PairDict;
-  static: Record<string, { en: string; es: string }>;
+  static: Record<SectionKey, { en: string; es: string }>;
 } = {
-  resources: gen.resources || {},
-  tools: gen.tools || {},
+  get resources() {
+    return gen.resources;
+  },
+  get tools() {
+    return gen.tools;
+  },
   static: {
     home: { en: "", es: "" },
     about: { en: "about", es: "sobre-mi" },
@@ -62,7 +84,7 @@ export const I18N_SLUGS: {
     contact: { en: "contact", es: "contacto" },
     privacy: { en: "privacy", es: "privacidad" },
   },
-};
+} as const;
 
 /* --------------------------- helpers --------------------------- */
 
@@ -72,21 +94,28 @@ export function detectLang(pathname: string): Locale | null {
   return null;
 }
 
-export function splitPath(pathname: string): { lang: Locale | null; section: string | null; slugs: string[] } {
+export function splitPath(pathname: string): {
+  lang: Locale | null;
+  section: string | null;
+  slugs: string[];
+} {
   const parts = pathname.split("?")[0].split("#")[0].split("/").filter(Boolean);
   if (parts.length === 0) return { lang: null, section: null, slugs: [] };
-  const lang = (parts[0] === "en" || parts[0] === "es" ? (parts[0] as Locale) : null);
+  const lang = parts[0] === "en" || parts[0] === "es" ? (parts[0] as Locale) : null;
   const section = parts[1] || null;
   const slugs = parts.slice(2);
   return { lang, section, slugs };
 }
 
 export function mapSection(section: string, target: Locale): string {
-  for (const [key, val] of Object.entries(I18N_SECTIONS.en)) {
-    if (val === section) return (I18N_SECTIONS as any)[target][key] ?? section;
+  // Try to find the section key by comparing against both locales.
+  const entriesEn = Object.entries(I18N_SECTIONS.en) as [SectionKey, string][];
+  for (const [key, val] of entriesEn) {
+    if (val === section) return I18N_SECTIONS[target][key];
   }
-  for (const [key, val] of Object.entries(I18N_SECTIONS.es)) {
-    if (val === section) return (I18N_SECTIONS as any)[target][key] ?? section;
+  const entriesEs = Object.entries(I18N_SECTIONS.es) as [SectionKey, string][];
+  for (const [key, val] of entriesEs) {
+    if (val === section) return I18N_SECTIONS[target][key];
   }
   return section;
 }
@@ -99,11 +128,18 @@ function normalizeSectionKey(mappedSection: string): "resources" | "tools" | "st
   return "static";
 }
 
-export function mapSlug(sectionKey: "resources" | "tools" | "static", currentSlug: string, target: Locale): string | null {
-  const dict = (I18N_SLUGS as any)[sectionKey] || {};
-  for (const [canonical, variants] of Object.entries<any>(dict)) {
+export function mapSlug(
+  sectionKey: "resources" | "tools" | "static",
+  currentSlug: string,
+  target: Locale
+): string | null {
+  const dict: PairDict | Record<string, { en: string; es: string }> =
+    sectionKey === "static" ? I18N_SLUGS.static : I18N_SLUGS[sectionKey];
+
+  const entries = Object.entries(dict) as [string, { en: string; es: string }][];
+  for (const [canonical, variants] of entries) {
     if (variants.en === currentSlug || variants.es === currentSlug || canonical === currentSlug) {
-      return variants[target] || null;
+      return variants[target] ?? null;
     }
   }
   return null;

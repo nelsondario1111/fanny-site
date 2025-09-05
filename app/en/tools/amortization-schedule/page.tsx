@@ -1,3 +1,4 @@
+// app/en/tools/amortization-schedule/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -27,7 +28,7 @@ const num = (s: string) => {
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 type FreqKey = "monthly" | "biweekly" | "accelerated_biweekly";
-const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number; }> = {
+const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number }> = {
   monthly: { label: "Monthly", periodsPerYear: 12 },
   biweekly: { label: "Bi-weekly", periodsPerYear: 26 },
   accelerated_biweekly: { label: "Accelerated Bi-weekly", periodsPerYear: 26 },
@@ -96,8 +97,8 @@ function buildSchedule(opts: {
     period += 1;
 
     const interest = bal * r;
-    let scheduledPayment = Math.min(pay, bal + interest); // last payment may be smaller
-    let principalPart = scheduledPayment - interest;
+    const scheduledPayment = Math.min(pay, bal + interest); // last payment may be smaller
+    const principalPart = scheduledPayment - interest;
 
     // Extras
     let extra = 0;

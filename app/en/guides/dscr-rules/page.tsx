@@ -7,13 +7,11 @@ import {
   Calculator,
   CheckCircle2,
   Download,
-  ExternalLink,
   Info,
   Printer,
   RotateCcw,
   Search,
   Shield,
-  Building2,
   FileText,
   ListChecks,
   PlusCircle,
@@ -92,14 +90,6 @@ const toNum = (s?: string) => {
   const n = Number(cleaned);
   return Number.isFinite(n) ? n : 0;
 };
-
-function pmt(monthlyRate: number, nMonths: number, principal: number) {
-  if (nMonths <= 0) return 0;
-  if (monthlyRate <= 0) return principal / nMonths;
-  const r = monthlyRate;
-  const pow = Math.pow(1 + r, -nMonths);
-  return (r * principal) / (1 - pow);
-}
 
 // ---------- Defaults ----------
 const DEFAULT_CHECK: QuickCheck = {

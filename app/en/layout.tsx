@@ -3,24 +3,30 @@ import * as React from "react";
 import type { Metadata } from "next";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/BackToTopButton";
 
-// Optional: locale metadata (you also have app/en/metadata.ts; keep whichever you prefer)
 export const metadata: Metadata = {
   title: {
-    default: "Fanny Samaniego — English",
+    default: "Fanny Samaniego — Coaching & Mortgage Solutions",
     template: "%s • Fanny Samaniego",
   },
   description:
-    "Human-centered financial coaching & mortgage solutions (EN).",
+    "Human-centered financial coaching & mortgage solutions in Toronto. Bilingual (EN/ES).",
 };
 
 export default function EnLayout({ children }: { children: React.ReactNode }) {
-  // ❗ Do NOT render <html> or <body> here — only in app/layout.tsx
   return (
     <>
+      {/* Unified, locale-aware header */}
       <NavBar />
-      <main>{children}</main>
-      <Footer />
+
+      <main id="main" className="flex-1">
+        {children}
+      </main>
+
+      {/* Unified, locale-aware footer */}
+      <Footer lang="en" />
+      <BackToTopButton />
     </>
   );
 }

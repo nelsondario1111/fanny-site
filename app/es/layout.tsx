@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function LayoutEs({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="scroll-smooth">
+    <html lang="es">
       <body
         className={[
           lato.variable,

@@ -89,7 +89,7 @@ function simulate(
   maxMonths = 1200 // límite de seguridad
 ) {
   const startDate = parseDateInput(startDateStr);
-  let curDate = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), 1) : null;
+  const curDate = startDate ? new Date(startDate.getFullYear(), startDate.getMonth(), 1) : null;
 
   // Copias de trabajo
   const debts = debtsInput.map(d => ({ ...d }));

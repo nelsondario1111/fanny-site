@@ -7,13 +7,15 @@ import LangSwitcher from "@/components/layout/LangSwitcher";
 
 type L = "en" | "es";
 
-function useLang(pathname: string): L {
+// Rename helper so it's not mistaken for a React hook
+function langFromPath(pathname: string): L {
   return pathname.startsWith("/es") ? "es" : "en";
 }
 
 export default function Footer({ lang: forcedLang }: { lang?: L }) {
   const pathname = usePathname() || "/en";
-  const lang = forcedLang ?? useLang(pathname);
+  const derivedLang = langFromPath(pathname);
+  const lang = forcedLang ?? derivedLang;
   const t = (en: string, es: string) => (lang === "en" ? en : es);
   const base = `/${lang}`;
 
@@ -162,7 +164,12 @@ export default function Footer({ lang: forcedLang }: { lang?: L }) {
           <p className="text-sm text-brand-body mt-1">
             {t("Simple, practical insights—no spam.", "Ideas prácticas y simples—sin spam.")}
           </p>
-          <form action="/api/subscribe" method="post" className="mt-3 flex gap-2" aria-label={t("Subscribe form", "Formulario de suscripción")}>
+          <form
+            action="/api/subscribe"
+            method="post"
+            className="mt-3 flex gap-2"
+            aria-label={t("Subscribe form", "Formulario de suscripción")}
+          >
             {/* Honeypot */}
             <input type="text" name="hp" className="hidden" tabIndex={-1} autoComplete="off" />
             <label className="sr-only" htmlFor="newsletter-email">

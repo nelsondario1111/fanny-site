@@ -64,7 +64,7 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
+  const Tag: React.ElementType = level;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -100,8 +100,9 @@ function TagBadge({ children }: { children: ReactNode }) {
   );
 }
 
+/** Añadimos una clase “print-reset” para simplificar estilos de impresión (evitar selectores con :) */
 const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+  "print-reset rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
 
 /* ============================== Modelo de datos ============================== */
 type Categoria =
@@ -112,6 +113,11 @@ type Categoria =
   | "Utilidades";
 
 type Tipo = "calculator" | "worksheet" | "utility";
+const TYPE_LABELS_ES: Record<Tipo, string> = {
+  calculator: "Calculadora",
+  worksheet: "Hoja",
+  utility: "Utilidad",
+};
 type CTA = { label: string; href: string; variant?: "primary" | "ghost" | "ghostGold" };
 
 type ToolItem = {
@@ -136,7 +142,7 @@ const ButtonGhostGold =
   "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition";
 
 /* ================================ Herramientas ================================ */
-/** IMPORTANTE: los href usan exactamente los nombres de carpeta que mostraste en la captura */
+/** IMPORTANTE: los href usan exactamente los nombres de carpeta existentes */
 const TOOLS: ToolItem[] = [
   // ---- HIPOTECA / CIERRE ----
   {
@@ -259,7 +265,7 @@ const TOOLS: ToolItem[] = [
     id: "alquilar-vd-comprar",
     title: "Alquilar vs Comprar",
     desc: "Comparación lado a lado de flujo, egreso total y patrimonio al horizonte.",
-    href: "/es/herramientas/alquilar-vd-comprar", // slug EXACTO de la carpeta
+    href: "/es/herramientas/alquilar-vd-comprar",
     category: "Planificación",
     type: "calculator",
     icon: <FaCalculator className="text-brand-gold text-2xl" aria-hidden />,
@@ -531,6 +537,7 @@ function SectionNav() {
           <a
             key={s.id}
             href={`#${s.id}`}
+            aria-current={active === s.id ? "true" : undefined}
             className={[
               "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
               active === s.id
@@ -690,7 +697,7 @@ export default function ToolsPage() {
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
               <FaCheckCircle className="text-brand-gold" aria-hidden /> Gratuitas
             </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-gree n">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
               <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingües
             </span>
           </div>
@@ -875,7 +882,7 @@ export default function ToolsPage() {
           .print\\:hidden { display: none !important; }
           main { background: white !important; }
           section { break-inside: avoid; page-break-inside: avoid; }
-          .${CARD.split(" ").join(".")} { box-shadow: none !important; }
+          .print-reset { box-shadow: none !important; transform: none !important; }
         }
       `}</style>
     </main>
@@ -897,7 +904,7 @@ function ListBlock({ items }: { items: ToolItem[] }) {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h4 className="font-serif text-lg text-brand-green font-bold m-0">{t.title}</h4>
                 <span className="px-3 py-1 rounded-full text-xs border border-brand-gold text-brand-green">
-                  {t.category} • {t.type}
+                  {t.category} • {TYPE_LABELS_ES[t.type]}
                 </span>
               </div>
               <p className="text-brand-blue/90 mt-1">{t.desc}</p>
