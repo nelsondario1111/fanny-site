@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 
 /* =============================== Tipos =============================== */
 export type ClientArticle = {
@@ -42,24 +43,25 @@ type PersonaIndex = {
 };
 
 /* ============================ Motion helpers ============================ */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
+
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const base: Transition =
+    prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing };
+  const baseUp: Transition =
+    prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
+
   return { fade, fadeUp };
 }
 
@@ -184,7 +186,6 @@ const titleCase = (kebab: string) =>
 type QuickFilter = { key: string; label: string; tags: string[] };
 
 const OBJETIVOS: QuickFilter[] = [
-  // usa las etiquetas canónicas que generas en page.tsx (mortgages, financial-planning, etc.)
   { key: "buy", label: "Comprar vivienda", tags: ["mortgages"] },
   { key: "refi", label: "Refinanciar / Renovar", tags: ["mortgages"] },
   { key: "credit", label: "Construir crédito", tags: ["financial-planning"] },
@@ -227,7 +228,6 @@ export default function RecursosClient({
   const [view, setView] = React.useState<string>(views[0]?.key ?? "grid");
   const [sort, setSort] = React.useState<"new" | "old" | "az">("new");
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  // Only read the selectedPersona value (no unused setter)
   const [selectedPersona] = React.useState<PersonaKey | "">("");
 
   const personaSlugSet = React.useMemo(() => {
