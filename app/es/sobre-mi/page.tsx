@@ -52,12 +52,13 @@ function useAnims() {
 function Panel({
   children,
   className = "",
-  as: Tag = "section" as const,
+  as,
 }: {
   children: ReactNode;
   className?: string;
-  as?: any;
+  as?: React.ElementType;
 }) {
+  const Tag: React.ElementType = as ?? "section";
   return (
     <Tag
       className={[
@@ -420,7 +421,7 @@ export default function SobreMi() {
             <p>
               Los precios (cuando se muestran) están en CAD y pueden estar sujetos a HST. Los servicios hipotecarios
               suelen ser gratuitos para prestatarios residenciales calificados porque la compensación la paga el
-              prestamista al cierre. En escenarios no‑prime/privados/comerciales pueden aplicar honorarios; siempre
+              prestamista al cierre. En escenarios no-prime/privados/comerciales pueden aplicar honorarios; siempre
               se informarán por adelantado. Todas las hipotecas son O.A.C. (aprobación crediticia).
             </p>
             <p>

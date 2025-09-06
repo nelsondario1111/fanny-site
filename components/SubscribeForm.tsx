@@ -1,19 +1,23 @@
+// components/SubscribeForm.tsx
 "use client";
 
 import * as React from "react";
 
 type Locale = "en" | "es";
 
-const COPY: Record<Locale, {
-  firstNameLabel: string;
-  firstNamePlaceholder: string;
-  emailLabel: string;
-  emailPlaceholder: string;
-  consentLabel: React.ReactNode;
-  submit: string;
-  success: string;
-  error: string;
-}> = {
+const COPY: Record<
+  Locale,
+  {
+    firstNameLabel: string;
+    firstNamePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    consentLabel: React.ReactNode;
+    submit: string;
+    success: string;
+    error: string;
+  }
+> = {
   en: {
     firstNameLabel: "First name (optional)",
     firstNamePlaceholder: "Your first name",
@@ -29,7 +33,8 @@ const COPY: Record<Locale, {
       </>
     ),
     submit: "Subscribe",
-    success: "Check your inbox to confirm your subscription. (If you don’t see it, check Spam/Promotions.)",
+    success:
+      "Check your inbox to confirm your subscription. (If you don’t see it, check Spam/Promotions.)",
     error: "Something went wrong. Please try again.",
   },
   es: {
@@ -47,7 +52,8 @@ const COPY: Record<Locale, {
       </>
     ),
     submit: "Suscribirme",
-    success: "Revisa tu bandeja de entrada para confirmar tu suscripción. (Si no aparece, mira Spam/Promociones.)",
+    success:
+      "Revisa tu bandeja de entrada para confirmar tu suscripción. (Si no aparece, mira Spam/Promociones.)",
     error: "Algo salió mal. Inténtalo de nuevo.",
   },
 };
@@ -65,11 +71,17 @@ export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Lo
     setMessage(null);
 
     if (!email) {
-      setMessage({ type: "err", text: locale === "en" ? "Email is required." : "El correo es obligatorio." });
+      setMessage({
+        type: "err",
+        text: locale === "en" ? "Email is required." : "El correo es obligatorio.",
+      });
       return;
     }
     if (!consent) {
-      setMessage({ type: "err", text: locale === "en" ? "Please accept consent." : "Por favor acepta el consentimiento." });
+      setMessage({
+        type: "err",
+        text: locale === "en" ? "Please accept consent." : "Por favor acepta el consentimiento.",
+      });
       return;
     }
 
@@ -90,9 +102,8 @@ export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Lo
       setEmail("");
       setFirstName("");
       setConsent(false);
-    } catch (err) {
+    } catch {
       setMessage({ type: "err", text: t.error });
-      // Optionally log err
     } finally {
       setLoading(false);
     }

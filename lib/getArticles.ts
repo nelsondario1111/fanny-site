@@ -150,9 +150,11 @@ export async function getAllArticles(lang: "en" | "es"): Promise<ArticleMeta[]> 
   const items = await Promise.all(
     mdFiles.map(async (f) => {
       const a = await readMarkdown(path.join(dir, f), lang);
-      // Only return meta for grids
-      const { html: _h, raw: _r, ...meta } = a;
-      return meta;
+      // Drop heavy fields (html/raw) without binding unused vars
+      const metaObj: Partial<Article> = { ...a };
+      delete (metaObj as any).html;
+      delete (metaObj as any).raw;
+      return metaObj as ArticleMeta;
     })
   );
 

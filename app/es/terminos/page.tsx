@@ -1,3 +1,4 @@
+// app/es/terminos/page.tsx
 "use client";
 
 import React from "react";
@@ -88,7 +89,7 @@ function SectionTitle({
         variants={fadeUp}
         className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
       >
-        Términos del Servicio
+        {title}
       </motion.h1>
       <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
         <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
@@ -124,7 +125,7 @@ function TermSection({
 
 /* ---------------------- Página ---------------------- */
 export default function TerminosPage() {
-  const { fade, fadeUp, stagger } = useAnims();
+  const { fadeUp, stagger } = useAnims(); // removed unused 'fade'
 
   return (
     <main id="main" className="bg-brand-beige min-h-screen px-4 py-10">

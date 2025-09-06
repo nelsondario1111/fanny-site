@@ -1,13 +1,12 @@
+// ./components/Footer.tsx
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Phone, MessageCircle, Calendar, ArrowRight } from "lucide-react";
 import LangSwitcher from "@/components/layout/LangSwitcher";
 
 /** Versión en español del footer */
 export default function FooterEs() {
-  const pathname = usePathname() || "/es";
   const base = "/es";
 
   // CTA principal → Contacto
@@ -23,17 +22,17 @@ export default function FooterEs() {
     { href: `${base}/contacto`, label: "Contacto" },
   ];
 
-  // Enlaces rápidos de servicios
+  // Enlaces rápidos de servicios (IDs alineados con /es/servicios)
   const serviceLinks = [
-    { href: "/es/servicios#signature", label: "Paquetes Firma" },
-    { href: "/es/servicios#fundamentos", label: "Fundamentos de Riqueza" },
-    { href: "/es/servicios#hipoteca", label: "Hipoteca & Propiedades" },
-    { href: "/es/servicios#negocios", label: "Negocios & Profesionales" },
-    { href: "/es/servicios#legado", label: "Legado & Impuestos" },
-    { href: "/es/servicios#familia", label: "Conversaciones Holísticas" },
-    { href: "/es/servicios#talleres", label: "Talleres" },
-    { href: "/es/servicios#asesoria", label: "Asesoría 1:1" },
-    { href: "/es/servicios#recien", label: "Recién Llegados" },
+    { href: "/es/servicios#signature", label: "Paquetes Insignia" },
+    { href: "/es/servicios#foundations", label: "Fundamentos de Riqueza" },
+    { href: "/es/servicios#mortgage", label: "Hipoteca & Propiedades" },
+    { href: "/es/servicios#business", label: "Negocios & Profesionales" },
+    { href: "/es/servicios#legacy", label: "Legado & Impuestos" },
+    { href: "/es/servicios#family", label: "Conversaciones Holísticas" },
+    { href: "/es/servicios#workshops", label: "Talleres" },
+    { href: "/es/servicios#advice", label: "Asesoría 1:1" },
+    { href: "/es/servicios#newcomers", label: "Recién Llegados" },
   ];
 
   const linksLegal = [{ href: `${base}/privacidad`, label: "Privacidad" }];

@@ -1,7 +1,8 @@
+// ./app/es/servicios/page.tsx
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ReactNode, ElementType } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -109,7 +110,7 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag = level as any;
+  const Tag: ElementType = level; // ✅ tipado sin `any`
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div

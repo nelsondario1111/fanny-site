@@ -154,6 +154,21 @@ type Persona = {
   includeSlugs?: string[];
 };
 
+type PersonaIndex = {
+  key: PersonaKey;
+  label: string;
+  slugs: string[];
+  count: number;
+};
+
+/* ============================ TagsIndex (para eliminar any) ============================ */
+type TagsIndex = {
+  articles: { slug: string; title: string; category: string; tags: string[] }[];
+  tags: Record<string, { count: number; slugs: string[] }>;
+  categories: Record<string, { count: number; slugs: string[] }>;
+  personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
+};
+
 /* ================================ Página ================================= */
 export default async function Page() {
   // 1) Cargar artículos (ES)
@@ -239,7 +254,7 @@ export default async function Page() {
     },
   ];
 
-  const personaIndex = personas.map((p) => {
+  const personaIndex: PersonaIndex[] = personas.map((p) => {
     const set = new Set<string>();
     for (const t of p.tags) tagCounts[t].slugs.forEach((s) => set.add(s));
     (p.includeSlugs ?? []).forEach((s) => set.add(s));
@@ -248,20 +263,20 @@ export default async function Page() {
   });
 
   // 5) Objeto TagsIndex para el cliente (filtros/personas)
-  const tagsIndex = {
+  const tagsIndex: TagsIndex = {
     articles: processed.map((a) => ({
       slug: a.slug,
       title: a.title,
       category: a.category ?? "",
-      tags: (a.tags as string[]) ?? [],
+      tags: (a.tags ?? []) as string[],
     })),
-    tags: tagCounts,
+    tags: tagCounts, // CanonTag keys are assignable to string keys
     categories: Object.fromEntries(
       (CANON_TAGS as readonly CanonTag[]).map((t) => [
         DISPLAY_LABELS[t],
         { count: tagCounts[t].count, slugs: tagCounts[t].slugs },
       ])
-    ),
+    ) as Record<string, { count: number; slugs: string[] }>,
     personas: Object.fromEntries(
       personaIndex.map((p) => [p.key, { label: p.label, slugs: p.slugs, count: p.count }])
     ) as Record<PersonaKey, { label: string; slugs: string[]; count: number }>,
@@ -282,10 +297,10 @@ export default async function Page() {
   const categories = (CANON_TAGS as readonly CanonTag[]).map((t) => DISPLAY_LABELS[t]);
 
   // 8) Vistas
-  const views = [
+  const views: Array<{ key: string; label: string }> = [
     { key: "grid", label: "Cuadrícula" },
     { key: "list", label: "Lista" },
-  ] as const;
+  ];
 
   return (
     <RecursosClient
@@ -293,10 +308,10 @@ export default async function Page() {
       categories={categories}
       personas={personaIndex}
       featuredSlugs={featuredSlugs}
-      views={views as unknown as Array<{ key: string; label: string }>}
+      views={views}
       ctaHref="/es/contacto?intent=pregunta"
       newsletterHref="/es/suscribirse"
-      tagsData={tagsIndex as any}
+      tagsData={tagsIndex}
     />
   );
 }

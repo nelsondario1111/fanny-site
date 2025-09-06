@@ -3,15 +3,16 @@
 
 import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import useMounted from "@/lib/useMounted";
 
-/* Easing + variants (unchanged) */
+/* Easing + variants */
 const easing: number[] = [0.22, 1, 0.36, 1];
 
 export function useAnims() {
   const prefersReduced = useReducedMotion();
 
-  const fade = {
+  const fade: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -19,7 +20,7 @@ export function useAnims() {
     },
   };
 
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
@@ -28,7 +29,7 @@ export function useAnims() {
     },
   };
 
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
     visible: {
       transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.05 },
@@ -39,19 +40,21 @@ export function useAnims() {
 }
 
 /* Mount-safe wrappers you can import and use */
+type MountSafeInViewProps = {
+  variants: Variants;
+  className?: string;
+  viewportAmount?: number;
+  children: React.ReactNode;
+};
+
 export function MountSafeInView({
   variants,
   className,
   viewportAmount = 0.22,
   children,
-}: {
-  variants: any;
-  className?: string;
-  viewportAmount?: number;
-  children: React.ReactNode;
-}) {
+}: MountSafeInViewProps) {
   const mounted = useMounted();
-  const initialProp = mounted ? "hidden" : false;
+  const initialProp: false | "hidden" = mounted ? "hidden" : false;
 
   return (
     <motion.section
@@ -66,15 +69,17 @@ export function MountSafeInView({
   );
 }
 
+type MountSafeAboveTheFoldProps = {
+  variants: Variants;
+  className?: string;
+  children: React.ReactNode;
+};
+
 export function MountSafeAboveTheFold({
   variants,
   className,
   children,
-}: {
-  variants: any;
-  className?: string;
-  children: React.ReactNode;
-}) {
+}: MountSafeAboveTheFoldProps) {
   // Never render hidden on the server for above-the-fold
   return (
     <motion.div variants={variants} initial={false} animate="visible" className={className}>
