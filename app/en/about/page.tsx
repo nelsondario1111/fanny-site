@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants, type Transition } from "framer-motion";
 import {
   Building2,
   Calculator,
@@ -16,29 +16,32 @@ import {
 } from "lucide-react";
 
 /* ---------------------- Motion helpers ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easingBezier = [0.22, 1, 0.36, 1] as const;
+// Create a Transition factory so the typing is satisfied once.
+const makeTrans = (reduced: boolean): Transition =>
+  (reduced ? { duration: 0 } : { duration: 0.6, ease: easingBezier as unknown as Transition["ease"] }) as Transition;
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
 
-  const fade = {
+  const fade: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+      transition: makeTrans(!!prefersReduced),
     },
   };
 
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 14 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+      transition: makeTrans(!!prefersReduced),
     },
   };
 
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
     visible: {
       transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 },
@@ -465,7 +468,7 @@ export default function About() {
               <motion.button
                 type="button"
                 variants={fadeUp}
-                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easing } }}
+                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easingBezier as unknown as Transition["ease"] } }}
                 whileFocus={{ scale: 1.005 }}
                 className="px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
               >
