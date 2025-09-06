@@ -222,14 +222,13 @@ export default function RecursosClient({
   views?: Array<{ key: "grid" | "list" | string; label: string }>;
   tagsData?: TagsIndex | null;
 }) {
-  const { fade } = useAnims();
-
   /* ---------------------------- Estado UI ---------------------------- */
   const [query, setQuery] = React.useState<string>("");
   const [view, setView] = React.useState<string>(views[0]?.key ?? "grid");
   const [sort, setSort] = React.useState<"new" | "old" | "az">("new");
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  const [selectedPersona, setSelectedPersona] = React.useState<PersonaKey | "">("");
+  // Only read the selectedPersona value (no unused setter)
+  const [selectedPersona] = React.useState<PersonaKey | "">("");
 
   const personaSlugSet = React.useMemo(() => {
     if (!selectedPersona || !personas) return null;
@@ -257,7 +256,7 @@ export default function RecursosClient({
       );
     }
 
-    // category filter via tagsData (robusto)
+    // category filter via tagsData
     if (categorySlugSet) {
       list = list.filter((a) => categorySlugSet.has(a.slug));
     }
