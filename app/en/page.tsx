@@ -2,34 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
 
 /* ---------------------- Motion helpers ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
 
-  const fade = {
+  const baseTransition: Transition = prefersReduced
+    ? { duration: 0 }
+    : { duration: 0.6, ease: easing };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
-    },
+    visible: { opacity: 1, transition: baseTransition },
   };
 
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseTransition },
   };
 
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
     visible: {
       transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.05 },
@@ -351,7 +349,7 @@ export default function Home() {
             <motion.div
               key={b.text}
               variants={fadeUp}
-              className="rounded-2xl border border-brand-gold p-6 shadow-sm transition-transform duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-md"
+              className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 will-change-transform hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="text-2xl text-brand-green flex items-center justify-center">{b.icon}</div>
               <p className="font-semibold text-brand-blue mt-2">{b.text}</p>
@@ -492,7 +490,7 @@ export default function Home() {
               className="rounded-2xl border border-brand-green/30 p-6 transition-transform duration-200 hover:-translate-y-0.5"
             >
               <h4 className="font-serif text-xl text-brand-blue font-bold mb-2">{col.title}</h4>
-              <ul className="list-disc pl-5 text-brand-body space-y-1">
+              <ul className="list-disc pl-6 text-brand-body space-y-1">
                 {col.items.map((it) => (
                   <li key={it}>{it}</li>
                 ))}
