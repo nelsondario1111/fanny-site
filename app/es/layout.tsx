@@ -14,11 +14,18 @@ export const metadata: Metadata = {
 export default function EsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <NavBar />
+      <React.Suspense fallback={null}>
+        <NavBar />
+      </React.Suspense>
+
       <main id="main" className="flex-1">
-        {children}
+        <React.Suspense fallback={null}>{children}</React.Suspense>
       </main>
-      <Footer lang="es" />
+
+      <React.Suspense fallback={null}>
+        <Footer lang="es" />
+      </React.Suspense>
+
       <BackToTopButton />
     </>
   );
