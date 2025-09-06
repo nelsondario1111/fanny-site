@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 
 /* =============================== Types =============================== */
 export type ClientArticle = {
@@ -43,24 +44,24 @@ type PersonaIndex = {
 };
 
 /* ============================ Motion helpers ============================ */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
+
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
-  const fadeUp = {
+
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
+
   return { fade, fadeUp };
 }
 
@@ -180,7 +181,7 @@ const titleCase = (kebab: string) =>
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 
-/* ====================== Smart search: minimal synonyms ====================== */
+/* ====================== Smart search (minimal synonyms) ====================== */
 function deburr(s: string) {
   try {
     return s.normalize("NFD").replace(/\p{Diacritic}+/gu, "");
@@ -216,7 +217,7 @@ function expandQuery(q: string): Set<string> {
   return out;
 }
 
-/* ===================== Curated quick filters (minimal surface) ===================== */
+/* ===================== Curated quick filters ===================== */
 type QuickFilter = { key: string; label: string; tags: string[] };
 
 const GOALS: QuickFilter[] = [
@@ -521,7 +522,7 @@ export default function ResourcesClient({
               <Link href={newsletterHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Get the Newsletter</Link>
             </div>
 
-            {/* Personas (simple & compact) */}
+            {/* Personas */}
             <div className="mt-6 flex flex-wrap gap-2 justify-center">
               <button onClick={() => setSelectedPersona("all")} className={["px-3 py-1.5 rounded-full border text-sm transition", selectedPersona === "all" ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10"].join(" ")}>All personas</button>
               {personaIndex.map((p) => (
@@ -765,7 +766,7 @@ export default function ResourcesClient({
         </motion.div>
       </section>
 
-      {/* Filter Drawer (full tag list, searchable) */}
+      {/* Filter Drawer */}
       <FilterDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -858,7 +859,6 @@ function FilterDrawer({
 }
 
 /* ============================== UI Bits ============================== */
-
 function ArticleCard({
   article,
   saved,
