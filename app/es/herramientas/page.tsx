@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 import {
   FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
   FaFileExcel, FaFileCsv, FaPercent, FaBuilding, FaChartLine, FaBalanceScale,
@@ -10,29 +11,26 @@ import {
 } from "react-icons/fa";
 
 /* ============================ Helpers de animación ============================ */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
+
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
+  const group: Transition = prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 },
-    },
+    visible: { transition: group },
   };
   return { fade, fadeUp, stagger };
 }
@@ -127,9 +125,9 @@ type ToolItem = {
   href: string;       // destino bajo /es/herramientas/*
   category: Categoria;
   type: Tipo;
-  icon: JSX.Element;
+  icon: ReactNode;    // ✅ usar ReactNode en lugar de JSX.Element
   ctas?: CTA[];
-  extra?: JSX.Element;
+  extra?: ReactNode;  // ✅ usar ReactNode
   tags?: string[];
 };
 
