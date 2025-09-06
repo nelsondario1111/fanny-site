@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import * as React from "react";
 import type { ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
 import { motion, useReducedMotion, type Variants, type Transition } from "framer-motion";
 import {
@@ -17,7 +18,6 @@ import {
 
 /* ---------------------- Motion helpers ---------------------- */
 const easingBezier = [0.22, 1, 0.36, 1] as const;
-// Create a Transition factory so the typing is satisfied once.
 const makeTrans = (reduced: boolean): Transition =>
   (reduced ? { duration: 0 } : { duration: 0.6, ease: easingBezier as unknown as Transition["ease"] }) as Transition;
 
@@ -26,19 +26,12 @@ function useAnims() {
 
   const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: makeTrans(!!prefersReduced),
-    },
+    visible: { opacity: 1, transition: makeTrans(!!prefersReduced) },
   };
 
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 14 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: makeTrans(!!prefersReduced),
-    },
+    visible: { opacity: 1, y: 0, transition: makeTrans(!!prefersReduced) },
   };
 
   const stagger: Variants = {
@@ -51,7 +44,7 @@ function useAnims() {
   return { fade, fadeUp, stagger };
 }
 
-/* --- Shared “panel” look (consistent with rest of site) --- */
+/* --- Shared “panel” look --- */
 type PanelProps<T extends ElementType = "section"> = {
   children: ReactNode;
   className?: string;
@@ -115,7 +108,7 @@ function SectionTitle({
   return (
     <motion.div
       variants={fade}
-      initial={false} // avoid hidden SSR
+      initial={false}
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       className="text-center mb-6"
@@ -137,9 +130,9 @@ function SectionTitle({
     </motion.div>
   );
 }
-/* ------------------------------------------------------ */
 
-export default function About() {
+/* --------------------------- Page content --------------------------- */
+function AboutInner() {
   const { fade, fadeUp, stagger } = useAnims();
 
   return (
@@ -485,5 +478,14 @@ export default function About() {
         </MotionPanel>
       </section>
     </main>
+  );
+}
+
+/* --------------------------- Suspense wrapper --------------------------- */
+export default function About() {
+  return (
+    <React.Suspense fallback={<main className="min-h-screen bg-white" />}>
+      <AboutInner />
+    </React.Suspense>
   );
 }
