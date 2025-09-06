@@ -1,19 +1,29 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import type {
+  ElementType,
+  ComponentPropsWithoutRef,
+  ReactNode,
+  FormEvent,
+} from "react";
 import { FaHome, FaPrint, FaQuestionCircle } from "react-icons/fa";
 import Image from "next/image";
 
 /* ---------- Componentes de estilo compartido (panel/tabla) ---------- */
-function Panel({
+type PanelProps<T extends ElementType> = {
+  children: ReactNode;
+  className?: string;
+  as?: T;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+
+function Panel<T extends ElementType = "section">({
   children,
   className = "",
-  as: Tag = "section" as const,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  as?: any;
-}) {
+  as,
+  ...rest
+}: PanelProps<T>) {
+  const Tag = (as || "section") as ElementType;
   return (
     <Tag
       className={[
@@ -22,6 +32,7 @@ function Panel({
         "backdrop-blur-[1px]",
         className,
       ].join(" ")}
+      {...rest}
     >
       {children}
     </Tag>
@@ -34,7 +45,7 @@ function SectionTitle({
   center = true,
 }: {
   title: string;
-  subtitle?: React.ReactNode;
+  subtitle?: ReactNode;
   center?: boolean;
 }) {
   return (
@@ -88,7 +99,10 @@ export default function CalculadoraHipotecaria() {
   const prestamo = Math.max(0, precioNum - engancheNum);
   const tasaNum = parseFloat(tasa) || 0;
 
-  const mensual = useMemo(() => calcMortgage(prestamo, tasaNum, anios), [prestamo, tasaNum, anios]);
+  const mensual = useMemo(
+    () => calcMortgage(prestamo, tasaNum, anios),
+    [prestamo, tasaNum, anios]
+  );
   const totalPagado = mensual * anios * 12;
   const interesTotal = totalPagado - prestamo;
 
@@ -97,7 +111,7 @@ export default function CalculadoraHipotecaria() {
   const pagoPorUnidad = multi && unidades > 0 ? mensual / unidades : mensual;
   const flujoCaja = multi ? rentaTotal - mensual : null;
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setMostrarResultados(true);
     setTimeout(() => resultadosRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -395,8 +409,15 @@ export default function CalculadoraHipotecaria() {
                     </tr>
                     <tr>
                       <td className="text-brand-blue font-semibold pr-3">Flujo de caja</td>
-                      <td className={(Number(flujoCaja) ?? 0) >= 0 ? "text-brand-green font-semibold" : "text-red-600 font-semibold"}>
-                        {fmt(Math.abs(flujoCaja ?? 0))} {(Number(flujoCaja) ?? 0) >= 0 ? "(positivo)" : "(déficit)"}
+                      <td
+                        className={
+                          (Number(flujoCaja) ?? 0) >= 0
+                            ? "text-brand-green font-semibold"
+                            : "text-red-600 font-semibold"
+                        }
+                      >
+                        {fmt(Math.abs(flujoCaja ?? 0))}{" "}
+                        {(Number(flujoCaja) ?? 0) >= 0 ? "(positivo)" : "(déficit)"}
                       </td>
                     </tr>
                   </tbody>

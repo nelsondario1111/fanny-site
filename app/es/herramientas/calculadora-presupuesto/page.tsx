@@ -1,20 +1,29 @@
-// app/es/calculadora-presupuesto/page.tsx
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { FaCalculator, FaPrint, FaPlus, FaTrash, FaQuestionCircle } from "react-icons/fa";
+import type {
+  ElementType,
+  ComponentPropsWithoutRef,
+  ReactNode,
+  FormEvent,
+} from "react";
+import { FaHome, FaPrint, FaQuestionCircle } from "react-icons/fa";
+import Image from "next/image";
 
-/* ---------- Helpers de estilo compartidos ---------- */
-function Panel({
+/* ---------- Componentes de estilo compartido (panel/tabla) ---------- */
+type PanelProps<T extends ElementType> = {
+  children: ReactNode;
+  className?: string;
+  as?: T;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+
+function Panel<T extends ElementType = "section">({
   children,
   className = "",
-  as: Tag = "section" as const,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  as?: any;
-}) {
+  as,
+  ...rest
+}: PanelProps<T>) {
+  const Tag = (as || "section") as ElementType;
   return (
     <Tag
       className={[
@@ -23,6 +32,7 @@ function Panel({
         "backdrop-blur-[1px]",
         className,
       ].join(" ")}
+      {...rest}
     >
       {children}
     </Tag>
@@ -35,7 +45,7 @@ function SectionTitle({
   center = true,
 }: {
   title: string;
-  subtitle?: React.ReactNode;
+  subtitle?: ReactNode;
   center?: boolean;
 }) {
   return (
@@ -52,77 +62,69 @@ function SectionTitle({
     </div>
   );
 }
-/* --------------------------------------------------- */
+/* ------------------------------------------------------------------- */
 
-type ExpenseRow = { id: string; name: string; value: string };
-
-const DEFAULT_ROWS: ExpenseRow[] = [
-  { id: crypto.randomUUID(), name: "Vivienda", value: "" },
-  { id: crypto.randomUUID(), name: "Servicios", value: "" },
-  { id: crypto.randomUUID(), name: "Supermercado", value: "" },
-  { id: crypto.randomUUID(), name: "Transporte", value: "" },
-  { id: crypto.randomUUID(), name: "Seguros", value: "" },
-  { id: crypto.randomUUID(), name: "Salud", value: "" },
-  { id: crypto.randomUUID(), name: "Ahorros", value: "" },
-  { id: crypto.randomUUID(), name: "Donaciones", value: "" },
-  { id: crypto.randomUUID(), name: "Otros", value: "" },
-];
+/** Pago mensual estimado para hipoteca fija (estándar Canadá) */
+function calcMortgage(principal: number, ratePct: number, years: number): number {
+  const r = ratePct / 100 / 12;
+  const n = Math.max(1, years * 12);
+  if (r === 0) return principal / n;
+  return (principal * r) / (1 - Math.pow(1 + r, -n));
+}
 
 const fmt = (n: number) =>
-  n.toLocaleString("es-CA", {
+  (Number.isFinite(n) ? n : 0).toLocaleString("es-CA", {
     style: "currency",
     currency: "CAD",
     maximumFractionDigits: 0,
   });
 
-export default function CalculadoraPresupuesto() {
-  const [ingreso, setIngreso] = useState<string>("");
-  const [rows, setRows] = useState<ExpenseRow[]>(DEFAULT_ROWS);
+export default function CalculadoraHipotecaria() {
+  // Entradas
+  const [precio, setPrecio] = useState<string>("");
+  const [enganche, setEnganche] = useState<string>("");
+  const [tasa, setTasa] = useState<string>("");
+  const [anios, setAnios] = useState<number>(25);
+
+  const [multi, setMulti] = useState<boolean>(false);
+  const [unidades, setUnidades] = useState<number>(4);
+  const [rentaUnidad, setRentaUnidad] = useState<string>("");
+
   const [mostrarResultados, setMostrarResultados] = useState(false);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const resultadosRef = useRef<HTMLDivElement>(null);
 
-  const ingresoNum = parseFloat(ingreso) || 0;
+  // Derivados
+  const precioNum = parseFloat(precio) || 0;
+  const engancheNum = parseFloat(enganche) || 0;
+  const prestamo = Math.max(0, precioNum - engancheNum);
+  const tasaNum = parseFloat(tasa) || 0;
 
-  const totalGastos = useMemo(
-    () => rows.reduce((sum, r) => sum + (parseFloat(r.value) || 0), 0),
-    [rows]
+  const mensual = useMemo(
+    () => calcMortgage(prestamo, tasaNum, anios),
+    [prestamo, tasaNum, anios]
   );
+  const totalPagado = mensual * anios * 12;
+  const interesTotal = totalPagado - prestamo;
 
-  const neto = ingresoNum - totalGastos;
-  const gastoPct = ingresoNum > 0 ? (totalGastos / ingresoNum) * 100 : 0;
-  const filaAhorro = rows.find((r) => r.name.toLowerCase() === "ahorros");
-  const montoAhorro = parseFloat(filaAhorro?.value || "0") || 0;
-  const ahorroPct = ingresoNum > 0 ? (montoAhorro / ingresoNum) * 100 : 0;
+  const rentaPorUnidad = parseFloat(rentaUnidad) || 0;
+  const rentaTotal = multi && unidades > 0 ? rentaPorUnidad * unidades : 0;
+  const pagoPorUnidad = multi && unidades > 0 ? mensual / unidades : mensual;
+  const flujoCaja = multi ? rentaTotal - mensual : null;
 
-  // Referencia 50/30/20 (Necesidades / Gustos / Ahorro)
-  const cincuenta = ingresoNum * 0.5;
-  const treinta = ingresoNum * 0.3;
-  const veinte = ingresoNum * 0.2;
-
-  function updateRow(id: string, patch: Partial<ExpenseRow>) {
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
-  }
-
-  function addRow() {
-    setRows((prev) => [
-      ...prev,
-      { id: crypto.randomUUID(), name: "Nueva categoría", value: "" },
-    ]);
-  }
-
-  function deleteRow(id: string) {
-    setRows((prev) => prev.filter((r) => r.id !== id));
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setMostrarResultados(true);
-    setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+    setTimeout(() => resultadosRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   }
 
   function handleReset() {
-    setIngreso("");
-    setRows(DEFAULT_ROWS.map((r) => ({ ...r, value: "" })));
+    setPrecio("");
+    setEnganche("");
+    setTasa("");
+    setAnios(25);
+    setMulti(false);
+    setUnidades(4);
+    setRentaUnidad("");
     setMostrarResultados(false);
   }
 
@@ -130,8 +132,7 @@ export default function CalculadoraPresupuesto() {
     window.print();
   }
 
-  const hoy = new Date();
-  const fechaImpresion = hoy.toLocaleDateString("es-CA", {
+  const fechaImpresion = new Date().toLocaleDateString("es-CA", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -142,112 +143,152 @@ export default function CalculadoraPresupuesto() {
       {/* HERO */}
       <header className="pt-10 px-4 print:hidden">
         <Panel as="div">
+          <div className="flex justify-center mb-4">
+            <div className="rounded-full bg-brand-blue/10 border w-16 h-16 flex items-center justify-center shadow">
+              <FaHome className="text-brand-blue text-2xl" aria-hidden />
+            </div>
+          </div>
           <SectionTitle
-            title="Calculadora de Presupuesto"
+            title="Calculadora de Hipoteca"
             subtitle={
               <>
-                Crea un presupuesto alineado con tu vida, valores y fortalezas. Privada, bilingüe y fácil de imprimir—para que realmente la uses cada mes.
+                Estima tu pago mensual en segundos—para vivienda unifamiliar o multi-unidad.
+                Privada, bilingüe y lista para imprimir, para compartir con tu familia o agente.
               </>
             }
           />
-          {/* enlace a la hoja detallada */}
-          <div className="text-center -mt-2 mb-2">
-            <Link
-              href="/es/herramientas/presupuesto-flujo"
-              className="underline text-brand-blue hover:text-brand-green"
-            >
-              ¿Necesitas un registro mensual detallado con múltiples líneas de ingreso? Usa la hoja Presupuesto y Flujo →
-            </Link>
-          </div>
         </Panel>
       </header>
 
       {/* FORMULARIO */}
-      <section className="px-4 mt-8 print:mt-0">
-        <Panel as="form" onSubmit={handleSubmit} className="print:hidden">
-          <div className="flex items-center gap-3 mb-6">
-            <FaCalculator className="text-brand-gold text-2xl" aria-hidden />
-            <h2 className="font-serif text-2xl md:text-3xl text-brand-green font-bold m-0">
-              Ingresa tus montos mensuales
-            </h2>
+      <section className="px-4 mt-8 print:hidden">
+        <Panel as="form" onSubmit={handleSubmit}>
+          <h2 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-6">
+            Ingresa los detalles de tu hipoteca
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-brand-blue font-semibold mb-1" htmlFor="precio">
+                Precio de la propiedad (CAD)
+              </label>
+              <input
+                id="precio"
+                type="number"
+                min={0}
+                inputMode="decimal"
+                value={precio}
+                onChange={(e) => setPrecio(e.target.value)}
+                placeholder="Ej: 800000"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-brand-blue font-semibold mb-1" htmlFor="enganche">
+                Enganche (CAD)
+              </label>
+              <input
+                id="enganche"
+                type="number"
+                min={0}
+                inputMode="decimal"
+                value={enganche}
+                onChange={(e) => setEnganche(e.target.value)}
+                placeholder="Ej: 160000"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-brand-blue font-semibold mb-1" htmlFor="tasa">
+                Tasa de interés (anual %)
+              </label>
+              <input
+                id="tasa"
+                type="number"
+                step="0.01"
+                min={0}
+                max={25}
+                inputMode="decimal"
+                value={tasa}
+                onChange={(e) => setTasa(e.target.value)}
+                placeholder="Ej: 5.20"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-brand-blue font-semibold mb-1" htmlFor="anios">
+                Amortización (años)
+              </label>
+              <input
+                id="anios"
+                type="number"
+                min={5}
+                max={35}
+                value={anios}
+                onChange={(e) => setAnios(Number(e.target.value))}
+                placeholder="Ej: 25"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+              />
+            </div>
           </div>
 
-          {/* Ingreso */}
-          <div className="grid md:grid-cols-3 gap-4 mb-8">
-            <label className="md:col-span-1 font-semibold text-brand-blue" htmlFor="ingreso">
-              Ingreso mensual (CAD)
+          {/* Multi-unidad */}
+          <div className="mt-6">
+            <label className="inline-flex items-center gap-3">
+              <input
+                type="checkbox"
+                className="w-5 h-5 accent-brand-blue"
+                checked={multi}
+                onChange={() => setMulti((v) => !v)}
+              />
+              <span className="text-brand-blue font-semibold">Esta propiedad es multi-unidad</span>
             </label>
-            <input
-              id="ingreso"
-              type="number"
-              min={0}
-              inputMode="decimal"
-              value={ingreso}
-              onChange={(e) => setIngreso(e.target.value)}
-              className="md:col-span-2 w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
-              placeholder="p. ej., 6500"
-              required
-            />
           </div>
 
-          {/* Tabla de gastos */}
-          <div className="rounded-2xl border border-brand-gold/60 overflow-hidden">
-            <div className="grid grid-cols-12 bg-brand-beige/60 text-brand-green font-serif font-semibold py-3 px-4">
-              <div className="col-span-6">Categoría</div>
-              <div className="col-span-4 text-right">Monto (CAD)</div>
-              <div className="col-span-2 text-right pr-2">Acciones</div>
-            </div>
-
-            <div className="divide-y divide-brand-gold/30">
-              {rows.map((r) => (
-                <div key={r.id} className="grid grid-cols-12 items-center py-2 px-4">
-                  <div className="col-span-6">
-                    <input
-                      aria-label="Categoría de gasto"
-                      value={r.name}
-                      onChange={(e) => updateRow(r.id, { name: e.target.value })}
-                      className="w-full bg-transparent border-b border-transparent focus:border-brand-blue outline-none text-brand-body py-1"
-                    />
-                  </div>
-                  <div className="col-span-4 text-right">
-                    <input
-                      aria-label={`Monto para ${r.name}`}
-                      value={r.value}
-                      inputMode="decimal"
-                      type="number"
-                      min={0}
-                      onChange={(e) => updateRow(r.id, { value: e.target.value })}
-                      className="w-full text-right bg-white/60 border border-brand-green/30 rounded-lg px-3 py-2 focus:border-brand-blue outline-none"
-                    />
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 text-brand-blue hover:text-red-600 transition px-2 py-1"
-                      onClick={() => deleteRow(r.id)}
-                      aria-label={`Eliminar ${r.name}`}
-                      title="Eliminar fila"
-                    >
-                      <FaTrash aria-hidden />
-                    </button>
-                  </div>
+          {multi && (
+            <div className="mt-4 rounded-2xl border border-brand-blue/40 bg-brand-blue/5 p-4">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-brand-blue font-semibold mb-1" htmlFor="unidades">
+                    Número de unidades
+                  </label>
+                  <input
+                    id="unidades"
+                    type="number"
+                    min={2}
+                    max={12}
+                    value={unidades}
+                    onChange={(e) => setUnidades(Number(e.target.value))}
+                    placeholder="Ej: 4"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-brand-blue/40 bg-white"
+                  />
                 </div>
-              ))}
-            </div>
-
-            <div className="flex justify-between items-center bg-white/70 py-3 px-4">
-              <button
-                type="button"
-                onClick={addRow}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-brand-green border-brand-green hover:bg-brand-green hover:text-white transition"
-              >
-                <FaPlus aria-hidden /> Añadir categoría
-              </button>
-              <div className="text-brand-blue font-semibold">
-                Gastos totales (actual): {fmt(totalGastos)}
+                <div>
+                  <label className="block text-brand-blue font-semibold mb-1" htmlFor="renta">
+                    Renta estimada por unidad (mensual, CAD)
+                  </label>
+                  <input
+                    id="renta"
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
+                    value={rentaUnidad}
+                    onChange={(e) => setRentaUnidad(e.target.value)}
+                    placeholder="Ej: 2200"
+                    className="w-full px-4 py-3 rounded-xl border border-brand-blue/40 bg-white"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Acciones */}
           <div className="mt-6 grid sm:grid-cols-3 gap-3">
@@ -262,7 +303,7 @@ export default function CalculadoraPresupuesto() {
               onClick={handleReset}
               className="px-6 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition"
             >
-              Restablecer
+              Reiniciar
             </button>
             <button
               type="button"
@@ -277,155 +318,126 @@ export default function CalculadoraPresupuesto() {
 
       {/* RESULTADOS */}
       {mostrarResultados && (
-        <section ref={resultsRef} className="px-4 mt-8">
+        <section ref={resultadosRef} className="px-4 mt-8">
           <Panel>
-            <div className="grid lg:grid-cols-2 gap-10">
-              {/* Resumen */}
-              <div>
-                <h2 className="font-serif text-3xl text-brand-green font-bold mb-4">
-                  Tus resultados
-                </h2>
-                <div className="rounded-2xl border border-brand-gold/60 p-5 bg-white/70">
-                  <div className="flex justify-between py-2 text-brand-body text-lg">
-                    <span className="font-semibold text-brand-blue">Ingresos totales</span>
-                    <span className="font-semibold">{fmt(ingresoNum)}</span>
-                  </div>
-                  <div className="flex justify-between py-2 text-brand-body text-lg">
-                    <span className="font-semibold text-brand-blue">Gastos totales</span>
-                    <span className="font-semibold">{fmt(totalGastos)}</span>
-                  </div>
-                  <div
-                    className={`flex justify-between py-3 text-xl font-bold ${
-                      neto >= 0 ? "text-brand-green" : "text-red-600"
-                    }`}
-                  >
-                    <span>{neto >= 0 ? "Sobrante (Neto)" : "Déficit (Neto)"}</span>
-                    <span>{fmt(Math.abs(neto))}</span>
-                  </div>
+            {/* Encabezado impresión */}
+            <div className="hidden print:block mb-2 text-center">
+              <Image
+                src="/fanny-logo.png"
+                alt="Logo Fanny Samaniego"
+                width={96}
+                height={96}
+                className="mx-auto"
+              />
+              <div className="font-serif font-bold text-brand-green">
+                Fanny Samaniego — Coach & Asesora Financiera Holística
+              </div>
+              <div className="text-xs text-brand-blue">Preparado el {fechaImpresion}</div>
+              <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
+            </div>
 
-                  {/* % de gasto */}
-                  <div className="mt-4">
-                    <div className="flex justify-between text-sm text-brand-body/80">
-                      <span>Gasto como % del ingreso</span>
-                      <span>{ingresoNum ? `${gastoPct.toFixed(0)}%` : "—"}</span>
-                    </div>
-                    <div className="h-3 w-full bg-brand-beige rounded-full overflow-hidden border border-brand-gold/40">
-                      <div
-                        className="h-full bg-brand-green transition-all"
-                        style={{ width: `${Math.min(gastoPct, 100)}%` }}
-                      />
-                    </div>
-                  </div>
+            <h2 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-4 text-center">
+              Resumen de Hipoteca
+            </h2>
 
-                  {/* % de ahorro */}
-                  <div className="mt-3">
-                    <div className="flex justify-between text-sm text-brand-body/80">
-                      <span>Ahorro como % del ingreso</span>
-                      <span>{ingresoNum ? `${ahorroPct.toFixed(0)}%` : "—"}</span>
-                    </div>
-                    <div className="h-3 w-full bg-brand-beige rounded-full overflow-hidden border border-brand-gold/40">
-                      <div
-                        className="h-full bg-brand-blue transition-all"
-                        style={{ width: `${Math.min(ahorroPct, 100)}%` }}
-                      />
-                    </div>
-                  </div>
+            {/* Tabla resumen */}
+            <div className="rounded-2xl border border-brand-gold/60 p-5 bg-white/70 max-w-3xl mx-auto">
+              <table className="w-full text-left border-separate border-spacing-y-2">
+                <tbody>
+                  <tr>
+                    <td className="text-brand-blue font-semibold pr-3">Precio de la propiedad</td>
+                    <td>{fmt(precioNum)}</td>
+                  </tr>
+                  <tr>
+                    <td className="text-brand-blue font-semibold pr-3">Enganche</td>
+                    <td>{fmt(engancheNum)}</td>
+                  </tr>
+                  <tr>
+                    <td className="text-brand-blue font-semibold pr-3">Monto del préstamo</td>
+                    <td>{fmt(prestamo)}</td>
+                  </tr>
+                  <tr>
+                    <td className="text-brand-blue font-semibold pr-3">Tasa de interés</td>
+                    <td>{(tasaNum || 0).toFixed(2)}%</td>
+                  </tr>
+                  <tr>
+                    <td className="text-brand-blue font-semibold pr-3">Amortización</td>
+                    <td>{anios} años</td>
+                  </tr>
+                </tbody>
+              </table>
 
-                  {/* Meta de impresión */}
-                  <div className="hidden print:block mt-6 text-sm text-brand-body/80">
-                    Preparado el {fechaImpresion} · fannysamaniego.com
-                  </div>
+              <div className="mt-3 text-lg">
+                <div className="flex justify-between py-1">
+                  <span className="font-semibold text-brand-green">Pago mensual estimado</span>
+                  <span className="font-semibold">{fmt(mensual)}</span>
                 </div>
-
-                {/* Detalle de gastos */}
-                <div className="mt-8">
-                  <h3 className="font-serif text-xl text-brand-blue font-bold mb-2">
-                    Desglose de gastos
-                  </h3>
-                  <table className="w-full text-left border-separate border-spacing-y-1">
-                    <thead>
-                      <tr className="text-sm text-brand-body/70">
-                        <th className="py-1 pr-2">Categoría</th>
-                        <th className="py-1 pr-2 text-right">Monto</th>
-                        <th className="py-1 pr-2 text-right">% del ingreso</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((r) => {
-                        const val = parseFloat(r.value) || 0;
-                        const pct = ingresoNum ? (val / ingresoNum) * 100 : 0;
-                        return (
-                          <tr key={r.id} className="bg-white/70">
-                            <td className="py-2 pl-3 text-brand-green">{r.name}</td>
-                            <td className="py-2 pr-3 text-right text-brand-blue">{fmt(val)}</td>
-                            <td className="py-2 pr-3 text-right text-brand-body/80">
-                              {ingresoNum ? `${pct.toFixed(0)}%` : "—"}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                <div className="flex justify-between text-brand-body/80">
+                  <span>Total pagado en {anios} años</span>
+                  <span>{fmt(totalPagado)}</span>
+                </div>
+                <div className="flex justify-between text-brand-body/80">
+                  <span>Interés total</span>
+                  <span>{fmt(interesTotal)}</span>
                 </div>
               </div>
+            </div>
 
-              {/* 50/30/20 */}
-              <div>
-                <h3 className="font-serif text-2xl text-brand-green font-bold mb-3">
-                  Instantánea 50/30/20 (Referencia)
+            {/* Detalle multi-unidad */}
+            {multi && (
+              <div className="mt-6 rounded-2xl border border-brand-blue/40 p-5 bg-brand-blue/5 max-w-3xl mx-auto">
+                <h3 className="font-serif text-xl text-brand-blue font-bold mb-2">
+                  Vista rápida multi-unidad
                 </h3>
-                <p className="text-brand-body mb-4">
-                  Una verificación rápida según un estándar clásico. Ajusta según tus valores y tu momento de vida.
+                <table className="w-full text-left border-separate border-spacing-y-2">
+                  <tbody>
+                    <tr>
+                      <td className="text-brand-blue font-semibold pr-3">Unidades</td>
+                      <td>{unidades}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-brand-blue font-semibold pr-3">Renta por unidad</td>
+                      <td>{fmt(rentaPorUnidad)}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-brand-blue font-semibold pr-3">Renta total mensual</td>
+                      <td>{fmt(rentaTotal)}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-brand-blue font-semibold pr-3">Pago por unidad</td>
+                      <td>{fmt(pagoPorUnidad)}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-brand-blue font-semibold pr-3">Flujo de caja</td>
+                      <td
+                        className={
+                          (Number(flujoCaja) ?? 0) >= 0
+                            ? "text-brand-green font-semibold"
+                            : "text-red-600 font-semibold"
+                        }
+                      >
+                        {fmt(Math.abs(flujoCaja ?? 0))}{" "}
+                        {(Number(flujoCaja) ?? 0) >= 0 ? "(positivo)" : "(déficit)"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="mt-2 text-sm text-brand-body/80">
+                  Nota: Para calificación, muchos prestamistas consideran entre 50% y 80% del ingreso por renta.
+                  Planea contingencias por vacancia y mantenimiento.
                 </p>
-
-                <div className="space-y-4">
-                  <div className="rounded-2xl border border-brand-gold/60 p-4 bg-white/70">
-                    <div className="flex justify-between">
-                      <div className="font-serif font-semibold text-brand-blue">Necesidades (≈50%)</div>
-                      <div className="font-semibold">{fmt(cincuenta)}</div>
-                    </div>
-                    <div className="text-sm text-brand-body/80 mt-1">
-                      Vivienda, servicios, supermercado, seguros, salud, transporte.
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-brand-gold/60 p-4 bg-white/70">
-                    <div className="flex justify-between">
-                      <div className="font-serif font-semibold text-brand-blue">Gustos (≈30%)</div>
-                      <div className="font-semibold">{fmt(treinta)}</div>
-                    </div>
-                    <div className="text-sm text-brand-body/80 mt-1">
-                      Salidas, entretenimiento, viajes, compras.
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-brand-gold/60 p-4 bg-white/70">
-                    <div className="flex justify-between">
-                      <div className="font-serif font-semibold text-brand-blue">Ahorro/Deuda (≈20%)</div>
-                      <div className="font-semibold">{fmt(veinte)}</div>
-                    </div>
-                    <div className="text-sm text-brand-body/80 mt-1">
-                      Fondo de emergencia, inversiones, pagos de deuda, donaciones.
-                    </div>
-                  </div>
-                </div>
-
-                {/* Botón de impresión (solo en pantalla) */}
-                <div className="mt-6 print:hidden">
-                  <button
-                    onClick={handlePrint}
-                    type="button"
-                    className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition inline-flex items-center gap-2"
-                  >
-                    <FaPrint aria-hidden /> Imprimir resultados (PDF)
-                  </button>
-                </div>
-
-                {/* Pie de impresión */}
-                <div className="hidden print:block mt-6 text-sm text-brand-body/80">
-                  Nota: Ajusta las categorías a tu realidad. Esta hoja es un punto de partida para ganar claridad.
-                </div>
               </div>
+            )}
+
+            {/* Botón imprimir */}
+            <div className="mt-6 text-center print:hidden">
+              <button
+                onClick={handlePrint}
+                type="button"
+                className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition inline-flex items-center gap-2"
+              >
+                <FaPrint aria-hidden /> Imprimir resultados (PDF)
+              </button>
             </div>
           </Panel>
         </section>
@@ -443,33 +455,34 @@ export default function CalculadoraPresupuesto() {
           <div className="grid md:grid-cols-2 gap-6 text-brand-body">
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <b>¿Qué cuenta como ingreso?</b> Tu ingreso neto (después de impuestos) más ingresos
-                laterales recurrentes, beneficios o renta.
+                <b>¿Cómo se calcula el pago?</b> Usamos la fórmula estándar canadiense según monto del
+                préstamo, tasa de interés y amortización.
               </li>
               <li>
-                <b>¿Cada cuánto debo presupuestar?</b> Mensualmente o cuando cambie tu situación.
+                <b>¿Y el plazo (term)?</b> El plazo es distinto de la amortización. Muchos compradores
+                eligen 3–5 años fijo, pero depende de tu tolerancia al riesgo y tus planes.
               </li>
               <li>
-                <b>¿Se guarda mi información?</b> No. Todo queda en tu navegador; no se sube nada.
+                <b>¿Incluye impuestos o seguro?</b> No. Esta herramienta estima solo la hipoteca. Agrega
+                impuesto predial, seguro, cuotas de condominio, servicios y mantenimiento.
               </li>
             </ul>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <b>¿Neto negativo?</b> Empieza por pequeños ajustes en “gustos” y luego revisa “necesidades”.
+                <b>¿Financiamiento multi-unidad?</b> A partir de 4+ unidades aplican reglas distintas
+                (DSCR, rentas, NOI). Agenda una llamada para un plan a tu medida.
               </li>
               <li>
-                <b>¿Quieres ayuda personalizada?</b> Podemos adaptar esto a tu diseño y a tu temporada de vida.
+                <b>¿Escenarios personalizados?</b> Modelamos cambios de tasa, pagos anticipados y
+                opciones de refinanciación.
+              </li>
+              <li>
+                <a href="/es/contacto" className="text-brand-blue font-bold underline hover:text-brand-gold">
+                  Contacta a Fanny y Equipo
+                </a>{" "}
+                para una evaluación personalizada.
               </li>
             </ul>
-          </div>
-          <div className="mt-6 text-center">
-            <a
-              href="/es/contacto"
-              className="inline-flex px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition"
-              aria-label="Contactar al equipo"
-            >
-              Contactar al equipo
-            </a>
           </div>
         </Panel>
       </section>

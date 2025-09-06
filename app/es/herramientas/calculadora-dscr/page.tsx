@@ -19,9 +19,6 @@ function money(n: number, digits = 0) {
     maximumFractionDigits: digits,
   });
 }
-function pct(n: number) {
-  return `${(n * 100).toFixed(2)}%`;
-}
 /** Factor de pago mensual para un préstamo totalmente amortizado */
 function monthlyPaymentFactor(annualRatePct: number, amortYears: number) {
   const i = Math.max(0, annualRatePct) / 100 / 12;
@@ -81,7 +78,6 @@ export default function Page() {
 
   const {
     proposedLoan,
-    monthlyFactor,
     pmtMonthly,
     adsAnnual,
     dscr,
@@ -125,7 +121,6 @@ export default function Page() {
 
     return {
       proposedLoan,
-      monthlyFactor,
       pmtMonthly,
       adsAnnual,
       dscr,
@@ -170,7 +165,7 @@ export default function Page() {
         ? [
             ["Precio de compra", purchasePrice.toFixed(2)],
             ["LTV (%)", ltvPct.toFixed(2)],
-            ["LTV propuesto (%)", (proposedLTV * 100).toFixed(2)],
+            ["LTV propuesto (%)", Number.isFinite(proposedLTV) ? (proposedLTV * 100).toFixed(2) : "—"],
           ]
         : []),
       ["Servicio de deuda mensual", pmtMonthly.toFixed(2)],

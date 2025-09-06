@@ -97,7 +97,7 @@ export default function Page() {
     const principal = Math.max(0, price - downPayment);
 
     const nMonths = Math.max(1, Math.round((horizonYears || 0) * 12));
-    const i_mort = Math.max(0, ratePct) / 100 / 12;
+    // const i_mort = Math.max(0, ratePct) / 100 / 12; // ← (eliminado por no usarse)
     const i_rent = Math.max(0, rentGrowthPctAnnual) / 100 / 12;
     const g_home = Math.max(0, homeAppreciationPctAnnual) / 100 / 12;
     const i_inv = Math.max(0, investmentReturnPctAnnual) / 100 / 12;
@@ -509,7 +509,7 @@ export default function Page() {
             <div className="flex justify-between"><span>Egreso total propietario</span><span className="font-medium">{money(results.totalOwnerCashOut, 0)}</span></div>
             <div className="flex justify-between"><span>Egreso total inquilino</span><span className="font-medium">{money(results.totalRenterCashOut, 0)}</span></div>
           </div>
-          <details className="mt-4 rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-4">
+          <details className="mt-4 rounded-2xl border border-brand-gold/40 bg-brand-beige/40 p-4">
             <summary className="cursor-pointer font-semibold text-brand-green">¿Qué se incluye?</summary>
             <ul className="list-disc ml-5 mt-2 text-sm text-brand-blue/80 space-y-1">
               <li>Propietario: pago mensual P&amp;I + impuesto a la propiedad + mantenimiento (% del valor) + condo/strata/HOA + seguro de vivienda.</li>
