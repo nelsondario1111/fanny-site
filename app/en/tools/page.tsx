@@ -1,8 +1,11 @@
+// app/en/tools/page.tsx
 "use client";
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import type { JSX as JSXNS } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 import {
   FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
   FaFileExcel, FaFileCsv, FaPercent, FaBuilding, FaChartLine, FaBalanceScale,
@@ -10,29 +13,25 @@ import {
 } from "react-icons/fa";
 
 /* ============================ Motion helpers ============================ */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
+  const group: Transition = prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 },
-    },
+    visible: { transition: group },
   };
   return { fade, fadeUp, stagger };
 }
@@ -64,7 +63,7 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag: keyof JSX.IntrinsicElements = level;
+  const Tag: keyof JSXNS.IntrinsicElements = level;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -121,9 +120,9 @@ type ToolItem = {
   href: string;         // destination page (under /en/tools/*)
   category: Category;   // domain grouping for browsing/sections
   type: TypeKey;        // functional type (filter)
-  icon: JSX.Element;
+  icon: ReactNode;      // was JSX.Element
   ctas?: CTA[];
-  extra?: JSX.Element;  // e.g., XLSX/CSV buttons for worksheets
+  extra?: ReactNode;    // was JSX.Element
   tags?: string[];
 };
 
