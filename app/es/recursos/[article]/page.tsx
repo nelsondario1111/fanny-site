@@ -88,6 +88,11 @@ function getPrevNext(all: SimpleArticle[], currentSlug: string, currentCat?: str
   };
 }
 
+/** Type guard para `heroAlt` sin usar `any`. */
+function hasHeroAlt(x: unknown): x is { heroAlt?: string | null } {
+  return typeof x === "object" && x !== null && "heroAlt" in x;
+}
+
 // Static params & metadata
 export async function generateStaticParams() {
   const items = await getAllArticles("es");
@@ -170,6 +175,10 @@ export default async function ArticlePage(
     a.date &&
     new Date(a.date).toLocaleDateString("es-CA", { year: "numeric", month: "long", day: "numeric" });
 
+  /** alt accesible sin usar `any` */
+  const altText =
+    (hasHeroAlt(a) && a.heroAlt) || a.title || "Imagen del artículo";
+
   return (
     <div className="min-h-screen bg-white">
       {/* Encabezado */}
@@ -242,7 +251,7 @@ export default async function ArticlePage(
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={a.hero}
-                alt={(a as any).heroAlt ?? a.title ?? "Imagen del artículo"}
+                alt={altText}
                 className="w-full rounded-2xl mb-6"
               />
             )}
