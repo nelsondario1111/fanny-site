@@ -29,7 +29,7 @@ export default function Contacto() {
 
             <div className="mt-6 flex items-center justify-center gap-3">
               <Link
-                href="/es/book"
+                href="/es/reservar"
                 className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold shadow bg-brand-green text-white hover:opacity-90 transition"
               >
                 Reservar llamada gratuita
