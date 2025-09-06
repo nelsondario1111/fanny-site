@@ -3,34 +3,40 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, cubicBezier } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 /* ---------------------- Ayudas de animación ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+// Usa función de easing tipada (evita el error de number[])
+const easeOut = cubicBezier(0.22, 1, 0.36, 1);
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.5, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.5, ease: easeOut },
     },
   };
-  const fadeUp = {
+
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 14 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.55, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.55, ease: easeOut },
     },
   };
-  const stagger = {
+
+  const stagger: Variants = {
     hidden: {},
     visible: {
       transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 },
     },
   };
+
   return { fade, fadeUp, stagger };
 }
 
@@ -79,12 +85,7 @@ function SectionTitle({
 }) {
   const { fade, fadeUp } = useAnims();
   return (
-    <motion.div
-      variants={fade}
-      initial="hidden"
-      animate="visible"
-      className="text-center mb-6"
-    >
+    <motion.div variants={fade} initial="hidden" animate="visible" className="text-center mb-6">
       <motion.h1
         variants={fadeUp}
         className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
@@ -116,16 +117,14 @@ function TermSection({
   return (
     <motion.div variants={fadeUp} className="space-y-3" id={id}>
       <h2 className="font-serif text-2xl font-semibold text-brand-green">{heading}</h2>
-      <div className="prose prose-brand max-w-none">
-        {children}
-      </div>
+      <div className="prose prose-brand max-w-none">{children}</div>
     </motion.div>
   );
 }
 
 /* ---------------------- Página ---------------------- */
 export default function TerminosPage() {
-  const { fadeUp, stagger } = useAnims(); // removed unused 'fade'
+  const { fadeUp, stagger } = useAnims();
 
   return (
     <main id="main" className="bg-brand-beige min-h-screen px-4 py-10">
@@ -211,7 +210,11 @@ export default function TerminosPage() {
             <TermSection id="pagos" heading="3. Honorarios y Pagos">
               <ul>
                 <li>Los precios vigentes se muestran en el sitio o por escrito.</li>
-                <li>En hipotecas residenciales estándar, normalmente el prestamista paga la compensación; si aplica honorario al cliente (p. ej., financiamiento privado/complejo), se divulgará por escrito y se requerirá tu autorización antes de proceder.</li>
+                <li>
+                  En hipotecas residenciales estándar, normalmente el prestamista paga la compensación; si aplica honorario al
+                  cliente (p. ej., financiamiento privado/complejo), se divulgará por escrito y se requerirá tu autorización antes
+                  de proceder.
+                </li>
                 <li>Los pagos de coaching/planificación fiscal se realizan según checkout o factura.</li>
               </ul>
             </TermSection>
@@ -260,8 +263,14 @@ export default function TerminosPage() {
 
             <TermSection id="cumplimiento" heading="9. Licencias y Cumplimiento">
               <ul>
-                <li>Los servicios hipotecarios son ofrecidos por una Agente Hipotecaria (Nivel 2) licenciada en Ontario, sujetos a FSRA y a las políticas del bróker.</li>
-                <li>Cuando corresponda, la presentación de impuestos la realiza un contador asociado, bajo su propio contrato y términos.</li>
+                <li>
+                  Los servicios hipotecarios son ofrecidos por una Agente Hipotecaria (Nivel 2) licenciada en Ontario, sujetos a
+                  FSRA y a las políticas del bróker.
+                </li>
+                <li>
+                  Cuando corresponda, la presentación de impuestos la realiza un contador asociado, bajo su propio contrato y
+                  términos.
+                </li>
               </ul>
             </TermSection>
 
@@ -284,9 +293,8 @@ export default function TerminosPage() {
               <ul>
                 <li>No garantizamos resultados específicos (p. ej., aprobaciones, tasas, resultados fiscales).</li>
                 <li>
-                  En la medida máxima que permita la ley, nuestra responsabilidad total por reclamos
-                  relacionados con los servicios se limita a los honorarios que hayas pagado por el
-                  servicio afectado.
+                  En la medida máxima que permita la ley, nuestra responsabilidad total por reclamos relacionados con los servicios
+                  se limita a los honorarios que hayas pagado por el servicio afectado.
                 </li>
               </ul>
             </TermSection>
