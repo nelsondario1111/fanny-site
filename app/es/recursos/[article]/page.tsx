@@ -163,8 +163,9 @@ export default async function ArticlePage(
   const cleanedHtml = stripFrontMatterFromHtml(String(a.html ?? ""));
   const readingTime = toReadingTime({
     html: cleanedHtml,
-    summary: a.summary,
-    readingTimeMin: a.readingTimeMin,
+    summary: a.summary ?? null,
+    // 👇 Only include readingTimeMin when it's actually a number
+    ...(typeof a.readingTimeMin === "number" ? { readingTimeMin: a.readingTimeMin } : {}),
   });
 
   const updatedStr =
@@ -176,8 +177,7 @@ export default async function ArticlePage(
     new Date(a.date).toLocaleDateString("es-CA", { year: "numeric", month: "long", day: "numeric" });
 
   /** alt accesible sin usar `any` */
-  const altText =
-    (hasHeroAlt(a) && a.heroAlt) || a.title || "Imagen del artículo";
+  const altText = (hasHeroAlt(a) && a.heroAlt) || a.title || "Imagen del artículo";
 
   return (
     <div className="min-h-screen bg-white">
