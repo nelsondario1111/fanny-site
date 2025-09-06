@@ -885,13 +885,25 @@ function ArticleCard({
   const img = getImg(article);
   const hasImg = Boolean(img);
 
+  // Narrow the Web Share API safely without expect-error
+  type WebShareNavigator = Navigator & {
+    share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
+    canShare?: (data?: unknown) => boolean;
+  };
+
   const share = async () => {
     const url = typeof window !== "undefined" ? new URL(href, window.location.origin).toString() : href;
     try {
-      // @ts-expect-error — navigator.share is not in all TS lib targets
-      if (navigator.share) await navigator.share({ title: article.title, url });
-      else if (navigator.clipboard) { await navigator.clipboard.writeText(url); alert("Link copied to clipboard"); }
-    } catch {}
+      const nav = (typeof navigator !== "undefined" ? (navigator as WebShareNavigator) : undefined);
+      if (nav?.share) {
+        await nav.share({ title: article.title, url });
+      } else if (nav?.clipboard?.writeText) {
+        await nav.clipboard.writeText(url);
+        alert("Link copied to clipboard");
+      }
+    } catch {
+      // no-op
+    }
   };
 
   return (
