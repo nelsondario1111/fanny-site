@@ -167,7 +167,7 @@ export default async function ArticlePage(
   const cleanedHtml = stripFrontMatterFromHtml(String(a.html ?? ""));
   const readingTime = toReadingTime({
     html: cleanedHtml,
-    summary: a.summary,
+    summary: a.summary ?? undefined, // coerce null to undefined to satisfy type
     readingTimeMin: a.readingTimeMin,
   });
 
