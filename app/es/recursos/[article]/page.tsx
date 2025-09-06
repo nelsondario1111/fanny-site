@@ -32,8 +32,6 @@ function altResourceSlug(i18n: I18nMap, currentSlug: string, target: "en" | "es"
   return null;
 }
 
-type Params = { params: { article: string } };
-
 type SimpleArticle = {
   slug: string;
   title?: string | null;
@@ -96,19 +94,23 @@ export async function generateStaticParams() {
   return items.map((a) => ({ article: a.slug }));
 }
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const a = await getArticle("es", params.article);
+export async function generateMetadata(
+  { params }: { params: Promise<{ article: string }> }
+): Promise<Metadata> {
+  const { article } = await params;
+
+  const a = await getArticle("es", article);
   if (!a) return {};
 
   const i18n = await loadI18nMap();
-  const mappedEn = altResourceSlug(i18n, params.article, "en");
-  const hasSameSlugEn = await getArticle("en", params.article).then(Boolean).catch(() => false);
+  const mappedEn = altResourceSlug(i18n, article, "en");
+  const hasSameSlugEn = await getArticle("en", article).then(Boolean).catch(() => false);
 
-  const languages: Record<string, string> = { es: `/es/recursos/${params.article}` };
+  const languages: Record<string, string> = { es: `/es/recursos/${article}` };
   if (mappedEn) {
     languages.en = `/en/resources/${mappedEn}`;
   } else if (hasSameSlugEn) {
-    languages.en = `/en/resources/${params.article}`;
+    languages.en = `/en/resources/${article}`;
   }
 
   const description =
@@ -133,18 +135,22 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 // Page
-export default async function ArticlePage({ params }: Params) {
-  const a = await getArticle("es", params.article);
+export default async function ArticlePage(
+  { params }: { params: Promise<{ article: string }> }
+) {
+  const { article } = await params;
+
+  const a = await getArticle("es", article);
   if (!a) notFound();
 
   const i18n = await loadI18nMap();
 
   // Resolver el slug en inglés correspondiente.
-  const mappedEn = altResourceSlug(i18n, params.article, "en");
+  const mappedEn = altResourceSlug(i18n, article, "en");
   const aEn = mappedEn
     ? await getArticle("en", mappedEn).catch(() => null)
-    : await getArticle("en", params.article).catch(() => null);
-  const enHref = aEn ? `/en/resources/${mappedEn || params.article}` : null;
+    : await getArticle("en", article).catch(() => null);
+  const enHref = aEn ? `/en/resources/${mappedEn || article}` : null;
 
   const all = (await getAllArticles("es")) as SimpleArticle[];
   const { prev, next } = getPrevNext(all, a.slug, a.category);
