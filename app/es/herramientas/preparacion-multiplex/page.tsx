@@ -78,19 +78,6 @@ type Analyzer = {
   capexPct: string;      // % del EGI (reserva)
 };
 
-type AnalyzerMetrics = {
-  gpiAnnual: number;
-  egiAnnual: number;
-  opExAnnualTotal: number;
-  noi: number;
-  annualDebtService: number;
-  capRate: number; // %
-  dscr: number;
-  coc: number; // %
-  cfBeforeTax: number;
-  breakEvenVacancyPct: number; // %
-};
-
 // ---------- Storage ----------
 const LS_TASKS = "herramientas.preparacion_multiplex.v1";
 const LS_ANALYZER = "herramientas.preparacion_multiplex.analizador.v1";
@@ -1140,7 +1127,7 @@ export default function Page() {
 }
 
 // ---------- Hijo pequeño ----------
-function SummaryCard({ icon, label, value, href }: { icon: React.ReactNode; label: string; value: string; href?: string }) {
+function SummaryCard({ icon, label, value, href }: { icon: ReactNode; label: string; value: string; href?: string }) {
   const content = (
     <div className="rounded-xl border border-brand-gold/50 bg-white p-3 md:p-4 h-full">
       <div className="text-xs md:text-sm text-brand-blue/80 flex items-center gap-2">

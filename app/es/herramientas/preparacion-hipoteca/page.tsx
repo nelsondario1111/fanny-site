@@ -15,8 +15,6 @@ import {
   ShieldCheck,
   CreditCard,
   Building2,
-  FileText,
-  Info,
   Search,
 } from "lucide-react";
 

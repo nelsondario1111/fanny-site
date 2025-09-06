@@ -19,11 +19,6 @@ const CAD0 = new Intl.NumberFormat("es-CA", {
   currency: "CAD",
   maximumFractionDigits: 0,
 });
-const CAD2 = new Intl.NumberFormat("es-CA", {
-  style: "currency",
-  currency: "CAD",
-  minimumFractionDigits: 2,
-});
 const num = (s: string) => {
   const x = Number(String(s).replace(/[^\d.-]/g, ""));
   return Number.isFinite(x) ? x : 0;
