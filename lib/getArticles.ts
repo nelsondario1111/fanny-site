@@ -27,13 +27,13 @@ export type ArticleMeta = {
   hero?: string | null;
   heroAlt?: string | null;
   ogImage?: string | null;
-  readingTime?: string | null;   // e.g., "5 min read"
+  readingTime?: string | null; // e.g., "5 min read"
   readingTimeMin?: number | null; // numeric minutes
 };
 
 export type Article = ArticleMeta & {
   html: string; // rendered HTML (front-matter removed)
-  raw: string;  // raw markdown body (no YAML)
+  raw: string; // raw markdown body (no YAML)
 };
 
 /* --------------------------- Config ------------------------------ */
@@ -61,9 +61,9 @@ function toArray(v: unknown): string[] | null {
 // Very light inline Markdown → text stripper (for excerpts)
 function stripMdInline(s: string) {
   return s
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")     // images
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")  // links
-    .replace(/[*_~`>#-]/g, "")                // common md characters/bullets
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "") // images
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // links
+    .replace(/[*_~`>#-]/g, "") // common md characters/bullets
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -134,6 +134,47 @@ async function readMarkdown(filePath: string, lang: "en" | "es"): Promise<Articl
   };
 }
 
+/* -------------------------- Helpers ---------------------------- */
+
+function toMeta(a: Article): ArticleMeta {
+  const {
+    slug,
+    lang,
+    title,
+    summary,
+    excerpt,
+    category,
+    tags,
+    date,
+    updated,
+    author,
+    image,
+    hero,
+    heroAlt,
+    ogImage,
+    readingTime,
+    readingTimeMin,
+  } = a;
+  return {
+    slug,
+    lang,
+    title,
+    summary,
+    excerpt,
+    category,
+    tags,
+    date,
+    updated,
+    author,
+    image,
+    hero,
+    heroAlt,
+    ogImage,
+    readingTime,
+    readingTimeMin,
+  };
+}
+
 /* ------------------------- Public API ---------------------------- */
 
 export async function getAllArticles(lang: "en" | "es"): Promise<ArticleMeta[]> {
@@ -150,11 +191,7 @@ export async function getAllArticles(lang: "en" | "es"): Promise<ArticleMeta[]> 
   const items = await Promise.all(
     mdFiles.map(async (f) => {
       const a = await readMarkdown(path.join(dir, f), lang);
-      // Drop heavy fields (html/raw) without binding unused vars
-      const metaObj: Partial<Article> = { ...a };
-      delete (metaObj as any).html;
-      delete (metaObj as any).raw;
-      return metaObj as ArticleMeta;
+      return toMeta(a);
     })
   );
 
