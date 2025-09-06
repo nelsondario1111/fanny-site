@@ -4,33 +4,33 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 
 /* ---------------------- Animation helpers ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
-  const fade = {
+
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.5, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.55, ease: easing };
+  const group: Transition = prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.5, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
-  const fadeUp = {
+
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 14 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.55, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
-  const stagger = {
+
+  const stagger: Variants = {
     hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 },
-    },
+    visible: { transition: group },
   };
+
   return { fade, fadeUp, stagger };
 }
 
