@@ -2,13 +2,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { ElementType, ReactNode } from "react";
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
   /** Delay in ms for the reveal (helps stagger cards) */
   delay?: number;
-  /** Optional wrapper element */
-  as?: keyof JSX.IntrinsicElements;
+  /** Optional wrapper element (e.g., "div", "section") */
+  as?: ElementType;
   /** Threshold for intersection (0..1) */
   threshold?: number;
   /** Extra className to apply */
@@ -18,10 +19,13 @@ type Props = {
 export default function Reveal({
   children,
   delay = 0,
-  as: Tag = "div",
+  as,
   threshold = 0.15,
   className = "",
 }: Props) {
+  // only attach refs to DOM elements; pass intrinsic tags in `as`
+  const Tag = (as ?? "div") as ElementType;
+
   const ref = useRef<HTMLElement | null>(null);
   const [shown, setShown] = useState(false);
 
