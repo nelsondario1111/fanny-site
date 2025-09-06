@@ -168,9 +168,8 @@ export default async function ArticlePage(
   const readingTime = toReadingTime({
     html: cleanedHtml,
     summary: a.summary ?? undefined,
-    // FIX: coerce null/undefined to undefined to satisfy the type
-    readingTimeMin:
-      typeof a.readingTimeMin === "number" ? a.readingTimeMin : undefined,
+    // ensure number | undefined (not null)
+    readingTimeMin: typeof a.readingTimeMin === "number" ? a.readingTimeMin : undefined,
   });
 
   const updatedStr =
@@ -259,7 +258,7 @@ export default async function ArticlePage(
               <div className="relative w-full mb-6 rounded-2xl overflow-hidden">
                 <div className="relative w-full aspect-[16/9]">
                   <Image
-                    src={a.hero}
+                    src={a.hero as string}
                     alt={a.heroAlt ?? a.title ?? "Article hero"}
                     fill
                     className="object-cover"
@@ -284,7 +283,12 @@ export default async function ArticlePage(
         {/* Bottom actions + related */}
         <div className="max-w-screen-xl mx-auto px-4 mt-10 print:hidden">
           <ArticleActions title={a.title} lang="en" />
-          <RelatedArticles lang="en" currentSlug={a.slug} category={a.category} tags={a.tags} />
+          <RelatedArticles
+            lang="en"
+            currentSlug={a.slug}
+            category={a.category ?? undefined}
+            tags={Array.isArray(a.tags) ? a.tags : undefined}
+          />
         </div>
 
         {/* Prev / Next */}
@@ -322,7 +326,7 @@ export default async function ArticlePage(
         {/* Tags */}
         {Array.isArray(a.tags) && a.tags.length > 0 && (
           <div className="max-w-screen-xl mx-auto px-4 mt-6 flex flex-wrap gap-2">
-            {a.tags.map((t: string) => (
+            {(a.tags as string[]).map((t) => (
               <span
                 key={t}
                 className="text-xs px-2.5 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30"
