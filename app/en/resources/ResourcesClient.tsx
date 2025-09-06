@@ -189,8 +189,9 @@ function deburr(s: string) {
     return s;
   }
 }
-function tokens(s: string) {
-  return deburr(s.toLowerCase()).match(/[a-z0-9]+/g) ?? [];
+function tokens(s: string): string[] {
+  const m = deburr(s.toLowerCase()).match(/[a-z0-9]+/g);
+  return m ? [...m] : [];
 }
 const SYNONYMS_EN: Record<string, string[]> = {
   grief: ["bereavement", "mourning", "loss", "passing", "passing-away", "death", "widow", "widower", "funeral"],
@@ -213,7 +214,10 @@ function expandQuery(q: string): Set<string> {
     const key = deburr(k.toLowerCase());
     if (qlc.includes(key) || base.includes(key)) arr.flatMap(tokens).forEach((t) => out.add(t));
   }
-  for (const t of [...out]) (SYNONYMS_EN[t] ?? []).flatMap(tokens).forEach((x) => out.add(x));
+  for (const t of [...out]) {
+    const syns: string[] = SYNONYMS_EN[t] ?? [];
+    syns.flatMap(tokens).forEach((x) => out.add(x));
+  }
   return out;
 }
 
@@ -884,6 +888,7 @@ function ArticleCard({
   const share = async () => {
     const url = typeof window !== "undefined" ? new URL(href, window.location.origin).toString() : href;
     try {
+      // @ts-expect-error — navigator.share is not in all TS lib targets
       if (navigator.share) await navigator.share({ title: article.title, url });
       else if (navigator.clipboard) { await navigator.clipboard.writeText(url); alert("Link copied to clipboard"); }
     } catch {}
