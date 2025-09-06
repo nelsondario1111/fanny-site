@@ -52,7 +52,7 @@ const stripFrontMatterFromHtml = (html: string) => {
   return out.trim();
 };
 
-const toReadingTime = (raw: { html?: string; summary?: string; readingTimeMin?: number }) => {
+const toReadingTime = (raw: { html?: string; summary?: string | null; readingTimeMin?: number }) => {
   if (typeof raw.readingTimeMin === "number" && Number.isFinite(raw.readingTimeMin)) {
     return `${raw.readingTimeMin} min de lectura`;
   }
@@ -242,7 +242,7 @@ export default async function ArticlePage(
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={a.hero}
-                alt={a.heroAlt ?? a.title ?? "Imagen del artículo"}
+                alt={(a as any).heroAlt ?? a.title ?? "Imagen del artículo"}
                 className="w-full rounded-2xl mb-6"
               />
             )}
