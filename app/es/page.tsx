@@ -4,36 +4,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants, Easing, Transition } from "framer-motion";
 import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
 
 /* ---------------------- Ayudas de animación ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Easing = [0.22, 1, 0.36, 1];
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
 
-  const fade = {
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
+  const group: Transition = prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.05 };
+
+  const fade: Variants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
-    },
+    visible: { opacity: 1, transition: base },
   };
 
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
-    },
+    visible: { opacity: 1, y: 0, transition: baseUp },
   };
 
-  const stagger = {
+  const stagger: Variants = {
     hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.05 },
-    },
+    visible: { transition: group },
   };
 
   return { fade, fadeUp, stagger };
@@ -124,20 +120,32 @@ export default function HomeEs() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Fanny Samaniego",
-    "url": "https://www.fannysamaniego.com/es/",
-    "logo": "https://www.fannysamaniego.com/apple-touch-icon.png",
-    "founder": {
+    name: "Fanny Samaniego",
+    url: "https://www.fannysamaniego.com/es/",
+    logo: "https://www.fannysamaniego.com/apple-touch-icon.png",
+    founder: {
       "@type": "Person",
-      "name": "Fanny Samaniego",
-      "jobTitle": "Asesora Financiera y Agente Hipotecaria",
-      "worksFor": { "@type": "Organization", "name": "Fanny Samaniego" }
+      name: "Fanny Samaniego",
+      jobTitle: "Asesora Financiera y Agente Hipotecaria",
+      worksFor: { "@type": "Organization", name: "Fanny Samaniego" },
     },
-    "makesOffer": [
-      { "@type": "Offer", "category": "Coaching Financiero", "itemOffered": { "@type": "Service", "name": "Coaching y Planificación Financiera Premium" }},
-      { "@type": "Offer", "category": "Servicios Hipotecarios", "itemOffered": { "@type": "Service", "name": "Preparación Hipotecaria y Preaprobación" }},
-      { "@type": "Offer", "category": "Planeación Fiscal", "itemOffered": { "@type": "Service", "name": "Ritmo y Estrategia Fiscal Holística" }}
-    ]
+    makesOffer: [
+      {
+        "@type": "Offer",
+        category: "Coaching Financiero",
+        itemOffered: { "@type": "Service", name: "Coaching y Planificación Financiera Premium" },
+      },
+      {
+        "@type": "Offer",
+        category: "Servicios Hipotecarios",
+        itemOffered: { "@type": "Service", name: "Preparación Hipotecaria y Preaprobación" },
+      },
+      {
+        "@type": "Offer",
+        category: "Planeación Fiscal",
+        itemOffered: { "@type": "Service", name: "Ritmo y Estrategia Fiscal Holística" },
+      },
+    ],
   };
 
   return (
