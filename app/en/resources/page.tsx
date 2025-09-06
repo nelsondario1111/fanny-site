@@ -126,15 +126,16 @@ type Persona = {
   includeSlugs?: string[]; // explicit seeds
 };
 
-/* ========= Types for client payloads to avoid `any` ========= */
-type TagsIndex = {
-  articles: Array<{ slug: string; title?: string | null; category: string; tags: string[] }>;
-  tags: Record<CanonTag, { count: number; slugs: string[] }>;
+type ViewOption = { key: "grid" | "list"; label: string };
+
+/* ========= Payload type that matches ResourcesClient's expectation =========
+   (different name to avoid shadowing) */
+type TagsIndexPayload = {
+  articles: Array<{ slug: string; title: string; category: string; tags: string[] }>;
+  tags: Record<string, { count: number; slugs: string[] }>;
   categories: Record<string, { count: number; slugs: string[] }>;
   personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
 };
-
-type ViewOption = { key: "grid" | "list"; label: string };
 
 /* ================================ Page ================================= */
 export default async function Page() {
@@ -146,23 +147,23 @@ export default async function Page() {
     const readingTime =
       typeof a.readingTimeMin === "number" && a.readingTimeMin > 0
         ? `${a.readingTimeMin} min read`
-        : a.readingTime ?? null;
+        : (a.readingTime as string | number | null) ?? null;
 
     const canonTags = canonicalizeTags(a.tags);
     const withFallback = canonTags.length ? canonTags : deriveFromCategory(a.category);
 
     return {
-      slug: a.slug,
-      title: a.title,
-      excerpt: a.excerpt ?? null,
-      summary: a.summary ?? null,
-      category: a.category ?? null, // displayed as chip; filtering uses canonical tags
-      tags: withFallback,
-      date: a.date ?? null,
+      slug: String(a.slug),
+      title: String(a.title ?? ""), // ensure `string`
+      excerpt: (a.excerpt as string | null) ?? null,
+      summary: (a.summary as string | null) ?? null,
+      category: (a.category as string | null) ?? null, // chip only; filtering uses canonical tags
+      tags: withFallback, // CanonTag[] (string[])
+      date: (a.date as string | Date | null) ?? null,
       readingTime,
-      image: a.image ?? null,
-      hero: a.hero ?? null,
-      ogImage: a.ogImage ?? null,
+      image: (a.image as string | null) ?? null,
+      hero: (a.hero as string | null) ?? null,
+      ogImage: (a.ogImage as string | null) ?? null,
     };
   });
 
@@ -196,7 +197,6 @@ export default async function Page() {
       key: "newcomers",
       label: "Newcomers",
       tags: ["newcomers", "mortgages", "financial-planning"],
-      includeSlugs: [],
     },
     {
       key: "entrepreneurs",
@@ -214,7 +214,6 @@ export default async function Page() {
       key: "holistic",
       label: "Holistic & Human Design",
       tags: ["holistic-approach", "human-design", "financial-planning"],
-      includeSlugs: [],
     },
   ];
 
@@ -226,11 +225,11 @@ export default async function Page() {
     return { key: p.key, label: p.label, slugs, count: slugs.length };
   });
 
-  // 5) TagsIndex object consumed by the client
-  const tagsIndex: TagsIndex = {
+  // 5) TagsIndex payload consumed by the client (matches ResourcesClient type)
+  const tagsIndex: TagsIndexPayload = {
     articles: processed.map((a) => ({
       slug: a.slug,
-      title: a.title,
+      title: a.title,                // guaranteed string
       category: a.category ?? "",
       tags: (a.tags as string[]) ?? [],
     })),
@@ -257,10 +256,7 @@ export default async function Page() {
   const existing = new Set(processed.map((a) => a.slug));
   const featuredSlugs = preferredFeatured.filter((s) => existing.has(s));
 
-  // 7) Categories list (pretty labels) – used by the client for top-level filter pills
-  const categories = (CANON_TAGS as readonly CanonTag[]).map((t) => DISPLAY_LABELS[t]);
-
-  // 8) View options
+  // 7) View options
   const views: ViewOption[] = [
     { key: "grid", label: "Grid" },
     { key: "list", label: "List" },
@@ -269,7 +265,6 @@ export default async function Page() {
   return (
     <ResourcesClient
       articles={processed}
-      categories={categories}
       personas={personaIndex}
       featuredSlugs={featuredSlugs}
       views={views}
