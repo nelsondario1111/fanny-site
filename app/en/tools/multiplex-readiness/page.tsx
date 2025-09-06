@@ -78,19 +78,6 @@ type Analyzer = {
   capexPct: string;        // % of EGI (reserve)
 };
 
-type AnalyzerMetrics = {
-  gpiAnnual: number;
-  egiAnnual: number;
-  opExAnnualTotal: number;
-  noi: number;
-  annualDebtService: number;
-  capRate: number; // %
-  dscr: number;
-  coc: number; // %
-  cfBeforeTax: number;
-  breakEvenVacancyPct: number; // %
-};
-
 // ---------- Storage ----------
 const LS_TASKS = "tools.multiplex_readiness.v1";
 const LS_ANALYZER = "tools.multiplex_readiness.analyzer.v1";

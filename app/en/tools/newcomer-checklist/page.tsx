@@ -339,6 +339,24 @@ export default function Page() {
     custom: false,
   });
 
+  // Per-section Quick Add state (avoids calling hooks inside map)
+  const [quickAddTitle, setQuickAddTitle] = useState<Record<SectionKey, string>>({
+    before_arrival: "",
+    first_72h: "",
+    first_2w: "",
+    first_month: "",
+    months_3_6: "",
+    custom: "",
+  });
+  const [quickAddPriority, setQuickAddPriority] = useState<Record<SectionKey, Priority>>({
+    before_arrival: "normal",
+    first_72h: "normal",
+    first_2w: "normal",
+    first_month: "normal",
+    months_3_6: "normal",
+    custom: "normal",
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Restore
@@ -478,40 +496,56 @@ export default function Page() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result));
-        const arr = parsed?.tasks || parsed;
+        const arr: unknown = (parsed as { tasks?: unknown })?.tasks ?? parsed;
         if (!Array.isArray(arr)) throw new Error("Invalid file format");
-        const cleaned: Task[] = arr
-          .map((t: any) => ({
-            id: typeof t.id === "string" ? t.id : uid(),
-            section: (
-              [
-                "before_arrival",
-                "first_72h",
-                "first_2w",
-                "first_month",
-                "months_3_6",
-                "custom",
-              ] as SectionKey[]
-            ).includes(t.section)
-              ? t.section
-              : "custom",
-            title: String(t.title ?? "").slice(0, 300),
-            note: typeof t.note === "string" ? t.note.slice(0, 2000) : "",
-            done: Boolean(t.done),
-            due:
-              typeof t.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.due)
-                ? t.due
-                : undefined,
-            linkHref: typeof t.linkHref === "string" ? t.linkHref : undefined,
-            linkLabel: typeof t.linkLabel === "string" ? t.linkLabel : undefined,
-            isCustom: Boolean(t.isCustom ?? true),
-            priority: t.priority === "high" ? "high" : "normal",
-          }))
+
+        const validSections: SectionKey[] = [
+          "before_arrival",
+          "first_72h",
+          "first_2w",
+          "first_month",
+          "months_3_6",
+          "custom",
+        ];
+
+        const cleaned: Task[] = (arr as unknown[])
+
+          .map((raw: unknown): Task => {
+            const t = (raw ?? {}) as Record<string, unknown>;
+
+            const section: SectionKey =
+              typeof t.section === "string" && validSections.includes(t.section as SectionKey)
+                ? (t.section as SectionKey)
+                : "custom";
+
+            const title = typeof t.title === "string" ? t.title.slice(0, 300) : "";
+
+            const due =
+              typeof t.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.due) ? t.due : undefined;
+
+            const priority: Priority =
+              (t.priority === "high" ? "high" : "normal") as Priority;
+
+            return {
+              id: typeof t.id === "string" ? t.id : uid(),
+              section,
+              title,
+              note: typeof t.note === "string" ? t.note.slice(0, 2000) : "",
+              done: Boolean(t.done),
+              due,
+              linkHref: typeof t.linkHref === "string" ? t.linkHref : undefined,
+              linkLabel: typeof t.linkLabel === "string" ? t.linkLabel : undefined,
+              isCustom: "isCustom" in t ? Boolean((t as { isCustom?: unknown }).isCustom) : true,
+              priority,
+            };
+          })
           .filter((t: Task) => t.title.trim().length > 0);
+
         if (!cleaned.length) throw new Error("No tasks found");
         setTasks(cleaned);
-      } catch (e: any) {
-        alert(`Could not import JSON: ${e?.message || e}`);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        alert(`Could not import JSON: ${msg}`);
       }
     };
     reader.readAsText(file);
@@ -709,12 +743,8 @@ export default function Page() {
           const list = overall.sections.find((s) => s.key === key)!;
           const isCollapsed = collapse[key];
 
-          // per-section quick add state
-          const [titleValue, setTitleValue] = useState("");
-          const [priorityValue, setPriorityValue] = useState<Priority>("normal");
-
           const quickAdd = () => {
-            const title = titleValue.trim();
+            const title = quickAddTitle[key].trim();
             if (!title) return;
             const t: Task = {
               id: uid(),
@@ -723,11 +753,11 @@ export default function Page() {
               note: "",
               done: false,
               isCustom: true,
-              priority: priorityValue,
+              priority: quickAddPriority[key],
             };
             setTasks((prev) => [...prev, t]);
-            setTitleValue("");
-            setPriorityValue("normal");
+            setQuickAddTitle((prev) => ({ ...prev, [key]: "" }));
+            setQuickAddPriority((prev) => ({ ...prev, [key]: "normal" }));
           };
 
           return (
@@ -907,8 +937,10 @@ export default function Page() {
                         <td />
                         <td className="p-2">
                           <input
-                            value={titleValue}
-                            onChange={(e) => setTitleValue(e.target.value)}
+                            value={quickAddTitle[key]}
+                            onChange={(e) =>
+                              setQuickAddTitle((prev) => ({ ...prev, [key]: e.target.value }))
+                            }
                             placeholder="Add a new task…"
                             className="w-full border rounded-lg p-2"
                             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), quickAdd())}
@@ -916,8 +948,13 @@ export default function Page() {
                         </td>
                         <td className="p-2">
                           <select
-                            value={priorityValue}
-                            onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                            value={quickAddPriority[key]}
+                            onChange={(e) =>
+                              setQuickAddPriority((prev) => ({
+                                ...prev,
+                                [key]: e.target.value as Priority,
+                              }))
+                            }
                             className="border rounded-lg p-2 w-full bg-white"
                           >
                             <option value="normal">Normal</option>
@@ -1070,14 +1107,21 @@ export default function Page() {
                     <div className="text-[11px] text-brand-blue/70 mb-1">Add task</div>
                     <div className="grid grid-cols-2 gap-2">
                       <input
-                        value={titleValue}
-                        onChange={(e) => setTitleValue(e.target.value)}
+                        value={quickAddTitle[key]}
+                        onChange={(e) =>
+                          setQuickAddTitle((prev) => ({ ...prev, [key]: e.target.value }))
+                        }
                         placeholder="Task title…"
                         className="w-full border rounded-lg p-2 col-span-2"
                       />
                       <select
-                        value={priorityValue}
-                        onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                        value={quickAddPriority[key]}
+                        onChange={(e) =>
+                          setQuickAddPriority((prev) => ({
+                            ...prev,
+                            [key]: e.target.value as Priority,
+                          }))
+                        }
                         className="w-full border rounded-lg p-2"
                       >
                         <option value="normal">Normal</option>

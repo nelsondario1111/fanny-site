@@ -78,7 +78,9 @@ function daysUntil(dateISO?: string) {
   const d = new Date(`${dateISO}T00:00:00`);
   if (Number.isNaN(+d)) return null;
   const today = new Date();
-  const diff = Math.ceil((d.getTime() - new Date(today.toDateString()).getTime()) / (1000 * 60 * 60 * 24));
+  const diff = Math.ceil(
+    (d.getTime() - new Date(today.toDateString()).getTime()) / (1000 * 60 * 60 * 24)
+  );
   return diff;
 }
 
@@ -151,22 +153,70 @@ const toneToText: Record<string, string> = {
 function defaultTasks(): Task[] {
   return [
     // CREDIT & SCORE
-    { id: uid(), section: "credit_score", title: "Check current credit score (soft pull within 60 days)", done: false, priority: "high" },
+    {
+      id: uid(),
+      section: "credit_score",
+      title: "Check current credit score (soft pull within 60 days)",
+      done: false,
+      priority: "high",
+    },
     { id: uid(), section: "credit_score", title: "No late payments in past 12 months", done: false },
-    { id: uid(), section: "credit_score", title: "Credit utilization under ~30% (pay down high balances)", done: false, linkHref: "/en/services/credit-building", linkLabel: "Credit-building guidance" },
+    {
+      id: uid(),
+      section: "credit_score",
+      title: "Credit utilization under ~30% (pay down high balances)",
+      done: false,
+      linkHref: "/en/services/credit-building",
+      linkLabel: "Credit-building guidance",
+    },
     { id: uid(), section: "credit_score", title: "Dispute/resolve any errors on your report", done: false },
 
     // INCOME & EMPLOYMENT
-    { id: uid(), section: "income_employment", title: "Two recent pay stubs (employee)", done: false, priority: "high" },
+    {
+      id: uid(),
+      section: "income_employment",
+      title: "Two recent pay stubs (employee)",
+      done: false,
+      priority: "high",
+    },
     { id: uid(), section: "income_employment", title: "T4s for last 2 years (employee)", done: false },
-    { id: uid(), section: "income_employment", title: "Letter of employment (role, start date, salary/hourly)", done: false, priority: "high" },
-    { id: uid(), section: "income_employment", title: "Self-employed: last 2 years T1s & NOAs; T2125 (if applicable)", done: false, linkHref: "/en/tools/self-employed-checklist", linkLabel: "Self-Employed Toolkit" },
+    {
+      id: uid(),
+      section: "income_employment",
+      title: "Letter of employment (role, start date, salary/hourly)",
+      done: false,
+      priority: "high",
+    },
+    {
+      id: uid(),
+      section: "income_employment",
+      title: "Self-employed: last 2 years T1s & NOAs; T2125 (if applicable)",
+      done: false,
+      linkHref: "/en/tools/self-employed-checklist",
+      linkLabel: "Self-Employed Toolkit",
+    },
 
     // DOWN PAYMENT & CLOSING
-    { id: uid(), section: "down_payment_closing", title: "Down payment saved (documented source)", done: false, priority: "high" },
-    { id: uid(), section: "down_payment_closing", title: "90–120 days account history for down payment funds", done: false },
+    {
+      id: uid(),
+      section: "down_payment_closing",
+      title: "Down payment saved (documented source)",
+      done: false,
+      priority: "high",
+    },
+    {
+      id: uid(),
+      section: "down_payment_closing",
+      title: "90–120 days account history for down payment funds",
+      done: false,
+    },
     { id: uid(), section: "down_payment_closing", title: "Gift letter prepared (if applicable)", done: false },
-    { id: uid(), section: "down_payment_closing", title: "Closing cost buffer set aside (~1.5–4% of purchase price)", done: false },
+    {
+      id: uid(),
+      section: "down_payment_closing",
+      title: "Closing cost buffer set aside (~1.5–4% of purchase price)",
+      done: false,
+    },
     { id: uid(), section: "down_payment_closing", title: "Consider RRSP Home Buyers’ Plan (if eligible)", done: false },
 
     // DOCUMENTS
@@ -177,10 +227,28 @@ function defaultTasks(): Task[] {
     { id: uid(), section: "documents", title: "Separation agreement / support docs (if applicable)", done: false },
 
     // TIMELINE & STEPS
-    { id: uid(), section: "timeline_steps", title: "Complete mortgage pre-approval", done: false, priority: "high" },
-    { id: uid(), section: "timeline_steps", title: "Rate hold timeline understood (typically 90–120 days)", done: false },
+    {
+      id: uid(),
+      section: "timeline_steps",
+      title: "Complete mortgage pre-approval",
+      done: false,
+      priority: "high",
+    },
+    {
+      id: uid(),
+      section: "timeline_steps",
+      title: "Rate hold timeline understood (typically 90–120 days)",
+      done: false,
+    },
     { id: uid(), section: "timeline_steps", title: "Realtor and real-estate lawyer lined up", done: false },
-    { id: uid(), section: "timeline_steps", title: "Budget monthly comfort level & run a stress-test scenario", done: false, linkHref: "/en/tools/affordability-stress-test", linkLabel: "Affordability & Stress Test" },
+    {
+      id: uid(),
+      section: "timeline_steps",
+      title: "Budget monthly comfort level & run a stress-test scenario",
+      done: false,
+      linkHref: "/en/tools/affordability-stress-test",
+      linkLabel: "Affordability & Stress Test",
+    },
   ];
 }
 
@@ -190,7 +258,11 @@ function SavedIndicator({ savedAt }: { savedAt: number | null }) {
   const sec = Math.max(0, Math.round((Date.now() - savedAt) / 1000));
   const text = sec < 3 ? "Saved just now" : sec < 60 ? `Saved ${sec}s ago` : "Saved";
   return (
-    <span className="inline-flex items-center gap-1 text-emerald-700 text-xs md:text-sm" role="status" aria-live="polite">
+    <span
+      className="inline-flex items-center gap-1 text-emerald-700 text-xs md:text-sm"
+      role="status"
+      aria-live="polite"
+    >
       <CheckCircle2 className="h-4 w-4" />
       {text}
     </span>
@@ -233,6 +305,18 @@ export default function Page() {
     custom: false,
   });
 
+  // Per-section quick-add state (avoid hooks inside loops)
+  type QuickAddState = Record<SectionKey, { title: string; priority: Priority }>;
+  const initialQuickAdd = (): QuickAddState => ({
+    credit_score: { title: "", priority: "normal" },
+    income_employment: { title: "", priority: "normal" },
+    down_payment_closing: { title: "", priority: "normal" },
+    documents: { title: "", priority: "normal" },
+    timeline_steps: { title: "", priority: "normal" },
+    custom: { title: "", priority: "normal" },
+  });
+  const [quickAdd, setQuickAdd] = useState<QuickAddState>(initialQuickAdd());
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Restore
@@ -246,14 +330,16 @@ export default function Page() {
       const rawC = localStorage.getItem(LS_COLLAPSE);
       if (rawC) {
         const cc = JSON.parse(rawC);
-        if (cc && typeof cc === "object") setCollapse(cc);
+        if (cc && typeof cc === "object") setCollapse(cc as Record<SectionKey, boolean>);
       }
       const rawF = localStorage.getItem(LS_FILTERS);
       if (rawF) {
-        const f = JSON.parse(rawF);
+        const f = JSON.parse(rawF) as { priority?: "all" | "high" | "normal" };
         if (f?.priority) setPriorityFilter(f.priority);
       }
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, []);
 
   // Persist
@@ -261,19 +347,25 @@ export default function Page() {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(tasks));
       setSavedAt(Date.now());
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [tasks]);
 
   useEffect(() => {
     try {
       localStorage.setItem(LS_COLLAPSE, JSON.stringify(collapse));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [collapse]);
 
   useEffect(() => {
     try {
       localStorage.setItem(LS_FILTERS, JSON.stringify({ priority: priorityFilter }));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [priorityFilter]);
 
   // Derived
@@ -287,7 +379,9 @@ export default function Page() {
       );
     }
     if (priorityFilter !== "all") {
-      filtered = filtered.filter((t) => (priorityFilter === "high" ? t.priority === "high" : (t.priority || "normal") === "normal"));
+      filtered = filtered.filter((t) =>
+        priorityFilter === "high" ? t.priority === "high" : (t.priority || "normal") === "normal"
+      );
     }
 
     const bySection = (key: SectionKey) => filtered.filter((t) => t.section === key);
@@ -307,7 +401,7 @@ export default function Page() {
     const upcoming = filtered
       .filter((t) => !!t.due && !t.done)
       .filter((t) => {
-        const d = new Date(t.due! + "T00:00:00");
+        const d = new Date(`${t.due as string}T00:00:00`);
         const diff = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         return diff >= 0 && diff <= 14;
       })
@@ -322,21 +416,20 @@ export default function Page() {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   const update = (id: string, patch: Partial<Task>) =>
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
-  const addCustom = (section: SectionKey, title = "") =>
-    setTasks((prev) => [
-      ...prev,
-      { id: uid(), section, title, note: "", done: false, isCustom: true },
-    ]);
   const removeTask = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
   const clearDue = (id: string) => update(id, { due: undefined });
 
   const resetAll = () => {
-    const ok = confirm("Reset the checklist to the default template? This clears your saved progress.");
+    const ok = confirm(
+      "Reset the checklist to the default template? This clears your saved progress."
+    );
     if (ok) {
       setTasks(defaultTasks());
       try {
         localStorage.removeItem(LS_KEY);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }
   };
 
@@ -359,36 +452,77 @@ export default function Page() {
   };
 
   const exportJSON = () => {
-    const json = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), tasks }, null, 2);
+    const json = JSON.stringify(
+      { version: 1, exportedAt: new Date().toISOString(), tasks },
+      null,
+      2
+    );
     downloadFile("Mortgage_Readiness_Checklist.json", "application/json", json);
   };
+
+  // Type guard helpers
+  const isSectionKey = (v: unknown): v is SectionKey =>
+    typeof v === "string" &&
+    ([
+      "credit_score",
+      "income_employment",
+      "down_payment_closing",
+      "documents",
+      "timeline_steps",
+      "custom",
+    ] as const).includes(v as SectionKey);
+
+  const asString = (v: unknown): string | undefined =>
+    typeof v === "string" ? v : undefined;
 
   const importJSON = (file: File) => {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const parsed = JSON.parse(String(reader.result));
-        const arr = parsed?.tasks || parsed;
+        const parsed = JSON.parse(String(reader.result)) as unknown;
+        const arr = Array.isArray((parsed as { tasks?: unknown[] }).tasks)
+          ? ((parsed as { tasks: unknown[] }).tasks as unknown[])
+          : (Array.isArray(parsed) ? (parsed as unknown[]) : []);
+
         if (!Array.isArray(arr)) throw new Error("Invalid file format");
-        // Minimal validation
+
         const cleaned: Task[] = arr
-          .map((t: any) => ({
-            id: typeof t.id === "string" ? t.id : uid(),
-            section: (["credit_score","income_employment","down_payment_closing","documents","timeline_steps","custom"] as SectionKey[]).includes(t.section) ? t.section : "custom",
-            title: String(t.title ?? "").slice(0, 300),
-            note: typeof t.note === "string" ? t.note.slice(0, 2000) : "",
-            done: Boolean(t.done),
-            due: typeof t.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(t.due) ? t.due : undefined,
-            linkHref: typeof t.linkHref === "string" ? t.linkHref : undefined,
-            linkLabel: typeof t.linkLabel === "string" ? t.linkLabel : undefined,
-            isCustom: Boolean(t.isCustom ?? true),
-            priority: t.priority === "high" ? "high" : "normal",
-          }))
-          .filter((t: Task) => t.title.trim().length > 0);
+          .map((item) => {
+            const obj = item as Record<string, unknown>;
+
+            const sectionRaw = obj.section;
+            const section: SectionKey = isSectionKey(sectionRaw) ? sectionRaw : "custom";
+
+            const title = asString(obj.title) ?? "";
+            const note = asString(obj.note);
+            const linkHref = asString(obj.linkHref);
+            const linkLabel = asString(obj.linkLabel);
+            const dueStr = asString(obj.due);
+            const due =
+              dueStr && /^\d{4}-\d{2}-\d{2}$/.test(dueStr) ? dueStr : undefined;
+            const priority: Priority =
+              obj.priority === "high" ? "high" : "normal";
+
+            return {
+              id: typeof obj.id === "string" ? obj.id : uid(),
+              section,
+              title: title.slice(0, 300),
+              note: note ? note.slice(0, 2000) : "",
+              done: Boolean(obj.done),
+              due,
+              linkHref,
+              linkLabel,
+              isCustom: Boolean((obj.isCustom as boolean | undefined) ?? true),
+              priority,
+            } as Task;
+          })
+          .filter((t) => t.title.trim().length > 0);
+
         if (!cleaned.length) throw new Error("No tasks found");
         setTasks(cleaned);
-      } catch (e: any) {
-        alert(`Could not import JSON: ${e?.message || e}`);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        alert(`Could not import JSON: ${msg}`);
       }
     };
     reader.readAsText(file);
@@ -406,8 +540,35 @@ export default function Page() {
       custom: val,
     });
 
+  const updateRowNote = (id: string, note: string) => update(id, { note });
+
+  // Per-section quick-add helpers
+  const setQuickAddFor = (key: SectionKey, patch: Partial<{ title: string; priority: Priority }>) =>
+    setQuickAdd((prev) => ({ ...prev, [key]: { ...prev[key], ...patch } }));
+
+  const doQuickAdd = (key: SectionKey) => {
+    const qa = quickAdd[key];
+    const title = qa.title.trim();
+    if (!title) return;
+    const t: Task = {
+      id: uid(),
+      section: key,
+      title,
+      note: "",
+      done: false,
+      isCustom: true,
+      priority: qa.priority,
+    };
+    setTasks((prev) => [...prev, t]);
+    setQuickAddFor(key, { title: "", priority: "normal" });
+  };
+
   // ---------- Render ----------
-  const printDate = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  const printDate = new Date().toLocaleDateString("en-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <ToolShell
@@ -434,7 +595,9 @@ export default function Page() {
             <label className="text-brand-blue/80">Priority:</label>
             <select
               value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value as typeof priorityFilter)}
+              onChange={(e) =>
+                setPriorityFilter(e.target.value as typeof priorityFilter)
+              }
               className="bg-transparent outline-none"
               aria-label="Filter by priority"
             >
@@ -444,11 +607,19 @@ export default function Page() {
             </select>
           </div>
 
-          <button type="button" onClick={() => toggleAll(true)} className="text-sm underline text-brand-blue">
+          <button
+            type="button"
+            onClick={() => toggleAll(true)}
+            className="text-sm underline text-brand-blue"
+          >
             Collapse all
           </button>
           <span className="text-brand-blue/40">|</span>
-          <button type="button" onClick={() => toggleAll(false)} className="text-sm underline text-brand-blue">
+          <button
+            type="button"
+            onClick={() => toggleAll(false)}
+            className="text-sm underline text-brand-blue"
+          >
             Expand all
           </button>
         </div>
@@ -517,14 +688,31 @@ export default function Page() {
       {/* Status / Snapshot */}
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-          <SummaryCard icon={<ShieldCheck className="h-5 w-5" />} label="Overall progress" value={`${overall.pct}%`} />
-          <SummaryCard icon={<CreditCard className="h-5 w-5" />} label="Credit focus" value="Clean 12 months • <30% util." />
-          <SummaryCard icon={<Building2 className="h-5 w-5" />} label="Pre-approval" value="Start early" href="/en/services/financial-planning" />
+          <SummaryCard
+            icon={<ShieldCheck className="h-5 w-5" />}
+            label="Overall progress"
+            value={`${overall.pct}%`}
+          />
+          <SummaryCard
+            icon={<CreditCard className="h-5 w-5" />}
+            label="Credit focus"
+            value="Clean 12 months • <30% util."
+          />
+          <SummaryCard
+            icon={<Building2 className="h-5 w-5" />}
+            label="Pre-approval"
+            value="Start early"
+            href="/en/services/financial-planning"
+          />
           <div className="rounded-xl border border-brand-gold/50 bg-brand-beige/40 p-3 md:p-4 flex items-center justify-between">
             <div>
               <div className="text-xs md:text-sm text-brand-blue/80">Checklist</div>
-              <div className="mt-2"><ProgressBar value={overall.done} total={overall.total} /></div>
-              <div className="text-xs text-brand-blue/70 mt-1">{overall.done}/{overall.total} completed</div>
+              <div className="mt-2">
+                <ProgressBar value={overall.done} total={overall.total} />
+              </div>
+              <div className="text-xs text-brand-blue/70 mt-1">
+                {overall.done}/{overall.total} completed
+              </div>
             </div>
             <SavedIndicator savedAt={savedAt} />
           </div>
@@ -538,10 +726,13 @@ export default function Page() {
             </div>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {overall.upcoming.map((t) => (
-                <li key={t.id} className="rounded-lg border border-brand-gold/50 bg-brand-beige/40 px-3 py-2 text-sm">
+                <li
+                  key={t.id}
+                  className="rounded-lg border border-brand-gold/50 bg-brand-beige/40 px-3 py-2 text-sm"
+                >
                   <div className="font-medium">{t.title}</div>
                   <div className="text-brand-blue/70 flex items-center gap-2 text-xs mt-1">
-                    <CalendarDays className="h-3 w-3" />
+                    <CalendarDays className="h-3.5 w-3.5" />
                     {t.due}
                     <span className="mx-1 text-brand-blue/30">•</span>
                     <span>{SECTION_META[t.section].title}</span>
@@ -555,7 +746,9 @@ export default function Page() {
 
       {/* Print header */}
       <div className="hidden print:block mt-2 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Mortgage Readiness — Checklist</div>
+        <div className="font-serif font-bold text-brand-green text-2xl">
+          Mortgage Readiness — Checklist
+        </div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -566,25 +759,18 @@ export default function Page() {
           const meta = SECTION_META[key];
           const list = overall.sections.find((s) => s.key === key)!;
           const isCollapsed = collapse[key];
-
-          // Quick-add local state (per section)
-          const [titleValue, setTitleValue] = useState("");
-          const [priorityValue, setPriorityValue] = useState<Priority>("normal");
-
-          const quickAdd = () => {
-            const title = titleValue.trim();
-            if (!title) return;
-            const t: Task = { id: uid(), section: key, title, note: "", done: false, isCustom: true, priority: priorityValue };
-            setTasks((prev) => [...prev, t]);
-            setTitleValue("");
-            setPriorityValue("normal");
-          };
+          const qa = quickAdd[key];
 
           return (
             <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className={classNames("font-serif text-base md:text-lg font-bold", toneToText[meta.tone])}>
+                  <h3
+                    className={classNames(
+                      "font-serif text-base md:text-lg font-bold",
+                      toneToText[meta.tone]
+                    )}
+                  >
                     {meta.title}
                   </h3>
                   {meta.blurb && <p className="text-sm text-brand-blue/80 mt-1">{meta.blurb}</p>}
@@ -625,7 +811,14 @@ export default function Page() {
                         const dueSoon = du !== null && du >= 0 && du <= 7 && !t.done;
 
                         return (
-                          <tr key={t.id} className={classNames("border-b border-brand-green/20", overdue && "bg-red-50/50", dueSoon && "bg-amber-50/50")}>
+                          <tr
+                            key={t.id}
+                            className={classNames(
+                              "border-b border-brand-green/20",
+                              overdue && "bg-red-50/50",
+                              dueSoon && "bg-amber-50/50"
+                            )}
+                          >
                             <td className="p-2 align-top">
                               <input
                                 id={`chk-${t.id}`}
@@ -728,17 +921,22 @@ export default function Page() {
                         <td />
                         <td className="p-2">
                           <input
-                            value={titleValue}
-                            onChange={(e) => setTitleValue(e.target.value)}
+                            value={qa.title}
+                            onChange={(e) => setQuickAddFor(key, { title: e.target.value })}
                             placeholder="Add a new task…"
                             className="w-full border rounded-lg p-2"
-                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), quickAdd())}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                doQuickAdd(key);
+                              }
+                            }}
                           />
                         </td>
                         <td className="p-2">
                           <select
-                            value={priorityValue}
-                            onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                            value={qa.priority}
+                            onChange={(e) => setQuickAddFor(key, { priority: e.target.value as Priority })}
                             className="border rounded-lg p-2 w-full bg-white"
                           >
                             <option value="normal">Normal</option>
@@ -750,7 +948,7 @@ export default function Page() {
                         <td className="p-2">
                           <button
                             type="button"
-                            onClick={quickAdd}
+                            onClick={() => doQuickAdd(key)}
                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
                           >
                             <PlusCircle className="h-4 w-4" />
@@ -770,7 +968,14 @@ export default function Page() {
                     const dueSoon = du !== null && du >= 0 && du <= 7 && !t.done;
 
                     return (
-                      <div key={t.id} className={classNames("relative rounded-xl border border-brand-gold/50 bg-white p-3", overdue && "bg-red-50/50", dueSoon && "bg-amber-50/50")}>
+                      <div
+                        key={t.id}
+                        className={classNames(
+                          "relative rounded-xl border border-brand-gold/50 bg-white p-3",
+                          overdue && "bg-red-50/50",
+                          dueSoon && "bg-amber-50/50"
+                        )}
+                      >
                         {(t.isCustom || key === "custom") && (
                           <button
                             type="button"
@@ -811,8 +1016,17 @@ export default function Page() {
                             )}
 
                             {(overdue || dueSoon) && (
-                              <div className={classNames("mt-1 text-xs flex items-center gap-1", overdue ? "text-red-700" : "text-amber-700")}>
-                                {overdue ? <AlertTriangle className="h-3.5 w-3.5" /> : <CalendarDays className="h-3.5 w-3.5" />}
+                              <div
+                                className={classNames(
+                                  "mt-1 text-xs flex items-center gap-1",
+                                  overdue ? "text-red-700" : "text-amber-700"
+                                )}
+                              >
+                                {overdue ? (
+                                  <AlertTriangle className="h-3.5 w-3.5" />
+                                ) : (
+                                  <CalendarDays className="h-3.5 w-3.5" />
+                                )}
                                 {overdue ? "Overdue" : `Due soon (${du}d)`}
                               </div>
                             )}
@@ -872,14 +1086,16 @@ export default function Page() {
                     <div className="text-[11px] text-brand-blue/70 mb-1">Add task</div>
                     <div className="grid grid-cols-2 gap-2">
                       <input
-                        value={titleValue}
-                        onChange={(e) => setTitleValue(e.target.value)}
+                        value={qa.title}
+                        onChange={(e) => setQuickAddFor(key, { title: e.target.value })}
                         placeholder="Task title…"
                         className="w-full border rounded-lg p-2 col-span-2"
                       />
                       <select
-                        value={priorityValue}
-                        onChange={(e) => setPriorityValue(e.target.value as Priority)}
+                        value={qa.priority}
+                        onChange={(e) =>
+                          setQuickAddFor(key, { priority: e.target.value as Priority })
+                        }
                         className="w-full border rounded-lg p-2"
                       >
                         <option value="normal">Normal</option>
@@ -887,7 +1103,7 @@ export default function Page() {
                       </select>
                       <button
                         type="button"
-                        onClick={quickAdd}
+                        onClick={() => doQuickAdd(key)}
                         className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-full border border-brand-gold/70 text-brand-blue hover:bg-brand-beige/60"
                       >
                         <PlusCircle className="h-4 w-4" />
@@ -946,31 +1162,50 @@ export default function Page() {
           </li>
         </ul>
         <p className="text-xs text-brand-blue/70 mt-3">
-          This checklist is educational and general. Underwriting policies vary by lender and can change. Confirm specifics with your broker/lender.
+          This checklist is educational and general. Underwriting policies vary by lender and can
+          change. Confirm specifics with your broker/lender.
         </p>
       </section>
 
       {/* Print helpers */}
       <style jsx global>{`
         @media print {
-          .print\\:hidden { display: none !important; }
-          main { background: white !important; }
-          header, section { break-inside: avoid; page-break-inside: avoid; }
-          table { page-break-inside: auto; }
-          tr { page-break-inside: avoid; page-break-after: auto; }
+          .print\\:hidden {
+            display: none !important;
+          }
+          main {
+            background: white !important;
+          }
+          header,
+          section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          table {
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
         }
       `}</style>
     </ToolShell>
   );
-
-  // tiny inline to keep event handlers tidy
-  function updateRowNote(id: string, note: string) {
-    update(id, { note });
-  }
 }
 
 // ---------- Small child ----------
-function SummaryCard({ icon, label, value, href }: { icon: React.ReactNode; label: string; value: string; href?: string }) {
+function SummaryCard({
+  icon,
+  label,
+  value,
+  href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+}) {
   const content = (
     <div className="rounded-xl border border-brand-gold/50 bg-white p-3 md:p-4 h-full">
       <div className="text-xs md:text-sm text-brand-blue/80 flex items-center gap-2">
