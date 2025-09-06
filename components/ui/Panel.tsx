@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import type { ReactNode, ElementType } from "react";
 import clsx from "clsx";
 
 type PanelProps = {
   children: ReactNode;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType; // ✅ no JSX namespace needed
 };
 
 /** A “table-like” rounded panel used across pages */
