@@ -4,7 +4,7 @@
 import Link from "next/link";
 import type { ReactNode, ElementType } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, cubicBezier } from "framer-motion";
 
 /* ============================ Precios (CAD) ============================ */
 /** Pon cualquier precio en null para mostrar “Contactar para precio”. Puede aplicar HST. */
@@ -56,14 +56,16 @@ function priceES(p: number | null) {
 }
 
 /* ========================= Ayudas de animación ========================= */
-const easing: number[] = [0.22, 1, 0.36, 1];
+// Use an easing **function** (typed) instead of number[]
+const easeOutCustom = cubicBezier(0.22, 1, 0.36, 1);
+
 function useAnims() {
   const prefersReduced = useReducedMotion();
   const fade = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easeOutCustom },
     },
   };
   const fadeUp = {
@@ -71,7 +73,7 @@ function useAnims() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easeOutCustom },
     },
   };
   const stagger = {
