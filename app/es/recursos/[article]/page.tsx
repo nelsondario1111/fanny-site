@@ -13,11 +13,9 @@ type I18nMap = { resources?: PairDict; tools?: PairDict };
 
 async function loadI18nMap(): Promise<I18nMap> {
   try {
-    // If resolveJsonModule is enabled in tsconfig (recommended), .default will be the JSON object.
     const mod = await import("@/content/i18n-slugs.json");
     return (mod as { default: I18nMap }).default ?? (mod as unknown as I18nMap);
   } catch {
-    // sin mapa — usamos fallback
     return {};
   }
 }
@@ -135,7 +133,7 @@ export async function generateMetadata(
       images: ogImage ? [ogImage] : undefined,
       type: "article",
     },
-    alternates: { languages },
+  alternates: { languages },
   };
 }
 
@@ -164,7 +162,6 @@ export default async function ArticlePage(
   const readingTime = toReadingTime({
     html: cleanedHtml,
     summary: a.summary ?? null,
-    // 👇 Only include readingTimeMin when it's actually a number
     ...(typeof a.readingTimeMin === "number" ? { readingTimeMin: a.readingTimeMin } : {}),
   });
 
@@ -267,7 +264,13 @@ export default async function ArticlePage(
 
         <div className="max-w-screen-xl mx-auto px-4 mt-10 print:hidden">
           <ArticleActions title={a.title} lang="es" />
-          <RelatedArticles lang="es" currentSlug={a.slug} category={a.category} tags={a.tags} />
+          {/* ✅ Coaccionar null -> undefined para props opcionales */}
+          <RelatedArticles
+            lang="es"
+            currentSlug={a.slug}
+            category={a.category ?? undefined}
+            tags={Array.isArray(a.tags) ? a.tags : undefined}
+          />
         </div>
 
         {(prev || next) && (
