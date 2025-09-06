@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, cubicBezier } from "framer-motion";
 import {
   Building2,
   Calculator,
@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 
 /* ---------------------- Helpers de animación ---------------------- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+// Usa una función de easing tipada en lugar de number[]
+const easeOutCustom = cubicBezier(0.22, 1, 0.36, 1);
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
@@ -25,7 +26,7 @@ function useAnims() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easeOutCustom },
     },
   };
 
@@ -34,7 +35,7 @@ function useAnims() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing },
+      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easeOutCustom },
     },
   };
 
@@ -458,7 +459,7 @@ export default function SobreMi() {
               <motion.button
                 type="button"
                 variants={fadeUp}
-                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easing } }}
+                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easeOutCustom } }}
                 whileFocus={{ scale: 1.005 }}
                 className="px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
               >
