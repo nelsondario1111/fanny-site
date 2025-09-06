@@ -2,12 +2,12 @@
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, cubicBezier } from "framer-motion";
 import type { Variants } from "framer-motion";
 import useMounted from "@/lib/useMounted";
 
 /* Easing + variants */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing = cubicBezier(0.22, 1, 0.36, 1); // ✅ returns an EasingFunction
 
 export function useAnims() {
   const prefersReduced = useReducedMotion();
