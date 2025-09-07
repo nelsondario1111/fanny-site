@@ -3,7 +3,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+
+// ✅ Hydration-safe motion primitives (no blank flashes, no hook-order issues)
+import { Reveal, StaggerGroup } from "@/components/motion-safe";
 
 /* --------------------------- Local UI primitives --------------------------- */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -77,22 +79,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-/* ------------------------------- Animations ------------------------------- */
-const fadeUp = { opacity: 0, y: 20 };
-const fadeUpVisible = { opacity: 1, y: 0 };
-const listVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, when: "beforeChildren" },
-  },
-} as const;
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
-} as const;
-/* ------------------------------------------------------------------------- */
-
+/* --------------------------------- Page --------------------------------- */
 export default function TestimonialsPage() {
   // JSON-LD for SEO (Review schema without ratings)
   const jsonLd = React.useMemo(() => {
@@ -123,7 +110,7 @@ export default function TestimonialsPage() {
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* Hero */}
       <section className="pt-10 px-4">
-        <motion.div initial={fadeUp} animate={fadeUpVisible} transition={{ duration: 0.6, ease: "easeOut" }}>
+        <Reveal>
           <Panel>
             <SectionTitle
               title="Stories of Financial Transformation"
@@ -133,42 +120,38 @@ export default function TestimonialsPage() {
               Quotes may be lightly edited for clarity. Results vary by individual circumstances.
             </p>
           </Panel>
-        </motion.div>
+        </Reveal>
       </section>
 
       {/* Testimonials list */}
       <section className="px-4 mt-8">
-        <motion.div initial={fadeUp} animate={fadeUpVisible} transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}>
-          <Panel>
-            <motion.div variants={listVariants} initial="hidden" animate="show" className="space-y-6">
-              {TESTIMONIALS.map(({ quote, name, context, year }, i) => (
-                <motion.figure
-                  key={`${name}-${i}`}
-                  variants={itemVariants}
-                  className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg"
-                >
+        <Panel>
+          <StaggerGroup className="space-y-6">
+            {TESTIMONIALS.map(({ quote, name, context, year }, i) => (
+              <Reveal key={`${name}-${i}`}>
+                <figure className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg">
                   <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">“{quote}”</blockquote>
                   <figcaption className="font-semibold text-brand-green">
                     — {name}
                     {context ? <span className="text-brand-body/80 font-normal">, {context}</span> : null}
                     {year ? <span className="text-brand-body/60 font-normal"> · {year}</span> : null}
                   </figcaption>
-                </motion.figure>
-              ))}
-            </motion.div>
+                </figure>
+              </Reveal>
+            ))}
+          </StaggerGroup>
 
-            {/* CTA */}
-            <div className="text-center mt-10">
-              <Link
-                href="/en/book"
-                className="inline-block px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-base md:text-lg tracking-wide"
-                aria-label="Book a free consultation"
-              >
-                Book a Free Consultation
-              </Link>
-            </div>
-          </Panel>
-        </motion.div>
+          {/* CTA */}
+          <div className="text-center mt-10">
+            <Link
+              href="/en/book"
+              className="inline-block px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-base md:text-lg tracking-wide"
+              aria-label="Book a free consultation"
+            >
+              Book a Free Consultation
+            </Link>
+          </div>
+        </Panel>
       </section>
 
       {/* JSON-LD */}

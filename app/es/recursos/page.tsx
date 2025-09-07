@@ -1,3 +1,4 @@
+// app/es/recursos/page.tsx
 import RecursosClient, { type ClientArticle } from "./RecursosClient";
 import { getAllArticles } from "@/lib/getArticles";
 
@@ -44,12 +45,20 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   rentas: "real-estate-investing",
   "propiedad-de-alquiler": "real-estate-investing",
   arrendador: "real-estate-investing",
+  "real-estate": "real-estate-investing",
+  rental: "real-estate-investing",
+  rentals: "real-estate-investing",
+  landlord: "real-estate-investing",
+  landlording: "real-estate-investing",
+  "rental-property": "real-estate-investing",
 
   // Planificación financiera
   "flujo-de-caja": "financial-planning",
   "flujo-de-efectivo": "financial-planning",
   "cash-flow": "financial-planning",
+  cashflow: "financial-planning",
   presupuesto: "financial-planning",
+  budgeting: "financial-planning",
   rrsp: "financial-planning",
   tfsa: "financial-planning",
 
@@ -57,6 +66,7 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   impuestos: "tax-planning",
   "impuestos-autonomos": "tax-planning",
   "self-employed-taxes": "tax-planning",
+  taxes: "tax-planning",
 
   // Patrimonio
   inversiones: "wealth-building",
@@ -64,24 +74,32 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   "patrimonio-neto": "wealth-building",
   "net-worth": "wealth-building",
   networth: "wealth-building",
+  investing: "wealth-building",
 
   // Recién llegados
   "recién-llegados": "newcomers",
   "recien-llegados": "newcomers",
   "nuevo-en-canada": "newcomers",
   inmigrantes: "newcomers",
+  newcomer: "newcomers",
+  "new-comers": "newcomers",
+  immigrant: "newcomers",
+  immigrants: "newcomers",
+  "new-to-canada": "newcomers",
 
   // Emprendedores
   autonomos: "entrepreneurs",
   autónomos: "entrepreneurs",
   "trabajador-por-cuenta-propia": "entrepreneurs",
   "small-business": "entrepreneurs",
-  "pequena-empresa": "entrepreneurs",
-  "pequeña-empresa": "entrepreneurs",
+  "self-employed": "entrepreneurs",
+  selfemployed: "entrepreneurs",
+  contractor: "entrepreneurs",
 
   // Holístico / Diseño Humano
   holistico: "holistic-approach",
   holístico: "holistic-approach",
+  holistic: "holistic-approach",
   "human design": "human-design",
   "diseno-humano": "human-design",
   "diseño-humano": "human-design",
@@ -150,20 +168,15 @@ type PersonaKey =
 type Persona = {
   key: PersonaKey;
   label: string;
-  tags: CanonTag[];
-  includeSlugs?: string[];
+  tags: CanonTag[];        // etiquetas canónicas que alimentan esta persona
+  includeSlugs?: string[]; // semillas explícitas
 };
 
-type PersonaIndex = {
-  key: PersonaKey;
-  label: string;
-  slugs: string[];
-  count: number;
-};
+type ViewOption = { key: "grid" | "list"; label: string };
 
-/* ============================ TagsIndex (para eliminar any) ============================ */
-type TagsIndex = {
-  articles: { slug: string; title: string; category: string; tags: string[] }[];
+/* ========= Payload que coincide con lo que espera RecursosClient ========= */
+type TagsIndexPayload = {
+  articles: Array<{ slug: string; title: string; category: string; tags: string[] }>;
   tags: Record<string, { count: number; slugs: string[] }>;
   categories: Record<string, { count: number; slugs: string[] }>;
   personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
@@ -179,27 +192,27 @@ export default async function Page() {
     const readingTime =
       typeof a.readingTimeMin === "number" && a.readingTimeMin > 0
         ? `${a.readingTimeMin} min de lectura`
-        : a.readingTime ?? null;
+        : (a.readingTime as string | number | null) ?? null;
 
     const canonTags = canonicalizeTags(a.tags);
     const withFallback = canonTags.length ? canonTags : deriveFromCategory(a.category);
 
     return {
-      slug: a.slug,
-      title: a.title,
-      excerpt: a.excerpt ?? null,
-      summary: a.summary ?? null,
-      category: a.category ?? null,
-      tags: withFallback,
-      date: a.date ?? null,
+      slug: String(a.slug),
+      title: String(a.title ?? ""),
+      excerpt: (a.excerpt as string | null) ?? null,
+      summary: (a.summary as string | null) ?? null,
+      category: (a.category as string | null) ?? null,
+      tags: withFallback, // CanonTag[] como string[]
+      date: (a.date as string | Date | null) ?? null,
       readingTime,
-      image: a.image ?? null,
-      hero: a.hero ?? null,
-      ogImage: a.ogImage ?? null,
+      image: (a.image as string | null) ?? null,
+      hero: (a.hero as string | null) ?? null,
+      ogImage: (a.ogImage as string | null) ?? null,
     };
   });
 
-  // 3) Índice por etiquetas (conteos + slugs)
+  // 3) Índice por etiquetas (conteos + slugs) para filtros/personas
   const tagCounts = Object.fromEntries(
     (CANON_TAGS as readonly CanonTag[]).map((t) => [t, { count: 0, slugs: [] as string[] }])
   ) as Record<CanonTag, { count: number; slugs: string[] }>;
@@ -211,7 +224,7 @@ export default async function Page() {
     }
   }
 
-  // 4) Personas (semillas solo con slugs que existen hoy)
+  // 4) Personas — solo semillas que existen hoy
   const personas: Persona[] = [
     {
       key: "families",
@@ -229,7 +242,6 @@ export default async function Page() {
       key: "newcomers",
       label: "Recién Llegados",
       tags: ["newcomers", "mortgages", "financial-planning"],
-      includeSlugs: [],
     },
     {
       key: "entrepreneurs",
@@ -250,11 +262,10 @@ export default async function Page() {
       key: "holistic",
       label: "Holístico y Diseño Humano",
       tags: ["holistic-approach", "human-design", "financial-planning"],
-      includeSlugs: [],
     },
   ];
 
-  const personaIndex: PersonaIndex[] = personas.map((p) => {
+  const personaIndex = personas.map((p) => {
     const set = new Set<string>();
     for (const t of p.tags) tagCounts[t].slugs.forEach((s) => set.add(s));
     (p.includeSlugs ?? []).forEach((s) => set.add(s));
@@ -262,27 +273,27 @@ export default async function Page() {
     return { key: p.key, label: p.label, slugs, count: slugs.length };
   });
 
-  // 5) Objeto TagsIndex para el cliente (filtros/personas)
-  const tagsIndex: TagsIndex = {
+  // 5) TagsIndex payload para el cliente
+  const tagsIndex: TagsIndexPayload = {
     articles: processed.map((a) => ({
       slug: a.slug,
       title: a.title,
       category: a.category ?? "",
-      tags: (a.tags ?? []) as string[],
+      tags: (a.tags as string[]) ?? [],
     })),
-    tags: tagCounts, // CanonTag keys are assignable to string keys
+    tags: tagCounts,
     categories: Object.fromEntries(
       (CANON_TAGS as readonly CanonTag[]).map((t) => [
         DISPLAY_LABELS[t],
         { count: tagCounts[t].count, slugs: tagCounts[t].slugs },
       ])
-    ) as Record<string, { count: number; slugs: string[] }>,
+    ),
     personas: Object.fromEntries(
       personaIndex.map((p) => [p.key, { label: p.label, slugs: p.slugs, count: p.count }])
     ) as Record<PersonaKey, { label: string; slugs: string[]; count: number }>,
   };
 
-  // 6) Destacados — incluir solo slugs existentes en ES
+  // 6) Destacados — incluir solo slugs existentes
   const preferredFeatured = [
     "5-steps-to-financial-freedom",
     "buying-your-first-multi-unit-property",
@@ -293,11 +304,11 @@ export default async function Page() {
   const existing = new Set(processed.map((a) => a.slug));
   const featuredSlugs = preferredFeatured.filter((s) => existing.has(s));
 
-  // 7) Etiquetas bonitas para las pastillas superiores
+  // 7) Etiquetas bonitas para las pastillas superiores (opcional en el cliente)
   const categories = (CANON_TAGS as readonly CanonTag[]).map((t) => DISPLAY_LABELS[t]);
 
   // 8) Vistas
-  const views: Array<{ key: string; label: string }> = [
+  const views: ViewOption[] = [
     { key: "grid", label: "Cuadrícula" },
     { key: "list", label: "Lista" },
   ];

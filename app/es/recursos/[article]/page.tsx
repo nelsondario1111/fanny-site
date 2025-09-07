@@ -7,6 +7,9 @@ import ArticleActions from "@/components/ArticleActions";
 import ArticleTOC from "@/components/ArticleTOC";
 import RelatedArticles from "@/components/RelatedArticles";
 
+/** URL absoluta del sitio para SEO (ajusta si usas config/env). */
+const SITE_URL = "https://www.fannysamaniego.com";
+
 /** Leer el mapa de slugs i18n generado (si existe). */
 type PairDict = Record<string, { en: string; es: string }>;
 type I18nMap = { resources?: PairDict; tools?: PairDict };
@@ -50,13 +53,14 @@ const stripFrontMatterFromHtml = (html: string) => {
   return out.trim();
 };
 
+/** Tiempo de lectura: usa 200 wpm para ES, con fallback a `readingTimeMin` si existe. */
 const toReadingTime = (raw: { html?: string; summary?: string | null; readingTimeMin?: number }) => {
   if (typeof raw.readingTimeMin === "number" && Number.isFinite(raw.readingTimeMin)) {
     return `${raw.readingTimeMin} min de lectura`;
   }
   const text = `${raw.summary ?? ""} ${raw.html ?? ""}`.replace(/<[^>]*>/g, " ");
   const words = text.split(/\s+/).filter(Boolean).length;
-  return `${Math.max(1, Math.round(words / 225))} min de lectura`;
+  return `${Math.max(1, Math.round(words / 200))} min de lectura`;
 };
 
 const parseTime = (v?: string | Date | null) => {
@@ -93,7 +97,7 @@ function hasHeroAlt(x: unknown): x is { heroAlt?: string | null } {
 
 // Static params & metadata
 export async function generateStaticParams() {
-  const items = await getAllArticles("es");
+  const items = (await getAllArticles("es")) ?? [];
   return items.map((a) => ({ article: a.slug }));
 }
 
@@ -116,10 +120,8 @@ export async function generateMetadata(
     languages.en = `/en/resources/${article}`;
   }
 
-  const description =
-    (a.summary && String(a.summary)) ||
-    (a.excerpt && String(a.excerpt)) ||
-    "Guía útil sobre hipotecas, hábitos financieros y nociones de impuestos.";
+  const rawSummary = (a.summary && String(a.summary)) || (a.excerpt && String(a.excerpt)) || "";
+  const description = rawSummary.replace(/<[^>]+>/g, "").slice(0, 280) || "Guía útil sobre hipotecas, hábitos financieros y nociones de impuestos.";
 
   const ogImage = a.ogImage || a.hero || a.image || undefined;
 
@@ -133,7 +135,7 @@ export async function generateMetadata(
       images: ogImage ? [ogImage] : undefined,
       type: "article",
     },
-  alternates: { languages },
+    alternates: { languages },
   };
 }
 
@@ -194,9 +196,13 @@ export default async function ArticlePage(
               <div className="print:hidden">
                 <Link
                   href={enHref}
+                  rel="alternate"
+                  hrefLang="en"
                   className="inline-flex items-center rounded-full px-3 py-1.5 text-xs border border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                  aria-label="Ver este artículo en inglés"
+                  title="Ver en inglés"
                 >
-                  View in English
+                  Ver en inglés
                 </Link>
               </div>
             )}
@@ -250,6 +256,8 @@ export default async function ArticlePage(
                 src={a.hero}
                 alt={altText}
                 className="w-full rounded-2xl mb-6"
+                loading="eager"
+                decoding="async"
               />
             )}
             <div dangerouslySetInnerHTML={{ __html: cleanedHtml }} />
@@ -311,7 +319,7 @@ export default async function ArticlePage(
                 key={t}
                 className="text-xs px-2.5 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30"
               >
-                #{t}
+                #{t.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase())}
               </span>
             ))}
           </div>
@@ -333,18 +341,24 @@ export default async function ArticlePage(
             publisher: {
               "@type": "Organization",
               name: "Fanny Samaniego",
-              logo: { "@type": "ImageObject", url: "/logo.png" },
+              logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png` },
             },
-            image: a.hero ? [a.hero] : a.ogImage ? [a.ogImage] : a.image ? [a.image] : undefined,
+            image: a.hero
+              ? [`${SITE_URL}${a.hero}`]
+              : a.ogImage
+              ? [`${SITE_URL}${a.ogImage}`]
+              : a.image
+              ? [`${SITE_URL}${a.image}`]
+              : undefined,
             description:
-              (a.summary && String(a.summary)) ||
-              (a.excerpt && String(a.excerpt)) ||
+              (a.summary && String(a.summary).replace(/<[^>]+>/g, "")) ||
+              (a.excerpt && String(a.excerpt).replace(/<[^>]+>/g, "")) ||
               undefined,
             articleSection: a.category || undefined,
             keywords: Array.isArray(a.tags) ? a.tags.join(", ") : undefined,
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `/es/recursos/${a.slug}`,
+              "@id": `${SITE_URL}/es/recursos/${a.slug}`,
             },
           }),
         }}

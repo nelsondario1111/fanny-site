@@ -3,8 +3,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import * as React from "react";
 import type { ReactNode } from "react";
-import { motion, useReducedMotion, cubicBezier } from "framer-motion";
 import {
   Building2,
   Calculator,
@@ -15,88 +15,14 @@ import {
   Users,
 } from "lucide-react";
 
-/* ---------------------- Helpers de animación ---------------------- */
-// Usa una función de easing tipada en lugar de number[]
-const easeOutCustom = cubicBezier(0.22, 1, 0.36, 1);
+import {
+  Reveal,
+  RevealPanel,
+  StaggerGroup,
+  useMotionPresets,
+} from "@/components/motion-safe";
 
-function useAnims() {
-  const prefersReduced = useReducedMotion();
-
-  const fade = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easeOutCustom },
-    },
-  };
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 14 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easeOutCustom },
-    },
-  };
-
-  const stagger = {
-    hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 },
-    },
-  };
-
-  return { fade, fadeUp, stagger };
-}
-
-/* --- “Panel” compartido --- */
-function Panel({
-  children,
-  className = "",
-  as,
-}: {
-  children: ReactNode;
-  className?: string;
-  as?: React.ElementType;
-}) {
-  const Tag: React.ElementType = as ?? "section";
-  return (
-    <Tag
-      className={[
-        "max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold shadow-xl",
-        "backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </Tag>
-  );
-}
-
-function MotionPanel({
-  children,
-  className = "",
-  viewportAmount = 0.2,
-}: {
-  children: ReactNode;
-  className?: string;
-  viewportAmount?: number;
-}) {
-  const { fadeUp } = useAnims();
-  return (
-    <motion.section
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: viewportAmount }}
-      className={className}
-    >
-      <Panel>{children}</Panel>
-    </motion.section>
-  );
-}
-
+/* ============================= Título de sección ============================= */
 function SectionTitle({
   title,
   subtitle,
@@ -104,377 +30,344 @@ function SectionTitle({
   title: string;
   subtitle?: ReactNode;
 }) {
-  const { fade, fadeUp } = useAnims();
+  const { fade, fadeUp } = useMotionPresets();
   return (
-    <motion.div
-      variants={fade}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      className="text-center mb-6"
-    >
-      <motion.h1
-        variants={fadeUp}
-        className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
-      >
-        {title}
-      </motion.h1>
-      <motion.div
-        variants={fade}
-        className="flex justify-center my-4"
-        aria-hidden="true"
-      >
-        <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-      </motion.div>
+    <div className="text-center mb-6">
+      <Reveal variants={fadeUp}>
+        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+          {title}
+        </h1>
+      </Reveal>
+
+      <Reveal variants={fade}>
+        <div className="flex justify-center my-4" aria-hidden="true">
+          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+        </div>
+      </Reveal>
+
       {subtitle && (
-        <motion.p
-          variants={fadeUp}
-          className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto"
-        >
-          {subtitle}
-        </motion.p>
+        <Reveal variants={fadeUp}>
+          <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+            {subtitle}
+          </p>
+        </Reveal>
       )}
-    </motion.div>
+    </div>
   );
 }
-/* ------------------------------------------------------ */
 
-export default function SobreMi() {
-  const { fade, fadeUp, stagger } = useAnims();
+/* ============================== Contenido de página ============================== */
+function AboutInnerEs() {
+  const { fade, fadeUp } = useMotionPresets();
 
   return (
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* HERO / BIO */}
       <section className="pt-6 sm:pt-8 px-4" aria-label="Hero y biografía">
-        <MotionPanel>
+        <RevealPanel>
           <SectionTitle
-            title="Sobre Fanny — Acompañamiento profesional con corazón humano"
+            title="Sobre Fanny — Guía profesional con corazón humano"
             subtitle={
               <>
-                Soy Agente Hipotecaria (Nivel 2) y consultora financiera holística en Toronto.
-                Integro experiencia con prestamistas, ritmo fiscal y disciplina contable para que tomes
-                decisiones claras, alineadas a tus valores—y te sientas en paz con el dinero. Servimos a
-                un grupo selecto de familias profesionales, ejecutivos y dueños de negocio.
+                Soy agente hipotecaria (Nivel 2) y consultora financiera holística, bilingüe, con base en Toronto.
+                Integro experiencia en financiamiento, ritmo fiscal y disciplina contable para ayudarte a tomar
+                decisiones claras y alineadas a tus valores—y sentir calma con el dinero. Acompañamos a una
+                lista selecta de familias profesionales, ejecutivos y dueños de negocio.
               </>
             }
           />
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="mt-10 flex flex-col md:flex-row items-center gap-10"
-          >
-            <motion.div variants={fadeUp} className="flex-shrink-0 flex justify-center">
+
+          <StaggerGroup className="mt-10 flex flex-col md:flex-row items-center gap-10">
+            <Reveal variants={fadeUp} className="flex-shrink-0 flex justify-center">
               <Image
                 src="/fanny-portrait.jpg"
-                alt="Fanny Samaniego, Agente Hipotecaria (Nivel 2) y Consultora Financiera en Toronto"
+                alt="Retrato de Fanny Samaniego, Agente Hipotecaria (Nivel 2) y Consultora Financiera en Toronto"
                 width={300}
                 height={380}
                 className="rounded-3xl shadow-lg object-cover border-4 border-brand-gold"
                 priority
               />
-            </motion.div>
-            <motion.div variants={fadeUp} className="flex-1 md:pl-4">
+            </Reveal>
+
+            <Reveal variants={fadeUp} className="flex-1 md:pl-4">
               <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
-                Me especializo en alinear estrategia hipotecaria, sistemas de flujo de efectivo y preparación
-                para la temporada fiscal—para que los pasos de hoy apoyen tus metas de largo plazo. En el día a día,
-                evalúo tu situación, clarifico opciones de hipoteca y coordino con prestamistas para que el trámite
-                avance sin drama.
+                Me especializo en alinear la estrategia hipotecaria, los sistemas de flujo de caja y la
+                preparación para temporada fiscal—para que tus pasos de corto plazo apoyen tus metas de largo
+                plazo. En el día a día, evalúo situaciones financieras, aclaro opciones de hipoteca y coordino
+                con prestamistas para que las solicitudes avancen sin drama.
               </p>
               <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
-                En planeación, diseñamos rutinas prácticas y, cuando hace falta, te acompaño ante la CRA con
-                documentación ordenada, comunicación clara y cumplimiento total.
+                En la parte de planificación, diseño rutinas holísticas y prácticas; y cuando hace falta,
+                apoyo a clientes durante revisiones de la CRA con documentación organizada, comunicación clara
+                y cumplimiento total.
               </p>
               <p className="mb-0 text-lg md:text-xl text-brand-body leading-relaxed">
-                Trabajamos por invitación para proteger la presencia y la calidad. Si resuena contigo, será un gusto conversar.
+                Trabajamos por invitación para cuidar la presencia y la calidad. Si nuestra forma de trabajar
+                te resuena, estás cordialmente invitado a iniciar una conversación.
               </p>
+
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href="/es/contacto?intent=consult&package=Consulta%20Privada%20de%20Descubrimiento"
-                  aria-label="Reservar una Consulta Privada de Descubrimiento"
+                  href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Privada"
+                  aria-label="Reservar una Llamada de Descubrimiento Privada"
                   className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border border-brand-green/20 hover:bg-brand-gold hover:text-brand-green transition"
                 >
-                  Reservar Consulta Privada
+                  Reservar Llamada de Descubrimiento
                 </Link>
                 <Link
                   href="/es/servicios"
                   className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
                 >
-                  Ver Servicios
+                  Explorar servicios
                 </Link>
               </div>
-            </motion.div>
-          </motion.div>
-        </MotionPanel>
+            </Reveal>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
-      {/* CREDENCIALES */}
-      <section className="px-4 mt-8" aria-label="Credenciales y datos">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            Credenciales & Datos Rápidos
-          </motion.h2>
+      {/* CREDENCIALES / HECHOS RÁPIDOS */}
+      <section className="px-4 mt-8" aria-label="Credenciales y datos rápidos">
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              Credenciales y datos rápidos
+            </h2>
+          </Reveal>
 
-          <motion.ul
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10"
-          >
+          <StaggerGroup className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
               "Agente Hipotecaria (Nivel 2), Ontario",
-              "10+ años en planeación financiera, impuestos y servicios hipotecarios",
-              "Experiencia en contabilidad y reporte financiero",
+              "10+ años entre planificación financiera, impuestos y servicios hipotecarios",
+              "Formación en contabilidad y reportes financieros",
               "Colaboración con prestamistas para aprobaciones fluidas",
-              "Preparación y apoyo ante auditorías de la CRA",
+              "Preparación y soporte en auditorías de la CRA",
               "Bilingüe: Español / English",
-            ].map((item, i) => (
-              <motion.li key={i} variants={fadeUp}>
-                {item}
-              </motion.li>
+            ].map((item) => (
+              <Reveal key={item} variants={fadeUp}>
+                <li>{item}</li>
+              </Reveal>
             ))}
-          </motion.ul>
-        </MotionPanel>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
       {/* EQUIPO MULTIDISCIPLINARIO */}
       <section className="px-4 mt-8" aria-label="Equipo multidisciplinario">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            Un equipo multidisciplinario—bajo un mismo paraguas
-          </motion.h2>
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              Un equipo multidisciplinario—bajo un mismo paraguas
+            </h2>
+          </Reveal>
 
-          <motion.p
-            variants={fade}
-            className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center"
-          >
-            Junto a Fanny, tendrás acceso coordinado a profesionales calificados. Cada especialista opera
-            de forma independiente; lo integramos cuando su participación aporta valor y timing a tu plan,
-            para que hipoteca, flujo y ritmo fiscal funcionen juntos.
-          </motion.p>
+          <Reveal variants={fade}>
+            <p className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center">
+              Junto a Fanny, tendrás acceso coordinado a profesionales calificados. Cada especialista opera
+              de forma independiente—los integramos cuando el momento aporta valor a tu plan, para que tu
+              hipoteca, flujo de caja y ritmo fiscal funcionen de verdad en conjunto.
+            </p>
+          </Reveal>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="mt-6 grid gap-4 md:grid-cols-3"
-          >
+          <StaggerGroup className="mt-6 grid gap-4 md:grid-cols-3">
             {[
               {
                 icon: <Building2 className="text-brand-green" size={22} />,
-                title: "Prestamistas & Underwriters",
-                body:
-                  "Claridad de políticas y ajuste de producto—expedientes que inspiran confianza.",
+                title: "Prestamistas y Underwriters",
+                body: "Claridad de políticas y encaje del producto—expedientes que inspiran confianza al prestamista.",
               },
               {
                 icon: <Calculator className="text-brand-green" size={22} />,
-                title: "Asesores Fiscales / CPAs",
-                body:
-                  "Estrategias proactivas, registros listos para auditoría y temporadas fiscales tranquilas.",
+                title: "Asesores fiscales / CPAs",
+                body: "Estrategias proactivas, registros listos para auditoría y temporadas fiscales serenas.",
               },
               {
                 icon: <PiggyBank className="text-brand-green" size={22} />,
-                title: "Flujo de efectivo & libros",
-                body:
-                  "Sistemas amigables con la conducta, basados en buenas prácticas contables.",
+                title: "Flujo de caja y bookkeeping",
+                body: "Sistemas amigables al comportamiento con base en buenas prácticas contables.",
               },
               {
                 icon: <Scale className="text-brand-green" size={22} />,
                 title: "Abogados inmobiliarios",
-                body:
-                  "Cierres claros y documentación limpia—sin drama el día de la posesión.",
+                body: "Cierres limpios y comunicación clara—sin drama el día de la posesión.",
               },
               {
                 icon: <Shield className="text-brand-green" size={22} />,
-                title: "Corredores de seguros",
-                body:
-                  "Cobertura alineada a tu perfil de riesgo y requisitos del prestamista.",
+                title: "Brokers de seguros",
+                body: "Coberturas alineadas a tu perfil de riesgo y a los requisitos del prestamista.",
               },
               {
                 icon: <FileText className="text-brand-green" size={22} />,
-                title: "Apoyo en auditorías de la CRA",
-                body:
-                  "Preparación, representación y comunicación serena cuando la CRA requiere revisión.",
+                title: "Soporte ante la CRA",
+                body: "Preparación y representación cuando la CRA requiere una revisión más profunda.",
               },
-            ].map((card, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm"
-              >
-                <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
-                  {card.icon}
-                  {card.title}
+            ].map((card) => (
+              <Reveal key={card.title} variants={fadeUp}>
+                <div className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm">
+                  <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
+                    {card.icon}
+                    {card.title}
+                  </div>
+                  <p className="mt-2 text-sm text-brand-blue/90">{card.body}</p>
                 </div>
-                <p className="mt-2 text-sm text-brand-blue/90">{card.body}</p>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </StaggerGroup>
 
-          <motion.div
-            variants={fade}
-            className="mt-6 flex items-center justify-center gap-2 text-sm text-brand-blue/70"
-          >
-            <Users size={16} />{" "}
-            <span>Presentamos especialistas solo cuando aportan valor claro a tu plan.</span>
-          </motion.div>
-        </MotionPanel>
+          <Reveal variants={fade}>
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-brand-blue/70">
+              <Users size={16} />
+              <span>Solo presentamos especialistas cuando aportan valor claro a tu plan.</span>
+            </div>
+          </Reveal>
+        </RevealPanel>
       </section>
 
       {/* CÓMO USAMOS IA */}
       <section className="px-4 mt-8" aria-label="Cómo usamos IA">
-        <MotionPanel>
+        <RevealPanel>
           <div className="text-center">
             <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green">
               Cómo usamos IA (con revisión humana)
             </h3>
             <p className="mt-2 text-brand-blue/90 max-w-3xl mx-auto">
-              Usamos IA que respeta la privacidad para agilizar la preparación: resumir documentos,
-              organizar checklists, traducción ES/EN y borradores de presupuestos. Toda recomendación
-              y cifra es revisada por Fanny o un profesional calificado. <strong>No</strong> automatizamos
-              decisiones de crédito; los prestamistas tienen la aprobación final. Puedes optar por no usarla
-              cuando quieras—solo avísanos.
+              Utilizamos herramientas de IA que respetan la privacidad para acelerar la preparación:
+              resumir documentos, organizar checklists, traducción ES/EN y borradores de presupuesto.
+              Toda recomendación y cada número se revisa por Fanny o un profesional calificado.{" "}
+              <strong>No</strong> automatizamos decisiones crediticias—los prestamistas siempre realizan
+              la aprobación final. Puedes optar por no participar en cualquier momento—solo avísanos.
             </p>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
       {/* FILOSOFÍA */}
       <section className="px-4 mt-8" aria-label="Nuestra filosofía">
-        <MotionPanel className="text-center">
-          <motion.h3
-            variants={fadeUp}
-            className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2"
-          >
-            ¿Por qué “Acompañamiento por invitación”?
-          </motion.h3>
-          <motion.p
-            variants={fade}
-            className="font-sans text-lg text-brand-body max-w-3xl mx-auto"
-          >
-            El trabajo más significativo sucede cuando cliente y guía sienten un buen encaje. Empezamos
-            con una conversación—sin presión—para confirmar metas, tiempos y alcance.
-          </motion.p>
-          <motion.p
-            variants={fade}
-            className="text-brand-body text-base mt-3 opacity-75 max-w-3xl mx-auto"
-          >
-            <em>
-              Si lo deseas, podemos aplicar una lente ligera y <strong>opcional</strong> de Human Design
-              para personalizar comunicación y cadencia. Nunca reemplaza lo financiero, fiscal o legal;
-              solo lo potencia para que el plan se adapte a tu vida.
-            </em>
-          </motion.p>
+        <RevealPanel className="text-center">
+          <Reveal variants={fadeUp}>
+            <h3 className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2">
+              ¿Por qué “Guía por invitación”?
+            </h3>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
+              El trabajo más significativo ocurre cuando cliente y guía sienten un encaje natural.
+              Empezamos con una breve conversación—sin presión, con claridad—para confirmar metas,
+              tiempos y alcance.
+            </p>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="text-brand-body text-base mt-3 opacity-75 max-w-3xl mx-auto">
+              <em>
+                A solicitud, podemos usar un enfoque ligero de Diseño Humano para personalizar
+                la comunicación y el ritmo. No sustituye fundamentos financieros, fiscales o legales:
+                solo ayuda a que tu plan se adapte a tu vida.
+              </em>
+            </p>
+          </Reveal>
+
           <div className="mt-6">
             <Link href="/es/servicios" className="text-brand-blue underline hover:text-brand-green">
-              Conoce cómo trabajamos y qué ofrecemos →
+              Mira cómo trabajamos y qué ofrecemos →
             </Link>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
       {/* A QUIÉN SERVIMOS */}
       <section className="px-4 mt-8" aria-label="A quién servimos">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            A quién servimos mejor
-          </motion.h2>
-          <motion.ul
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid gap-3 text-brand-blue/90 max-w-3xl mx-auto list-disc ml-6 md:ml-10"
-          >
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              A quién servimos mejor
+            </h2>
+          </Reveal>
+
+          <StaggerGroup className="grid gap-3 text-brand-blue/90 max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
-              "Recién llegados y primerizos construyendo preparación",
-              "Familias que equilibran flujo de efectivo y metas de largo plazo",
-              "Profesionales autónomos que necesitan documentación amigable para prestamistas",
-              "Pequeños inversionistas optimizando financiamiento y ritmo fiscal",
-            ].map((item, i) => (
-              <motion.li key={i} variants={fadeUp}>
-                {item}
-              </motion.li>
+              "Recién llegados y compradores por primera vez construyendo preparación",
+              "Familias que equilibran flujo de caja con metas de largo plazo",
+              "Profesionales por cuenta propia que requieren documentación creíble para prestamistas",
+              "Inversionistas pequeños optimizando financiamiento y ritmo fiscal",
+            ].map((item) => (
+              <Reveal key={item} variants={fadeUp}>
+                <li>{item}</li>
+              </Reveal>
             ))}
-          </motion.ul>
-        </MotionPanel>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
-      {/* CUMPLIMIENTO & NOTAS */}
+      {/* CUMPLIMIENTO Y NOTAS */}
       <section className="px-4 mt-8" aria-label="Cumplimiento y notas importantes">
-        <MotionPanel>
+        <RevealPanel>
           <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green text-center">
-            Notas de cumplimiento & alcance
+            Notas sobre cumplimiento y alcance
           </h3>
           <div className="mt-3 text-sm md:text-base text-brand-blue/90 max-w-4xl mx-auto space-y-2">
             <p>
-              Los precios (cuando se muestran) están en CAD y pueden estar sujetos a HST. Los servicios hipotecarios
-              suelen ser gratuitos para prestatarios residenciales calificados porque la compensación la paga el
-              prestamista al cierre. En escenarios no-prime/privados/comerciales pueden aplicar honorarios; siempre
-              se informarán por adelantado. Todas las hipotecas son O.A.C. (aprobación crediticia).
+              Los precios (cuando se muestran) están en CAD y pueden estar sujetos a HST. Los servicios
+              hipotecarios suelen ser gratuitos para prestatarios residenciales calificados porque la
+              compensación la paga el prestamista al cierre. Pueden aplicar honorarios en escenarios
+              no-prime/privados/comerciales y siempre se informarán por adelantado. Todas las hipotecas
+              están sujetas a aprobación crediticia (O.A.C.).
             </p>
             <p>
-              El coaching y los servicios de solo asesoría son independientes de la compensación hipotecaria y no
-              sustituyen asesoría legal, fiscal o contable. Coordinamos con tus profesionales cuando es necesario.
-              La documentación se recopila mediante enlaces seguros. Soporte bilingüe (ES/EN).
+              El coaching y los servicios de asesoría independiente son ajenos a la compensación hipotecaria
+              y no reemplazan asesoría legal, fiscal o contable. Coordinamos con tus profesionales cuando
+              sea necesario. Los documentos se recopilan mediante enlaces seguros. Soporte bilingüe (ES/EN).
             </p>
             <p className="m-0">
-              Human Design es una herramienta <strong>opcional</strong> para personalizar comunicación y ritmo;
-              no constituye asesoría financiera, fiscal, contable, legal ni de inversión.
+              El Diseño Humano es opcional y se usa solo para personalizar comunicación y ritmo; no es
+              asesoría financiera, fiscal, contable, legal ni de inversión.
             </p>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
-      {/* CTA FINAL */}
-      <section className="px-4 mt-8" aria-label="Llamado a la acción">
-        <MotionPanel className="text-center">
-          <motion.h2
-            variants={fadeUp}
-            className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3"
-          >
-            ¿Listas/os para conversar?
-          </motion.h2>
-          <motion.p variants={fade} className="text-brand-body mb-6">
-            En 20–30 minutos tendrás 2–3 próximos pasos claros—sin presión.
-          </motion.p>
+      {/* CTA */}
+      <section className="px-4 mt-8" aria-label="Llamado a la acción de contacto">
+        <RevealPanel className="text-center">
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3">
+              ¿Listo para comenzar la conversación?
+            </h2>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="text-brand-body mb-6">
+              En 20–30 minutos de llamada de descubrimiento tendrás 2–3 próximos pasos claros—sin presión.
+            </p>
+          </Reveal>
+
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/es/contacto?intent=consult&package=Consulta%20Privada%20de%20Descubrimiento"
-              aria-label="Reservar Consulta Privada de Descubrimiento"
-              className="inline-block"
+              href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Privada"
+              aria-label="Reservar una Llamada de Descubrimiento Privada"
+              className="inline-block px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
             >
-              <motion.button
-                type="button"
-                variants={fadeUp}
-                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easeOutCustom } }}
-                whileFocus={{ scale: 1.005 }}
-                className="px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
-              >
-                Reservar Consulta Privada
-              </motion.button>
+              Reservar llamada
             </Link>
             <Link
               href="/es/recursos"
               className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
             >
-              Ver Artículos & Herramientas
+              Ver artículos y herramientas
             </Link>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
     </main>
+  );
+}
+
+/* ============================ Suspense wrapper ============================ */
+export default function AboutEs() {
+  return (
+    <React.Suspense fallback={<main className="min-h-screen bg-white" />}>
+      <AboutInnerEs />
+    </React.Suspense>
   );
 }

@@ -4,8 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import type { ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
-import { motion, useReducedMotion, type Variants, type Transition } from "framer-motion";
+import type { ReactNode } from "react";
 import {
   Building2,
   Calculator,
@@ -16,87 +15,14 @@ import {
   Users,
 } from "lucide-react";
 
-/* ---------------------- Motion helpers ---------------------- */
-const easingBezier = [0.22, 1, 0.36, 1] as const;
-const makeTrans = (reduced: boolean): Transition =>
-  (reduced ? { duration: 0 } : { duration: 0.6, ease: easingBezier as unknown as Transition["ease"] }) as Transition;
+import {
+  Reveal,
+  RevealPanel,
+  StaggerGroup,
+  useMotionPresets,
+} from "@/components/motion-safe";
 
-function useAnims() {
-  const prefersReduced = useReducedMotion();
-
-  const fade: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: makeTrans(!!prefersReduced) },
-  };
-
-  const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 14 },
-    visible: { opacity: 1, y: 0, transition: makeTrans(!!prefersReduced) },
-  };
-
-  const stagger: Variants = {
-    hidden: {},
-    visible: {
-      transition: prefersReduced ? {} : { staggerChildren: 0.12, delayChildren: 0.06 },
-    },
-  };
-
-  return { fade, fadeUp, stagger };
-}
-
-/* --- Shared “panel” look --- */
-type PanelProps<T extends ElementType = "section"> = {
-  children: ReactNode;
-  className?: string;
-  as?: T;
-} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
-
-function Panel<T extends ElementType = "section">({
-  children,
-  className = "",
-  as,
-  ...rest
-}: PanelProps<T>) {
-  const Tag = (as ?? "section") as ElementType;
-  return (
-    <Tag
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
-        "backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-      {...rest}
-    >
-      {children}
-    </Tag>
-  );
-}
-
-/** Same Panel, but reveals softly when scrolled into view */
-function MotionPanel({
-  children,
-  className = "",
-  viewportAmount = 0.2,
-}: {
-  children: ReactNode;
-  className?: string;
-  viewportAmount?: number;
-}) {
-  const { fadeUp } = useAnims();
-  return (
-    <motion.section
-      variants={fadeUp}
-      initial={false} // avoid hidden SSR
-      whileInView="visible"
-      viewport={{ once: true, amount: viewportAmount }}
-      className={className}
-    >
-      <Panel>{children}</Panel>
-    </motion.section>
-  );
-}
-
+/* ============================= Section Title ============================= */
 function SectionTitle({
   title,
   subtitle,
@@ -104,42 +30,41 @@ function SectionTitle({
   title: string;
   subtitle?: ReactNode;
 }) {
-  const { fade, fadeUp } = useAnims();
+  const { fade, fadeUp } = useMotionPresets();
   return (
-    <motion.div
-      variants={fade}
-      initial={false}
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      className="text-center mb-6"
-    >
-      <motion.h1
-        variants={fadeUp}
-        className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
-      >
-        {title}
-      </motion.h1>
-      <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
-        <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-      </motion.div>
+    <div className="text-center mb-6">
+      <Reveal variants={fadeUp}>
+        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+          {title}
+        </h1>
+      </Reveal>
+
+      <Reveal variants={fade}>
+        <div className="flex justify-center my-4" aria-hidden="true">
+          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+        </div>
+      </Reveal>
+
       {subtitle && (
-        <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-          {subtitle}
-        </motion.p>
+        <Reveal variants={fadeUp}>
+          <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+            {subtitle}
+          </p>
+        </Reveal>
       )}
-    </motion.div>
+    </div>
   );
 }
 
-/* --------------------------- Page content --------------------------- */
+/* ============================== Page Content ============================== */
 function AboutInner() {
-  const { fade, fadeUp, stagger } = useAnims();
+  const { fade, fadeUp } = useMotionPresets();
 
   return (
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* HERO / BIO */}
       <section className="pt-6 sm:pt-8 px-4" aria-label="About hero and biography">
-        <MotionPanel>
+        <RevealPanel>
           <SectionTitle
             title="About Fanny — Professional Guidance with a Human Heart"
             subtitle={
@@ -151,14 +76,9 @@ function AboutInner() {
               </>
             }
           />
-          <motion.div
-            variants={stagger}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="mt-10 flex flex-col md:flex-row items-center gap-10"
-          >
-            <motion.div variants={fadeUp} className="flex-shrink-0 flex justify-center">
+
+          <StaggerGroup className="mt-10 flex flex-col md:flex-row items-center gap-10">
+            <Reveal variants={fadeUp} className="flex-shrink-0 flex justify-center">
               <Image
                 src="/fanny-portrait.jpg"
                 alt="Portrait of Fanny Samaniego, Mortgage Agent (Level 2) and Financial Consultant in Toronto"
@@ -167,8 +87,9 @@ function AboutInner() {
                 className="rounded-3xl shadow-lg object-cover border-4 border-brand-gold"
                 priority
               />
-            </motion.div>
-            <motion.div variants={fadeUp} className="flex-1 md:pl-4">
+            </Reveal>
+
+            <Reveal variants={fadeUp} className="flex-1 md:pl-4">
               <p className="mb-4 text-lg md:text-xl text-brand-body leading-relaxed">
                 I specialize in aligning mortgage strategy, cash-flow systems, and tax-season readiness—so
                 your near-term steps support long-term goals. Day to day, I assess financial situations,
@@ -182,6 +103,7 @@ function AboutInner() {
                 We work by invitation to protect presence and quality. If our approach resonates, you’re warmly
                 invited to start a conversation.
               </p>
+
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
@@ -197,31 +119,21 @@ function AboutInner() {
                   Explore Services
                 </Link>
               </div>
-            </motion.div>
-          </motion.div>
-        </MotionPanel>
+            </Reveal>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
       {/* CREDENTIALS / QUICK FACTS */}
       <section className="px-4 mt-8" aria-label="Credentials and quick facts">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            Credentials & Quick Facts
-          </motion.h2>
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              Credentials & Quick Facts
+            </h2>
+          </Reveal>
 
-          <motion.ul
-            variants={stagger}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10"
-          >
+          <StaggerGroup className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
               "Mortgage Agent (Level 2), Ontario",
               "10+ years across financial planning, taxation, and mortgage services",
@@ -229,47 +141,33 @@ function AboutInner() {
               "Lender collaboration for smooth approvals",
               "CRA audit preparation and support",
               "Bilingual: English / Español",
-            ].map((item, i) => (
-              <motion.li key={i} variants={fadeUp}>
-                {item}
-              </motion.li>
+            ].map((item) => (
+              <Reveal key={item} variants={fadeUp}>
+                <li>{item}</li>
+              </Reveal>
             ))}
-          </motion.ul>
-        </MotionPanel>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
       {/* MULTIDISCIPLINARY TEAM */}
       <section className="px-4 mt-8" aria-label="Multidisciplinary team">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            A Multidisciplinary Team—Under One Umbrella
-          </motion.h2>
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              A Multidisciplinary Team—Under One Umbrella
+            </h2>
+          </Reveal>
 
-          <motion.p
-            variants={fade}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.25 }}
-            className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center"
-          >
-            Alongside Fanny, you’ll have coordinated access to qualified professionals. Each specialist operates
-            independently—we bring them in when timing serves your plan, so your mortgage, cash-flow, and tax
-            cadence actually work together.
-          </motion.p>
+          <Reveal variants={fade}>
+            <p className="max-w-3xl mx-auto text-brand-blue/90 text-base md:text-lg text-center">
+              Alongside Fanny, you’ll have coordinated access to qualified professionals. Each specialist operates
+              independently—we bring them in when timing serves your plan, so your mortgage, cash-flow, and tax
+              cadence actually work together.
+            </p>
+          </Reveal>
 
-          <motion.div
-            variants={stagger}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="mt-6 grid gap-4 md:grid-cols-3"
-          >
+          <StaggerGroup className="mt-6 grid gap-4 md:grid-cols-3">
             {[
               {
                 icon: <Building2 className="text-brand-green" size={22} />,
@@ -301,36 +199,31 @@ function AboutInner() {
                 title: "CRA Audit Support",
                 body: "Preparation and representation when the CRA needs a closer look.",
               },
-            ].map((card, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm"
-              >
-                <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
-                  {card.icon}
-                  {card.title}
+            ].map((card) => (
+              <Reveal key={card.title} variants={fadeUp}>
+                <div className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm">
+                  <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
+                    {card.icon}
+                    {card.title}
+                  </div>
+                  <p className="mt-2 text-sm text-brand-blue/90">{card.body}</p>
                 </div>
-                <p className="mt-2 text-sm text-brand-blue/90">{card.body}</p>
-              </motion.div>
+              </Reveal>
             ))}
-          </motion.div>
+          </StaggerGroup>
 
-          <motion.div
-            variants={fade}
-            initial={false}
-            whileInView="visible"
-            className="mt-6 flex items-center justify-center gap-2 text-sm text-brand-blue/70"
-          >
-            <Users size={16} />{" "}
-            <span>We only introduce specialists when they add clear value to your plan.</span>
-          </motion.div>
-        </MotionPanel>
+          <Reveal variants={fade}>
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-brand-blue/70">
+              <Users size={16} />
+              <span>We only introduce specialists when they add clear value to your plan.</span>
+            </div>
+          </Reveal>
+        </RevealPanel>
       </section>
 
       {/* HOW WE USE AI */}
       <section className="px-4 mt-8" aria-label="How we use AI">
-        <MotionPanel>
+        <RevealPanel>
           <div className="text-center">
             <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green">
               How We Use AI (with human review)
@@ -342,79 +235,69 @@ function AboutInner() {
               always make final approvals. You can opt out anytime—just tell us.
             </p>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
       {/* PHILOSOPHY */}
       <section className="px-4 mt-8" aria-label="Our philosophy">
-        <MotionPanel className="text-center">
-          <motion.h3
-            variants={fadeUp}
-            initial={false}
-            whileInView="visible"
-            className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2"
-          >
-            Why “Guidance by Invitation”?
-          </motion.h3>
-          <motion.p variants={fade} initial={false} whileInView="visible" className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
-            The most meaningful work happens when both client and guide feel a natural fit. We start
-            with a brief conversation—no pressure, just clarity—to confirm goals, timing, and scope.
-          </motion.p>
-          <motion.p
-            variants={fade}
-            initial={false}
-            whileInView="visible"
-            className="text-brand-body text-base mt-3 opacity-75 max-w-3xl mx-auto"
-          >
-            <em>
-              On request, we can use a light Human Design lens to personalize communication and cadence.
-              It never replaces financial, tax, or legal fundamentals—it simply helps your plan fit your life.
-            </em>
-          </motion.p>
+        <RevealPanel className="text-center">
+          <Reveal variants={fadeUp}>
+            <h3 className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2">
+              Why “Guidance by Invitation”?
+            </h3>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="font-sans text-lg text-brand-body max-w-3xl mx-auto">
+              The most meaningful work happens when both client and guide feel a natural fit. We start
+              with a brief conversation—no pressure, just clarity—to confirm goals, timing, and scope.
+            </p>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="text-brand-body text-base mt-3 opacity-75 max-w-3xl mx-auto">
+              <em>
+                On request, we can use a light Human Design lens to personalize communication and cadence.
+                It never replaces financial, tax, or legal fundamentals—it simply helps your plan fit your life.
+              </em>
+            </p>
+          </Reveal>
+
           <div className="mt-6">
             <Link href="/en/services" className="text-brand-blue underline hover:text-brand-green">
               See how we work and what we offer →
             </Link>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
       {/* WHO WE SERVE */}
       <section className="px-4 mt-8" aria-label="Who we serve">
-        <MotionPanel>
-          <motion.h2
-            variants={fadeUp}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center"
-          >
-            Who We Serve Best
-          </motion.h2>
-          <motion.ul
-            variants={stagger}
-            initial={false}
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid gap-3 text-brand-blue/90 max-w-3xl mx-auto list-disc ml-6 md:ml-10"
-          >
+        <RevealPanel>
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+              Who We Serve Best
+            </h2>
+          </Reveal>
+
+          <StaggerGroup className="grid gap-3 text-brand-blue/90 max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
               "Newcomers and first-time buyers building readiness",
               "Families balancing cash-flow with long-term goals",
               "Self-employed professionals needing lender-credible documentation",
               "Small investors optimizing financing and tax rhythm",
-            ].map((item, i) => (
-              <motion.li key={i} variants={fadeUp}>
-                {item}
-              </motion.li>
+            ].map((item) => (
+              <Reveal key={item} variants={fadeUp}>
+                <li>{item}</li>
+              </Reveal>
             ))}
-          </motion.ul>
-        </MotionPanel>
+          </StaggerGroup>
+        </RevealPanel>
       </section>
 
       {/* COMPLIANCE & NOTES */}
       <section className="px-4 mt-8" aria-label="Compliance and important notes">
-        <MotionPanel>
+        <RevealPanel>
           <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green text-center">
             Notes on Compliance & Scope
           </h3>
@@ -435,38 +318,31 @@ function AboutInner() {
               tax, accounting, legal, or investment advice.
             </p>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
 
       {/* CTA */}
       <section className="px-4 mt-8" aria-label="Contact call-to-action">
-        <MotionPanel className="text-center">
-          <motion.h2
-            variants={fadeUp}
-            initial={false}
-            whileInView="visible"
-            className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3"
-          >
-            Ready to start the conversation?
-          </motion.h2>
-          <motion.p variants={fade} initial={false} whileInView="visible" className="text-brand-body mb-6">
-            A 20–30 minute discovery call will give you 2–3 clear next steps—no pressure.
-          </motion.p>
+        <RevealPanel className="text-center">
+          <Reveal variants={fadeUp}>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3">
+              Ready to start the conversation?
+            </h2>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="text-brand-body mb-6">
+              A 20–30 minute discovery call will give you 2–3 clear next steps—no pressure.
+            </p>
+          </Reveal>
+
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
               aria-label="Book a Private Discovery Call"
-              className="inline-block"
+              className="inline-block px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
             >
-              <motion.button
-                type="button"
-                variants={fadeUp}
-                whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.15, ease: easingBezier as unknown as Transition["ease"] } }}
-                whileFocus={{ scale: 1.005 }}
-                className="px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
-              >
-                Book a Private Discovery Call
-              </motion.button>
+              Book a Private Discovery Call
             </Link>
             <Link
               href="/en/resources"
@@ -475,13 +351,13 @@ function AboutInner() {
               Browse Articles & Tools
             </Link>
           </div>
-        </MotionPanel>
+        </RevealPanel>
       </section>
     </main>
   );
 }
 
-/* --------------------------- Suspense wrapper --------------------------- */
+/* ============================ Suspense wrapper ============================ */
 export default function About() {
   return (
     <React.Suspense fallback={<main className="min-h-screen bg-white" />}>

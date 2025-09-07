@@ -1,6 +1,25 @@
 // app/en/resources/page.tsx
 import ResourcesClient, { type ClientArticle } from "./ResourcesClient";
 import { getAllArticles } from "@/lib/getArticles";
+import type { Metadata } from "next";
+
+/************************* SEO *************************/
+export const metadata: Metadata = {
+  title: "Helpful Tools & Articles | Resources (EN)",
+  description:
+    "Short, practical reads and calculators on mortgages, real-estate investing, tax planning, and money habits—bilingual EN/ES.",
+  alternates: { canonical: "/en/resources" },
+  openGraph: {
+    title: "Helpful Tools & Articles | Fanny Samaniego",
+    description:
+      "Short, practical reads and calculators on mortgages, real-estate investing, tax planning, and money habits—bilingual EN/ES.",
+    url: "/en/resources",
+    type: "website",
+  },
+};
+
+// Helpful for ISR builds so the list refreshes without a full redeploy.
+export const revalidate = 300; // seconds
 
 /* ===================== Canonical tags, aliases & helpers ===================== */
 const CANON_TAGS = [
@@ -139,8 +158,14 @@ type TagsIndexPayload = {
 
 /* ================================ Page ================================= */
 export default async function Page() {
-  // 1) Load articles (English)
-  const articlesRaw = (await getAllArticles("en")) ?? [];
+  // 1) Load articles (English) — tolerate loader errors gracefully
+  let articlesRaw: any[] = [];
+  try {
+    articlesRaw = (await getAllArticles("en")) ?? [];
+  } catch (e) {
+    // Non-fatal: render client with empty state; ResourcesClient shows friendly empty UI
+    articlesRaw = [];
+  }
 
   // 2) Normalize + attach canonical tags, falling back to category if needed
   const processed: ClientArticle[] = articlesRaw.map((a) => {
@@ -154,7 +179,7 @@ export default async function Page() {
 
     return {
       slug: String(a.slug),
-      title: String(a.title ?? ""), // ensure `string`
+      title: String(a.title ?? ""), // ensure string
       excerpt: (a.excerpt as string | null) ?? null,
       summary: (a.summary as string | null) ?? null,
       category: (a.category as string | null) ?? null, // chip only; filtering uses canonical tags
@@ -164,7 +189,7 @@ export default async function Page() {
       image: (a.image as string | null) ?? null,
       hero: (a.hero as string | null) ?? null,
       ogImage: (a.ogImage as string | null) ?? null,
-    };
+    } satisfies ClientArticle;
   });
 
   // 3) Build tag index (counts + slugs) for filters/personas
@@ -185,7 +210,10 @@ export default async function Page() {
       key: "families",
       label: "Families & Couples",
       tags: ["financial-planning", "wealth-building", "mortgages"],
-      includeSlugs: ["5-steps-to-financial-freedom", "mindful-spending-aligning-your-budget-with-your-values"],
+      includeSlugs: [
+        "5-steps-to-financial-freedom",
+        "mindful-spending-aligning-your-budget-with-your-values",
+      ],
     },
     {
       key: "professionals",
@@ -208,7 +236,10 @@ export default async function Page() {
       key: "investors",
       label: "Real Estate Investors",
       tags: ["real-estate-investing", "mortgages", "wealth-building"],
-      includeSlugs: ["buying-your-first-multi-unit-property", "rental-property-and-taxes-what-first-time-landlords-need-to-know"],
+      includeSlugs: [
+        "buying-your-first-multi-unit-property",
+        "rental-property-and-taxes-what-first-time-landlords-need-to-know",
+      ],
     },
     {
       key: "holistic",
@@ -229,7 +260,7 @@ export default async function Page() {
   const tagsIndex: TagsIndexPayload = {
     articles: processed.map((a) => ({
       slug: a.slug,
-      title: a.title,                // guaranteed string
+      title: a.title, // guaranteed string
       category: a.category ?? "",
       tags: (a.tags as string[]) ?? [],
     })),
@@ -262,15 +293,33 @@ export default async function Page() {
     { key: "list", label: "List" },
   ];
 
+  // 8) JSON-LD breadcrumbs (minimal)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.fannysamaniego.com/en" },
+      { "@type": "ListItem", position: 2, name: "Resources", item: "https://www.fannysamaniego.com/en/resources" },
+    ],
+  } as const;
+
   return (
-    <ResourcesClient
-      articles={processed}
-      personas={personaIndex}
-      featuredSlugs={featuredSlugs}
-      views={views}
-      ctaHref="/en/contact?intent=question"
-      newsletterHref="/en/subscribe"
-      tagsData={tagsIndex}
-    />
+    <>
+      {/* Tiny inline JSON-LD for breadcrumbs */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <ResourcesClient
+        articles={processed}
+        personas={personaIndex}
+        featuredSlugs={featuredSlugs}
+        views={views}
+        ctaHref="/en/contact?intent=question"
+        newsletterHref="/en/subscribe"
+        tagsData={tagsIndex}
+      />
+    </>
   );
 }

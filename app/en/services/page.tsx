@@ -4,8 +4,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import type { Variants, Easing, Transition } from "framer-motion";
+
+import {
+  Reveal,
+  RevealPanel,
+  StaggerGroup,
+  useMotionPresets,
+} from "@/components/motion-safe";
 
 /* ============================ Pricing (CAD) ============================ */
 /** Set any price to null to show “Contact for pricing”. HST may apply. */
@@ -56,42 +61,14 @@ function price(p: number | null) {
   return `$${p} CAD`;
 }
 
-/* ========================= Motion helpers ======================== */
-const easing: Easing = [0.22, 1, 0.36, 1];
-
-function useAnims() {
-  const prefersReduced = useReducedMotion();
-
-  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing };
-  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
-  const group: Transition =
-    prefersReduced ? {} : { staggerChildren: 0.08, delayChildren: 0.04 };
-
-  const fade: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: base },
-  };
-
-  const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: baseUp },
-  };
-
-  const stagger: Variants = {
-    hidden: {},
-    visible: { transition: group },
-  };
-
-  return { fade, fadeUp, stagger };
-}
-
 /* ================== Shared panel / titles / badges ================== */
 function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <section
       className={[
         "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
+        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
+        "backdrop-blur-[1px]",
         className,
       ].join(" ")}
     >
@@ -111,17 +88,11 @@ function SectionTitle({
   id: string;
   level?: "h1" | "h2";
 }) {
-  const { fade, fadeUp } = useAnims();
+  const { fade, fadeUp } = useMotionPresets();
   return (
     <div id={id} className="scroll-mt-24">
-      <motion.div
-        variants={fade}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="text-center mb-6"
-      >
-        <motion.div variants={fadeUp}>
+      <div className="text-center mb-6">
+        <Reveal variants={fadeUp}>
           {level === "h1" ? (
             <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
               {title}
@@ -131,16 +102,20 @@ function SectionTitle({
               {title}
             </h2>
           )}
-        </motion.div>
-        <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
-          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-        </motion.div>
+        </Reveal>
+
+        <Reveal variants={fade}>
+          <div className="flex justify-center my-4" aria-hidden="true">
+            <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+          </div>
+        </Reveal>
+
         {subtitle && (
-          <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-            {subtitle}
-          </motion.p>
+          <Reveal variants={fadeUp}>
+            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
+          </Reveal>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -160,8 +135,9 @@ function TagBadge({ children }: { children: ReactNode }) {
   );
 }
 
+/* Card style aligned with panels */
 const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+  "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg p-6 transition hover:-translate-y-[1px] hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
 
 /* ======================= Reusable package card ======================= */
 type Intent = "consult" | "preapproval" | "package";
@@ -193,61 +169,68 @@ type Card = {
 };
 
 function PackageCard({ c }: { c: Card }) {
-  const { fadeUp } = useAnims();
+  const { fadeUp } = useMotionPresets();
   const qs = new URLSearchParams();
   qs.set("intent", c.intent ?? "package");
   qs.set("package", c.title);
   return (
-    <motion.article variants={fadeUp} className={CARD} aria-labelledby={`${c.id}-title`}>
-      <div className="flex items-center justify-between gap-3">
-        <h3 id={`${c.id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
-          {c.title}
-        </h3>
-        <PriceBadge>{c.price}</PriceBadge>
-      </div>
-      {c.tags.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
-          {c.tags.map((t) => (
-            <TagBadge key={t}>{t}</TagBadge>
+    <Reveal variants={fadeUp}>
+      <article className={CARD} aria-labelledby={`${c.id}-title`}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 id={`${c.id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
+            {c.title}
+          </h3>
+          <PriceBadge>{c.price}</PriceBadge>
+        </div>
+
+        {c.tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {c.tags.map((t) => (
+              <TagBadge key={t}>{t}</TagBadge>
+            ))}
+          </div>
+        )}
+
+        <p className="mt-3 text-brand-blue/90">{c.desc}</p>
+
+        <ul className="mt-3 list-disc pl-5 space-y-1 text-brand-blue/90">
+          {c.bullets.slice(0, 4).map((p) => (
+            <li key={p}>{p}</li>
           ))}
+        </ul>
+
+        {(c.timeline || c.scope) && (
+          <div className="mt-3 text-sm text-brand-blue/80 space-y-1">
+            {c.timeline && (
+              <p className="m-0">
+                <strong>Timeline:</strong> {c.timeline}
+              </p>
+            )}
+            {c.scope && (
+              <p className="m-0">
+                <strong>Scope:</strong> {c.scope}
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link
+            href={`/en/contact?${qs.toString()}`}
+            className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
+            aria-label={`Contact about ${c.title}`}
+          >
+            Book a Private Consultation
+          </Link>
+          <Link
+            href="/en/resources#overview"
+            className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          >
+            Explore related resources
+          </Link>
         </div>
-      )}
-      <p className="mt-3 text-brand-blue/90">{c.desc}</p>
-      <ul className="mt-3 list-disc pl-5 space-y-1 text-brand-blue/90">
-        {c.bullets.slice(0, 4).map((p) => (
-          <li key={p}>{p}</li>
-        ))}
-      </ul>
-      {(c.timeline || c.scope) && (
-        <div className="mt-3 text-sm text-brand-blue/80 space-y-1">
-          {c.timeline && (
-            <p className="m-0">
-              <strong>Timeline:</strong> {c.timeline}
-            </p>
-          )}
-          {c.scope && (
-            <p className="m-0">
-              <strong>Scope:</strong> {c.scope}
-            </p>
-          )}
-        </div>
-      )}
-      <div className="mt-5 flex flex-wrap gap-3">
-        <Link
-          href={`/en/contact?${qs.toString()}`}
-          className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-          aria-label={`Contact about ${c.title}`}
-        >
-          Book a Private Consultation
-        </Link>
-        <Link
-          href="/en/resources#overview"
-          className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-        >
-          Explore related resources
-        </Link>
-      </div>
-    </motion.article>
+      </article>
+    </Reveal>
   );
 }
 
@@ -278,7 +261,7 @@ function SectionNav() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) setActive(visible[0].target.id);
       },
-      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
+      { rootMargin: "-25% 0px -65% 0px", threshold: [0, 0.2, 0.5, 0.8, 1] }
     );
 
     SECTIONS.forEach((s) => {
@@ -649,7 +632,7 @@ export default function ServicesPage() {
     };
   }, [filters]);
 
-  const { fade } = useAnims();
+  const { fade } = useMotionPresets();
 
   return (
     <main id="main" className="bg-white min-h-screen">
@@ -657,19 +640,24 @@ export default function ServicesPage() {
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-content mx-auto px-4 py-10">
           <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
-            <Link href="/en" className="hover:underline">
-              Home
-            </Link>
+            <Link href="/en" className="hover:underline">Home</Link>
             <span className="mx-2" aria-hidden="true">/</span>
             <span className="text-brand-green" aria-current="page">Services</span>
           </nav>
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
-            Professional services, delivered with care
-          </h1>
-          <p className="mt-2 max-w-3xl text-brand-blue/90">
-            Calm, bilingual support for professionals, families, and business owners in the GTA. We blend precision with a steady
-            pace—so decisions feel both clear and kind.
-          </p>
+
+          <Reveal variants={fade}>
+            <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+              Professional services, delivered with care
+            </h1>
+          </Reveal>
+
+          <Reveal variants={fade}>
+            <p className="mt-2 max-w-3xl text-brand-blue/90">
+              Calm, bilingual support for professionals, families, and business owners in the GTA. We blend precision with a steady
+              pace—so decisions feel both clear and kind.
+            </p>
+          </Reveal>
+
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
@@ -703,7 +691,7 @@ export default function ServicesPage() {
             </>
           }
         />
-        <motion.div variants={fade} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
+        <Reveal variants={fade}>
           <ul className="grid md:grid-cols-3 gap-6 text-brand-blue/90">
             <li className={CARD}>
               <h3 className="font-serif text-xl text-brand-green font-bold">Precision</h3>
@@ -718,7 +706,7 @@ export default function ServicesPage() {
               <p className="mt-2">Steady progress—numbers plus nervous-system calm.</p>
             </li>
           </ul>
-        </motion.div>
+        </Reveal>
       </Panel>
 
       {/* Audience filters */}
@@ -835,21 +823,15 @@ export default function ServicesPage() {
 
 /* ============================ Grid renderer ============================ */
 function Grid({ cards }: { cards: Card[] }) {
-  const { stagger } = useAnims();
+  const { stagger } = useMotionPresets();
   if (!cards.length) {
     return <p className="text-brand-blue/70">No services match the current filters.</p>;
-  }
+    }
   return (
-    <motion.div
-      variants={stagger}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
+    <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cards.map((c) => (
         <PackageCard key={c.id} c={c} />
       ))}
-    </motion.div>
+    </StaggerGroup>
   );
 }

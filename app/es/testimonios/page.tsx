@@ -1,10 +1,13 @@
+// app/es/testimonios/page.tsx
 "use client";
 
 import * as React from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 
-/* --------------------------- UI primitives --------------------------- */
+// ✅ Primitivas de animación seguras para hidratar
+import { Reveal, StaggerGroup } from "@/components/motion-safe";
+
+/* --------------------------- UI local --------------------------- */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
@@ -43,57 +46,42 @@ function SectionTitle({
     </header>
   );
 }
-/* -------------------------------------------------------------------- */
+/* ---------------------------------------------------------------- */
 
-type Testimonio = {
+type Testimonial = {
   quote: string;
   name: string;
   context?: string;
   year?: string;
 };
 
-const TESTIMONIOS: Testimonio[] = [
+const TESTIMONIOS: Testimonial[] = [
   {
     quote:
-      "Trabajar con Fanny y su equipo cambió cómo tomamos decisiones con el dinero. Por fin entendemos nuestros patrones y tenemos un plan que sí seguimos. El enfoque con Diseño Humano hizo que los próximos pasos se sintieran simples y alineados.",
+      "Trabajar con Fanny y su equipo cambió la forma en que tomamos decisiones con el dinero. Por fin entendemos nuestros propios patrones y tenemos un plan que sí seguimos. El enfoque informado por Human Design hizo que los siguientes pasos se sintieran simples y alineados.",
     name: "Luisa & Javier",
-    context: "Toronto — Plan para primera inversión",
+    context: "Toronto — Planificación de inversión por primera vez",
     year: "2024",
   },
   {
     quote:
-      "La guía holística y cuidadosa de Fanny nos ayudó a transformar la ansiedad financiera en calma y claridad. La combinación de pericia y compasión nos hizo sentir acompañados en cada paso.",
+      "La guía reflexiva e integral de Fanny nos ayudó a convertir la ansiedad financiera en calma y claridad. La combinación de experiencia y compasión nos hizo sentir acompañados en cada paso.",
     name: "María & Carlos",
-    context: "Toronto — Estrategia de flujo de caja y deudas",
+    context: "Toronto — Flujo de caja familiar y estrategia de deudas",
     year: "2023",
   },
   {
     quote:
-      "Después de años probando herramientas que no se quedaban, esta fue la primera vez que un plan se sintió natural. La mezcla de escucha profunda, estructura clara y coaching sensible al comportamiento nos destrabó como familia.",
+      "Tras años probando herramientas que no perduraban, esta fue la primera vez que un plan se sintió natural. La mezcla de escucha profunda, estructura clara y acompañamiento consciente del comportamiento nos desbloqueó como familia.",
     name: "Sofía & Andrés",
     context: "Mississauga — Presupuesto alineado a valores",
     year: "2023",
   },
 ];
 
-/* ------------------------------- Animations ------------------------------- */
-const fadeUp = { opacity: 0, y: 20 };
-const fadeUpVisible = { opacity: 1, y: 0 };
-const listVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, when: "beforeChildren" },
-  },
-} as const;
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
-} as const;
-/* ------------------------------------------------------------------------- */
-
-export default function Testimonios() {
-  // JSON-LD (esquema de reseñas sin calificación numérica)
+/* --------------------------------- Página --------------------------------- */
+export default function TestimonialsPage() {
+  // JSON-LD para SEO (Review schema sin calificaciones)
   const jsonLd = React.useMemo(() => {
     const reviews = TESTIMONIOS.map((t) => ({
       "@type": "Review",
@@ -122,79 +110,52 @@ export default function Testimonios() {
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* Hero */}
       <section className="pt-10 px-4">
-        <motion.div
-          initial={fadeUp}
-          animate={fadeUpVisible}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
+        <Reveal>
           <Panel>
             <SectionTitle
               title="Historias de Transformación Financiera"
-              subtitle="Testimonios reales compartidos con permiso. Cada proceso es único — estas voces resaltan la mezcla de claridad, estructura y compasión que guía nuestro trabajo."
+              subtitle="Testimonios reales compartidos con permiso. Cada camino es único—estas reflexiones muestran la mezcla de claridad, estructura y compasión que está en el corazón de nuestro trabajo."
             />
             <p className="text-sm text-brand-body/80 text-center">
-              Las citas pueden estar ligeramente editadas por claridad. Los resultados varían según cada situación.
+              Las citas pueden estar ligeramente editadas por claridad. Los resultados varían según las circunstancias de cada persona.
             </p>
           </Panel>
-        </motion.div>
+        </Reveal>
       </section>
 
       {/* Lista de testimonios */}
       <section className="px-4 mt-8">
-        <motion.div
-          initial={fadeUp}
-          animate={fadeUpVisible}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-        >
-          <Panel>
-            <motion.div
-              variants={listVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-6"
-            >
-              {TESTIMONIOS.map(({ quote, name, context, year }, i) => (
-                <motion.figure
-                  key={`${name}-${i}`}
-                  variants={itemVariants}
-                  className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg"
-                >
-                  <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">
-                    “{quote}”
-                  </blockquote>
+        <Panel>
+          <StaggerGroup className="space-y-6">
+            {TESTIMONIOS.map(({ quote, name, context, year }, i) => (
+              <Reveal key={`${name}-${i}`}>
+                <figure className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg">
+                  <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">“{quote}”</blockquote>
                   <figcaption className="font-semibold text-brand-green">
                     — {name}
-                    {context ? (
-                      <span className="text-brand-body/80 font-normal">, {context}</span>
-                    ) : null}
-                    {year ? (
-                      <span className="text-brand-body/60 font-normal"> · {year}</span>
-                    ) : null}
+                    {context ? <span className="text-brand-body/80 font-normal">, {context}</span> : null}
+                    {year ? <span className="text-brand-body/60 font-normal"> · {year}</span> : null}
                   </figcaption>
-                </motion.figure>
-              ))}
-            </motion.div>
+                </figure>
+              </Reveal>
+            ))}
+          </StaggerGroup>
 
-            {/* CTA */}
-            <div className="text-center mt-10">
-              <Link
-                href="/es/contacto?service=llamada-descubrimiento"
-                className="inline-block px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-base md:text-lg tracking-wide"
-                aria-label="Agenda tu llamada de descubrimiento"
-              >
-                Agenda tu Llamada de Descubrimiento
-              </Link>
-            </div>
-          </Panel>
-        </motion.div>
+          {/* CTA */}
+          <div className="text-center mt-10">
+            <Link
+              href="/es/contacto?intent=consult"
+              className="inline-block px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-base md:text-lg tracking-wide"
+              aria-label="Reservar una consulta gratuita"
+            >
+              Reserva una consulta gratuita
+            </Link>
+          </div>
+        </Panel>
       </section>
 
       {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-         
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </main>
   );
 }

@@ -42,7 +42,7 @@ type PersonaIndex = {
   slugs: string[];
 };
 
-/* ============================ Motion helpers ============================ */
+/* ============================ Ayudas de animación ============================ */
 const easing: Easing = [0.22, 1, 0.36, 1];
 
 function useAnims() {
@@ -65,7 +65,7 @@ function useAnims() {
   return { fade, fadeUp };
 }
 
-/* ============================== UI Compartida ============================== */
+/* ============================== UI compartida ============================== */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <section
@@ -205,7 +205,7 @@ export default function RecursosClient({
   articles,
   categories,
   ctaHref = "/es/contacto?intent=pregunta",
-  newsletterHref = "/es/suscribirse",
+  newsletterHref = "/es/suscribirme",
   personas,
   featuredSlugs = [],
   views = [
@@ -248,7 +248,7 @@ export default function RecursosClient({
   const filtered = React.useMemo(() => {
     let list = [...articles];
 
-    // search
+    // búsqueda
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((a) =>
@@ -256,17 +256,17 @@ export default function RecursosClient({
       );
     }
 
-    // category filter via tagsData
+    // filtro por categoría (vía tagsData)
     if (categorySlugSet) {
       list = list.filter((a) => categorySlugSet.has(a.slug));
     }
 
-    // persona filter via slugs
+    // filtro por persona (vía slugs)
     if (personaSlugSet) {
       list = list.filter((a) => personaSlugSet.has(a.slug));
     }
 
-    // sort
+    // orden
     list.sort((a, b) => {
       if (sort === "az") return a.title.localeCompare(b.title);
       const da = parseDate(a.date);
@@ -305,6 +305,7 @@ export default function RecursosClient({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
               placeholder="Buscar temas o palabras…"
               className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none min-w-[240px]"
+              aria-label="Buscar artículos"
             />
 
             {/* Categorías (pastillas bonitas si existen) */}
@@ -325,6 +326,7 @@ export default function RecursosClient({
                       ].join(" ")}
                       aria-pressed={active}
                       title={count ? `${c} (${count})` : c}
+                      aria-label={`Filtrar por categoría: ${c}${typeof count === "number" ? ` (${count})` : ""}`}
                     >
                       {c} {typeof count === "number" && <span className="opacity-70">({count})</span>}
                     </button>
@@ -346,6 +348,7 @@ export default function RecursosClient({
                 setSort(e.target.value as "new" | "old" | "az")
               }
               className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+              aria-label="Ordenar artículos"
             >
               <option value="new">Más nuevos primero</option>
               <option value="old">Más antiguos primero</option>
@@ -366,6 +369,7 @@ export default function RecursosClient({
                         : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
                     ].join(" ")}
                     aria-pressed={active}
+                    aria-label={`Cambiar a vista ${v.label}`}
                   >
                     {v.label}
                   </button>
@@ -375,7 +379,7 @@ export default function RecursosClient({
           </div>
         </div>
 
-        {/* Filtros rápidos */}
+        {/* Filtros rápidos (visual, a modo de guía) */}
         <div className="mt-4 grid md:grid-cols-2 gap-3">
           <div className="rounded-2xl border border-brand-gold/60 p-3">
             <div className="text-sm text-brand-blue/80 mb-2">Objetivos rápidos</div>
@@ -408,7 +412,7 @@ export default function RecursosClient({
       <Panel className="pt-0">
         <SectionTitle id="all" title="Todos los artículos" />
         {filtered.length === 0 ? (
-          <p className="text-brand-blue/70">No hay artículos que coincidan con tu búsqueda/filtros.</p>
+          <p className="text-brand-blue/70">No hay artículos que coincidan con tu búsqueda o filtros.</p>
         ) : view === "list" ? (
           <ArticleList articles={nonFeatured} />
         ) : (
@@ -430,14 +434,16 @@ export default function RecursosClient({
               <Link
                 href={ctaHref}
                 className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
+                aria-label="Reservar consulta privada"
               >
                 Reservar consulta
               </Link>
               <Link
                 href={newsletterHref}
                 className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
+                aria-label="Suscribirme al boletín"
               >
-                Unirme al boletín
+                Suscribirme
               </Link>
             </div>
           </div>
@@ -447,7 +453,7 @@ export default function RecursosClient({
   );
 }
 
-/* ============================ Cards/List ============================ */
+/* ============================ Tarjetas/Listas ============================ */
 function ArticleGrid({ articles }: { articles: ClientArticle[] }) {
   const { fade } = useAnims();
   return (
@@ -460,7 +466,7 @@ function ArticleGrid({ articles }: { articles: ClientArticle[] }) {
     >
       {articles.map((a) => (
         <article key={a.slug} className={CARD}>
-          <Link href={`/es/recursos/${a.slug}`} className="block group">
+          <Link href={`/es/recursos/${a.slug}`} className="block group" aria-label={`Leer: ${a.title}`}>
             {/* Imagen / avatar */}
             {getImg(a) ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -501,7 +507,11 @@ function ArticleList({ articles }: { articles: ClientArticle[] }) {
     <ul className="divide-y divide-brand-gold/30">
       {articles.map((a) => (
         <li key={a.slug} className="py-4">
-          <Link href={`/es/recursos/${a.slug}`} className="group grid grid-cols-12 gap-3 items-start">
+          <Link
+            href={`/es/recursos/${a.slug}`}
+            className="group grid grid-cols-12 gap-3 items-start"
+            aria-label={`Leer: ${a.title}`}
+          >
             <div className="col-span-2 md:col-span-1">
               {getImg(a) ? (
                 // eslint-disable-next-line @next/next/no-img-element
