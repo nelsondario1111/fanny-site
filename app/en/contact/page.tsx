@@ -5,8 +5,8 @@ import * as React from "react";
 import Link from "next/link";
 import ContactForm from "./ContactForm";
 
-// ✅ Same motion-safe primitives used across the site (no blank gaps)
-import { Reveal, StaggerGroup } from "@/components/motion-safe";
+// Motion-safe primitives (now pass variants from useMotionPresets)
+import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
 
 /* --- Panel matches global “table” aesthetic site-wide --- */
 function Panel({
@@ -29,6 +29,8 @@ function Panel({
 }
 
 export default function Contact() {
+  const { fade, fadeUp } = useMotionPresets();
+
   // JSON-LD: ContactPage + Organization + ContactPoint
   const jsonLd = React.useMemo(() => {
     return {
@@ -71,7 +73,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="px-4 pt-12">
         <div className="max-w-5xl mx-auto">
-          <Reveal>
+          <Reveal variants={fadeUp}>
             <Panel className="px-6 sm:px-10 py-10 text-center">
               <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green tracking-tight">
                 Let’s connect and transform your financial life
@@ -110,7 +112,7 @@ export default function Contact() {
       <section className="px-4 py-10">
         <div className="max-w-5xl mx-auto grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
           {/* Left: Form */}
-          <Reveal>
+          <Reveal variants={fade}>
             <Panel className="p-6 sm:p-8">
               <h2 className="sr-only">Contact Form</h2>
               <ContactForm />
@@ -124,7 +126,7 @@ export default function Contact() {
 
           {/* Right: Details / Trust */}
           <StaggerGroup className="space-y-6">
-            <Reveal>
+            <Reveal variants={fadeUp}>
               <Panel className="p-6 sm:p-8">
                 <h2 className="text-xl font-serif font-bold text-brand-green">
                   Contact details
@@ -182,7 +184,7 @@ export default function Contact() {
               </Panel>
             </Reveal>
 
-            <Reveal>
+            <Reveal variants={fadeUp}>
               <Panel className="p-6 sm:p-8">
                 <h2 className="text-xl font-serif font-bold text-brand-green">
                   Why book a call?
