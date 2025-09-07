@@ -45,21 +45,22 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const Tag: keyof JSXNS.IntrinsicElements = level;
+  const { fade } = useMotionPresets();
   return (
     <div id={id} className="scroll-mt-24">
       <div className="text-center mb-6">
-        <Reveal>
+        <Reveal variants={fade}>
           <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
             {title}
           </Tag>
         </Reveal>
-        <Reveal>
+        <Reveal variants={fade}>
           <div className="flex justify-center my-4" aria-hidden="true">
             <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
           </div>
         </Reveal>
         {subtitle && (
-          <Reveal>
+          <Reveal variants={fade}>
             <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
           </Reveal>
         )}
@@ -492,8 +493,9 @@ function SectionNav() {
 
 /* ============================== Tarjetas / Grilla ============================== */
 function ToolCard({ t }: { t: ToolItem }) {
+  const { fadeUp } = useMotionPresets();
   return (
-    <Reveal>
+    <Reveal variants={fadeUp}>
       <article className={CARD} aria-labelledby={`${t.id}-title`}>
         <div className="mb-3 flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-brand-green/10 border flex items-center justify-center">
