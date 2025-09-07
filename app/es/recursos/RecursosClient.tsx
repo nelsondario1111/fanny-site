@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Variants, Easing, Transition } from "framer-motion";
@@ -12,7 +13,7 @@ export type ClientArticle = {
   excerpt?: string | null;
   summary?: string | null;
   category?: string | null;
-  tags?: string[] | null;
+  tags?: string[] | null; // canónicas (mortgages, real-estate-investing, etc.)
   date?: string | Date | null;
   readingTime?: string | number | null;
   image?: string | null;
@@ -39,24 +40,23 @@ type PersonaIndex = {
   key: PersonaKey;
   label: string;
   count: number;
-  slugs: string[];
+  slugs: (string | undefined)[];
 };
 
-/* ============================ Ayudas de animación ============================ */
+/* ============================ Motion helpers ============================ */
 const easing: Easing = [0.22, 1, 0.36, 1];
 
 function useAnims() {
   const prefersReduced = useReducedMotion();
 
-  const base: Transition =
-    prefersReduced ? { duration: 0 } : { duration: 0.4, ease: easing };
-  const baseUp: Transition =
-    prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
+  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
+  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
 
   const fade: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: base },
   };
+
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: baseUp },
@@ -65,7 +65,7 @@ function useAnims() {
   return { fade, fadeUp };
 }
 
-/* ============================== UI compartida ============================== */
+/* ============================== UI Compartida ============================== */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <section
@@ -92,7 +92,6 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useAnims();
-  const Tag: React.ElementType = level;
   return (
     <div id={id} className="scroll-mt-24">
       <motion.div
@@ -103,9 +102,15 @@ function SectionTitle({
         className="text-center mb-6"
       >
         <motion.div variants={fadeUp}>
-          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </Tag>
+          {level === "h1" ? (
+            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h1>
+          ) : (
+            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+              {title}
+            </h2>
+          )}
         </motion.div>
         <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
           <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
@@ -141,8 +146,8 @@ const parseDate = (d?: string | Date | null) => {
 const stripYaml = (s: string) => s.replace(/^---[\s\S]*?---\s*/m, "");
 const stripMd = (s: string) =>
   s
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     .replace(/[*_~`>#-]/g, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -182,7 +187,47 @@ const titleCase = (kebab: string) =>
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 
-/* ===================== Filtros rápidos ===================== */
+/* ====================== Búsqueda inteligente (sinónimos ES) ====================== */
+function deburr(s: string) {
+  try {
+    return s.normalize("NFD").replace(/\p{Diacritic}+/gu, "");
+  } catch {
+    return s;
+  }
+}
+function tokens(s: string): string[] {
+  const m = deburr(s.toLowerCase()).match(/[a-z0-9]+/g);
+  return m ? [...m] : [];
+}
+
+const SYNONYMS_ES: Record<string, string[]> = {
+  duelo: ["luto", "perdida", "pérdida", "fallecimiento", "muerte"],
+  hipoteca: ["hipotecas", "preaprobacion", "preaprobación", "primera", "enganche", "cuota-inicial", "downpayment"],
+  "primer comprador": ["primera vivienda", "primer hogar", "preaprobacion", "enganche"],
+  "puntaje crediticio": ["puntaje", "credit score", "equifax", "transunion", "reporte de credito", "reporte-crediticio", "fico"],
+  presupuesto: ["presupuestar", "plan de gastos", "flujo de caja", "flujo de efectivo", "cashflow", "cash-flow"],
+  impuestos: ["planificacion fiscal", "declaracion", "devolucion", "deducciones", "creditos", "rrsp", "tfsa", "hst", "cra"],
+  "recién llegado": ["nuevo en canada", "inmigrante", "asentamiento", "historial de credito"],
+  autonomo: ["autónomo", "contratista", "pequeña empresa", "emprendedor", "negocio"],
+};
+
+function expandQuery(q: string): Set<string> {
+  const out = new Set<string>();
+  const base = tokens(q);
+  for (const t of base) out.add(t);
+  const qlc = deburr(q.toLowerCase());
+  for (const [k, arr] of Object.entries(SYNONYMS_ES)) {
+    const key = deburr(k.toLowerCase());
+    if (qlc.includes(key) || base.includes(key)) arr.flatMap(tokens).forEach((t) => out.add(t));
+  }
+  for (const t of [...out]) {
+    const syns: string[] = (SYNONYMS_ES as Record<string, string[]>)[t] ?? [];
+    syns.flatMap(tokens).forEach((x) => out.add(x));
+  }
+  return out;
+}
+
+/* ===================== Filtros rápidos (curados) ===================== */
 type QuickFilter = { key: string; label: string; tags: string[] };
 
 const OBJETIVOS: QuickFilter[] = [
@@ -203,347 +248,823 @@ const EVENTOS: QuickFilter[] = [
 /* ============================== Componente ============================== */
 export default function RecursosClient({
   articles,
-  categories,
   ctaHref = "/es/contacto?intent=pregunta",
-  newsletterHref = "/es/suscribirme",
+  newsletterHref = "/es/suscribirse",
   personas,
-  featuredSlugs = [],
-  views = [
-    { key: "grid", label: "Cuadrícula" },
-    { key: "list", label: "Lista" },
-  ],
+  featuredSlugs,
+  views,
+  tagsUrl = "/data/resources-tags-es.json",
   tagsData,
 }: {
   articles: ClientArticle[];
-  categories?: string[];
   ctaHref?: string;
   newsletterHref?: string;
   personas?: PersonaIndex[];
   featuredSlugs?: string[];
   views?: Array<{ key: "grid" | "list" | string; label: string }>;
+  tagsUrl?: string;
   tagsData?: TagsIndex | null;
 }) {
-  /* ---------------------------- Estado UI ---------------------------- */
+  /* ----------------------------- Estado local UI ----------------------------- */
   const [query, setQuery] = React.useState<string>("");
-  const [view, setView] = React.useState<string>(views[0]?.key ?? "grid");
+  const [selectedMode, setSelectedMode] = React.useState<"All" | "Saved">("All");
   const [sort, setSort] = React.useState<"new" | "old" | "az">("new");
-  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  const [selectedPersona] = React.useState<PersonaKey | "">("");
+  const [view, setView] = React.useState<"grid" | "list">(
+    ((views?.[0]?.key === "grid" || views?.[0]?.key === "list") ? (views?.[0]?.key as "grid" | "list") : "grid")
+  );
+  const [selectedPersona, setSelectedPersona] = React.useState<PersonaKey | "all">("all");
 
-  const personaSlugSet = React.useMemo(() => {
-    if (!selectedPersona || !personas) return null;
-    const p = personas.find((x) => x.key === selectedPersona);
-    return p ? new Set(p.slugs) : null;
-  }, [selectedPersona, personas]);
+  // Guardados
+  const [saved, setSaved] = React.useState<Record<string, true>>({});
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem("resource:saved");
+      if (raw) setSaved(JSON.parse(raw));
+    } catch {}
+  }, []);
+  const toggleSave = React.useCallback((slug: string) => {
+    setSaved((prev) => {
+      const next = { ...prev };
+      if (next[slug]) delete next[slug];
+      else next[slug] = true;
+      try {
+        localStorage.setItem("resource:saved", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+  const savedSlugs = React.useMemo(() => new Set(Object.keys(saved)), [saved]);
+  const savedCount = React.useMemo(
+    () => [...savedSlugs].filter((s) => articles.some((a) => a.slug === s)).length,
+    [savedSlugs, articles]
+  );
 
-  const categorySlugSet = React.useMemo(() => {
-    if (!selectedCategory || !tagsData) return null;
-    const cat = tagsData.categories[selectedCategory];
-    return cat ? new Set(cat.slugs) : null;
-  }, [selectedCategory, tagsData]);
+  /* ---------------------- Índice de tags (prefiere memoria) ---------------------- */
+  const [tagIndex, setTagIndex] = React.useState<TagsIndex | null>(tagsData ?? null);
+  React.useEffect(() => {
+    if (tagsData) { setTagIndex(tagsData); return; }
+    let alive = true;
+    fetch(tagsUrl, { cache: "force-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (alive && j) setTagIndex(j as TagsIndex); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [tagsUrl, tagsData]);
 
-  /* ------------------------ Derivar lista final ------------------------ */
-  const featuredSet = new Set(featuredSlugs);
+  /* ------------------------- Personas (según índice) ------------------------- */
+  const personaIndex: PersonaIndex[] = React.useMemo(() => {
+    if (personas?.length) return personas;
+    if (tagIndex?.personas) {
+      const entries = Object.entries(tagIndex.personas) as Array<
+        [PersonaKey, { label: string; slugs: string[]; count: number }]
+      >;
+      return entries.map(([key, p]) => ({ key, label: p.label, count: p.count, slugs: p.slugs }));
+    }
+    // Inferencia de respaldo
+    const by = (pred: (a: ClientArticle) => boolean): string[] => articles.filter(pred).map((a) => a.slug);
+    const hasAny = (a: ClientArticle, keys: string[]) => {
+      const tagset = (a.tags ?? []).map(normTag);
+      return keys.some((k) => tagset.includes(k));
+    };
+    const families = by((a) => hasAny(a, ["financial-planning", "wealth-building", "mortgages"]));
+    const professionals = by((a) => hasAny(a, ["financial-planning", "wealth-building", "tax-planning"]));
+    const newcomers = by((a) => hasAny(a, ["newcomers", "mortgages", "financial-planning"]));
+    const entrepreneurs = by((a) => hasAny(a, ["entrepreneurs", "tax-planning", "financial-planning"]));
+    const investors = by((a) => hasAny(a, ["real-estate-investing", "mortgages", "wealth-building"]));
+    const holistic = by((a) => hasAny(a, ["holistic-approach", "human-design", "financial-planning"]));
+    const mk = (key: PersonaKey, label: string, slugs: string[]) => ({ key, label, count: slugs.length, slugs });
+    return [
+      mk("families", "Familias y Parejas", families),
+      mk("professionals", "Profesionales", professionals),
+      mk("newcomers", "Recién Llegados", newcomers),
+      mk("entrepreneurs", "Emprendedores y Autónomos", entrepreneurs),
+      mk("investors", "Inversionistas Inmobiliarios", investors),
+      mk("holistic", "Holístico y Diseño Humano", holistic),
+    ];
+  }, [articles, personas, tagIndex]);
+
+  /* ------------------------- Filtros rápidos (curados) ------------------------- */
+  const [quickKeys, setQuickKeys] = React.useState<Set<string>>(new Set());
+  const toggleQuick = React.useCallback((k: string) => {
+    setQuickKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k); else next.add(k);
+      return next;
+    });
+  }, []);
+  const clearQuick = React.useCallback(() => setQuickKeys(new Set()), []);
+
+  // Derivar conjunto de tags a partir de los rápidos
+  const quickTagSet = React.useMemo(() => {
+    const all = [...OBJETIVOS, ...EVENTOS];
+    const picked = all.filter((q) => quickKeys.has(q.key));
+    const tags = picked.flatMap((q) => q.tags);
+    return new Set(tags.map(normTag));
+  }, [quickKeys]);
+
+  /* ---------------------------- Cajón de etiquetas ---------------------------- */
+  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
+  const [drawerSelectedTags, setDrawerSelectedTags] = React.useState<Set<string>>(new Set());
+  const toggleTag = React.useCallback((k: string) => {
+    setDrawerSelectedTags((prev) => {
+      const next = new Set(prev);
+      if (next.has(k)) next.delete(k);
+      else next.add(k);
+      return next;
+    });
+  }, []);
+  const clearTags = React.useCallback(() => setDrawerSelectedTags(new Set()), []);
+  const allSelectedTagKeys = React.useMemo(() => {
+    return new Set<string>([...quickTagSet, ...drawerSelectedTags]);
+  }, [quickTagSet, drawerSelectedTags]);
+
+  /* ------------------------------ Búsqueda + orden ------------------------------ */
+  function scoreArticle(a: ClientArticle, qset: Set<string>, phrase: string) {
+    if (qset.size === 0) return 0;
+    const hayTitle = deburr(`${a.title}`.toLowerCase());
+    const hayTags = deburr(((a.tags ?? []).join(" ")).toLowerCase());
+    const hayMeta = deburr(`${a.excerpt ?? ""} ${a.summary ?? ""} ${a.category ?? ""}`.toLowerCase());
+    const hayAll = `${hayTitle} ${hayTags} ${hayMeta}`;
+    let score = 0;
+    for (const t of qset) {
+      if (hayTitle.includes(t)) score += 6;
+      if (hayTags.includes(t)) score += 3;
+      if (hayMeta.includes(t)) score += 2;
+    }
+    if (phrase && hayAll.includes(phrase)) score += 2;
+    return score;
+  }
 
   const filtered = React.useMemo(() => {
-    let list = [...articles];
+    let rows = [...articles];
 
-    // búsqueda
-    if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      list = list.filter((a) =>
-        [a.title, a.summary, a.excerpt, (a.tags || []).join(" ")].join(" ").toLowerCase().includes(q)
-      );
+    // Persona
+    if (selectedPersona !== "all") {
+      const persona = personaIndex.find((p) => p.key === selectedPersona);
+      const set = new Set(persona?.slugs ?? []);
+      rows = rows.filter((a) => set.has(a.slug));
     }
 
-    // filtro por categoría (vía tagsData)
-    if (categorySlugSet) {
-      list = list.filter((a) => categorySlugSet.has(a.slug));
+    // Guardados
+    if (selectedMode === "Saved") rows = rows.filter((a) => savedSlugs.has(a.slug));
+
+    // Filtros por tag: rápidos + cajón (OR)
+    if (allSelectedTagKeys.size > 0) {
+      rows = rows.filter((a) => {
+        const tset = (a.tags ?? []).map(normTag);
+        for (const k of allSelectedTagKeys) if (tset.includes(k)) return true;
+        return false;
+      });
     }
 
-    // filtro por persona (vía slugs)
-    if (personaSlugSet) {
-      list = list.filter((a) => personaSlugSet.has(a.slug));
+    // Búsqueda con expansión
+    const q = query.trim();
+    const qset = expandQuery(q);
+    const phrase = deburr(q.toLowerCase());
+    if (q) {
+      const withScores = rows
+        .map((a) => ({ a, s: scoreArticle(a, qset, phrase) }))
+        .filter(({ s }) => s > 0);
+      rows = withScores
+        .sort((x, y) => (y.s !== x.s ? y.s - x.s : parseDate(y.a.date) - parseDate(x.a.date)))
+        .map(({ a }) => a);
     }
 
-    // orden
-    list.sort((a, b) => {
+    // Ordenar
+    rows.sort((a, b) => {
       if (sort === "az") return a.title.localeCompare(b.title);
-      const da = parseDate(a.date);
-      const db = parseDate(b.date);
-      return sort === "new" ? db - da : da - db;
+      const ad = parseDate(a.date);
+      const bd = parseDate(b.date);
+      return sort === "new" ? bd - ad : ad - bd;
     });
 
-    return list;
-  }, [articles, query, sort, categorySlugSet, personaSlugSet]);
+    return rows;
+  }, [
+    articles,
+    query,
+    sort,
+    selectedMode,
+    savedSlugs,
+    selectedPersona,
+    personaIndex,
+    allSelectedTagKeys,
+  ]);
 
-  const featured = filtered.filter((a) => featuredSet.has(a.slug));
-  const nonFeatured = filtered.filter((a) => !featuredSet.has(a.slug));
+  const hasActiveFilters =
+    query.trim() !== "" ||
+    selectedMode !== "All" ||
+    sort !== "new" ||
+    selectedPersona !== "all" ||
+    quickKeys.size > 0 ||
+    drawerSelectedTags.size > 0;
 
-  /* ------------------------------ Render ------------------------------ */
+  /* ------------------------------ Nav de secciones ------------------------------ */
+  const SECTIONS = [
+    { id: "overview", label: "Resumen" },
+    { id: "featured", label: "Destacados" },
+    { id: "browse", label: "Explorar todo" },
+    { id: "faq", label: "Cómo usarlo & FAQ" },
+  ] as const;
+
+  function SectionNav() {
+    const [active, setActive] = React.useState<string>("overview");
+    React.useEffect(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          if (visible[0]) setActive(visible[0].target.id);
+        },
+        { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
+      );
+      SECTIONS.forEach((s) => {
+        const el = document.getElementById(s.id);
+        if (el) observer.observe(el);
+      });
+      return () => observer.disconnect();
+    }, []);
+    return (
+      <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
+        <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="En esta página">
+          {SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={[
+                "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
+                active === s.id
+                  ? "bg-brand-green text-white border-brand-green"
+                  : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+              ].join(" ")}
+            >
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    );
+  }
+
+  /* --------------------------------- Render --------------------------------- */
   return (
-    <main id="main" className="bg-white min-h-screen">
-      {/* Encabezado */}
-      <Panel>
-        <SectionTitle
-          id="overview"
-          title="Recursos y Guías"
-          subtitle="Explora artículos prácticos sobre hipotecas, flujo de caja, impuestos y construcción de patrimonio—en español."
-          level="h1"
-        />
+    <main className="bg-brand-beige min-h-screen pb-16">
+      <SectionNav />
 
-        {/* Controles */}
-        <div className="flex flex-wrap gap-3 items-center justify-between">
-          {/* Búsqueda */}
-          <div className="flex items-center gap-2">
-            <label htmlFor="q" className="sr-only">
-              Buscar
-            </label>
-            <input
-              id="q"
-              value={query}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
-              placeholder="Buscar temas o palabras…"
-              className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none min-w-[240px]"
-              aria-label="Buscar artículos"
+      {/* HERO / OVERVIEW */}
+      <section id="overview" className="pt-10 px-4 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
+          <Panel>
+            <SectionTitle
+              title="Artículos y Guías Útiles"
+              subtitle={<>Lecturas cortas y prácticas sobre hipotecas, comportamiento con el dinero y bases de impuestos—pensadas para familias y profesionales ocupados. Guarda lo que necesites, comparte enlaces y escríbenos cuando quieras un plan personal.</>}
+              id="overview"
+              level="h1"
             />
 
-            {/* Categorías (pastillas bonitas si existen) */}
-            {categories && categories.length > 0 && (
-              <div className="hidden md:flex flex-wrap gap-2 ml-2">
-                {categories.map((c) => {
-                  const count = tagsData?.categories?.[c]?.count ?? undefined;
-                  const active = selectedCategory === c;
+            {/* CTAs */}
+            <div className="mt-2 flex flex-wrap items-center gap-3 justify-center">
+              <Link href={ctaHref} className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition">Hablar con Fanny</Link>
+              <Link href={newsletterHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Recibir el boletín</Link>
+            </div>
+
+            {/* Personas */}
+            <div className="mt-6 flex flex-wrap gap-2 justify-center">
+              <button onClick={() => setSelectedPersona("all")} className={["px-3 py-1.5 rounded-full border text-sm transition", selectedPersona === "all" ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10"].join(" ")}>Todas las personas</button>
+              {personaIndex.map((p) => (
+                <button key={p.key} onClick={() => setSelectedPersona(p.key)} className={["px-3 py-1.5 rounded-full border text-sm transition", selectedPersona === p.key ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10"].join(" ")}>{p.label} {p.count > 0 && <span className="opacity-70">({p.count})</span>}</button>
+              ))}
+            </div>
+
+            {/* Controles */}
+            <div className="mt-8 grid gap-4 md:grid-cols-[1fr,auto,auto]">
+              {/* Búsqueda */}
+              <div>
+                <label className="sr-only" htmlFor="search">Buscar</label>
+                <input
+                  id="search"
+                  value={query}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                  placeholder="Busca temas, p. ej., duelo, hipoteca, RRSP, flujo de caja…"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                />
+              </div>
+
+              {/* Orden / Vista / Reset */}
+              <div className="flex gap-2">
+                <label className="sr-only" htmlFor="sort">Ordenar</label>
+                <select
+                  id="sort"
+                  value={sort}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    const v = e.target.value as "new" | "old" | "az";
+                    setSort(v);
+                  }}
+                  className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                >
+                  <option value="new">Más nuevos primero</option>
+                  <option value="old">Más antiguos primero</option>
+                  <option value="az">A–Z</option>
+                </select>
+
+                <div className="isolate inline-flex rounded-xl overflow-hidden border-2 border-brand-green/30">
+                  <button type="button" onClick={() => setView("grid")} className={["px-3 py-3 text-sm", view === "grid" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")} aria-pressed={view === "grid"}>Cuadrícula</button>
+                  <button type="button" onClick={() => setView("list")} className={["px-3 py-3 text-sm border-l-2 border-brand-green/30", view === "list" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")} aria-pressed={view === "list"}>Lista</button>
+
+                  {hasActiveFilters && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery("");
+                        setSelectedMode("All");
+                        setSort("new");
+                        setSelectedPersona("all");
+                        clearQuick();
+                        clearTags();
+                      }}
+                      className="ml-2 px-4 py-3 rounded-xl border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition"
+                      aria-label="Borrar filtros"
+                    >
+                      Restablecer
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Guardados / Cajón */}
+              <div className="flex gap-2">
+                <div className="isolate inline-flex rounded-xl overflow-hidden border-2 border-brand-green/30">
+                  <button type="button" onClick={() => setSelectedMode("All")} className={["px-3 py-3 text-sm", selectedMode === "All" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")}>Todos</button>
+                  <button type="button" onClick={() => setSelectedMode("Saved")} className={["px-3 py-3 text-sm border-l-2 border-brand-green/30", selectedMode === "Saved" ? "bg-brand-green text-white" : "bg-white text-brand-green"].join(" ")}>Guardados {savedCount > 0 && <span className="opacity-80">({savedCount})</span>}</button>
+                </div>
+                <button type="button" onClick={() => setDrawerOpen(true)} className="px-4 py-3 rounded-xl border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition text-sm">
+                  Más filtros {(drawerSelectedTags.size > 0 || quickKeys.size > 0) && <span className="opacity-80">({drawerSelectedTags.size + quickKeys.size})</span>}
+                </button>
+              </div>
+            </div>
+
+            {/* Filtros rápidos: Objetivos */}
+            <div className="mt-6">
+              <div className="mb-2 text-sm font-semibold text-brand-green">Objetivos</div>
+              <div className="flex flex-wrap gap-2">
+                {OBJETIVOS.map((g) => {
+                  const active = quickKeys.has(g.key);
                   return (
                     <button
-                      key={c}
-                      onClick={() => setSelectedCategory(active ? null : c)}
+                      key={g.key}
+                      onClick={() => toggleQuick(g.key)}
                       className={[
-                        "px-3 py-1.5 rounded-full text-sm border transition",
-                        active
-                          ? "bg-brand-green text-white border-brand-green"
-                          : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                        "px-3 py-1.5 rounded-full border text-sm transition",
+                        active ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
                       ].join(" ")}
                       aria-pressed={active}
-                      title={count ? `${c} (${count})` : c}
-                      aria-label={`Filtrar por categoría: ${c}${typeof count === "number" ? ` (${count})` : ""}`}
                     >
-                      {c} {typeof count === "number" && <span className="opacity-70">({count})</span>}
+                      {g.label}
                     </button>
                   );
                 })}
               </div>
+            </div>
+
+            {/* Filtros rápidos: Momentos de vida */}
+            <div className="mt-4">
+              <div className="mb-2 text-sm font-semibold text-brand-green">Momentos de vida</div>
+              <div className="flex flex-wrap gap-2">
+                {EVENTOS.map((g) => {
+                  const active = quickKeys.has(g.key);
+                  return (
+                    <button
+                      key={g.key}
+                      onClick={() => toggleQuick(g.key)}
+                      className={[
+                        "px-3 py-1.5 rounded-full border text-sm transition",
+                        active ? "bg-brand-green text-white border-brand-green" : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
+                      ].join(" ")}
+                      aria-pressed={active}
+                    >
+                      {g.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* DESTACADOS */}
+      {(() => {
+        const defaults = [
+          "5-steps-to-financial-freedom",
+          "smart-money-newcomers-canada-2025",
+          "wealth-with-confidence-women-toronto-2025",
+          "buying-your-first-multi-unit-property",
+          "rent-vs-buy-toronto-2025",
+        ];
+        const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
+          articles.some((a) => a.slug === slug)
+        );
+        const map = new Map(articles.map((a) => [a.slug, a]));
+        const featured = chosen.map((s) => map.get(s)!).filter(Boolean);
+
+        return featured.length > 0 ? (
+          <section id="featured" className="px-4 mt-8 scroll-mt-24">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}>
+              <Panel className="bg-white">
+                <div className="flex items-baseline justify-between mb-4">
+                  <h2 className="font-serif text-2xl text-brand-green font-bold">Comienza aquí</h2>
+                  <span className="text-sm text-brand-body/70">Guías seleccionadas para caminos comunes</span>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {featured.map((a) => (
+                    <ArticleCard key={`feat-${a.slug}`} article={a} saved={savedSlugs.has(a.slug)} onToggleSave={() => toggleSave(a.slug)} />
+                  ))}
+                </div>
+              </Panel>
+            </motion.div>
+          </section>
+        ) : null;
+      })()}
+
+      {/* RESULTADOS */}
+      <section id="browse" className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}>
+          <Panel>
+            <div className="flex items-baseline justify-between mb-6">
+              <h2 className="font-serif text-2xl text-brand-green font-bold">
+                {selectedMode === "All" ? "Todos los recursos" : "Guardados"}
+                {(quickKeys.size > 0 || drawerSelectedTags.size > 0) && (
+                  <span className="ml-2 text-base text-brand-body/70">
+                    • {quickKeys.size + drawerSelectedTags.size} filtro{quickKeys.size + drawerSelectedTags.size === 1 ? "" : "s"}
+                  </span>
+                )}
+              </h2>
+              <div className="text-brand-body/80 text-sm">
+                {filtered.length} {filtered.length === 1 ? "artículo" : "artículos"}
+              </div>
+            </div>
+
+            {filtered.length === 0 ? (
+              <EmptyState
+                query={query}
+                onClear={() => {
+                  setQuery("");
+                  setSelectedMode("All");
+                  setSort("new");
+                  setSelectedPersona("all");
+                  clearQuick();
+                  clearTags();
+                }}
+                ctaHref={ctaHref}
+              />
+            ) : view === "grid" ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {filtered.map((a) => (
+                  <ArticleCard key={a.slug} article={a} saved={savedSlugs.has(a.slug)} onToggleSave={() => toggleSave(a.slug)} />
+                ))}
+              </div>
+            ) : (
+              <div className="divide-y divide-brand-gold/40 bg-white/70 rounded-2xl border border-brand-gold">
+                {filtered.map((a) => (
+                  <ListRow key={`row-${a.slug}`} article={a} saved={savedSlugs.has(a.slug)} onToggleSave={() => toggleSave(a.slug)} />
+                ))}
+              </div>
             )}
-          </div>
 
-          {/* Orden + Vista */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-brand-blue/80" htmlFor="sort">
-              Ordenar:
-            </label>
-            <select
-              id="sort"
-              value={sort}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setSort(e.target.value as "new" | "old" | "az")
-              }
-              className="px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
-              aria-label="Ordenar artículos"
-            >
-              <option value="new">Más nuevos primero</option>
-              <option value="old">Más antiguos primero</option>
-              <option value="az">A–Z</option>
-            </select>
-
-            <div className="ml-2 flex gap-1">
-              {views.map((v) => {
-                const active = view === v.key;
-                return (
-                  <button
-                    key={v.key}
-                    onClick={() => setView(v.key)}
-                    className={[
-                      "px-3 py-1.5 rounded-full text-sm border transition",
-                      active
-                        ? "bg-brand-green text-white border-brand-green"
-                        : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-                    ].join(" ")}
-                    aria-pressed={active}
-                    aria-label={`Cambiar a vista ${v.label}`}
-                  >
-                    {v.label}
-                  </button>
-                );
-              })}
+            {/* Bloque de ayuda */}
+            <div className="mt-12 rounded-2xl border border-brand-gold bg-neutral-50 p-6">
+              <h3 className="text-base font-serif font-bold text-brand-green">¿No encuentras el recurso exacto?</h3>
+              <p className="mt-1 text-sm text-brand-blue/90">Cuéntanos qué estás trabajando y te apuntamos a la herramienta correcta—o la creamos para ti.</p>
+              <div className="mt-4">
+                <Link href={ctaHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">
+                  Solicitar un recurso
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
+          </Panel>
+        </motion.div>
+      </section>
 
-        {/* Filtros rápidos (visual, a modo de guía) */}
-        <div className="mt-4 grid md:grid-cols-2 gap-3">
-          <div className="rounded-2xl border border-brand-gold/60 p-3">
-            <div className="text-sm text-brand-blue/80 mb-2">Objetivos rápidos</div>
-            <div className="flex flex-wrap gap-2">
-              {OBJETIVOS.map((f) => (
-                <TagBadge key={f.key}>{f.label}</TagBadge>
-              ))}
+      {/* FAQ */}
+      <section id="faq" className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.18 }}>
+          <Panel>
+            <SectionTitle title="Cómo usarlo & Preguntas frecuentes" subtitle="Consejos rápidos sobre búsqueda, guardado, impresión y compartir." id="faq" />
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Buscar y filtrar</h3>
+                <p className="text-brand-blue/90 text-sm">Usa la barra de búsqueda, elige una persona y aplica un par de filtros rápidos. Toca <em>Más filtros</em> para ver la lista completa.</p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Guardar para después</h3>
+                <p className="text-brand-blue/90 text-sm">Presiona <strong>Guardar</strong> en cualquier artículo para tenerlo a mano en este dispositivo.</p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Compartir</h3>
+                <p className="text-brand-blue/90 text-sm">Envía un enlace con el botón <strong>Compartir</strong>—usa la función nativa de tu dispositivo.</p>
+              </div>
+              <div className="rounded-2xl border border-brand-gold/50 p-5">
+                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Habla con Fanny</h3>
+                <p className="text-brand-blue/90 text-sm">¿Lista/o para un plan personal? Usa el botón verde de arriba para reservar una consulta privada.</p>
+              </div>
             </div>
-          </div>
-          <div className="rounded-2xl border border-brand-gold/60 p-3">
-            <div className="text-sm text-brand-blue/80 mb-2">Momentos de vida</div>
-            <div className="flex flex-wrap gap-2">
-              {EVENTOS.map((f) => (
-                <TagBadge key={f.key}>{f.label}</TagBadge>
-              ))}
-            </div>
-          </div>
-        </div>
-      </Panel>
+          </Panel>
+        </motion.div>
+      </section>
 
-      {/* Destacados */}
-      {featured.length > 0 && (
-        <Panel className="pt-0">
-          <SectionTitle id="featured" title="Destacados" />
-          <ArticleGrid articles={featured} />
-        </Panel>
-      )}
-
-      {/* Lista completa */}
-      <Panel className="pt-0">
-        <SectionTitle id="all" title="Todos los artículos" />
-        {filtered.length === 0 ? (
-          <p className="text-brand-blue/70">No hay artículos que coincidan con tu búsqueda o filtros.</p>
-        ) : view === "list" ? (
-          <ArticleList articles={nonFeatured} />
-        ) : (
-          <ArticleGrid articles={nonFeatured} />
-        )}
-      </Panel>
-
-      {/* CTA / Newsletter */}
-      <Panel className="pt-0">
-        <div className={CARD}>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 className="font-serif text-xl text-brand-green font-bold m-0">¿Te acompaño en privado?</h3>
-              <p className="m-0 text-brand-blue/90">
-                Reserva una consulta y recibe próximos pasos claros para tu caso.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Link
-                href={ctaHref}
-                className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-                aria-label="Reservar consulta privada"
-              >
-                Reservar consulta
-              </Link>
-              <Link
-                href={newsletterHref}
-                className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-                aria-label="Suscribirme al boletín"
-              >
-                Suscribirme
-              </Link>
-            </div>
-          </div>
-        </div>
-      </Panel>
+      {/* Cajón de filtros */}
+      <FilterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        tags={tagIndex?.tags ?? {}}
+        selected={drawerSelectedTags}
+        toggleTag={toggleTag}
+        clearTags={clearTags}
+      />
     </main>
   );
 }
 
-/* ============================ Tarjetas/Listas ============================ */
-function ArticleGrid({ articles }: { articles: ClientArticle[] }) {
-  const { fade } = useAnims();
+/* ============================== Cajón de filtros ============================== */
+function FilterDrawer({
+  open,
+  onClose,
+  tags,
+  selected,
+  toggleTag,
+  clearTags,
+}: {
+  open: boolean;
+  onClose: () => void;
+  tags: Record<string, { count: number; slugs: string[] }>;
+  selected: Set<string>;
+  toggleTag: (key: string) => void;
+  clearTags: () => void;
+}) {
+  const [q, setQ] = React.useState<string>("");
+  React.useEffect(() => { if (!open) setQ(""); }, [open]);
+
+  const list = React.useMemo(() => {
+    const entries = Object.entries(tags);
+    if (!q.trim()) return entries.sort((a, b) => (b[1]?.count ?? 0) - (a[1]?.count ?? 0));
+    const needle = q.trim().toLowerCase();
+    return entries
+      .filter(([k]) => k.includes(needle))
+      .sort((a, b) => (b[1]?.count ?? 0) - (a[1]?.count ?? 0));
+  }, [q, tags]);
+
+  if (!open) return null;
+
   return (
-    <motion.div
-      variants={fade}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-      {articles.map((a) => (
-        <article key={a.slug} className={CARD}>
-          <Link href={`/es/recursos/${a.slug}`} className="block group" aria-label={`Leer: ${a.title}`}>
-            {/* Imagen / avatar */}
-            {getImg(a) ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={getImg(a) as string}
-                alt={a.title}
-                className="w-full h-40 object-cover rounded-2xl border border-brand-gold/40"
-                loading="lazy"
-              />
-            ) : (
-              <div className="w-full h-40 rounded-2xl border border-brand-gold/40 bg-brand-beige/60 grid place-items-center text-3xl font-serif text-brand-green">
-                {initials(a.title)}
-              </div>
-            )}
+    <div role="dialog" aria-modal="true" aria-labelledby="filter-heading" className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="absolute right-0 top-0 h-full w-full sm:w-[520px] bg-white shadow-xl border-l border-brand-gold overflow-hidden">
+        <div className="p-5 border-b border-brand-gold/50 flex items-center justify-between">
+          <h2 id="filter-heading" className="font-serif text-xl text-brand-green font-bold">Filtros</h2>
+          <button onClick={onClose} className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm">Listo</button>
+        </div>
 
-            <h3 className="mt-3 font-serif text-xl text-brand-green font-bold group-hover:underline">
-              {a.title}
-            </h3>
-            {a.summary || a.excerpt ? (
-              <p className="mt-1 text-brand-blue/90">{getBlurb(a)}</p>
-            ) : null}
+        <div className="p-5 space-y-5 h-[calc(100%-60px)] overflow-auto">
+          <div>
+            <label htmlFor="tag-search" className="sr-only">Buscar etiquetas</label>
+            <input
+              id="tag-search"
+              value={q}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQ(e.target.value)}
+              placeholder="Buscar etiquetas…"
+              className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+            />
+          </div>
 
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-brand-blue/70">
-              {a.tags?.slice(0, 3).map((t) => (
-                <TagBadge key={t}>{titleCase(normTag(t))}</TagBadge>
-              ))}
-              {rt(a.readingTime) && <span className="ml-auto">{rt(a.readingTime)}</span>}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-brand-body/80">{selected.size} seleccionada{selected.size === 1 ? "" : "s"}</div>
+            <div className="flex gap-2">
+              <button type="button" onClick={clearTags} className="px-3 py-1.5 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition text-sm">Limpiar</button>
+              <button type="button" onClick={onClose} className="px-3 py-1.5 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition text-sm">Aplicar</button>
             </div>
-          </Link>
-        </article>
-      ))}
-    </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {list.map(([key, obj]) => {
+              const id = `tag-${key}`;
+              const checked = selected.has(key);
+              return (
+                <label key={key} htmlFor={id} className={["flex items-center gap-2 px-3 py-2 rounded-xl border", checked ? "bg-brand-green/10 border-brand-green" : "border-brand-gold/40"].join(" ")}>
+                  <input id={id} type="checkbox" checked={checked} onChange={() => toggleTag(key)} className="h-4 w-4 accent-brand-green" />
+                  <span className="text-sm text-brand-green flex-1">{titleCase(key)}</span>
+                  <span className="text-xs text-brand-body/70">{obj.count ?? 0}</span>
+                </label>
+              );
+            })}
+            {list.length === 0 && <div className="text-sm text-brand-body/70 italic col-span-full">No hay etiquetas que coincidan con “{q}”.</div>}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
-function ArticleList({ articles }: { articles: ClientArticle[] }) {
+/* ============================== UI Bits ============================== */
+function ArticleCard({
+  article,
+  saved,
+  onToggleSave,
+}: {
+  article: ClientArticle;
+  saved: boolean;
+  onToggleSave: () => void;
+}) {
+  const href = `/es/recursos/${article.slug}`;
+  const dateStr = article.date
+    ? new Date(parseDate(article.date)).toLocaleDateString("es-CA", { year: "numeric", month: "long", day: "numeric" })
+    : null;
+
+  const minutes = rt(article.readingTime);
+  const blurb = getBlurb(article);
+  const maxTags = 3;
+  const tags = Array.isArray(article.tags) ? article.tags.slice(0, maxTags) : [];
+  const extraCount = Array.isArray(article.tags) && article.tags.length > maxTags ? article.tags.length - maxTags : 0;
+  const img = getImg(article);
+  const hasImg = Boolean(img);
+
+  type WebShareNavigator = Navigator & {
+    share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
+    canShare?: (data?: unknown) => boolean;
+  };
+
+  const share = async () => {
+    const url = typeof window !== "undefined" ? new URL(href, window.location.origin).toString() : href;
+    try {
+      const nav = (typeof navigator !== "undefined" ? (navigator as WebShareNavigator) : undefined);
+      if (nav?.share) {
+        await nav.share({ title: article.title, url });
+      } else if (nav?.clipboard?.writeText) {
+        await nav.clipboard.writeText(url);
+        alert("Enlace copiado al portapapeles");
+      }
+    } catch {
+      // no-op
+    }
+  };
+
   return (
-    <ul className="divide-y divide-brand-gold/30">
-      {articles.map((a) => (
-        <li key={a.slug} className="py-4">
-          <Link
-            href={`/es/recursos/${a.slug}`}
-            className="group grid grid-cols-12 gap-3 items-start"
-            aria-label={`Leer: ${a.title}`}
-          >
-            <div className="col-span-2 md:col-span-1">
-              {getImg(a) ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={getImg(a) as string}
-                  alt={a.title}
-                  className="w-16 h-16 object-cover rounded-xl border border-brand-gold/40"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-xl border border-brand-gold/40 bg-brand-beige/60 grid place-items-center text-lg font-serif text-brand-green">
-                  {initials(a.title)}
-                </div>
-              )}
+    <article className={CARD + " overflow-hidden min-h-[420px] flex flex-col"}>
+      <div className="relative aspect-[16/9] bg-gradient-to-br from-brand-blue/10 via-brand-gold/15 to-brand-green/10">
+        {hasImg ? (
+          <Image
+            src={img as string}
+            alt={article.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 border border-brand-gold text-brand-green font-serif text-lg">
+              {initials(article.category)}
             </div>
-            <div className="col-span-10 md:col-span-11">
-              <h3 className="font-serif text-lg text-brand-green font-bold m-0 group-hover:underline">
-                {a.title}
-              </h3>
-              {a.summary || a.excerpt ? (
-                <p className="m-0 mt-0.5 text-brand-blue/90">{getBlurb(a)}</p>
-              ) : null}
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-brand-blue/70">
-                {a.tags?.slice(0, 3).map((t) => (
-                  <TagBadge key={t}>{titleCase(normTag(t))}</TagBadge>
-                ))}
-                {rt(a.readingTime) && <span className="ml-auto">{rt(a.readingTime)}</span>}
-              </div>
-            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center gap-2 text-sm mb-2">
+          {article.category && <TagBadge>{article.category}</TagBadge>}
+          {minutes && <TagBadge>{minutes}</TagBadge>}
+          {dateStr && <time className="text-brand-body/70 ml-auto">{dateStr}</time>}
+        </div>
+
+        <h3 className="font-serif text-xl md:text-2xl text-brand-blue font-bold mb-2 leading-snug">
+          <Link href={href} className="hover:underline">{article.title}</Link>
+        </h3>
+
+        {blurb && <p className="text-brand-body mb-3 line-clamp-3">{blurb}</p>}
+
+        {(tags.length > 0 || extraCount > 0) && (
+          <div className="mt-auto pt-2 flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <span key={t} className="text-xs px-2.5 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30">#{t}</span>
+            ))}
+            {extraCount > 0 && (
+              <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-green/40">+{extraCount} más</span>
+            )}
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Link href={href} className="inline-block">
+            <button
+              className="px-6 py-2 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow hover:bg-brand-blue hover:text-white transition"
+              onClick={() => {
+                try {
+                  const key = "resource:recent:es";
+                  const raw = localStorage.getItem(key);
+                  const list: string[] = raw ? JSON.parse(raw) : [];
+                  const next = [article.slug, ...list.filter((s) => s !== article.slug)].slice(0, 20);
+                  localStorage.setItem(key, JSON.stringify(next));
+                } catch {}
+              }}
+            >
+              Leer artículo
+            </button>
           </Link>
-        </li>
-      ))}
-    </ul>
+
+          <button type="button" onClick={share} className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition text-sm">Compartir</button>
+
+          <button
+            type="button"
+            onClick={onToggleSave}
+            aria-label={saved ? "Quitar de guardados" : "Guardar para después"}
+            className={["px-4 py-2 rounded-full border-2 transition text-sm", saved ? "border-brand-blue bg-brand-blue text-white" : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"].join(" ")}
+          >
+            {saved ? "Guardado ★" : "Guardar ☆"}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ListRow({
+  article,
+  saved,
+  onToggleSave,
+}: {
+  article: ClientArticle;
+  saved: boolean;
+  onToggleSave: () => void;
+}) {
+  const href = `/es/recursos/${article.slug}`;
+  const minutes = rt(article.readingTime);
+  const dateStr = article.date
+    ? new Date(parseDate(article.date)).toLocaleDateString("es-CA", { year: "numeric", month: "short", day: "numeric" })
+    : null;
+  const tags = (article.tags ?? []).slice(0, 4);
+  const thumb = getImg(article);
+
+  return (
+    <div className="flex items-center gap-4 p-4">
+      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0 relative">
+        {thumb ? (
+          <Image
+            src={thumb}
+            alt={article.title}
+            fill
+            sizes="96px"
+            className="object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-brand-green font-serif">{initials(article.category)}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <Link href={href} className="block">
+          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline truncate">{article.title}</h3>
+        </Link>
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+          {article.category && <TagBadge>{article.category}</TagBadge>}
+          {minutes && <span className="text-brand-body/80">{minutes}</span>}
+          {dateStr && <time className="text-brand-body/60">{dateStr}</time>}
+          {tags.map((t) => (
+            <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/30">#{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 shrink-0">
+        <Link href={href} className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm">Leer</Link>
+        <button type="button" onClick={onToggleSave} className={["px-3 py-1.5 rounded-full border text-sm", saved ? "border-brand-blue bg-brand-blue text-white" : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"].join(" ")}>{saved ? "Guardado" : "Guardar"}</button>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  query,
+  onClear,
+  ctaHref,
+}: {
+  query: string;
+  onClear: () => void;
+  ctaHref: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-dashed border-brand-green/30 p-8 text-center">
+      <p className="text-brand-body">
+        No hay resultados para <span className="font-semibold">“{query}”</span>.
+      </p>
+      <p className="mt-2 text-sm text-brand-body/80">
+        Prueba un objetivo como <em>Comprar vivienda</em> o <em>Invertir en bienes raíces</em>, o abre <em>Más filtros</em>.
+      </p>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <button type="button" onClick={onClear} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Borrar filtros</button>
+        <Link href={ctaHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition">Pedir una recomendación</Link>
+      </div>
+    </div>
   );
 }

@@ -233,14 +233,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
 
   return (
     <>
-      {/* Skip link */}
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] rounded bg-brand-blue text-white px-3 py-2"
-      >
-        {t("Skip to content", "Ir al contenido")}
-      </a>
-
+     
       {/* Utility bar (top green) */}
       <AnimatePresence initial={false}>
         <motion.div

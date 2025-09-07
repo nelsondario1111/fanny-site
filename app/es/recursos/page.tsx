@@ -1,6 +1,25 @@
-// app/es/recursos/page.tsx
-import RecursosClient, { type ClientArticle } from "./RecursosClient";
+import type { Metadata } from "next";
+import HydratedRecursos from "./HydratedRecursos";
 import { getAllArticles } from "@/lib/getArticles";
+import type { ClientArticle } from "./RecursosClient";
+
+/************************* SEO *************************/
+export const metadata: Metadata = {
+  title: "Herramientas y Artículos Útiles | Recursos (ES)",
+  description:
+    "Lecturas cortas y calculadoras prácticas sobre hipotecas, inversión inmobiliaria, planificación fiscal y hábitos de dinero—bilingüe ES/EN.",
+  alternates: { canonical: "/es/recursos" },
+  openGraph: {
+    title: "Herramientas y Artículos Útiles | Fanny Samaniego",
+    description:
+      "Lecturas cortas y calculadoras prácticas sobre hipotecas, inversión inmobiliaria, planificación fiscal y hábitos de dinero—bilingüe ES/EN.",
+    url: "/es/recursos",
+    type: "website",
+  },
+};
+
+// ISR: refresca sin redeploy completo
+export const revalidate = 300;
 
 /* ===================== Etiquetas canónicas, alias y helpers ===================== */
 const CANON_TAGS = [
@@ -45,20 +64,12 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   rentas: "real-estate-investing",
   "propiedad-de-alquiler": "real-estate-investing",
   arrendador: "real-estate-investing",
-  "real-estate": "real-estate-investing",
-  rental: "real-estate-investing",
-  rentals: "real-estate-investing",
-  landlord: "real-estate-investing",
-  landlording: "real-estate-investing",
-  "rental-property": "real-estate-investing",
 
   // Planificación financiera
   "flujo-de-caja": "financial-planning",
   "flujo-de-efectivo": "financial-planning",
   "cash-flow": "financial-planning",
-  cashflow: "financial-planning",
   presupuesto: "financial-planning",
-  budgeting: "financial-planning",
   rrsp: "financial-planning",
   tfsa: "financial-planning",
 
@@ -66,7 +77,6 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   impuestos: "tax-planning",
   "impuestos-autonomos": "tax-planning",
   "self-employed-taxes": "tax-planning",
-  taxes: "tax-planning",
 
   // Patrimonio
   inversiones: "wealth-building",
@@ -74,32 +84,24 @@ const TAG_ALIASES: Record<string, CanonTag> = {
   "patrimonio-neto": "wealth-building",
   "net-worth": "wealth-building",
   networth: "wealth-building",
-  investing: "wealth-building",
 
   // Recién llegados
   "recién-llegados": "newcomers",
   "recien-llegados": "newcomers",
   "nuevo-en-canada": "newcomers",
   inmigrantes: "newcomers",
-  newcomer: "newcomers",
-  "new-comers": "newcomers",
-  immigrant: "newcomers",
-  immigrants: "newcomers",
-  "new-to-canada": "newcomers",
 
   // Emprendedores
   autonomos: "entrepreneurs",
   autónomos: "entrepreneurs",
   "trabajador-por-cuenta-propia": "entrepreneurs",
   "small-business": "entrepreneurs",
-  "self-employed": "entrepreneurs",
-  selfemployed: "entrepreneurs",
-  contractor: "entrepreneurs",
+  "pequena-empresa": "entrepreneurs",
+  "pequeña-empresa": "entrepreneurs",
 
   // Holístico / Diseño Humano
   holistico: "holistic-approach",
   holístico: "holistic-approach",
-  holistic: "holistic-approach",
   "human design": "human-design",
   "diseno-humano": "human-design",
   "diseño-humano": "human-design",
@@ -168,13 +170,29 @@ type PersonaKey =
 type Persona = {
   key: PersonaKey;
   label: string;
-  tags: CanonTag[];        // etiquetas canónicas que alimentan esta persona
-  includeSlugs?: string[]; // semillas explícitas
+  tags: CanonTag[];
+  includeSlugs?: string[];
 };
 
 type ViewOption = { key: "grid" | "list"; label: string };
 
-/* ========= Payload que coincide con lo que espera RecursosClient ========= */
+/* ======== Forma mínima que retorna el loader ======== */
+type RawArticle = {
+  slug: string;
+  title?: string | null;
+  excerpt?: string | null;
+  summary?: string | null;
+  category?: string | null;
+  tags?: unknown;
+  date?: string | Date | null;
+  readingTime?: string | number | null;
+  readingTimeMin?: number | null;
+  image?: string | null;
+  hero?: string | null;
+  ogImage?: string | null;
+};
+
+/* ======== Payload para filtros/personas en cliente ======== */
 type TagsIndexPayload = {
   articles: Array<{ slug: string; title: string; category: string; tags: string[] }>;
   tags: Record<string, { count: number; slugs: string[] }>;
@@ -182,12 +200,17 @@ type TagsIndexPayload = {
   personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
 };
 
-/* ================================ Página ================================= */
+/* ================================ Página ================================ */
 export default async function Page() {
-  // 1) Cargar artículos (ES)
-  const articlesRaw = (await getAllArticles("es")) ?? [];
+  // 1) Cargar artículos (tolerar errores del loader)
+  let articlesRaw: RawArticle[] = [];
+  try {
+    articlesRaw = (await getAllArticles("es")) ?? [];
+  } catch {
+    articlesRaw = [];
+  }
 
-  // 2) Normalizar + adjuntar etiquetas canónicas; fallback a categoría si hace falta
+  // 2) Normalizar + etiquetas canónicas (fallback a categoría)
   const processed: ClientArticle[] = articlesRaw.map((a) => {
     const readingTime =
       typeof a.readingTimeMin === "number" && a.readingTimeMin > 0
@@ -203,16 +226,16 @@ export default async function Page() {
       excerpt: (a.excerpt as string | null) ?? null,
       summary: (a.summary as string | null) ?? null,
       category: (a.category as string | null) ?? null,
-      tags: withFallback, // CanonTag[] como string[]
+      tags: withFallback,
       date: (a.date as string | Date | null) ?? null,
       readingTime,
       image: (a.image as string | null) ?? null,
       hero: (a.hero as string | null) ?? null,
       ogImage: (a.ogImage as string | null) ?? null,
-    };
+    } satisfies ClientArticle;
   });
 
-  // 3) Índice por etiquetas (conteos + slugs) para filtros/personas
+  // 3) Conteos por tag
   const tagCounts = Object.fromEntries(
     (CANON_TAGS as readonly CanonTag[]).map((t) => [t, { count: 0, slugs: [] as string[] }])
   ) as Record<CanonTag, { count: number; slugs: string[] }>;
@@ -224,13 +247,16 @@ export default async function Page() {
     }
   }
 
-  // 4) Personas — solo semillas que existen hoy
+  // 4) Personas (solo slugs existentes)
   const personas: Persona[] = [
     {
       key: "families",
       label: "Familias y Parejas",
       tags: ["financial-planning", "wealth-building", "mortgages"],
-      includeSlugs: ["5-steps-to-financial-freedom", "mindful-spending-aligning-your-budget-with-your-values"],
+      includeSlugs: [
+        "5-steps-to-financial-freedom",
+        "mindful-spending-aligning-your-budget-with-your-values",
+      ],
     },
     {
       key: "professionals",
@@ -238,11 +264,7 @@ export default async function Page() {
       tags: ["financial-planning", "wealth-building", "tax-planning"],
       includeSlugs: ["mindful-spending-aligning-your-budget-with-your-values"],
     },
-    {
-      key: "newcomers",
-      label: "Recién Llegados",
-      tags: ["newcomers", "mortgages", "financial-planning"],
-    },
+    { key: "newcomers", label: "Recién Llegados", tags: ["newcomers", "mortgages", "financial-planning"] },
     {
       key: "entrepreneurs",
       label: "Emprendedores y Autónomos",
@@ -258,11 +280,7 @@ export default async function Page() {
         "rental-property-and-taxes-what-first-time-landlords-need-to-know",
       ],
     },
-    {
-      key: "holistic",
-      label: "Holístico y Diseño Humano",
-      tags: ["holistic-approach", "human-design", "financial-planning"],
-    },
+    { key: "holistic", label: "Holístico y Diseño Humano", tags: ["holistic-approach", "human-design", "financial-planning"] },
   ];
 
   const personaIndex = personas.map((p) => {
@@ -273,7 +291,7 @@ export default async function Page() {
     return { key: p.key, label: p.label, slugs, count: slugs.length };
   });
 
-  // 5) TagsIndex payload para el cliente
+  // 5) Payload para el cliente (tags/personas/categorías bonitas)
   const tagsIndex: TagsIndexPayload = {
     articles: processed.map((a) => ({
       slug: a.slug,
@@ -293,7 +311,7 @@ export default async function Page() {
     ) as Record<PersonaKey, { label: string; slugs: string[]; count: number }>,
   };
 
-  // 6) Destacados — incluir solo slugs existentes
+  // 6) Destacados — solo slugs existentes
   const preferredFeatured = [
     "5-steps-to-financial-freedom",
     "buying-your-first-multi-unit-property",
@@ -304,25 +322,37 @@ export default async function Page() {
   const existing = new Set(processed.map((a) => a.slug));
   const featuredSlugs = preferredFeatured.filter((s) => existing.has(s));
 
-  // 7) Etiquetas bonitas para las pastillas superiores (opcional en el cliente)
-  const categories = (CANON_TAGS as readonly CanonTag[]).map((t) => DISPLAY_LABELS[t]);
-
-  // 8) Vistas
+  // 7) Vistas
   const views: ViewOption[] = [
     { key: "grid", label: "Cuadrícula" },
     { key: "list", label: "Lista" },
   ];
 
+  // 8) JSON-LD (migas)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://www.fannysamaniego.com/es" },
+      { "@type": "ListItem", position: 2, name: "Recursos", item: "https://www.fannysamaniego.com/es/recursos" },
+    ],
+  } as const;
+
   return (
-    <RecursosClient
-      articles={processed}
-      categories={categories}
-      personas={personaIndex}
-      featuredSlugs={featuredSlugs}
-      views={views}
-      ctaHref="/es/contacto?intent=pregunta"
-      newsletterHref="/es/suscribirse"
-      tagsData={tagsIndex}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HydratedRecursos
+        articles={processed}
+        personas={personaIndex}
+        featuredSlugs={featuredSlugs}
+        views={views}
+        ctaHref="/es/contacto?intent=pregunta"
+        newsletterHref="/es/suscribirse"
+        tagsData={tagsIndex}
+      />
+    </>
   );
 }

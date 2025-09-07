@@ -1,7 +1,7 @@
-// app/en/resources/page.tsx
-import ResourcesClient, { type ClientArticle } from "./ResourcesClient";
-import { getAllArticles } from "@/lib/getArticles";
 import type { Metadata } from "next";
+import HydratedResources from "./HydratedResources";
+import { getAllArticles } from "@/lib/getArticles";
+import type { ClientArticle } from "./ResourcesClient";
 
 /************************* SEO *************************/
 export const metadata: Metadata = {
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Helpful for ISR builds so the list refreshes without a full redeploy.
-export const revalidate = 300; // seconds
+// Helpful for ISR
+export const revalidate = 300;
 
 /* ===================== Canonical tags, aliases & helpers ===================== */
 const CANON_TAGS = [
@@ -47,52 +47,36 @@ const DISPLAY_LABELS: Record<CanonTag, string> = {
   "human-design": "Human Design",
 };
 
-// Tolerant mapping so near-miss tags in front-matter still count
 const TAG_ALIASES: Record<string, CanonTag> = {
-  // Mortgages
   "first-time-buyer": "mortgages",
   "first-home": "mortgages",
   "pre-approval": "mortgages",
   preapproval: "mortgages",
-
-  // Real Estate Investing
   "real-estate": "real-estate-investing",
   rental: "real-estate-investing",
   rentals: "real-estate-investing",
   landlord: "real-estate-investing",
   landlording: "real-estate-investing",
   "rental-property": "real-estate-investing",
-
-  // Financial Planning
   "cash-flow": "financial-planning",
   cashflow: "financial-planning",
   budgeting: "financial-planning",
   rrsp: "financial-planning",
   tfsa: "financial-planning",
-
-  // Tax Planning
   taxes: "tax-planning",
   "self-employed-taxes": "tax-planning",
-
-  // Wealth Building
   investing: "wealth-building",
   "net-worth": "wealth-building",
   networth: "wealth-building",
-
-  // Newcomers
   newcomer: "newcomers",
   "new-comers": "newcomers",
   immigrant: "newcomers",
   immigrants: "newcomers",
   "new-to-canada": "newcomers",
-
-  // Entrepreneurs
   "self-employed": "entrepreneurs",
   selfemployed: "entrepreneurs",
   contractor: "entrepreneurs",
   "small-business": "entrepreneurs",
-
-  // Holistic / Human Design
   holistic: "holistic-approach",
   "human design": "human-design",
 } as const;
@@ -141,14 +125,29 @@ type PersonaKey =
 type Persona = {
   key: PersonaKey;
   label: string;
-  tags: CanonTag[];        // canonical tags feeding this persona
-  includeSlugs?: string[]; // explicit seeds
+  tags: CanonTag[];
+  includeSlugs?: string[];
 };
 
 type ViewOption = { key: "grid" | "list"; label: string };
 
-/* ========= Payload type that matches ResourcesClient's expectation =========
-   (different name to avoid shadowing) */
+/* ========= Minimal shape from loader ========= */
+type RawArticle = {
+  slug: string;
+  title?: string | null;
+  excerpt?: string | null;
+  summary?: string | null;
+  category?: string | null;
+  tags?: unknown;
+  date?: string | Date | null;
+  readingTime?: string | number | null;
+  readingTimeMin?: number | null;
+  image?: string | null;
+  hero?: string | null;
+  ogImage?: string | null;
+};
+
+/* ========= Payload for client filters/personas ========= */
 type TagsIndexPayload = {
   articles: Array<{ slug: string; title: string; category: string; tags: string[] }>;
   tags: Record<string, { count: number; slugs: string[] }>;
@@ -156,18 +155,17 @@ type TagsIndexPayload = {
   personas: Record<PersonaKey, { label: string; slugs: string[]; count: number }>;
 };
 
-/* ================================ Page ================================= */
+/* ================================= Page ================================= */
 export default async function Page() {
-  // 1) Load articles (English) — tolerate loader errors gracefully
-  let articlesRaw: any[] = [];
+  // 1) Load articles (tolerate loader errors)
+  let articlesRaw: RawArticle[] = [];
   try {
     articlesRaw = (await getAllArticles("en")) ?? [];
-  } catch (e) {
-    // Non-fatal: render client with empty state; ResourcesClient shows friendly empty UI
+  } catch {
     articlesRaw = [];
   }
 
-  // 2) Normalize + attach canonical tags, falling back to category if needed
+  // 2) Normalize
   const processed: ClientArticle[] = articlesRaw.map((a) => {
     const readingTime =
       typeof a.readingTimeMin === "number" && a.readingTimeMin > 0
@@ -179,11 +177,11 @@ export default async function Page() {
 
     return {
       slug: String(a.slug),
-      title: String(a.title ?? ""), // ensure string
+      title: String(a.title ?? ""),
       excerpt: (a.excerpt as string | null) ?? null,
       summary: (a.summary as string | null) ?? null,
-      category: (a.category as string | null) ?? null, // chip only; filtering uses canonical tags
-      tags: withFallback, // CanonTag[] (string[])
+      category: (a.category as string | null) ?? null,
+      tags: withFallback,
       date: (a.date as string | Date | null) ?? null,
       readingTime,
       image: (a.image as string | null) ?? null,
@@ -192,7 +190,7 @@ export default async function Page() {
     } satisfies ClientArticle;
   });
 
-  // 3) Build tag index (counts + slugs) for filters/personas
+  // 3) Tag counts
   const tagCounts = Object.fromEntries(
     (CANON_TAGS as readonly CanonTag[]).map((t) => [t, { count: 0, slugs: [] as string[] }])
   ) as Record<CanonTag, { count: number; slugs: string[] }>;
@@ -204,7 +202,7 @@ export default async function Page() {
     }
   }
 
-  // 4) Personas — seed only with slugs you actually have
+  // 4) Personas
   const personas: Persona[] = [
     {
       key: "families",
@@ -221,11 +219,7 @@ export default async function Page() {
       tags: ["financial-planning", "wealth-building", "tax-planning"],
       includeSlugs: ["mindful-spending-aligning-your-budget-with-your-values"],
     },
-    {
-      key: "newcomers",
-      label: "Newcomers",
-      tags: ["newcomers", "mortgages", "financial-planning"],
-    },
+    { key: "newcomers", label: "Newcomers", tags: ["newcomers", "mortgages", "financial-planning"] },
     {
       key: "entrepreneurs",
       label: "Entrepreneurs & Self-Employed",
@@ -241,11 +235,7 @@ export default async function Page() {
         "rental-property-and-taxes-what-first-time-landlords-need-to-know",
       ],
     },
-    {
-      key: "holistic",
-      label: "Holistic & Human Design",
-      tags: ["holistic-approach", "human-design", "financial-planning"],
-    },
+    { key: "holistic", label: "Holistic & Human Design", tags: ["holistic-approach", "human-design", "financial-planning"] },
   ];
 
   const personaIndex = personas.map((p) => {
@@ -256,11 +246,11 @@ export default async function Page() {
     return { key: p.key, label: p.label, slugs, count: slugs.length };
   });
 
-  // 5) TagsIndex payload consumed by the client (matches ResourcesClient type)
+  // 5) TagsIndex payload
   const tagsIndex: TagsIndexPayload = {
     articles: processed.map((a) => ({
       slug: a.slug,
-      title: a.title, // guaranteed string
+      title: a.title,
       category: a.category ?? "",
       tags: (a.tags as string[]) ?? [],
     })),
@@ -276,7 +266,7 @@ export default async function Page() {
     ) as Record<PersonaKey, { label: string; slugs: string[]; count: number }>,
   };
 
-  // 6) Featured — include only existing slugs
+  // 6) Featured
   const preferredFeatured = [
     "5-steps-to-financial-freedom",
     "buying-your-first-multi-unit-property",
@@ -293,7 +283,7 @@ export default async function Page() {
     { key: "list", label: "List" },
   ];
 
-  // 8) JSON-LD breadcrumbs (minimal)
+  // 8) JSON-LD breadcrumbs
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -305,13 +295,11 @@ export default async function Page() {
 
   return (
     <>
-      {/* Tiny inline JSON-LD for breadcrumbs */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
-      <ResourcesClient
+      <HydratedResources
         articles={processed}
         personas={personaIndex}
         featuredSlugs={featuredSlugs}
