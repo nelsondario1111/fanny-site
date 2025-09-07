@@ -7,7 +7,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Reveal,
-  RevealPanel,
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
@@ -823,10 +822,9 @@ export default function ServicesPage() {
 
 /* ============================ Grid renderer ============================ */
 function Grid({ cards }: { cards: Card[] }) {
-  const { stagger } = useMotionPresets();
   if (!cards.length) {
     return <p className="text-brand-blue/70">No services match the current filters.</p>;
-    }
+  }
   return (
     <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cards.map((c) => (

@@ -7,7 +7,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Reveal,
-  RevealPanel,
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
@@ -224,7 +223,7 @@ function PackageCard({ c }: { c: Card }) {
           </Link>
           <Link
             href="/es/recursos"
-            className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
+            className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transición"
           >
             Explorar recursos relacionados
           </Link>
@@ -280,7 +279,7 @@ function SectionNav() {
             key={s.id}
             href={`#${s.id}`}
             className={[
-              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
+              "px-3 py-1.5 rounded-full border transición whitespace-nowrap",
               active === s.id
                 ? "bg-brand-green text-white border-brand-green"
                 : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
@@ -317,7 +316,7 @@ function FilterBar({ value, onChange }: { value: string[]; onChange: (next: stri
           key={t}
           onClick={() => toggle(t)}
           className={[
-            "px-3 py-1.5 rounded-full text-sm border transition",
+            "px-3 py-1.5 rounded-full text-sm border transición",
             value.includes(t)
               ? "bg-brand-green text-white border-brand-green"
               : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
@@ -330,7 +329,7 @@ function FilterBar({ value, onChange }: { value: string[]; onChange: (next: stri
       {value.length > 0 && (
         <button
           onClick={() => onChange([])}
-          className="ml-2 px-3 py-1.5 rounded-full text-sm border border-brand-blue/30 text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="ml-2 px-3 py-1.5 rounded-full text-sm border border-brand-blue/30 text-brand-blue hover:bg-brand-blue hover:text-white transición"
         >
           Limpiar filtros
         </button>
@@ -617,7 +616,7 @@ const CARDS: CardArray = [
 export default function ServicesPageEs() {
   const [filters, setFilters] = useState<string[]>([]);
   const sectionsWithCards = useMemo(() => {
-    const filtered = filters.length ? CARDS.filter((c) => c.tags.some((t) => filters.includes(t))) : CARDS;
+    const filtered = filters.length ? CARDS.filter((c) => c.tags.some((t) => t.includes)) : CARDS;
     const by = (section: SectionId) => filtered.filter((c) => c.section === section);
     return {
       paquetes: by("paquetes"),
@@ -661,13 +660,13 @@ export default function ServicesPageEs() {
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Privada"
-              className="inline-flex px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
+              className="inline-flex px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transición"
             >
               Reservar consulta privada
             </Link>
             <Link
               href="/es/recursos"
-              className="inline-flex px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
+              className="inline-flex px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transición"
             >
               Explorar recursos
             </Link>
@@ -824,7 +823,6 @@ export default function ServicesPageEs() {
 
 /* ============================ Renderizador de grid ============================ */
 function Grid({ cards }: { cards: Card[] }) {
-  const { stagger } = useMotionPresets();
   if (!cards.length) {
     return <p className="text-brand-blue/70">No hay servicios que coincidan con los filtros actuales.</p>;
   }

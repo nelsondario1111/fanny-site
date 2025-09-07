@@ -92,8 +92,8 @@ export function Reveal({
   const visibleNow = staticRender ? true : (inView || forceShow);
 
   if (staticRender) {
-    const Static: any = Tag;
-    return <Static className={className}>{children}</Static>;
+    // Render polymorphic Tag directly without any casts
+    return <Tag className={className}>{children}</Tag>;
   }
 
   return (
