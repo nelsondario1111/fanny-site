@@ -15,7 +15,6 @@ import {
   useInView,
   type Variants,
   type Transition,
-  type MarginType, // 👈 for useInView margin
 } from "framer-motion";
 
 /* ============================== Shared helpers ============================== */
@@ -51,6 +50,11 @@ export function useMotionPresets() {
   return { fade, fadeUp, stagger, base, reduce };
 }
 
+/* ========= Get the correct margin type from useInView options (no import) ========= */
+// Pull the options type from useInView’s 2nd parameter and extract `margin`
+type _UseInViewOpts = NonNullable<Parameters<typeof useInView>[1]>;
+type InViewMargin = _UseInViewOpts["margin"];
+
 /* ============================ Hydration-safe Reveal ============================ */
 /**
  * - SSR: renders visible (no opacity:0), so no “blank” on first paint.
@@ -72,7 +76,7 @@ export function Reveal({
   variants: Variants;
   as?: React.ElementType;
   viewportAmount?: number;
-  rootMargin?: MarginType; // 👈 typed for framer-motion
+  rootMargin?: InViewMargin; // <- correctly typed without importing MarginType
   className?: string;
 }) {
   const mounted = useHasMounted();
@@ -94,7 +98,7 @@ export function Reveal({
   const visibleNow = staticRender ? true : (inView || forceShow);
 
   if (staticRender) {
-    // Render Tag directly (keeps semantics; no any-cast)
+    // Render Tag directly (keeps semantics)
     return <Tag className={className}>{children}</Tag>;
   }
 
@@ -127,7 +131,7 @@ export function StaggerGroup({
   children: ReactNode;
   className?: string;
   viewportAmount?: number;
-  rootMargin?: MarginType; // 👈 typed for framer-motion
+  rootMargin?: InViewMargin; // <- correctly typed
 }) {
   const mounted = useHasMounted();
   const { stagger, reduce } = useMotionPresets();
@@ -179,7 +183,7 @@ export function RevealPanel({
   children: ReactNode;
   className?: string;
   viewportAmount?: number;
-  rootMargin?: MarginType; // 👈 typed for framer-motion
+  rootMargin?: InViewMargin; // <- correctly typed
 }) {
   const { fadeUp } = useMotionPresets();
   return (
