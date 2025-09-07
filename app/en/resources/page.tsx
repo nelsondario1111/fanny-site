@@ -125,7 +125,7 @@ type PersonaKey =
 type Persona = {
   key: PersonaKey;
   label: string;
-  tags: CanonTag[];
+  tags: (typeof CANON_TAGS)[number][];
   includeSlugs?: string[];
 };
 
@@ -192,11 +192,11 @@ export default async function Page() {
 
   // 3) Tag counts
   const tagCounts = Object.fromEntries(
-    (CANON_TAGS as readonly CanonTag[]).map((t) => [t, { count: 0, slugs: [] as string[] }])
-  ) as Record<CanonTag, { count: number; slugs: string[] }>;
+    (CANON_TAGS as readonly (typeof CANON_TAGS)[number][]).map((t) => [t, { count: 0, slugs: [] as string[] }])
+  ) as Record<(typeof CANON_TAGS)[number], { count: number; slugs: string[] }>;
 
   for (const a of processed) {
-    for (const t of (a.tags as CanonTag[] | undefined) ?? []) {
+    for (const t of (a.tags as (typeof CANON_TAGS)[number][] | undefined) ?? []) {
       tagCounts[t].count += 1;
       tagCounts[t].slugs.push(a.slug);
     }
@@ -256,7 +256,7 @@ export default async function Page() {
     })),
     tags: tagCounts,
     categories: Object.fromEntries(
-      (CANON_TAGS as readonly CanonTag[]).map((t) => [
+      (CANON_TAGS as readonly (typeof CANON_TAGS)[number][]).map((t) => [
         DISPLAY_LABELS[t],
         { count: tagCounts[t].count, slugs: tagCounts[t].slugs },
       ])

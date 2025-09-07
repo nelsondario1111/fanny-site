@@ -181,6 +181,14 @@ const titleCase = (kebab: string) =>
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 
+function safeTitle(a: ClientArticle) {
+  const t = (a.title || "").trim();
+  if (t) return t;
+  const base = a.slug.split("/").pop() || a.slug;
+  const noDate = base.replace(/^\d{4}-\d{2}-\d{2}-/, "");
+  return titleCase(noDate.replace(/-+/g, " "));
+}
+
 /* ====================== Smart search (minimal synonyms) ====================== */
 function deburr(s: string) {
   try {
@@ -379,7 +387,8 @@ export default function ResourcesClient({
   /* ------------------------------ Search + sort ------------------------------ */
   function scoreArticle(a: ClientArticle, qset: Set<string>, phrase: string) {
     if (qset.size === 0) return 0;
-    const hayTitle = deburr(`${a.title}`.toLowerCase());
+    const title = safeTitle(a);
+    const hayTitle = deburr(`${title}`.toLowerCase());
     const hayTags = deburr(((a.tags ?? []).join(" ")).toLowerCase());
     const hayMeta = deburr(`${a.excerpt ?? ""} ${a.summary ?? ""} ${a.category ?? ""}`.toLowerCase());
     const hayAll = `${hayTitle} ${hayTags} ${hayMeta}`;
@@ -430,7 +439,7 @@ export default function ResourcesClient({
 
     // Sort
     rows.sort((a, b) => {
-      if (sort === "az") return a.title.localeCompare(b.title);
+      if (sort === "az") return safeTitle(a).localeCompare(safeTitle(b));
       const ad = parseDate(a.date);
       const bd = parseDate(b.date);
       return sort === "new" ? bd - ad : ad - bd;
@@ -896,7 +905,7 @@ function ArticleCard({
     try {
       const nav = (typeof navigator !== "undefined" ? (navigator as WebShareNavigator) : undefined);
       if (nav?.share) {
-        await nav.share({ title: article.title, url });
+        await nav.share({ title: safeTitle(article), url });
       } else if (nav?.clipboard?.writeText) {
         await nav.clipboard.writeText(url);
         alert("Link copied to clipboard");
@@ -912,7 +921,7 @@ function ArticleCard({
         {hasImg ? (
           <Image
             src={img as string}
-            alt={article.title}
+            alt={safeTitle(article)}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
@@ -935,7 +944,7 @@ function ArticleCard({
         </div>
 
         <h3 className="font-serif text-xl md:text-2xl text-brand-blue font-bold mb-2 leading-snug">
-          <Link href={href} className="hover:underline">{article.title}</Link>
+          <Link href={href} className="hover:underline">{safeTitle(article)}</Link>
         </h3>
 
         {blurb && <p className="text-brand-body mb-3 line-clamp-3">{blurb}</p>}
@@ -1008,7 +1017,7 @@ function ListRow({
         {thumb ? (
           <Image
             src={thumb}
-            alt={article.title}
+            alt={safeTitle(article)}
             fill
             sizes="96px"
             className="object-cover"
@@ -1023,7 +1032,10 @@ function ListRow({
 
       <div className="flex-1 min-w-0">
         <Link href={href} className="block">
-          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline truncate">{article.title}</h3>
+          {/* Changed from single-line truncate to two-line clamp for reliability */}
+          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline line-clamp-2">
+            {safeTitle(article)}
+          </h3>
         </Link>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
           {article.category && <TagBadge>{article.category}</TagBadge>}

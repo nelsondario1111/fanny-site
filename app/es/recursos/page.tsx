@@ -141,12 +141,27 @@ const CATEGORY_TO_TAG: Record<string, CanonTag> = {
 const norm = (s: unknown) => String(s ?? "").trim().toLowerCase();
 const kebab = (s: unknown) => norm(s).replace(/\s+/g, "-");
 
+/* ===== Helpers de título seguro (fallback desde slug) ===== */
+const titleCase = (s: string) =>
+  s
+    .split(/[-\s_]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+function slugToTitle(slug: string) {
+  const base = slug.split("/").pop() || slug;
+  const sinFecha = base.replace(/^\d{4}-\d{2}-\d{2}-/, "");
+  // Para ES: permitimos palabras en minúsculas, pero capitalizamos estilo título “amigable”
+  return titleCase(sinFecha.replace(/\s+/g, " ").replace(/-+/g, " ").trim());
+}
+
 function canonicalizeTags(maybe: unknown): CanonTag[] {
   const arr = Array.isArray(maybe) ? maybe : [];
   const out: CanonTag[] = [];
   for (const raw of arr) {
     const k = kebab(raw);
-    const mapped = TAG_ALIASES[k] ?? (k as CanonTag);
+    const mapped = (TAG_ALIASES as Record<string, CanonTag | undefined>)[k] ?? (k as CanonTag);
     if ((CANON_TAGS as readonly string[]).includes(mapped)) out.push(mapped);
   }
   return Array.from(new Set(out));
@@ -210,7 +225,7 @@ export default async function Page() {
     articlesRaw = [];
   }
 
-  // 2) Normalizar + etiquetas canónicas (fallback a categoría)
+  // 2) Normalizar + etiquetas canónicas (fallback a categoría) + TÍTULO SEGURO
   const processed: ClientArticle[] = articlesRaw.map((a) => {
     const readingTime =
       typeof a.readingTimeMin === "number" && a.readingTimeMin > 0
@@ -220,9 +235,12 @@ export default async function Page() {
     const canonTags = canonicalizeTags(a.tags);
     const withFallback = canonTags.length ? canonTags : deriveFromCategory(a.category);
 
+    const safeTitle =
+      (typeof a.title === "string" && a.title.trim()) || slugToTitle(String(a.slug));
+
     return {
       slug: String(a.slug),
-      title: String(a.title ?? ""),
+      title: safeTitle,
       excerpt: (a.excerpt as string | null) ?? null,
       summary: (a.summary as string | null) ?? null,
       category: (a.category as string | null) ?? null,
