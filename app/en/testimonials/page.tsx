@@ -4,8 +4,8 @@
 import * as React from "react";
 import Link from "next/link";
 
-// ✅ Hydration-safe motion primitives (no blank flashes, no hook-order issues)
-import { Reveal, StaggerGroup } from "@/components/motion-safe";
+// ✅ Hydration-safe motion primitives
+import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
 
 /* --------------------------- Local UI primitives --------------------------- */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -81,6 +81,8 @@ const TESTIMONIALS: Testimonial[] = [
 
 /* --------------------------------- Page --------------------------------- */
 export default function TestimonialsPage() {
+  const { fade, fadeUp } = useMotionPresets();
+
   // JSON-LD for SEO (Review schema without ratings)
   const jsonLd = React.useMemo(() => {
     const reviews = TESTIMONIALS.map((t) => ({
@@ -110,7 +112,7 @@ export default function TestimonialsPage() {
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* Hero */}
       <section className="pt-10 px-4">
-        <Reveal>
+        <Reveal variants={fadeUp}>
           <Panel>
             <SectionTitle
               title="Stories of Financial Transformation"
@@ -128,7 +130,7 @@ export default function TestimonialsPage() {
         <Panel>
           <StaggerGroup className="space-y-6">
             {TESTIMONIALS.map(({ quote, name, context, year }, i) => (
-              <Reveal key={`${name}-${i}`}>
+              <Reveal key={`${name}-${i}`} variants={fade}>
                 <figure className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg">
                   <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">“{quote}”</blockquote>
                   <figcaption className="font-semibold text-brand-green">
