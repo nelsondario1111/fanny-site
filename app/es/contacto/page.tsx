@@ -1,12 +1,14 @@
+// app/es/contacto/page.tsx
 "use client";
 
 import React from "react";
 import Link from "next/link";
 import ContactoForm from "./ContactoForm";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Transition } from "framer-motion";
 
 /* --- Desvanecido sutil, seguro para SSR (nunca oculta contenido) --- */
-const easing: number[] = [0.22, 1, 0.36, 1];
+const easing: Transition["ease"] = [0.22, 1, 0.36, 1];
+
 function FadeIn({
   children,
   delay = 0,
