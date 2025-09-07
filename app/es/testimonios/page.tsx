@@ -5,7 +5,7 @@ import * as React from "react";
 import Link from "next/link";
 
 // ✅ Primitivas de animación seguras para hidratar
-import { Reveal, StaggerGroup } from "@/components/motion-safe";
+import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
 
 /* --------------------------- UI local --------------------------- */
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -81,6 +81,8 @@ const TESTIMONIOS: Testimonial[] = [
 
 /* --------------------------------- Página --------------------------------- */
 export default function TestimonialsPage() {
+  const { fade, fadeUp } = useMotionPresets();
+
   // JSON-LD para SEO (Review schema sin calificaciones)
   const jsonLd = React.useMemo(() => {
     const reviews = TESTIMONIOS.map((t) => ({
@@ -110,7 +112,7 @@ export default function TestimonialsPage() {
     <main className="bg-brand-beige min-h-screen pb-16">
       {/* Hero */}
       <section className="pt-10 px-4">
-        <Reveal>
+        <Reveal variants={fade}>
           <Panel>
             <SectionTitle
               title="Historias de Transformación Financiera"
@@ -128,7 +130,7 @@ export default function TestimonialsPage() {
         <Panel>
           <StaggerGroup className="space-y-6">
             {TESTIMONIOS.map(({ quote, name, context, year }, i) => (
-              <Reveal key={`${name}-${i}`}>
+              <Reveal key={`${name}-${i}`} variants={fadeUp}>
                 <figure className="border-l-4 border-brand-green pl-6 py-5 bg-brand-beige/80 rounded-2xl shadow-lg">
                   <blockquote className="italic mb-3 text-lg md:text-xl text-brand-green">“{quote}”</blockquote>
                   <figcaption className="font-semibold text-brand-green">
