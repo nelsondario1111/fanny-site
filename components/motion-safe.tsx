@@ -1,3 +1,4 @@
+// components/motion-safe.tsx
 "use client";
 
 import {
@@ -14,6 +15,7 @@ import {
   useInView,
   type Variants,
   type Transition,
+  type MarginType, // 👈 for useInView margin
 } from "framer-motion";
 
 /* ============================== Shared helpers ============================== */
@@ -63,14 +65,14 @@ export function Reveal({
   variants,
   as: Tag = "div",
   viewportAmount = 0.2,
-  rootMargin = "0px 0px -10% 0px",
+  rootMargin = "0px 0px -80px 0px",
   className = "",
 }: {
   children: ReactNode;
   variants: Variants;
   as?: React.ElementType;
   viewportAmount?: number;
-  rootMargin?: string;
+  rootMargin?: MarginType; // 👈 typed for framer-motion
   className?: string;
 }) {
   const mounted = useHasMounted();
@@ -92,7 +94,7 @@ export function Reveal({
   const visibleNow = staticRender ? true : (inView || forceShow);
 
   if (staticRender) {
-    // Render polymorphic Tag directly without any casts
+    // Render Tag directly (keeps semantics; no any-cast)
     return <Tag className={className}>{children}</Tag>;
   }
 
@@ -120,12 +122,12 @@ export function StaggerGroup({
   children,
   className = "",
   viewportAmount = 0.2,
-  rootMargin = "0px 0px -10% 0px",
+  rootMargin = "0px 0px -80px 0px",
 }: {
   children: ReactNode;
   className?: string;
   viewportAmount?: number;
-  rootMargin?: string;
+  rootMargin?: MarginType; // 👈 typed for framer-motion
 }) {
   const mounted = useHasMounted();
   const { stagger, reduce } = useMotionPresets();
@@ -172,12 +174,12 @@ export function RevealPanel({
   children,
   className = "",
   viewportAmount = 0.18,
-  rootMargin = "0px 0px -10% 0px",
+  rootMargin = "0px 0px -80px 0px",
 }: {
   children: ReactNode;
   className?: string;
   viewportAmount?: number;
-  rootMargin?: string;
+  rootMargin?: MarginType; // 👈 typed for framer-motion
 }) {
   const { fadeUp } = useMotionPresets();
   return (
