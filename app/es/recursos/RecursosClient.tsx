@@ -996,6 +996,7 @@ function ArticleCard({
   );
 }
 
+/* ============================== FILA DE LISTA ACTUALIZADA ============================== */
 function ListRow({
   article,
   saved,
@@ -1014,8 +1015,9 @@ function ListRow({
   const thumb = getImg(article);
 
   return (
-    <div className="flex items-center gap-4 p-4">
-      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0 relative">
+    <div className="grid grid-cols-[96px,1fr] md:grid-cols-[96px,1fr,auto] auto-rows-auto items-start md:items-center gap-3 md:gap-4 p-4">
+      {/* Miniatura */}
+      <div className="w-24 h-14 rounded-lg overflow-hidden border border-brand-gold bg-brand-blue/10 shrink-0 relative row-span-3 md:row-span-1">
         {thumb ? (
           <Image
             src={thumb}
@@ -1032,14 +1034,18 @@ function ListRow({
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
+      {/* Título */}
+      <div className="col-start-2 md:col-start-2 md:col-span-1">
         <Link href={href} className="block">
-          {/* 2 líneas confiables en móviles */}
-          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline line-clamp-2">
+          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline line-clamp-3">
             {safeTitle(article)}
           </h3>
         </Link>
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+      </div>
+
+      {/* Meta: categoría / minutos / fecha / tags */}
+      <div className="col-start-2 md:col-start-2 md:col-span-1 mt-1">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           {article.category && <TagBadge>{article.category}</TagBadge>}
           {minutes && <span className="text-brand-body/80">{minutes}</span>}
           {dateStr && <time className="text-brand-body/60">{dateStr}</time>}
@@ -1049,9 +1055,16 @@ function ListRow({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      {/* Acciones */}
+      <div className="col-start-2 md:col-start-3 md:row-start-1 md:self-center mt-2 md:mt-0 flex items-center gap-2">
         <Link href={href} className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm">Leer</Link>
-        <button type="button" onClick={onToggleSave} className={["px-3 py-1.5 rounded-full border text-sm", saved ? "border-brand-blue bg-brand-blue text-white" : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"].join(" ")}>{saved ? "Guardado" : "Guardar"}</button>
+        <button
+          type="button"
+          onClick={onToggleSave}
+          className={["px-3 py-1.5 rounded-full border text-sm", saved ? "border-brand-blue bg-brand-blue text-white" : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"].join(" ")}
+        >
+          {saved ? "Guardado" : "Guardar"}
+        </button>
       </div>
     </div>
   );
