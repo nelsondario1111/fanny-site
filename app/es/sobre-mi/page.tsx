@@ -69,7 +69,7 @@ function AboutInnerEs() {
             title="Sobre Fanny — Guía profesional con corazón humano"
             subtitle={
               <>
-                Soy agente hipotecaria (Nivel 2) y consultora financiera holística, bilingüe, con base en Toronto.
+                Soy agente hipotecaria (Nivel 2), ex-auditora de impuestos para la CRA y consultora financiera holística, bilingüe, con base en Toronto.
                 Integro experiencia en financiamiento, ritmo fiscal y disciplina contable para ayudarte a tomar
                 decisiones claras y alineadas a tus valores—y sentir calma con el dinero. Acompañamos a una
                 lista selecta de familias profesionales, ejecutivos y dueños de negocio.
@@ -141,7 +141,7 @@ function AboutInnerEs() {
               "10+ años entre planificación financiera, impuestos y servicios hipotecarios",
               "Formación en contabilidad y reportes financieros",
               "Colaboración con prestamistas para aprobaciones fluidas",
-              "Preparación y soporte en auditorías de la CRA",
+              "ex-auditora de impuestos para la CRA",
               "Bilingüe: Español / English",
             ].map((item) => (
               <Reveal key={item} variants={fadeUp}>

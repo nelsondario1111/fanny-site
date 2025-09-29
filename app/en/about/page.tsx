@@ -69,7 +69,7 @@ function AboutInner() {
             title="About Fanny — Professional Guidance with a Human Heart"
             subtitle={
               <>
-                I’m a bilingual Mortgage Agent (Level 2) and holistic financial consultant based in Toronto.
+                I’m a bilingual Mortgage Agent (Level 2) former CRA Income Tax Auditor and holistic financial consultant based in Toronto.
                 My work blends lending experience, tax cadence, and accounting discipline so you can make
                 clear, values-aligned decisions—and feel calm about money. We serve a select roster of
                 professional families, executives, and business owners.
@@ -139,7 +139,7 @@ function AboutInner() {
               "10+ years across financial planning, taxation, and mortgage services",
               "Accounting and financial reporting background",
               "Lender collaboration for smooth approvals",
-              "CRA audit preparation and support",
+              "Former CRA Income Tax Auditor",
               "Bilingual: English / Español",
             ].map((item) => (
               <Reveal key={item} variants={fadeUp}>
