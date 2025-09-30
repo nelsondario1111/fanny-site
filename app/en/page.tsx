@@ -72,7 +72,7 @@ export default function Home() {
 
             <Reveal variants={fadeUp}>
               <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight">
-                Guidance by Invitation. Clarity by Design.
+                Clear numbers, calm decisions.
               </h1>
             </Reveal>
 

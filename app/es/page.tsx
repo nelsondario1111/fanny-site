@@ -84,7 +84,7 @@ export default function HomeEs() {
 
             <Reveal variants={fadeUp}>
               <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight">
-                Guía por invitación. Claridad por diseño.
+                Números claros, decisiones con calma
               </h1>
             </Reveal>
 
