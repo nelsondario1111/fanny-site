@@ -78,7 +78,7 @@ export default function Home() {
 
             <Reveal variants={fade}>
               <p className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
-                When you’re ready for holistic, heart-centered financial guidance, I’m here to walk
+                When you’re ready for holistic, human-centered financial coaching, I’m here to walk
                 alongside you—offering support that honors your unique journey.
               </p>
             </Reveal>
@@ -132,7 +132,7 @@ export default function Home() {
           <Reveal variants={fadeUp} className="md:w-1/2">
             <h2 className="font-serif text-3xl md:text-4xl text-brand-green mb-4 font-bold">Invited Wisdom, Shared with Heart</h2>
             <p className="font-sans text-lg md:text-xl text-brand-body mb-6 leading-relaxed">
-              I’m Fanny Samaniego—a bilingual <b>Financial Advisor, holistic coach, and licensed Mortgage Agent</b> in Toronto. With a coordinated team, we guide professional families, executives, and business owners who want practical results without losing sight of peace of mind and values.
+              I’m Fanny Samaniego—a bilingual <b>Financial Advisor, holistic coach, and licensed Mortgage Agent</b> in Toronto. With a coordinated team, we guide professional families, executives, and business owners who want practical results without losing sight of values and peace of mind.
             </p>
             <ul className="list-disc pl-6 text-brand-body text-base md:text-lg space-y-2 mb-8">
               <li>Plans that fit your life—rooted in how you naturally decide and follow through.</li>
