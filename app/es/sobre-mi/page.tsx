@@ -138,10 +138,11 @@ function AboutInnerEs() {
           <StaggerGroup className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
               "Agente Hipotecaria (Nivel 2), Ontario",
+              "ex-auditora de impuestos para la CRA",
               "10+ años entre planificación financiera, impuestos y servicios hipotecarios",
               "Formación en contabilidad y reportes financieros",
               "Colaboración con prestamistas para aprobaciones fluidas",
-              "ex-auditora de impuestos para la CRA",
+              
               "Bilingüe: Español / English",
             ].map((item) => (
               <Reveal key={item} variants={fadeUp}>

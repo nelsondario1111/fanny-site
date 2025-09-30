@@ -136,10 +136,11 @@ function AboutInner() {
           <StaggerGroup className="grid gap-3 text-lg md:text-xl text-brand-green max-w-3xl mx-auto list-disc ml-6 md:ml-10">
             {[
               "Mortgage Agent (Level 2), Ontario",
+              "Former CRA Income Tax Auditor",
               "10+ years across financial planning, taxation, and mortgage services",
               "Accounting and financial reporting background",
               "Lender collaboration for smooth approvals",
-              "Former CRA Income Tax Auditor",
+              
               "Bilingual: English / Español",
             ].map((item) => (
               <Reveal key={item} variants={fadeUp}>
