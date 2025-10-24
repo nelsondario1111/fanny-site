@@ -55,7 +55,8 @@ export default function Home() {
             <Reveal variants={fade}>
               <p className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
                 Today we celebrate not just the brilliant advisor and coach you are, but the luminous, loving soul behind it all.
-                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are. Love ya, Sis 💛
+                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are.  
+                Love ya, Sis 💛
               </p>
             </Reveal>
 
