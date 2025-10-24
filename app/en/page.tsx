@@ -4,9 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 export default function Home() {
   const { fade, fadeUp } = useMotionPresets();
+  const { width, height } = useWindowSize();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -31,15 +34,20 @@ export default function Home() {
     <main className="bg-brand-beige min-h-dvh">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      {/* 🎉 Confetti for birthday celebration */}
+      <Confetti
+        width={width}
+        height={height}
+        numberOfPieces={180}
+        gravity={0.25}
+        recycle={false}
+        colors={["#5E8F71", "#F4BC60", "#FFFFFF"]} // Brand palette
+      />
+
       <header className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6" aria-label="Hero">
         <div className="absolute inset-0 -z-10">
           <Image src="/nature.jpg" alt="" aria-hidden fill priority sizes="100vw" className="object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
-        </div>
-
-        {/* ✨ Optional confetti accent for birthday */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="animate-pulse bg-[radial-gradient(circle,rgba(255,223,147,0.2)_1px,transparent_1px)] bg-[length:40px_40px] w-full h-full" />
         </div>
 
         <StaggerGroup className="w-full px-4">
@@ -55,8 +63,8 @@ export default function Home() {
             <Reveal variants={fade}>
               <p className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
                 Today we celebrate not just the brilliant advisor and coach you are, but the luminous, loving soul behind it all.
-                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are.  
-                Love ya, Sis 💛
+                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are.
+                I love you, sis 💛
               </p>
             </Reveal>
 
@@ -97,4 +105,4 @@ export default function Home() {
       </Reveal>
     </main>
   );
-} 
+}
