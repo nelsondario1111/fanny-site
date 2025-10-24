@@ -3,32 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
-import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
-
-import { Reveal, RevealPanel, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
-
-function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
-  const { fade, fadeUp } = useMotionPresets();
-  return (
-    <div className="text-center mb-8">
-      {kicker && (
-        <Reveal variants={fade}>
-          <div className="text-brand-blue/80 text-base md:text-lg mb-2">{kicker}</div>
-        </Reveal>
-      )}
-      <Reveal variants={fadeUp}>
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green font-bold tracking-tight">
-          {title}
-        </h2>
-      </Reveal>
-      <Reveal variants={fade}>
-        <div className="flex justify-center mt-3" aria-hidden="true">
-          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-        </div>
-      </Reveal>
-    </div>
-  );
-}
+import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
 
 export default function Home() {
   const { fade, fadeUp } = useMotionPresets();
@@ -80,7 +55,7 @@ export default function Home() {
             <Reveal variants={fade}>
               <p className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
                 Today we celebrate not just the brilliant advisor and coach you are, but the luminous, loving soul behind it all.
-                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are. Lova ya, sis 💛
+                Your wisdom, heart, and strength uplift everyone around you. May you feel cherished, held, and deeply appreciated, because you are. Love ya, Sis 💛
               </p>
             </Reveal>
 
@@ -121,4 +96,4 @@ export default function Home() {
       </Reveal>
     </main>
   );
-}
+} 
