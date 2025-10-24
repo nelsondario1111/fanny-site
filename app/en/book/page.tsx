@@ -12,7 +12,7 @@ export default function BookPageEn() {
         {/* Calendly embed */}
         <div
           className="calendly-inline-widget"
-          data-url="https://calendly.com/fannysamaniego/discovery-call-1"
+          data-url="https://calendly.com/fannysamaniego/discovery-call?month=2025-10"
           style={{ minWidth: "320px", height: "700px" }}
         />
 
