@@ -1,7 +1,7 @@
-// components/SubscribeForm.tsx
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 
 type Locale = "en" | "es";
 
@@ -14,8 +14,10 @@ const COPY: Record<
     emailPlaceholder: string;
     consentLabel: React.ReactNode;
     submit: string;
-    success: string;
+    submitting: string;
     error: string;
+    missingEmail: string;
+    missingConsent: string;
   }
 > = {
   en: {
@@ -33,9 +35,10 @@ const COPY: Record<
       </>
     ),
     submit: "Subscribe",
-    success:
-      "Check your inbox to confirm your subscription. (If you don’t see it, check Spam/Promotions.)",
+    submitting: "Submitting…",
     error: "Something went wrong. Please try again.",
+    missingEmail: "Email is required.",
+    missingConsent: "Please accept consent.",
   },
   es: {
     firstNameLabel: "Nombre (opcional)",
@@ -52,14 +55,23 @@ const COPY: Record<
       </>
     ),
     submit: "Suscribirme",
-    success:
-      "Revisa tu bandeja de entrada para confirmar tu suscripción. (Si no aparece, mira Spam/Promociones.)",
+    submitting: "Enviando…",
     error: "Algo salió mal. Inténtalo de nuevo.",
+    missingEmail: "El correo es obligatorio.",
+    missingConsent: "Por favor acepta el consentimiento.",
   },
 };
 
-export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Locale }) {
+export default function SubscribeForm({
+  locale = "en" as Locale,
+  groupId,
+}: {
+  locale?: Locale;
+  groupId?: string;
+}) {
   const t = COPY[locale];
+  const router = useRouter();
+
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [consent, setConsent] = React.useState(false);
@@ -71,17 +83,11 @@ export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Lo
     setMessage(null);
 
     if (!email) {
-      setMessage({
-        type: "err",
-        text: locale === "en" ? "Email is required." : "El correo es obligatorio.",
-      });
+      setMessage({ type: "err", text: t.missingEmail });
       return;
     }
     if (!consent) {
-      setMessage({
-        type: "err",
-        text: locale === "en" ? "Please accept consent." : "Por favor acepta el consentimiento.",
-      });
+      setMessage({ type: "err", text: t.missingConsent });
       return;
     }
 
@@ -92,16 +98,22 @@ export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Lo
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
-          firstName: firstName || undefined,
+          name: firstName || undefined,
+          groupId,
           locale,
           sourcePath: typeof window !== "undefined" ? window.location.pathname : undefined,
         }),
       });
+
       if (!res.ok) throw new Error(await res.text());
-      setMessage({ type: "ok", text: t.success });
-      setEmail("");
+
+      // clear fields before redirect
       setFirstName("");
+      setEmail("");
       setConsent(false);
+
+      // redirect
+      router.push(locale === "es" ? "/es/gracias" : "/en/thank-you");
     } catch {
       setMessage({ type: "err", text: t.error });
     } finally {
@@ -164,7 +176,7 @@ export default function SubscribeForm({ locale = "en" as Locale }: { locale?: Lo
           disabled={loading}
           className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold bg-brand-green text-white hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold min-h-[44px] disabled:opacity-60"
         >
-          {loading ? (locale === "en" ? "Submitting…" : "Enviando…") : t.submit}
+          {loading ? t.submitting : t.submit}
         </button>
       </div>
 

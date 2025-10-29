@@ -1,0 +1,170 @@
+.
+├── README.md
+├── app
+│   ├── _og
+│   │   └── render.tsx
+│   ├── api
+│   │   ├── contact
+│   │   ├── create-checkout-session
+│   │   └── subscribe
+│   ├── en
+│   │   ├── about
+│   │   ├── account
+│   │   ├── apply
+│   │   ├── book
+│   │   ├── cancel
+│   │   ├── contact
+│   │   ├── for-professionals
+│   │   ├── guides
+│   │   ├── layout.tsx
+│   │   ├── login
+│   │   ├── metadata.ts
+│   │   ├── page.tsx
+│   │   ├── privacy
+│   │   ├── resources
+│   │   ├── services
+│   │   ├── subscribe
+│   │   ├── success
+│   │   ├── tax-review
+│   │   ├── terms
+│   │   ├── testimonials
+│   │   ├── thank-you
+│   │   └── tools
+│   ├── es
+│   │   ├── aplicar
+│   │   ├── cancel
+│   │   ├── contacto
+│   │   ├── cuenta
+│   │   ├── gracias
+│   │   ├── herramientas
+│   │   ├── iniciar-sesion
+│   │   ├── layout.tsx
+│   │   ├── metadata.ts
+│   │   ├── page.tsx
+│   │   ├── para-profesionales
+│   │   ├── privacidad
+│   │   ├── recursos
+│   │   ├── reservar
+│   │   ├── servicios
+│   │   ├── sobre-mi
+│   │   ├── success
+│   │   ├── suscribir
+│   │   ├── terminos
+│   │   └── testimonios
+│   ├── fonts.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── metadata.ts
+│   ├── not-found.tsx
+│   ├── opengraph-image.tsx
+│   ├── page.tsx
+│   ├── providers
+│   │   └── MotionProvider.tsx
+│   └── twitter-image.tsx
+├── components
+│   ├── ArticleActions.tsx
+│   ├── ArticleTOC.tsx
+│   ├── BackToTopButton.tsx
+│   ├── Checklist.tsx
+│   ├── ChecklistEs.tsx
+│   ├── Footer.tsx
+│   ├── FooterReveal.tsx
+│   ├── LanguageSwitchLink.tsx
+│   ├── NavBar.tsx
+│   ├── PrimaryCtaButton.tsx
+│   ├── RelatedArticles.tsx
+│   ├── Reveal.tsx
+│   ├── SubscribeForm.tsx
+│   ├── ToContactButtons.tsx
+│   ├── ToolShell.tsx
+│   ├── Toolback.tsx
+│   ├── layout
+│   │   ├── FooterLangLinks.tsx
+│   │   └── LangSwitcher.tsx
+│   ├── motion-safe.tsx
+│   ├── motionPrimitives.tsx
+│   ├── products.ts
+│   └── ui
+│       ├── AIBadge.tsx
+│       ├── Button.tsx
+│       ├── ClientFade.tsx
+│       ├── PageHeader.tsx
+│       ├── PageHero.tsx
+│       ├── Panel.tsx
+│       ├── PillRow.tsx
+│       └── Section.tsx
+├── content
+│   ├── en
+│   │   └── resources
+│   ├── es
+│   │   └── resources
+│   ├── i18n-map.json
+│   └── i18n-slugs.json
+├── eslint.config.mjs
+├── google320e84e904b06ff2.html
+├── lib
+│   ├── cta.ts
+│   ├── getArticles.ts
+│   ├── i18n.ts
+│   ├── i18nRoutes.ts
+│   └── useMounted.ts
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── print-tree.mjs
+├── public
+│   ├── Monthly-Budget-Planner.pdf
+│   ├── android-chrome-192x192.png
+│   ├── android-chrome-512x512.png
+│   ├── apple-touch-icon.png
+│   ├── data
+│   │   └── resources-tags-en.json.json
+│   ├── fanny-logo-footer.png
+│   ├── fanny-logo.png
+│   ├── fanny-portrait.jpg
+│   ├── fanny.jpg
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── images
+│   │   ├── resources
+│   │   └── resources copy
+│   ├── logo.png
+│   ├── nature.jpg
+│   ├── next.svg
+│   ├── og-fanny-coaching.png
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   ├── tools
+│   │   ├── Budget_Cashflow_Pro.csv
+│   │   ├── Budget_Cashflow_Pro.xlsx
+│   │   ├── Mortgage_Readiness_Pro.csv
+│   │   ├── Mortgage_Readiness_Pro.xlsx
+│   │   ├── Preparacion_Hipoteca_Pro.csv
+│   │   ├── Preparacion_Hipoteca_Pro.xlsx
+│   │   ├── Preparacion_Impuestos_Pro.csv
+│   │   ├── Preparacion_Impuestos_Pro.xlsx
+│   │   ├── Presupuesto_Flujo_Pro.csv
+│   │   ├── Presupuesto_Flujo_Pro.xlsx
+│   │   ├── Tax_Prep_Pro.csv
+│   │   └── Tax_Prep_Pro.xlsx
+│   ├── vercel.svg
+│   └── window.svg
+├── scripts
+│   ├── data
+│   │   └── esources-tags-es.json
+│   ├── gen-i18n-slugs.ts
+│   ├── gen-resources-index.cjs
+│   ├── get-resources-index.ts
+│   └── print-tree.mjs
+├── site-structure.txt
+├── tailwind.config.ts
+├── tree.txt
+└── tsconfig.json
+
+63 directories, 105 files
