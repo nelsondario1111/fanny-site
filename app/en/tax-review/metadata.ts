@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const metadata: Metadata = {
-  metadataBase: new URL("https://fannysamaniego.com"),
+  metadataBase: new URL("https://www.fannysamaniego.com"),
   title: "Free 10-Year Tax Review — Missed Benefits & Refunds | Fanny Samaniego",
   description:
     "Recover missed CRA tax refunds and benefits with a 10-year holistic review. Free 15-min call to check if you're eligible. Bilingual EN/ES support.",
@@ -9,16 +9,16 @@ const metadata: Metadata = {
     title: "Free 10-Year Tax Review — Fanny Samaniego",
     description:
       "You may be owed hundreds in tax refunds from the CRA. Book a free 15-min call to find out.",
-    url: "https://fannysamaniego.com/en/tax-review",
+    url: "https://www.fannysamaniego.com/en/tax-review",
     type: "website",
     locale: "en_CA",
     siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
     images: [
       {
-        url: "/og/og-tax-review-en.png",
+        url: "https://www.fannysamaniego.com/og/og-tax-review-en.png", // 👈 absolute URL
         width: 1200,
         height: 630,
-        alt: "Recover missed tax benefits. Free 10-year review.",
+        alt: "Fanny Samaniego | Free 10-Year Tax Review | Recover Missed CRA Refunds",
       },
     ],
   },
@@ -28,13 +28,13 @@ const metadata: Metadata = {
     title: "Free 10-Year Tax Review — Fanny Samaniego",
     description:
       "You may be owed hundreds in tax refunds from the CRA. Book a free 15-min call to find out.",
-    images: ["/og/og-tax-review-en.png"],
+    images: ["https://www.fannysamaniego.com/og/og-tax-review-en.png"], // 👈 absolute URL
   },
   alternates: {
-    canonical: "https://fannysamaniego.com/en/tax-review",
+    canonical: "https://www.fannysamaniego.com/en/tax-review",
     languages: {
-      "en-CA": "https://fannysamaniego.com/en/tax-review",
-      "es-CA": "https://fannysamaniego.com/es/revision-impuestos",
+      "en-CA": "https://www.fannysamaniego.com/en/tax-review",
+      "es-CA": "https://www.fannysamaniego.com/es/revision-impuestos",
     },
   },
   robots: {
