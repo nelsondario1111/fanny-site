@@ -2,10 +2,10 @@
 import type { Metadata } from "next";
 
 /* ============================================================================
-   Global SEO for Fanny — Mortgages • Money • Taxes (EN/ES, GTA audience)
-   - Centralized defaults for the whole site
-   - Canonicals + hreflang alternates through explicit route pairs
-   - Handles both global and page-specific OpenGraph images
+   🌿 Global SEO for Fanny — Mortgages • Money • Taxes
+   - Supports bilingual EN/ES pages across the GTA audience
+   - Handles canonicals + hreflang pairs (explicit + wildcard)
+   - Fixes OG image resolution issues for per-page metadata
 ============================================================================ */
 
 /** ---------- Brand & environment ---------- */
@@ -31,31 +31,46 @@ export const LOCALES = { en: "en", es: "es" } as const;
 export type Lang = keyof typeof LOCALES;
 
 const DEFAULT_DESC: Record<Lang, string> = {
-  en: "Mortgage strategy, money behaviour, and tax planning for busy professionals and families in the GTA.",
-  es: "Estrategia hipotecaria, hábitos financieros y planificación de impuestos para profesionales y familias en el GTA.",
+  en: "Mortgage strategy, practical money behaviour, and tax basics for busy professionals and families in the GTA.",
+  es: "Estrategia hipotecaria, hábitos prácticos con el dinero e impuestos básicos para profesionales y familias en el GTA.",
 };
 
 /* ============================================================================
-   Explicit EN<->ES route pairs for hreflang
+   Explicit EN<->ES route pairs
 ============================================================================ */
 type Pair = { en: `/${string}`; es: `/${string}` };
 
 const ALT_PAIRS: Pair[] = [
   { en: "/en", es: "/es" },
   { en: "/en/about", es: "/es/sobre-mi" },
-  { en: "/en/services", es: "/es/servicios" },
-  { en: "/en/tax-review", es: "/es/revision-impuestos" },
-  { en: "/en/resources", es: "/es/recursos" },
-  { en: "/en/tools", es: "/es/herramientas" },
-  { en: "/en/contact", es: "/es/contacto" },
+  { en: "/en/account", es: "/es/cuenta" },
+  { en: "/en/apply", es: "/es/aplicar" },
   { en: "/en/book", es: "/es/reservar" },
+  { en: "/en/cancel", es: "/es/cancel" },
+  { en: "/en/contact", es: "/es/contacto" },
+  { en: "/en/contact/thanks", es: "/es/contacto/gracias" },
+  { en: "/en/for-professionals", es: "/es/para-profesionales" },
+  { en: "/en/login", es: "/es/iniciar-sesion" },
   { en: "/en/privacy", es: "/es/privacidad" },
+  { en: "/en/services", es: "/es/servicios" },
+  { en: "/en/subscribe", es: "/es/suscribir" },
+  { en: "/en/success", es: "/es/success" },
   { en: "/en/terms", es: "/es/terminos" },
+  { en: "/en/testimonials", es: "/es/testimonios" },
   { en: "/en/thank-you", es: "/es/gracias" },
+  { en: "/en/tax-review", es: "/es/revision-impuestos" },
+
+  // Resources
+  { en: "/en/resources", es: "/es/recursos" },
+  { en: "/en/resources/*", es: "/es/recursos/*" },
+
+  // Tools
+  { en: "/en/tools", es: "/es/herramientas" },
+  { en: "/en/tools/*", es: "/es/herramientas/*" },
 ];
 
 /* ============================================================================
-   Utilities
+   Utility helpers
 ============================================================================ */
 function abs(pathOrUrl?: string): string {
   if (!pathOrUrl) return SITE_URL;
@@ -64,23 +79,36 @@ function abs(pathOrUrl?: string): string {
     : `${SITE_URL}${pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`}`;
 }
 
-function clean(path: string): string {
-  if (!path) return "/";
-  const p = path.trim().replace(/\/+$/g, "");
-  return p.startsWith("/") ? p : `/${p}`;
-}
-
-function starBase(s: string) {
-  return s.endsWith("/*") ? s.slice(0, -1) : s;
+function clean(pathname: string): string {
+  if (!pathname) return "/";
+  let p = pathname.trim();
+  if (!p.startsWith("/")) p = `/${p}`;
+  return p !== "/" ? p.replace(/\/+$/g, "") : "/";
 }
 
 function matchMapped(pathname: string, to: Lang): string | null {
   const p = clean(pathname);
+
+  // Exact matches
   for (const pair of ALT_PAIRS) {
     const from = to === "es" ? pair.en : pair.es;
     const toPath = to === "es" ? pair.es : pair.en;
-    if (clean(from) === p) return toPath;
+    if (!from.endsWith("/*") && clean(from) === p) return toPath;
   }
+
+  // Wildcard matches
+  for (const pair of ALT_PAIRS) {
+    const from = to === "es" ? pair.en : pair.es;
+    const toPath = to === "es" ? pair.es : pair.en;
+    if (from.endsWith("/*")) {
+      const baseFrom = from.replace("/*", "/");
+      if (p.startsWith(clean(baseFrom.replace(/\/$/, "")))) {
+        const tail = p.slice(baseFrom.length - 1);
+        return clean(toPath.replace("/*", "/")) + tail;
+      }
+    }
+  }
+
   return null;
 }
 
@@ -90,16 +118,17 @@ function languageAlternatesFor(pathname: string, locale: Lang) {
   const esPath = locale === "es" ? self.pathname : matchMapped(self.pathname, "es");
 
   const langs: Record<string, string> = {};
-  if (enPath) langs["en-CA"] = abs(enPath);
-  if (esPath) langs["es-CA"] = abs(esPath);
-  langs["x-default"] = langs["en-CA"] || langs["es-CA"] || abs(pathname);
+  if (enPath) langs["en-CA"] = new URL(enPath, SITE_URL).toString();
+  if (esPath) langs["es-CA"] = new URL(esPath, SITE_URL).toString();
+  langs["x-default"] = langs["en-CA"] || langs["es-CA"] || self.toString();
 
   return {
-    canonical: abs(pathname),
+    canonical: self.toString(),
     languages: langs,
   } as NonNullable<Metadata["alternates"]>;
 }
 
+/** Resolve OG image URLs safely (absolute path guaranteed) */
 function ogImages(images?: string | string[]) {
   const arr = Array.isArray(images)
     ? images
@@ -110,18 +139,18 @@ function ogImages(images?: string | string[]) {
     url: abs(i),
     width: 1200,
     height: 630,
-    alt: "Fanny Samaniego — Mortgages, Money, and Taxes",
+    alt: BRAND.siteName,
   }));
 }
-/* ============================================================================
-   Builders
-============================================================================ */
 
+/* ============================================================================
+   Builder: generic page metadata
+============================================================================ */
 export type BuildOpts = {
   title?: string;
   description?: string;
-  path?: string;        // e.g. "/en/tax-review"
-  locale?: Lang;        // "en" | "es"
+  path?: string;
+  locale?: Lang;
   images?: string | string[];
   noIndex?: boolean;
   canonical?: string;
@@ -138,9 +167,7 @@ export function buildMetadata({
 }: BuildOpts = {}): Metadata {
   const url = canonical || abs(path);
   const desc = description || DEFAULT_DESC[locale];
-  const fullTitle = title
-    ? `${title} | ${BRAND.siteName}`
-    : BRAND.siteName;
+  const fullTitle = title ? `${title} | ${BRAND.siteName}` : BRAND.siteName;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -214,7 +241,7 @@ export function buildMetadata({
 }
 
 /* ============================================================================
-   Article metadata builder
+   Builder: article pages (with publish dates, tags, etc.)
 ============================================================================ */
 export type ArticleOpts = BuildOpts & {
   publishedTime?: string | Date;
@@ -225,10 +252,12 @@ export type ArticleOpts = BuildOpts & {
 
 export function buildArticleMetadata(opts: ArticleOpts): Metadata {
   const base = buildMetadata(opts);
-  const publishedTime =
-    opts.publishedTime ? new Date(opts.publishedTime).toISOString() : undefined;
-  const modifiedTime =
-    opts.modifiedTime ? new Date(opts.modifiedTime).toISOString() : undefined;
+  const publishedTime = opts.publishedTime
+    ? new Date(opts.publishedTime).toISOString()
+    : undefined;
+  const modifiedTime = opts.modifiedTime
+    ? new Date(opts.modifiedTime).toISOString()
+    : undefined;
 
   return {
     ...base,
