@@ -15,7 +15,7 @@ const metadata: Metadata = {
     siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
     images: [
       {
-        url: "https://www.fannysamaniego.com/og/og-tax-review-en.png", // 👈 absolute URL
+        url: "https://www.fannysamaniego.com/og/og-tax-review-en.png", // 🔥 absolute path
         width: 1200,
         height: 630,
         alt: "Fanny Samaniego | Free 10-Year Tax Review | Recover Missed CRA Refunds",
@@ -28,7 +28,7 @@ const metadata: Metadata = {
     title: "Free 10-Year Tax Review — Fanny Samaniego",
     description:
       "You may be owed hundreds in tax refunds from the CRA. Book a free 15-min call to find out.",
-    images: ["https://www.fannysamaniego.com/og/og-tax-review-en.png"], // 👈 absolute URL
+    images: ["https://www.fannysamaniego.com/og/og-tax-review-en.png"], // 🔥 absolute path
   },
   alternates: {
     canonical: "https://www.fannysamaniego.com/en/tax-review",
