@@ -15,14 +15,10 @@ export const viewport: Viewport = {
 };
 
 /** -------------------------------------------------------------
- *  ✅ Add this line to fix metadataBase warning
- * ------------------------------------------------------------- */
-export const metadataBase = new URL("https://www.fannysamaniego.com");
-
-/** -------------------------------------------------------------
- *  Root metadata (title, description, favicon, etc.)
+ *  ✅ metadataBase now belongs inside metadata
  * ------------------------------------------------------------- */
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.fannysamaniego.com"),
   title: {
     default: "Fanny Samaniego",
     template: "%s • Fanny Samaniego",
@@ -61,8 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >
-        {/* Header/Footer are rendered by locale layouts at app/(en) and app/(es).
-            Keeping root neutral avoids duplicate headers/footers and hydration issues. */}
         {children}
       </body>
     </html>
