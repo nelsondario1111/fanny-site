@@ -4,6 +4,9 @@ import { lato, playfair, pacifico } from "./fonts";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
+/** -------------------------------------------------------------
+ *  Viewport meta (no change)
+ * ------------------------------------------------------------- */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -11,6 +14,14 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
+/** -------------------------------------------------------------
+ *  ✅ Add this line to fix metadataBase warning
+ * ------------------------------------------------------------- */
+export const metadataBase = new URL("https://www.fannysamaniego.com");
+
+/** -------------------------------------------------------------
+ *  Root metadata (title, description, favicon, etc.)
+ * ------------------------------------------------------------- */
 export const metadata: Metadata = {
   title: {
     default: "Fanny Samaniego",
@@ -24,6 +35,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** -------------------------------------------------------------
+ *  Root layout
+ * ------------------------------------------------------------- */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="no-js" suppressHydrationWarning>
@@ -44,7 +58,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           lato.variable,
           playfair.variable,
           pacifico.variable,
-          // ✅ make body a flex column so <main class="flex-1"> works on every page
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >
