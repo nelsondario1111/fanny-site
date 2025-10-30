@@ -1,13 +1,15 @@
-# Next.js build output
+# Dependencies
+node_modules/
+
+# Next.js build
 .next/
 out/
 dist/
 
-# MacOS metadata
+# OS junk
 .DS_Store
+Thumbs.db
 
-# Logs & env files
+# Env files
+.env*
 *.log
-.env
-.env.local
-.env.production
