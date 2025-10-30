@@ -26,7 +26,8 @@ export default function LeadCaptureForm({
         body: JSON.stringify({ email, name }),
       });
 
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string };
+
       if (!res.ok) throw new Error(data?.error || "Unknown error");
 
       setStatus("success");
@@ -37,7 +38,9 @@ export default function LeadCaptureForm({
       );
       setEmail("");
       setName("");
-    } catch (err: any) {
+    } catch (error: unknown) {
+      console.error("Form submission failed:", error);
+
       setStatus("error");
       setMessage(
         lang === "es"
@@ -77,9 +80,7 @@ export default function LeadCaptureForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder={
-            lang === "es" ? "tu@correo.com" : "you@example.com"
-          }
+          placeholder={lang === "es" ? "tu@correo.com" : "you@example.com"}
           className="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:border-brand-green focus:ring-1 focus:ring-brand-green"
         />
       </label>

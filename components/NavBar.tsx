@@ -5,21 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Menu,
-  X,
-  Calendar,
-  Phone,
-  MessageCircle,
-  ChevronDown,
-  Sparkles,
-  Landmark,
-  Briefcase,
-  HandCoins,
-  Users as UsersIcon,
-  Globe,
-  Presentation,
-} from "lucide-react";
+import { Menu, X, Calendar, Phone, MessageCircle } from "lucide-react";
 
 import { buildAlternateHref, detectLang, type Locale } from "@/lib/i18nRoutes";
 
