@@ -1,10 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
 
-/**
- * Default MailerLite Group ID
- * (Used if no groupId is provided in the request)
- */
+/** Default MailerLite Group ID (used if none provided) */
 const DEFAULT_GROUP_ID = "157670436745774731";
+
+/** Expected shape of MailerLite error responses */
+interface MailerLiteErrorResponse {
+  error?: string | { message?: string };
+  message?: string;
+}
 
 /**
  * POST /api/subscribe
@@ -12,7 +15,11 @@ const DEFAULT_GROUP_ID = "157670436745774731";
  */
 export async function POST(request: NextRequest) {
   try {
-    const { email, name, groupId } = await request.json();
+    const { email, name, groupId } = (await request.json()) as {
+      email?: string;
+      name?: string;
+      groupId?: string;
+    };
 
     // --- Validate email ---
     if (!email || typeof email !== "string" || !email.trim()) {
@@ -38,7 +45,7 @@ export async function POST(request: NextRequest) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-MailerLite-ApiKey": process.env.MAILERLITE_API_TOKEN!,
+          "X-MailerLite-ApiKey": process.env.MAILERLITE_API_TOKEN ?? "",
         },
         body: JSON.stringify(payload),
       }
@@ -49,21 +56,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    // --- Handle MailerLite API errors ---
+    // --- Handle MailerLite API errors safely ---
     let message = "MailerLite error.";
     try {
-      const data: unknown = await res.json();
-      if (data && typeof data === "object") {
-        if ("error" in data && typeof (data as any).error === "string") {
-          message = (data as any).error;
-        } else if (
-          "error" in data &&
-          typeof (data as any).error === "object" &&
-          (data as any).error?.message
-        ) {
-          message = (data as any).error.message;
-        } else if ("message" in data && typeof (data as any).message === "string") {
-          message = (data as any).message;
+      const data = (await res.json()) as MailerLiteErrorResponse;
+      if (typeof data === "object" && data !== null) {
+        if (typeof data.error === "string") {
+          message = data.error;
+        } else if (data.error && typeof data.error === "object" && data.error.message) {
+          message = data.error.message;
+        } else if (data.message) {
+          message = data.message;
         }
       }
     } catch {
@@ -71,7 +74,6 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: false, error: message }, { status: 400 });
-
   } catch (err: unknown) {
     console.error("❌ /api/subscribe error:", err);
 
