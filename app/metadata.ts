@@ -4,20 +4,20 @@ import type { Metadata } from "next";
 /* ============================================================================
    Global SEO for Fanny — Mortgages • Money • Taxes (EN/ES, GTA audience)
    - Centralized defaults for the whole site
-   - Canonicals + accurate hreflang pairs using an explicit route map
-   - Helpers for generic pages and articles
-   Update ALT_PAIRS if you add/rename routes.
+   - Canonicals + hreflang alternates through explicit route pairs
+   - Handles both global and page-specific OpenGraph images
 ============================================================================ */
 
 /** ---------- Brand & environment ---------- */
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
+  "https://fannysamaniego.com";
 
 const BRAND = {
-  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Fanny — Mortgages & Money",
-  org: "Fanny",
-  twitter: process.env.NEXT_PUBLIC_TWITTER || "@yourhandle",
-  themeColor: "#1b6b5f", // brand green
+  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Fanny Samaniego — Mortgages • Money • Taxes",
+  org: "Fanny Samaniego",
+  twitter: process.env.NEXT_PUBLIC_TWITTER || "@fannysamaniego",
+  themeColor: "#1b6b5f",
   city: "Toronto",
   region: "Ontario",
   country: "Canada",
@@ -31,74 +31,27 @@ export const LOCALES = { en: "en", es: "es" } as const;
 export type Lang = keyof typeof LOCALES;
 
 const DEFAULT_DESC: Record<Lang, string> = {
-  en: "Mortgage strategy, practical money behaviour, and tax basics for busy professionals and families in the GTA.",
-  es: "Estrategia hipotecaria, hábitos prácticos con el dinero e impuestos básicos para profesionales y familias en el GTA.",
+  en: "Mortgage strategy, money behaviour, and tax planning for busy professionals and families in the GTA.",
+  es: "Estrategia hipotecaria, hábitos financieros y planificación de impuestos para profesionales y familias en el GTA.",
 };
 
 /* ============================================================================
-   Explicit EN<->ES route pairs.
-   - Use exact paths for static pages
-   - Use single-star wildcards for path families (e.g., /en/resources/*)
-   - Only these pairs produce hreflang alternates; others won’t (avoids 404s)
+   Explicit EN<->ES route pairs for hreflang
 ============================================================================ */
 type Pair = { en: `/${string}`; es: `/${string}` };
 
 const ALT_PAIRS: Pair[] = [
-  // Homes
   { en: "/en", es: "/es" },
-
-  // Top-level static pages
   { en: "/en/about", es: "/es/sobre-mi" },
-  { en: "/en/account", es: "/es/cuenta" },
-  { en: "/en/apply", es: "/es/aplicar" },
-  { en: "/en/book", es: "/es/reservar" },
-  { en: "/en/cancel", es: "/es/cancel" },
-  { en: "/en/contact", es: "/es/contacto" },
-  { en: "/en/contact/thanks", es: "/es/contacto/gracias" },
-  { en: "/en/for-professionals", es: "/es/para-profesionales" },
-  { en: "/en/login", es: "/es/iniciar-sesion" },
-  { en: "/en/privacy", es: "/es/privacidad" },
   { en: "/en/services", es: "/es/servicios" },
-  { en: "/en/subscribe", es: "/es/suscribir" },
-  { en: "/en/success", es: "/es/success" },
-  { en: "/en/terms", es: "/es/terminos" },
-  { en: "/en/testimonials", es: "/es/testimonios" },
-  { en: "/en/thank-you", es: "/es/gracias" },
-
-  // Resources (dynamic articles)
+  { en: "/en/tax-review", es: "/es/revision-impuestos" },
   { en: "/en/resources", es: "/es/recursos" },
-  { en: "/en/resources/*", es: "/es/recursos/*" },
-
-  // Tools (all calculators/checklists)
   { en: "/en/tools", es: "/es/herramientas" },
-  { en: "/en/tools/affordability-stress-test", es: "/es/herramientas/prueba-esfuerzo" },
-  { en: "/en/tools/amortization-schedule", es: "/es/herramientas/tabla-amortizacion" },
-  { en: "/en/tools/budget-calculator", es: "/es/herramientas/calculadora-presupuesto" },
-  { en: "/en/tools/budget-cashflow", es: "/es/herramientas/presupuesto-flujo" },
-  { en: "/en/tools/cap-rate-calculator", es: "/es/herramientas/tasa-cap" },
-  { en: "/en/tools/closing-costs", es: "/es/herramientas/costos-cierre" },
-  { en: "/en/tools/debt-snowball", es: "/es/herramientas/deuda-bola-nieve" },
-  { en: "/en/tools/down-payment-insurance", es: "/es/herramientas/pago-inicial-seguro" },
-  { en: "/en/tools/dscr-calculator", es: "/es/herramientas/calculadora-dscr" },
-  { en: "/en/tools/land-transfer-tax", es: "/es/herramientas/impuesto-transferencia" },
-  { en: "/en/tools/mortgage-affordability", es: "/es/herramientas/asequibilidad-hipotecaria" },
-  { en: "/en/tools/mortgage-calculator", es: "/es/herramientas/calculadora-hipotecaria" },
-  { en: "/en/tools/mortgage-penalty", es: "/es/herramientas/penalidad-hipotecaria" },
-  { en: "/en/tools/mortgage-readiness", es: "/es/herramientas/preparacion-hipoteca" },
-  { en: "/en/tools/multiplex-readiness", es: "/es/herramientas/preparacion-multiplex" },
-  { en: "/en/tools/net-worth", es: "/es/herramientas/patrimonio-neto" },
-  { en: "/en/tools/net-worth-tracker", es: "/es/herramientas/seguimiento-patrimonio-neto" },
-  { en: "/en/tools/newcomer-checklist", es: "/es/herramientas/lista-recien-llegados" },
-  { en: "/en/tools/refinance-blend", es: "/es/herramientas/refinanciar-blend" },
-  { en: "/en/tools/rent-vs-buy", es: "/es/herramientas/alquilar-vd-comprar" },
-  { en: "/en/tools/rental-cashflow", es: "/es/herramientas/flujo-de-caja-de-alquileres" },
-  { en: "/en/tools/tax-prep", es: "/es/herramientas/preparacion-impuestos" },
-
-  // Wildcard to cover any future /en/tools/* <-> /es/herramientas/* siblings
-  { en: "/en/tools/*", es: "/es/herramientas/*" },
-
-  // NOTE: /en/guides/dscr-rules has NO Spanish counterpart in your list.
-  // Intentionally omitted so hreflang doesn't point to a 404.
+  { en: "/en/contact", es: "/es/contacto" },
+  { en: "/en/book", es: "/es/reservar" },
+  { en: "/en/privacy", es: "/es/privacidad" },
+  { en: "/en/terms", es: "/es/terminos" },
+  { en: "/en/thank-you", es: "/es/gracias" },
 ];
 
 /* ============================================================================
@@ -111,43 +64,24 @@ function abs(pathOrUrl?: string): string {
     : `${SITE_URL}${pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`}`;
 }
 
-function clean(pathname: string): string {
-  if (!pathname) return "/";
-  let p = pathname.trim();
-  if (!p.startsWith("/")) p = `/${p}`;
-  // remove trailing slash except root
-  return p !== "/" ? p.replace(/\/+$/g, "") : "/";
+function clean(path: string): string {
+  if (!path) return "/";
+  const p = path.trim().replace(/\/+$/g, "");
+  return p.startsWith("/") ? p : `/${p}`;
 }
 
 function starBase(s: string) {
-  // "/en/resources/*" -> "/en/resources/"
   return s.endsWith("/*") ? s.slice(0, -1) : s;
 }
 
 function matchMapped(pathname: string, to: Lang): string | null {
   const p = clean(pathname);
-
-  // 1) Exact matches first
   for (const pair of ALT_PAIRS) {
     const from = to === "es" ? pair.en : pair.es;
     const toPath = to === "es" ? pair.es : pair.en;
-    if (!from.endsWith("/*") && clean(from) === p) return toPath;
+    if (clean(from) === p) return toPath;
   }
-
-  // 2) Wildcard families
-  for (const pair of ALT_PAIRS) {
-    const from = to === "es" ? pair.en : pair.es;
-    const toPath = to === "es" ? pair.es : pair.en;
-    if (from.endsWith("/*")) {
-      const baseFrom = starBase(from); // includes ending slash
-      if (p.startsWith(clean(baseFrom.replace(/\/$/, "")))) {
-        const tail = p.slice(baseFrom.length - 1); // keep leading slash on tail
-        return clean(starBase(toPath)) + tail;
-      }
-    }
-  }
-
-  return null; // no known counterpart; skip hreflang for that locale
+  return null;
 }
 
 function languageAlternatesFor(pathname: string, locale: Lang) {
@@ -156,41 +90,41 @@ function languageAlternatesFor(pathname: string, locale: Lang) {
   const esPath = locale === "es" ? self.pathname : matchMapped(self.pathname, "es");
 
   const langs: Record<string, string> = {};
-  if (enPath) langs["en-CA"] = new URL(enPath, SITE_URL).toString();
-  if (esPath) langs["es-CA"] = new URL(esPath, SITE_URL).toString();
-
-  // x-default -> prefer EN if available, else ES, else self
-  const xDefault =
-    langs["en-CA"] || langs["es-CA"] || self.toString();
-  langs["x-default"] = xDefault;
+  if (enPath) langs["en-CA"] = abs(enPath);
+  if (esPath) langs["es-CA"] = abs(esPath);
+  langs["x-default"] = langs["en-CA"] || langs["es-CA"] || abs(pathname);
 
   return {
-    canonical: self.toString(),
+    canonical: abs(pathname),
     languages: langs,
   } as NonNullable<Metadata["alternates"]>;
 }
 
 function ogImages(images?: string | string[]) {
-  const arr = Array.isArray(images) ? images : images ? [images] : ["/og.png"];
+  const arr = Array.isArray(images)
+    ? images
+    : images
+    ? [images]
+    : ["/og/og-default.png"];
   return arr.map((i) => ({
     url: abs(i),
     width: 1200,
     height: 630,
-    alt: BRAND.siteName,
+    alt: "Fanny Samaniego — Mortgages, Money, and Taxes",
   }));
 }
-
 /* ============================================================================
-   Public builders
+   Builders
 ============================================================================ */
+
 export type BuildOpts = {
   title?: string;
   description?: string;
-  path?: string;        // actual route, e.g., "/en/resources"
+  path?: string;        // e.g. "/en/tax-review"
   locale?: Lang;        // "en" | "es"
   images?: string | string[];
   noIndex?: boolean;
-  canonical?: string;   // absolute override if needed
+  canonical?: string;
 };
 
 export function buildMetadata({
@@ -204,7 +138,9 @@ export function buildMetadata({
 }: BuildOpts = {}): Metadata {
   const url = canonical || abs(path);
   const desc = description || DEFAULT_DESC[locale];
-  const fullTitle = title ? `${title} | ${BRAND.siteName}` : BRAND.siteName;
+  const fullTitle = title
+    ? `${title} | ${BRAND.siteName}`
+    : BRAND.siteName;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -229,7 +165,7 @@ export function buildMetadata({
       creator: BRAND.twitter,
       title: fullTitle,
       description: desc,
-      images: (Array.isArray(images) ? images : images ? [images] : ["/og.png"]).map(abs),
+      images: (Array.isArray(images) ? images : images ? [images] : ["/og/og-default.png"]).map(abs),
     },
     robots: {
       index: !noIndex,
@@ -243,11 +179,9 @@ export function buildMetadata({
       },
     },
     keywords: [
-      // EN
       "mortgage broker", "mortgage strategy", "pre-approval", "refinance",
       "cash flow", "budgeting", "credit score", "RRSP", "TFSA",
       "tax planning", "real estate investing", "Toronto", "GTA",
-      // ES
       "hipoteca", "preaprobación", "refinanciación", "flujo de caja",
       "puntaje crediticio", "impuestos", "inversión inmobiliaria", "Toronto", "GTA",
     ],
@@ -279,6 +213,9 @@ export function buildMetadata({
   };
 }
 
+/* ============================================================================
+   Article metadata builder
+============================================================================ */
 export type ArticleOpts = BuildOpts & {
   publishedTime?: string | Date;
   modifiedTime?: string | Date;
@@ -307,7 +244,7 @@ export function buildArticleMetadata(opts: ArticleOpts): Metadata {
 }
 
 /* ============================================================================
-   Optional JSON-LD helpers (import and inject if desired)
+   Optional JSON-LD helpers
 ============================================================================ */
 export function siteJsonLd(locale: Lang = "en") {
   return {
@@ -316,7 +253,6 @@ export function siteJsonLd(locale: Lang = "en") {
     name: BRAND.org,
     url: SITE_URL,
     logo: abs("/icon-512.png"),
-    sameAs: [],
     areaServed: "CA",
     address: {
       "@type": "PostalAddress",
@@ -345,7 +281,7 @@ export function articleJsonLd({
     headline: title || BRAND.siteName,
     description: description || DEFAULT_DESC[locale],
     mainEntityOfPage: url,
-    image: (Array.isArray(images) ? images : images ? [images] : ["/og.png"]).map(abs),
+    image: (Array.isArray(images) ? images : images ? [images] : ["/og/og-default.png"]).map(abs),
     datePublished: publishedTime ? new Date(publishedTime).toISOString() : undefined,
     dateModified: modifiedTime ? new Date(modifiedTime).toISOString() : undefined,
     author: (authors && authors.length ? authors : [BRAND.org]).map((name) => ({
@@ -362,6 +298,6 @@ export function articleJsonLd({
 
 /** ---------- Default export used by root layout ---------- */
 export const siteMetadata: Metadata = buildMetadata({
-  path: "/en", // pick canonical default home
+  path: "/en",
   locale: "en",
 });
