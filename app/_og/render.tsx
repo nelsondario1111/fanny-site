@@ -1,4 +1,3 @@
-// app/_og/render.tsx
 import { ImageResponse } from "next/og";
 
 export type RenderOpts = {
@@ -14,14 +13,18 @@ export const OG_CONTENT_TYPE = "image/png";
 const BRAND = {
   name: "Fanny — Mortgages & Money",
   nameES: "Fanny — Hipotecas y Dinero",
-  url: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "http://localhost:3000",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
+    (process.env.NODE_ENV === "production"
+      ? "https://www.fannysamaniego.com"
+      : "http://localhost:3000"),
   green: "#1b6b5f",
   gold: "#d1a954",
   blue: "#184f7d",
   beige: "#fbf7f2",
 };
 
-// Simple TitleCase from slug
+// Format slugs into human-readable titles
 function prettify(slugOrTitle?: string) {
   if (!slugOrTitle) return "";
   const raw = slugOrTitle.replace(/^\/+|\/+$/g, "");
@@ -33,7 +36,7 @@ function prettify(slugOrTitle?: string) {
     .replace(/\b\w/g, (m) => m.toUpperCase());
 }
 
-// Background stripes
+// Gradient + accent background
 function Background() {
   return (
     <div
@@ -43,7 +46,6 @@ function Background() {
         background: `linear-gradient(135deg, ${BRAND.beige} 0%, #ffffff 100%)`,
       }}
     >
-      {/* accents */}
       <div
         style={{
           position: "absolute",
@@ -93,9 +95,8 @@ export async function renderOG({
       ? "Hipotecas • Dinero • Impuestos"
       : "Mortgages • Money • Taxes");
 
-  // System fonts are fine; custom fonts optional.
   const fontFamily =
-    "ui-sans-serif, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial";
+    'Lato, "Playfair Display", ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
 
   return new ImageResponse(
     (
@@ -111,7 +112,7 @@ export async function renderOG({
       >
         <Background />
 
-        {/* Top brand bar */}
+        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -142,14 +143,14 @@ export async function renderOG({
           </div>
         </div>
 
-        {/* Content */}
+        {/* Main Content */}
         <div
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            padding: "0 64px",
+            padding: "0 64px 32px",
             gap: 18,
           }}
         >
@@ -181,6 +182,16 @@ export async function renderOG({
           >
             {finalTitle}
           </div>
+
+          <div
+            style={{
+              height: 4,
+              width: 180,
+              background: BRAND.gold,
+              marginTop: 10,
+              borderRadius: 2,
+            }}
+          />
         </div>
 
         {/* Footer */}

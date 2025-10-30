@@ -3,7 +3,7 @@
 
 export type Locale = "en" | "es";
 
-/** Human-friendly section names per locale */
+/** ======================= Section names per locale ======================= */
 export const I18N_SECTIONS = {
   en: {
     home: "",
@@ -29,19 +29,16 @@ export const I18N_SECTIONS = {
 
 type SectionKey = keyof typeof I18N_SECTIONS["en"];
 
-/** Load the generated slug map (resources/tools) */
+/** ======================= Dynamic slug map loading ======================= */
 type PairDict = Record<string, { en: string; es: string }>;
 type GenShape = { resources: PairDict; tools: PairDict };
 
-// Lazy, safe runtime load of the optional JSON.
-// We purposefully *don't* await this at module init — functions work with the
-// empty fallback and will reflect the JSON once it loads.
 let gen: GenShape = { resources: {}, tools: {} };
 let genLoadStarted = false;
+
 function ensureGenLoaded(): void {
   if (genLoadStarted) return;
   genLoadStarted = true;
-  // fire-and-forget; if the file doesn't exist, we silently keep the fallback
   import("@/content/i18n-slugs.json")
     .then((mod) => {
       const data = (mod as { default?: GenShape }).default ?? (mod as unknown as GenShape);
@@ -53,16 +50,12 @@ function ensureGenLoaded(): void {
       }
     })
     .catch(() => {
-      // no-op: developer hasn’t generated the file yet
+      // Silent fallback if no file yet
     });
 }
-// Kick off the load in the background
 ensureGenLoaded();
 
-/**
- * Slug mappings for dynamic content.
- * `static` stays inline; resources/tools are populated from the generated file (if present).
- */
+/** ======================= Static slug dictionary ======================= */
 export const I18N_SLUGS: {
   resources: PairDict;
   tools: PairDict;
@@ -86,7 +79,7 @@ export const I18N_SLUGS: {
   },
 } as const;
 
-/* --------------------------- helpers --------------------------- */
+/* --------------------------- Helpers --------------------------- */
 
 export function detectLang(pathname: string): Locale | null {
   if (pathname.startsWith("/en")) return "en";
@@ -108,7 +101,6 @@ export function splitPath(pathname: string): {
 }
 
 export function mapSection(section: string, target: Locale): string {
-  // Try to find the section key by comparing against both locales.
   const entriesEn = Object.entries(I18N_SECTIONS.en) as [SectionKey, string][];
   for (const [key, val] of entriesEn) {
     if (val === section) return I18N_SECTIONS[target][key];
@@ -135,7 +127,6 @@ export function mapSlug(
 ): string | null {
   const dict: PairDict | Record<string, { en: string; es: string }> =
     sectionKey === "static" ? I18N_SLUGS.static : I18N_SLUGS[sectionKey];
-
   const entries = Object.entries(dict) as [string, { en: string; es: string }][];
   for (const [canonical, variants] of entries) {
     if (variants.en === currentSlug || variants.es === currentSlug || canonical === currentSlug) {
@@ -145,14 +136,28 @@ export function mapSlug(
   return null;
 }
 
-/** Build the counterpart URL in the target language. */
+/** ======================= Build the alternate URL ======================= */
 export function buildAlternateHref(pathname: string, target: Locale): string {
-  const { section, slugs } = splitPath(pathname);
+  // Normalize: remove query, hash, and trailing slashes
+  const cleanPath = pathname.split("?")[0].split("#")[0].replace(/\/+$/, "");
+  const { section, slugs } = splitPath(cleanPath);
   if (!section) return `/${target}`;
 
   const mappedSection = mapSection(section, target);
-  if (slugs.length === 0) return `/${target}/${mappedSection}`;
 
+  /** ✅ Custom cross-language pages (non-section pages) */
+  const CUSTOM_MAP: Record<string, Record<Locale, string>> = {
+    "/en/tax-review": { en: "/en/tax-review", es: "/es/revision-impuestos" },
+    "/es/revision-impuestos": { en: "/en/tax-review", es: "/es/revision-impuestos" },
+    "/en/book": { en: "/en/book", es: "/es/reservar" },
+    "/es/reservar": { en: "/en/book", es: "/es/reservar" },
+  };
+
+  // Direct match first
+  const match = CUSTOM_MAP[cleanPath];
+  if (match && match[target]) return match[target];
+
+  // Regular section mapping
   const sectionKey = normalizeSectionKey(mappedSection);
   const candidate = slugs[slugs.length - 1];
   const mapped = mapSlug(sectionKey, candidate, target);

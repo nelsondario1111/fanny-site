@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
+
 import { Reveal, RevealPanel, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
 
 /* ============================= Section Title ============================= */
@@ -58,22 +59,15 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* =============================== HERO =============================== */}
-      <header className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-4 sm:mt-6" aria-label="Hero">
+      <header className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6" aria-label="Hero">
         <div className="absolute inset-0 -z-10">
-          <Image
-            src="/nature.jpg"
-            alt="Natural background representing calm and clarity"
-            aria-hidden
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
+          <Image src="/nature.jpg" alt="" aria-hidden fill priority sizes="100vw" className="object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
         </div>
 
         <StaggerGroup className="w-full px-4">
           <section className="max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12 bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px] text-center relative">
+            {/* subtle gold accent */}
             <div aria-hidden className="absolute -top-1 left-8 right-8 h-[3px] rounded-full bg-brand-gold/80 shadow-[0_1px_0_rgba(0,0,0,0.06)]" />
 
             <Reveal variants={fadeUp}>
@@ -108,7 +102,7 @@ export default function Home() {
             <Reveal variants={fade}>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Trust badges">
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-                  <FaShieldAlt aria-hidden /> Private & Confidential
+                  <FaShieldAlt aria-hidden /> Private &amp; Confidential
                 </span>
                 <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
                   <FaGlobeAmericas aria-hidden /> Bilingual (EN/ES)
@@ -123,7 +117,7 @@ export default function Home() {
       </header>
 
       {/* ============================ ABOUT ============================ */}
-      <RevealPanel className="mt-8 sm:mt-10" aria-label="About Fanny Samaniego">
+      <RevealPanel className="mt-10" aria-label="About Fanny Samaniego">
         <StaggerGroup className="flex flex-col md:flex-row items-center gap-8">
           <Reveal variants={fadeUp} className="md:w-1/2 flex justify-center">
             <Image
@@ -158,7 +152,7 @@ export default function Home() {
       </RevealPanel>
 
       {/* ==================== INVITATION PHILOSOPHY ==================== */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Why We Work by Invitation">
+      <RevealPanel className="mt-8" aria-label="Why We Work by Invitation">
         <SectionTitle title="Why We Work by Invitation" />
         <Reveal variants={fade}>
           <p className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto leading-relaxed">
@@ -184,7 +178,7 @@ export default function Home() {
       </RevealPanel>
 
       {/* ============================ BADGES ============================ */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Professional Certifications and Partners">
+      <RevealPanel className="mt-8" aria-label="Professional Certifications and Partners">
         <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           {[
             { icon: <FaIdBadge aria-hidden className="text-xl" />, text: "Licensed Mortgage Agent (Level 2)" },
@@ -202,7 +196,7 @@ export default function Home() {
       </RevealPanel>
 
       {/* ======================= SERVICES PREVIEW ======================= */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Core Services">
+      <RevealPanel className="mt-8" aria-label="Core Services">
         <SectionTitle title="Ways We Can Guide You" />
         <StaggerGroup className="grid md:grid-cols-3 gap-8">
           {[
@@ -277,7 +271,7 @@ export default function Home() {
       </RevealPanel>
 
       {/* ================ KITCHEN TABLE — 4-week program ================ */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Kitchen Table Conversations — 4-week small-group program">
+      <RevealPanel className="mt-8" aria-label="Kitchen Table Conversations — 4-week small-group program">
         <SectionTitle title="Kitchen Table Conversations" kicker="4-week small-group program" />
         <Reveal variants={fade}>
           <p className="text-center text-brand-body mt-2 max-w-3xl mx-auto">
@@ -309,10 +303,7 @@ export default function Home() {
             <Link href="/en/services#family" className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block">
               View program details
             </Link>
-            <Link
-              href={`/en/contact?intent=package&package=${encodeURIComponent("Holistic Family Conversations — 4-Week Cohort")}`}
-              className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
-            >
+            <Link href={`/en/contact?intent=package&package=${encodeURIComponent("Holistic Family Conversations — 4-Week Cohort")}`} className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block">
               Talk to us
             </Link>
           </div>
@@ -320,9 +311,9 @@ export default function Home() {
       </RevealPanel>
 
       {/* ======================= TOOLS & ARTICLES ======================= */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Helpful tools and articles">
+      <RevealPanel className="mt-8" aria-label="Helpful tools and articles">
         <SectionTitle title="Helpful Tools & Articles" />
-                <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal variants={fadeUp}>
             <div className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl">
               <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Tools</h3>
@@ -356,7 +347,7 @@ export default function Home() {
       </RevealPanel>
 
       {/* ============================ SUBSCRIBE ============================ */}
-      <RevealPanel className="mt-6 sm:mt-8" aria-label="Subscribe to financial tips and resources">
+      <RevealPanel className="mt-8" aria-label="Subscribe to financial tips and resources">
         <Reveal variants={fadeUp}>
           <div className="text-center max-w-3xl mx-auto">
             <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">Stay in the Loop</h3>

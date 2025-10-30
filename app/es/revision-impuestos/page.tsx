@@ -74,6 +74,8 @@ export default function RevisionImpuestosPage() {
             </li>
             <li>Fanny revisa cuidadosamente tus declaraciones de impuestos de los últimos 10 años</li>
             <li>Recibe cualquier reembolso, beneficio o crédito que te corresponda</li>
+            <li>🆓 <strong>No pagas nada por adelantado</strong> — Solo pagas si se recupera dinero</li>
+
           </ol>
         </div>
       </Section>

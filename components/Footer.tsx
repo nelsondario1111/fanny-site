@@ -32,6 +32,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/about`, label: "About" },
         { href: `${base}/testimonials`, label: "Testimonials" },
         { href: `${base}/contact`, label: "Contact" },
+        { href: `${base}/tax-review`, label: "Tax-review" },
       ]
     : [
         { href: `${base}/servicios`, label: "Servicios" },
@@ -40,6 +41,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/sobre-mi`, label: "Sobre mí" },
         { href: `${base}/testimonios`, label: "Testimonios" },
         { href: `${base}/contacto`, label: "Contacto" },
+        { href: `${base}/revision-impuestos`, label: "Revision-Imputestos" },
       ];
 
   // Use section IDs that exist in both EN/ES services pages

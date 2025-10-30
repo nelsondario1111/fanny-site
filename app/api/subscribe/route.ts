@@ -6,25 +6,32 @@ import { NextResponse, NextRequest } from "next/server";
  */
 const DEFAULT_GROUP_ID = "157670436745774731";
 
+/**
+ * POST /api/subscribe
+ * Handles newsletter subscriptions through MailerLite
+ */
 export async function POST(request: NextRequest) {
   try {
     const { email, name, groupId } = await request.json();
 
-    if (!email) {
+    // --- Validate email ---
+    if (!email || typeof email !== "string" || !email.trim()) {
       return NextResponse.json(
-        { success: false, error: "Missing email address." },
+        { success: false, error: "Missing or invalid email address." },
         { status: 400 }
       );
     }
 
-    // Use provided group ID or fallback to default
+    const cleanEmail = email.trim().toLowerCase();
     const targetGroupId = groupId || DEFAULT_GROUP_ID;
 
-    // Prepare payload
-    const payload: { email: string; name?: string } = { email };
-    if (name) payload.name = name;
+    // --- Build payload ---
+    const payload: { email: string; name?: string } = { email: cleanEmail };
+    if (name && typeof name === "string" && name.trim()) {
+      payload.name = name.trim();
+    }
 
-    // Send request to MailerLite API
+    // --- Send to MailerLite ---
     const res = await fetch(
       `https://api.mailerlite.com/api/v2/groups/${targetGroupId}/subscribers`,
       {
@@ -37,53 +44,43 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    // --- Handle success ---
     if (res.ok) {
       return NextResponse.json({ success: true });
     }
 
-    // --- Parse API error message safely ---
+    // --- Handle MailerLite API errors ---
     let message = "MailerLite error.";
     try {
       const data: unknown = await res.json();
       if (data && typeof data === "object") {
-        if (
-          "error" in data &&
-          typeof (data as { error?: { message?: string } }).error === "object" &&
-          (data as { error?: { message?: string } }).error !== null &&
-          "message" in (data as { error: { message?: string } }).error
-        ) {
-          const errObj = (data as { error: { message?: string } }).error;
-          if (typeof errObj.message === "string") {
-            message = errObj.message;
-          }
+        if ("error" in data && typeof (data as any).error === "string") {
+          message = (data as any).error;
         } else if (
           "error" in data &&
-          typeof (data as { error?: string }).error === "string"
+          typeof (data as any).error === "object" &&
+          (data as any).error?.message
         ) {
-          message = (data as { error: string }).error;
-        } else if (
-          "message" in data &&
-          typeof (data as { message?: string }).message === "string"
-        ) {
-          message = (data as { message: string }).message;
+          message = (data as any).error.message;
+        } else if ("message" in data && typeof (data as any).message === "string") {
+          message = (data as any).message;
         }
       }
     } catch {
-      // ignore JSON parse error
+      // ignore parsing issues
     }
 
     return NextResponse.json({ success: false, error: message }, { status: 400 });
 
   } catch (err: unknown) {
-    let message = "MailerLite error.";
-    if (
-      typeof err === "object" &&
-      err !== null &&
-      "message" in err &&
-      typeof (err as { message?: unknown }).message === "string"
-    ) {
-      message = (err as { message: string }).message;
-    }
-    return NextResponse.json({ success: false, error: message }, { status: 400 });
+    console.error("❌ /api/subscribe error:", err);
+
+    const message =
+      err instanceof Error ? err.message : "Unexpected server error.";
+
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 }
+    );
   }
 }

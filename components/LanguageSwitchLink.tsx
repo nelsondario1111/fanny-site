@@ -42,6 +42,7 @@ export default function LanguageSwitchLink({ className, children, ...rest }: Pro
       "/en/contact": "/es/contacto",
       "/en/privacy": "/es/privacidad",
       "/en/terms": "/es/terminos",
+      "/en/tax-review": "/es/revision-impuestos",
       // ES -> EN
       "/es": "/en",
       "/es/sobre-mi": "/en/about",
@@ -52,6 +53,7 @@ export default function LanguageSwitchLink({ className, children, ...rest }: Pro
       "/es/contacto": "/en/contact",
       "/es/privacidad": "/en/privacy",
       "/es/terminos": "/en/terms",
+      "/es/revision-impuestos": "/en/tax-review",
     };
 
     if (isArticlePath(pathname)) {

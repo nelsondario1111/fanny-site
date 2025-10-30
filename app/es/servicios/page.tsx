@@ -88,8 +88,13 @@ function SectionTitle({
   level?: "h1" | "h2";
 }) {
   const { fade, fadeUp } = useMotionPresets();
+
   return (
-    <div id={id} className="scroll-mt-24">
+    // 🔧 Increased scroll margin to offset header + sticky subnav
+    <div
+      id={id}
+      className="scroll-mt-[160px] sm:scroll-mt-[170px] md:scroll-mt-[180px] lg:scroll-mt-[190px]"
+    >
       <div className="text-center mb-6">
         <Reveal variants={fadeUp}>
           {level === "h1" ? (
@@ -111,13 +116,16 @@ function SectionTitle({
 
         {subtitle && (
           <Reveal variants={fadeUp}>
-            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
+            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
+              {subtitle}
+            </p>
           </Reveal>
         )}
       </div>
     </div>
   );
 }
+
 
 function PriceBadge({ children }: { children: ReactNode }) {
   return (
