@@ -2,53 +2,36 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-
 import {
   Reveal,
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
 
+
 /* ============================ Pricing (CAD) ============================ */
-/** Set any price to null to show “Contact for pricing”. HST may apply. */
 const PRICING = {
-  // Entry / Mortgage
   mortgagePreapproval: 0,
   refiRenewal: 295,
   firstHomePlan: 395,
-
-  // Professionals & Business Owners
   proTuneUp90: 1200,
   bizOwnerExecPlan: 2500,
   corpPayrollClinic: 395,
-
-  // Newcomers
   newcomerFastTrack: 395,
-
-  // Mortgage & investment
   invest4to10: 695,
   annualReviewNonClient: 149,
-
-  // 1:1 (advice-only)
   discovery: 0,
   blueprint90: 395,
   align3: 1200,
   transform6: 2750,
   elevatePremium: 4995,
   alumniRetainerMonthly: 149,
-
-  // Tax & Legacy
   taxSession: 395,
   taxAnnual: 1295,
   taxSmallBiz90d: 1995,
-
-  // Holistic Conversations (groups)
   ktCohort4w: 795,
   ktMonthly: 49,
-
-  // Workshops
   workshopPublicSeat: 149,
   workshopTeamVirtual: 2400,
   workshopTeamInPerson: 2800,
@@ -60,14 +43,18 @@ function price(p: number | null) {
   return `$${p} CAD`;
 }
 
-/* ================== Shared panel / titles / badges ================== */
-function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
+/* ================== Shared Components ================== */
+function Panel({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <section
       className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg",
-        "backdrop-blur-[1px]",
+        "max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
         className,
       ].join(" ")}
     >
@@ -80,37 +67,31 @@ function SectionTitle({
   title,
   subtitle,
   id,
-  level = "h2",
+  tint,
 }: {
   title: string;
-  subtitle?: ReactNode;
+  subtitle?: React.ReactNode;
   id: string;
-  level?: "h1" | "h2";
+  tint: "green" | "gold";
 }) {
   const { fade, fadeUp } = useMotionPresets();
+  const accent = tint === "green" ? "bg-brand-green/60" : "bg-brand-gold/60";
 
   return (
-    // 🔧 Increased scroll margin to offset header + sticky subnav
     <div
       id={id}
       className="scroll-mt-[160px] sm:scroll-mt-[170px] md:scroll-mt-[180px] lg:scroll-mt-[190px]"
     >
       <div className="text-center mb-6">
         <Reveal variants={fadeUp}>
-          {level === "h1" ? (
-            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h1>
-          ) : (
-            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h2>
-          )}
+          <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+            {title}
+          </h2>
         </Reveal>
 
         <Reveal variants={fade}>
           <div className="flex justify-center my-4" aria-hidden="true">
-            <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+            <div className={`w-16 h-[3px] rounded-full ${accent}`} />
           </div>
         </Reveal>
 
@@ -126,14 +107,15 @@ function SectionTitle({
   );
 }
 
-function PriceBadge({ children }: { children: ReactNode }) {
+function PriceBadge({ children }: { children: React.ReactNode }) {
   return (
     <span className="text-sm px-3 py-1 rounded-full bg-brand-gold/15 text-brand-green border border-brand-gold/50">
       {children}
     </span>
   );
 }
-function TagBadge({ children }: { children: ReactNode }) {
+
+function TagBadge({ children }: { children: React.ReactNode }) {
   return (
     <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
       {children}
@@ -141,29 +123,14 @@ function TagBadge({ children }: { children: ReactNode }) {
   );
 }
 
-/* Card style aligned with panels */
 const CARD =
   "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg p-6 transition hover:-translate-y-[1px] hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
 
-/* ======================= Reusable package card ======================= */
 type Intent = "consult" | "preapproval" | "package";
-
-type SectionId =
-  | "overview"
-  | "signature"
-  | "foundations"
-  | "mortgage"
-  | "business"
-  | "workshops"
-  | "legacy"
-  | "family"
-  | "newcomers"
-  | "advice"
-  | "how";
 
 type Card = {
   id: string;
-  section: SectionId;
+  section: string;
   title: string;
   desc: string;
   bullets: string[];
@@ -181,9 +148,12 @@ function PackageCard({ c }: { c: Card }) {
   qs.set("package", c.title);
   return (
     <Reveal variants={fadeUp}>
-      <article className={CARD} aria-labelledby={`${c.id}-title`}>
+      <article className={`${CARD} group`} aria-labelledby={`${c.id}-title`}>
         <div className="flex items-center justify-between gap-3">
-          <h3 id={`${c.id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
+          <h3
+            id={`${c.id}-title`}
+            className="font-serif text-2xl text-brand-green font-bold m-0"
+          >
             {c.title}
           </h3>
           <PriceBadge>{c.price}</PriceBadge>
@@ -224,15 +194,8 @@ function PackageCard({ c }: { c: Card }) {
           <Link
             href={`/en/contact?${qs.toString()}`}
             className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-            aria-label={`Contact about ${c.title}`}
           >
             Book a Private Consultation
-          </Link>
-          <Link
-            href="/en/resources#overview"
-            className="px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-          >
-            Explore related resources
           </Link>
         </div>
       </article>
@@ -240,23 +203,19 @@ function PackageCard({ c }: { c: Card }) {
   );
 }
 
-/* ====================== On-page sticky section nav ====================== */
+/* ====================== Sticky Nav ====================== */
 const SECTIONS = [
-  { id: "overview", label: "Overview" },
   { id: "signature", label: "Signature Packages" },
-  { id: "foundations", label: "Wealth Foundations" },
+  { id: "coaching", label: "Private Coaching" },
   { id: "mortgage", label: "Mortgage & Property" },
-  { id: "business", label: "Business & Professionals" },
-  { id: "workshops", label: "Workshops" },
-  { id: "legacy", label: "Legacy & Tax" },
-  { id: "family", label: "Holistic Conversations" },
-  { id: "newcomers", label: "Newcomers" },
-  { id: "advice", label: "1:1 Advisory" },
+  { id: "business", label: "Business & Tax" },
+  { id: "workshops", label: "Workshops & Teams" },
+  { id: "holistic", label: "Holistic & Newcomers" },
   { id: "how", label: "How We Work" },
 ] as const;
 
 function SectionNav() {
-  const [active, setActive] = useState<string>("overview");
+  const [active, setActive] = useState<string>("signature");
   const refs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
@@ -267,9 +226,8 @@ function SectionNav() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) setActive(visible[0].target.id);
       },
-      { rootMargin: "-25% 0px -65% 0px", threshold: [0, 0.2, 0.5, 0.8, 1] }
+      { rootMargin: "-25% 0px -65% 0px", threshold: [0.2, 0.5, 0.8] }
     );
-
     SECTIONS.forEach((s) => {
       const el = document.getElementById(s.id);
       refs.current[s.id] = el;
@@ -280,7 +238,10 @@ function SectionNav() {
 
   return (
     <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-      <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="On this page">
+      <nav
+        className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm"
+        aria-label="On this page"
+      >
         {SECTIONS.map((s) => (
           <a
             key={s.id}
@@ -291,7 +252,6 @@ function SectionNav() {
                 ? "bg-brand-green text-white border-brand-green"
                 : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
             ].join(" ")}
-            aria-current={active === s.id ? "true" : undefined}
           >
             {s.label}
           </a>
@@ -301,55 +261,9 @@ function SectionNav() {
   );
 }
 
-/* ========================= Audience filter chips ======================== */
-const FILTER_TAGS = [
-  "Professionals",
-  "Business Owners",
-  "Executives",
-  "Families",
-  "Investors",
-  "Newcomers",
-  "Premium",
-] as const;
-
-function FilterBar({ value, onChange }: { value: string[]; onChange: (next: string[]) => void }) {
-  function toggle(tag: string) {
-    onChange(value.includes(tag) ? value.filter((t) => t !== tag) : [...value, tag]);
-  }
-  return (
-    <div className="max-w-content mx-auto px-4 py-3 flex flex-wrap gap-2" aria-label="Audience filters">
-      {FILTER_TAGS.map((t) => (
-        <button
-          key={t}
-          onClick={() => toggle(t)}
-          className={[
-            "px-3 py-1.5 rounded-full text-sm border transition",
-            value.includes(t)
-              ? "bg-brand-green text-white border-brand-green"
-              : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-          ].join(" ")}
-          aria-pressed={value.includes(t)}
-        >
-          {t}
-        </button>
-      ))}
-      {value.length > 0 && (
-        <button
-          onClick={() => onChange([])}
-          className="ml-2 px-3 py-1.5 rounded-full text-sm border border-brand-blue/30 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-        >
-          Clear filters
-        </button>
-      )}
-    </div>
-  );
-}
-
-/* ============================== Data ============================== */
-type CardArray = Card[];
-
-const CARDS: CardArray = [
-  /* ------------------------------ Signature ------------------------------ */
+/* ============================= Cards Data ============================= */
+const CARDS: Card[] = [
+  // Signature
   {
     id: "elevate",
     section: "signature",
@@ -370,7 +284,12 @@ const CARDS: CardArray = [
     section: "signature",
     title: "Transform (6-Session Package)",
     desc: "Depth without overwhelm: we install a working system across cash-flow, credit hygiene, and tax set-asides.",
-    bullets: ["End-to-end plan", "Clear guardrails", "Lender-ready documentation", "Written actions after each session"],
+    bullets: [
+      "End-to-end plan",
+      "Clear guardrails",
+      "Lender-ready documentation",
+      "Written actions after each session",
+    ],
     timeline: "~12 weeks",
     tags: ["Executives", "Business Owners", "Families"],
     price: price(PRICING.transform6),
@@ -387,7 +306,8 @@ const CARDS: CardArray = [
       "Leadership & decision cadence (optional)",
     ],
     timeline: "4–6 weeks (typical)",
-    scope: "Planning & documentation; tax/legal execution with your professionals.",
+    scope:
+      "Planning & documentation; tax/legal execution with your professionals.",
     tags: ["Executives", "Business Owners", "Premium"],
     price: `From ${price(PRICING.bizOwnerExecPlan)}`,
   },
@@ -396,14 +316,21 @@ const CARDS: CardArray = [
     section: "signature",
     title: "Financial Wellness Workshop (Private Team)",
     desc: "A focused 3-hour session: cash-flow cadence, lender-credible records, and a shared language for money at work.",
-    bullets: ["Pre-survey + tailored agenda", "3-hour live workshop with Q&A", "Slide deck + resource bundle (EN/ES)", "Follow-up summary"],
+    bullets: [
+      "Pre-survey + tailored agenda",
+      "3-hour live workshop with Q&A",
+      "Slide deck + resource bundle (EN/ES)",
+      "Follow-up summary",
+    ],
     timeline: "3 hours (virtual or on-site)",
-    scope: "Up to 20 participants. In-person adds travel. HST applies.",
+    scope: "Up to 20 participants. HST applies.",
     tags: ["Executives", "Business Owners", "Professionals", "Premium"],
-    price: `From ${price(PRICING.workshopTeamVirtual)} (virtual) • ${price(PRICING.workshopTeamInPerson)} (in person)`,
+    price: `From ${price(
+      PRICING.workshopTeamVirtual
+    )} (virtual) • ${price(PRICING.workshopTeamInPerson)} (in person)`,
   },
 
-  /* ----------------------------- Foundations ----------------------------- */
+  // Foundations
   {
     id: "family-wealth-blueprint",
     section: "foundations",
@@ -437,7 +364,7 @@ const CARDS: CardArray = [
     price: price(PRICING.proTuneUp90),
   },
 
-  /* ------------------------- Mortgage & Property ------------------------- */
+  // Mortgage
   {
     id: "mortgage-concierge",
     section: "mortgage",
@@ -461,7 +388,12 @@ const CARDS: CardArray = [
     section: "mortgage",
     title: "Refinance & Renewal Strategy",
     desc: "Clean math, clear trade-offs, and a short written plan.",
-    bullets: ["Refi vs. renew modeling", "Penalty & rate break-even analysis", "Prepayment guardrails", "Written summary within 24h"],
+    bullets: [
+      "Refi vs. renew modeling",
+      "Penalty & rate break-even analysis",
+      "Prepayment guardrails",
+      "Written summary within 24h",
+    ],
     timeline: "60–90 minutes",
     tags: ["Professionals", "Families", "Executives"],
     price: price(PRICING.refiRenewal),
@@ -471,26 +403,83 @@ const CARDS: CardArray = [
     section: "mortgage",
     title: "Investment Starter: 4–10 Units (DSCR)",
     desc: "Honest numbers and safer conditions for your first small building—clarity without drama.",
-    bullets: ["GMR/OPEX/NOI/DSCR modeling", "Offer & condition playbook", "First-90-days plan", "Lender conversation prep"],
+    bullets: [
+      "GMR/OPEX/NOI/DSCR modeling",
+      "Offer & condition playbook",
+      "First-90-days plan",
+      "Lender conversation prep",
+    ],
     timeline: "~2 hours + notes",
-    scope: "Educational analysis; not investment advice or suitability assessment.",
+    scope: "Educational analysis; not investment advice.",
     tags: ["Investors", "Business Owners", "Executives"],
     price: price(PRICING.invest4to10),
   },
 
-  /* ---------------------- Business & Professionals ---------------------- */
+  // Business
   {
     id: "pay-yourself-clinic",
     section: "business",
     title: "Incorporation / Pay-Yourself Clinic",
     desc: "One clear conversation to map owner pay, payroll/dividends, and next steps with your accountant.",
-    bullets: ["Owner pay matrix", "Payroll & remittance basics", "Dividend timing considerations", "1-page decision summary"],
+    bullets: [
+      "Owner pay matrix",
+      "Payroll & remittance basics",
+      "Dividend timing considerations",
+      "1-page decision summary",
+    ],
     timeline: "60–75 minutes",
     tags: ["Business Owners", "Professionals"],
     price: price(PRICING.corpPayrollClinic),
   },
 
-  /* -------------------------------- Workshops -------------------------------- */
+  // Legacy
+  {
+    id: "tax-strategy",
+    section: "legacy",
+    title: "Personal / Family Tax Strategy Session",
+    desc: "Set a quarterly rhythm and right-sized set-asides—predictable, compliant, and kind to your nervous system.",
+    bullets: [
+      "Quarterly schedule",
+      "Right-sized set-asides",
+      "Receipts & records checklist",
+      "Calendar templates",
+    ],
+    timeline: "75–90 minutes",
+    tags: ["Families", "Professionals"],
+    price: price(PRICING.taxSession),
+  },
+  {
+    id: "legacy-annual",
+    section: "legacy",
+    title: "Legacy & Tax Rhythm (Annual)",
+    desc: "Two key sessions + gentle check-ins so deadlines don’t sneak up.",
+    bullets: [
+      "Mid-year tune-up",
+      "Pre-year-end planning",
+      "Optional cadence prompts",
+      "CPA coordination",
+    ],
+    timeline: "Annual (2 sessions + touchpoints)",
+    tags: ["Families", "Executives", "Professionals"],
+    price: price(PRICING.taxAnnual),
+  },
+  {
+    id: "smallbiz-setup",
+    section: "legacy",
+    title: "Small-Biz / Independent 90-Day Setup",
+    desc: "Bring cash-flow, HST cycle, and owner pay into a system that scales—and that lenders recognize.",
+    bullets: [
+      "HST cadence",
+      "Pay-yourself plan",
+      "Owner reserves & buffers",
+      "Documentation hygiene",
+    ],
+    timeline: "~90 days",
+    tags: ["Business Owners", "Professionals"],
+    price: price(PRICING.taxSmallBiz90d),
+  },
+
+  // Workshops
   {
     id: "public-money-clarity",
     section: "workshops",
@@ -503,44 +492,12 @@ const CARDS: CardArray = [
       "Optional Human Design prompts",
     ],
     timeline: "Single session (weeknight or Saturday morning)",
-    scope: "Open to professionals and families; limited seats for Q&A quality.",
+    scope: "Open to professionals and families; limited seats.",
     tags: ["Professionals", "Families"],
     price: `${price(PRICING.workshopPublicSeat)}/person`,
   },
 
-  /* ------------------------- Legacy & Tax Strategy ------------------------ */
-  {
-    id: "tax-strategy",
-    section: "legacy",
-    title: "Personal / Family Tax Strategy Session",
-    desc: "Set a quarterly rhythm and right-sized set-asides—predictable, compliant, and kind to your nervous system.",
-    bullets: ["Quarterly schedule", "Right-sized set-asides", "Receipts & records checklist", "Calendar templates"],
-    timeline: "75–90 minutes",
-    tags: ["Families", "Professionals"],
-    price: price(PRICING.taxSession),
-  },
-  {
-    id: "legacy-annual",
-    section: "legacy",
-    title: "Legacy & Tax Rhythm (Annual)",
-    desc: "Two key sessions + gentle check-ins so deadlines don’t sneak up.",
-    bullets: ["Mid-year tune-up", "Pre-year-end planning", "Optional cadence prompts", "CPA coordination"],
-    timeline: "Annual (2 sessions + touchpoints)",
-    tags: ["Families", "Executives", "Professionals"],
-    price: price(PRICING.taxAnnual),
-  },
-  {
-    id: "smallbiz-setup",
-    section: "legacy",
-    title: "Small-Biz / Independent 90-Day Setup",
-    desc: "Bring cash-flow, HST cycle, and owner pay into a system that scales—and that lenders recognize.",
-    bullets: ["HST cadence", "Pay-yourself plan", "Owner reserves & buffers", "Documentation hygiene"],
-    timeline: "~90 days",
-    tags: ["Business Owners", "Professionals"],
-    price: price(PRICING.taxSmallBiz90d),
-  },
-
-  /* ------------------------- Holistic Conversations ------------------------- */
+  // Family
   {
     id: "kt-4w",
     section: "family",
@@ -567,20 +524,24 @@ const CARDS: CardArray = [
     price: `${price(PRICING.ktMonthly)}/month`,
   },
 
-  /* --------------------------------  Newcomers -------------------------------- */
+  // Newcomers
   {
     id: "newcomer-30d",
     section: "newcomers",
     title: "Newcomer Wealth Integration (30 Days)",
     desc: "Gentle setup for banking, credit, and rent reporting—so your profile reads clearly to lenders.",
-    bullets: ["Account & phone-plan map", "Secured card strategy & limits", "Rent-reporting options", "Credit hygiene routine"],
+    bullets: [
+      "Account & phone-plan map",
+      "Secured card strategy & limits",
+      "Rent-reporting options",
+      "Credit hygiene routine",
+    ],
     timeline: "~30 days",
-    scope: "Planning & education; you execute with chosen institutions.",
     tags: ["Newcomers"],
     price: price(PRICING.newcomerFastTrack),
   },
 
-  /* -------------------------------- 1:1 -------------------------------- */
+  // Advice
   {
     id: "discovery",
     section: "advice",
@@ -612,43 +573,49 @@ const CARDS: CardArray = [
     section: "advice",
     title: "Align (3-Session Package)",
     desc: "Install gentle routines and momentum—without overwhelm.",
-    bullets: ["Money rhythm & automation", "Tax set-asides that stick", "Light accountability"],
+    bullets: [
+      "Money rhythm & automation",
+      "Tax set-asides that stick",
+      "Light accountability",
+    ],
     timeline: "6–8 weeks",
     tags: ["Professionals", "Newcomers"],
     price: price(PRICING.align3),
   },
+
 ];
 
 /* ============================= Page ============================= */
 export default function ServicesPage() {
-  const [filters, setFilters] = useState<string[]>([]);
+  const { fade } = useMotionPresets();
+
   const sectionsWithCards = useMemo(() => {
-    const filtered = filters.length ? CARDS.filter((c) => c.tags.some((t) => filters.includes(t))) : CARDS;
-    const by = (section: SectionId) => filtered.filter((c) => c.section === section);
+    const by = (section: string) => CARDS.filter((c) => c.section === section);
     return {
       signature: by("signature"),
-      foundations: by("foundations"),
+      coaching: [...by("foundations"), ...by("advice")],
       mortgage: by("mortgage"),
-      business: by("business"),
+      business: [...by("business"), ...by("legacy")],
       workshops: by("workshops"),
-      legacy: by("legacy"),
-      family: by("family"),
-      newcomers: by("newcomers"),
-      advice: by("advice"),
+      holistic: [...by("family"), ...by("newcomers")],
     };
-  }, [filters]);
-
-  const { fade } = useMotionPresets();
+  }, []);
 
   return (
     <main id="main" className="bg-white min-h-screen">
-      {/* Brand band header */}
+      {/* ======= Header ======= */}
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-content mx-auto px-4 py-10">
           <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
-            <Link href="/en" className="hover:underline">Home</Link>
-            <span className="mx-2" aria-hidden="true">/</span>
-            <span className="text-brand-green" aria-current="page">Services</span>
+            <Link href="/en" className="hover:underline">
+              Home
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
+            <span className="text-brand-green" aria-current="page">
+              Services
+            </span>
           </nav>
 
           <Reveal variants={fade}>
@@ -659,8 +626,9 @@ export default function ServicesPage() {
 
           <Reveal variants={fade}>
             <p className="mt-2 max-w-3xl text-brand-blue/90">
-              Calm, bilingual support for professionals, families, and business owners in the GTA. We blend precision with a steady
-              pace—so decisions feel both clear and kind.
+              Calm, bilingual support for professionals, families, and business
+              owners in the GTA. We blend precision with a steady pace—so
+              decisions feel both clear and kind.
             </p>
           </Reveal>
 
@@ -681,157 +649,161 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Sticky on-page nav */}
       <SectionNav />
 
-      {/* Overview / Team umbrella */}
-      <Panel>
-        <SectionTitle
-          id="overview"
-          title="One coordinated approach"
-          subtitle={
-            <>
-              Licensed mortgage agents, financial coaches, and trusted tax &amp; legal partners—aligned under a single plan. We bring
-              cash-flow, credit, tax rhythm, and lending strategy together at a pace that respects your life. A light, optional Human
-              Design lens can personalize communication and support without replacing financial, tax, or legal fundamentals.
-            </>
-          }
-        />
-        <Reveal variants={fade}>
-          <ul className="grid md:grid-cols-3 gap-6 text-brand-blue/90">
-            <li className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">Precision</h3>
-              <p className="mt-2">Clean math and lender-credible documentation. No guesswork, no drama.</p>
-            </li>
-            <li className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">Coordination</h3>
-              <p className="mt-2">We collaborate with your accountant and lawyer so the plan holds together.</p>
-            </li>
-            <li className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">Human Pace</h3>
-              <p className="mt-2">Steady progress—numbers plus nervous-system calm.</p>
-            </li>
-          </ul>
-        </Reveal>
-      </Panel>
+      {/* ======= 1. Signature Packages ======= */}
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="signature"
+            title="Signature Packages"
+            subtitle="Comprehensive, coordinated support for major life and business transitions"
+            tint="green"
+          />
+          <Grid cards={sectionsWithCards.signature} />
+        </Panel>
+      </div>
 
-      {/* Audience filters */}
-      <FilterBar value={filters} onChange={setFilters} />
+      {/* ======= 2. Private Coaching & Foundations ======= */}
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="coaching"
+            title="Private Coaching & Foundations"
+            subtitle="Build clarity and momentum through personalized 1:1 guidance"
+            tint="gold"
+          />
+          <Grid cards={sectionsWithCards.coaching} />
+        </Panel>
+      </div>
 
-      {/* Signature Packages */}
-      <Panel className="mt-8">
-        <SectionTitle id="signature" title="Signature Packages" subtitle="Start here if you want coordinated, premium support" />
-        <Grid cards={sectionsWithCards.signature} />
-      </Panel>
+      {/* ======= 3. Mortgage & Property Strategy ======= */}
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="mortgage"
+            title="Mortgage & Property Strategy"
+            subtitle="Confidence from pre-approval to closing—and beyond"
+            tint="green"
+          />
+          <Grid cards={sectionsWithCards.mortgage} />
+        </Panel>
+      </div>
 
-      {/* Wealth Foundations */}
-      <Panel className="mt-8">
-        <SectionTitle id="foundations" title="Wealth Foundations" subtitle="High-impact starting points for clarity and momentum" />
-        <Grid cards={sectionsWithCards.foundations} />
-      </Panel>
+      {/* ======= 4. Business & Tax Strategy ======= */}
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="business"
+            title="Business & Tax Strategy"
+            subtitle="Executive clarity and predictable tax rhythms for professionals and owners"
+            tint="gold"
+          />
+          <Grid cards={sectionsWithCards.business} />
+        </Panel>
+      </div>
 
-      {/* Mortgage & Property Strategy */}
-      <Panel className="mt-8">
-        <SectionTitle id="mortgage" title="Mortgage & Property Strategy" subtitle="Confidence from pre-approval to closing—and beyond" />
-        <Grid cards={sectionsWithCards.mortgage} />
-      </Panel>
+      {/* ======= 5. Workshops & Teams ======= */}
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="workshops"
+            title="Workshops & Teams"
+            subtitle="Practical, values-aligned learning—public cohorts and private team sessions"
+            tint="green"
+          />
+          <Grid cards={sectionsWithCards.workshops} />
+        </Panel>
+      </div>
 
-      {/* Business & Professionals */}
-      <Panel className="mt-8">
-        <SectionTitle id="business" title="Business & Professionals" subtitle="Executive-level clarity, lender-credible records" />
-        <Grid cards={sectionsWithCards.business} />
-      </Panel>
+      {/* ======= 6. Holistic Conversations & Newcomers ======= */}
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="holistic"
+            title="Holistic Conversations & Newcomers"
+            subtitle="Gentle, step-by-step programs for families, groups, and those new to Canada"
+            tint="gold"
+          />
+          <Grid cards={sectionsWithCards.holistic} />
+        </Panel>
+      </div>
 
-      {/* Workshops */}
-      <Panel className="mt-8">
-        <SectionTitle
-          id="workshops"
-          title="Workshops"
-          subtitle="Practical, values-aligned learning—public cohorts and private team sessions"
-        />
-        <Grid cards={sectionsWithCards.workshops} />
-      </Panel>
-
-      {/* Legacy & Tax Strategy */}
-      <Panel className="mt-8">
-        <SectionTitle id="legacy" title="Legacy & Tax Strategy" subtitle="Predictable set-asides and a cadence you can keep" />
-        <Grid cards={sectionsWithCards.legacy} />
-      </Panel>
-
-      {/* Holistic Conversations (Family & Groups) */}
-      <Panel className="mt-8">
-        <SectionTitle
-          id="family"
-          title="Holistic Conversations (Family & Groups)"
-          subtitle="Intimate, practical, and human—safe spaces to practice money conversations"
-        />
-        <Grid cards={sectionsWithCards.family} />
-      </Panel>
-
-      {/* Newcomers */}
-      <Panel className="mt-8">
-        <SectionTitle id="newcomers" title="Newcomers" subtitle="Bilingual, step-by-step guidance from day one" />
-        <Grid cards={sectionsWithCards.newcomers} />
-      </Panel>
-
-      {/* 1:1 Advisory */}
-      <Panel className="mt-8">
-        <SectionTitle id="advice" title="1:1 Advisory" subtitle="Private sessions with written next steps—no overwhelm" />
-        <Grid cards={sectionsWithCards.advice} />
-      </Panel>
-
-      {/* How we work / compliance */}
-      <Panel className="mt-8">
-        <SectionTitle id="how" title="How we work" subtitle="Steady, human, and transparent" />
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">1) Discovery</h3>
-            <p className="mt-2 text-brand-blue/90">
-              A brief, kind conversation. If we’re a fit, you’ll get a short plan and a precise checklist—only what’s needed.
+      {/* ======= 7. How We Work ======= */}
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="how"
+            title="How We Work"
+            subtitle="Steady, transparent, and human"
+            tint="green"
+          />
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className={CARD}>
+              <h3 className="font-serif text-xl text-brand-green font-bold">
+                1) Discovery
+              </h3>
+              <p className="mt-2 text-brand-blue/90">
+                A brief, kind conversation. If we’re a fit, you’ll get a short
+                plan and a precise checklist—only what’s needed.
+              </p>
+            </div>
+            <div className={CARD}>
+              <h3 className="font-serif text-xl text-brand-green font-bold">
+                2) Plan & Execution
+              </h3>
+              <p className="mt-2 text-brand-blue/90">
+                We model scenarios, prepare documents, and coordinate steps at a
+                manageable pace. You always know what’s next and why.
+              </p>
+            </div>
+            <div className={CARD}>
+              <h3 className="font-serif text-xl text-brand-green font-bold">
+                3) Review & Adjust
+              </h3>
+              <p className="mt-2 text-brand-blue/90">
+                We confirm outcomes against the plan, note any changes, and set
+                your next check-in. Calm and repeatable.
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 text-sm text-brand-blue/80 space-y-2">
+            <p>
+              <strong>Notes:</strong> Prices are in CAD and may be subject to
+              HST. Mortgage services are typically free for qualified borrowers
+              because compensation is paid by the lender on closing. Fees may
+              apply in non-prime/private/commercial cases and will be disclosed
+              in advance. All mortgages are O.A.C. (on approved credit).
+            </p>
+            <p>
+              Coaching services are independent of mortgage compensation and do
+              not replace legal, tax, or accounting advice. We coordinate with
+              your chosen professionals as needed. Bilingual support (EN/ES).
+            </p>
+            <p>
+              For workshops: virtual sessions are available Canada-wide;
+              in-person sessions may include travel. Seat-based public cohorts
+              are limited to preserve Q&A quality.
+            </p>
+            <p className="mb-0">
+              Prefer Spanish?{" "}
+              <Link href="/es/servicios" className="underline">
+                Ver servicios en español
+              </Link>
+              .
             </p>
           </div>
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">2) Plan &amp; execution</h3>
-            <p className="mt-2 text-brand-blue/90">
-              We model scenarios, prepare documents, and coordinate steps at a manageable pace. You always know what’s next and why.
-            </p>
-          </div>
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">3) Review &amp; adjust</h3>
-            <p className="mt-2 text-brand-blue/90">
-              We confirm outcomes against the plan, note any changes, and set your next check-in. Calm and repeatable.
-            </p>
-          </div>
-        </div>
-        <div className="mt-6 text-sm text-brand-blue/80 space-y-2">
-          <p>
-            <strong>Notes:</strong> Prices are in CAD and may be subject to HST. Mortgage services are typically free for qualified
-            residential borrowers because compensation is paid by the lender on closing. Fees may apply in non-prime/private/commercial
-            scenarios and will always be disclosed in advance. All mortgages are O.A.C. (on approved credit).
-          </p>
-          <p>
-            Coaching and advice-only services are independent of mortgage compensation and do not replace legal, tax, or accounting
-            advice. We coordinate with your chosen professionals as needed. Documents are collected via secure links. Bilingual support
-            (EN/ES).
-          </p>
-          <p>
-            For workshops: virtual sessions are available Canada-wide; in-person sessions may include travel time/expenses. Seat-based public
-            cohorts have limited capacity to preserve Q&amp;A quality.
-          </p>
-          <p className="mb-0">
-            Prefer Spanish? <Link href="/es/servicios" className="underline">Ver servicios en español</Link>.
-          </p>
-        </div>
-      </Panel>
+        </Panel>
+      </div>
     </main>
   );
 }
 
-/* ============================ Grid renderer ============================ */
+/* ============================ Grid Renderer ============================ */
 function Grid({ cards }: { cards: Card[] }) {
-  if (!cards.length) {
-    return <p className="text-brand-blue/70">No services match the current filters.</p>;
-  }
+  if (!cards.length)
+    return <p className="text-brand-blue/70">No services available.</p>;
+
   return (
     <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cards.map((c) => (
