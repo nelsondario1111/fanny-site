@@ -3,43 +3,56 @@
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
-import { FaIdBadge, FaUsers, FaLeaf, FaShieldAlt, FaGlobeAmericas } from "react-icons/fa";
+import {
+  FaIdBadge,
+  FaUsers,
+  FaLeaf,
+  FaShieldAlt,
+  FaGlobeAmericas,
+} from "react-icons/fa";
 
-import { Reveal, RevealPanel, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
+import {
+  Reveal,
+  RevealPanel,
+  StaggerGroup,
+  useMotionPresets,
+} from "@/components/motion-safe";
 
-/* ============================= Título de sección ============================= */
+/* ============================= Section Title ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
   const { fade, fadeUp } = useMotionPresets();
   return (
-    <div className="text-center mb-8">
+    <div className="text-center mb-10">
       {kicker && (
         <Reveal variants={fade}>
-          <div className="text-brand-blue/80 text-base md:text-lg mb-2">{kicker}</div>
+          <div className="text-brand-blue/70 text-base md:text-lg mb-2">
+            {kicker}
+          </div>
         </Reveal>
       )}
       <Reveal variants={fadeUp}>
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green font-bold tracking-tight">
+        <h2 className="font-serif text-3xl md:text-4xl text-brand-green/90 font-bold tracking-tight">
           {title}
         </h2>
       </Reveal>
       <Reveal variants={fade}>
         <div className="flex justify-center mt-3" aria-hidden="true">
-          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+          <div className="w-14 h-[2px] rounded-full bg-brand-gold/40" />
         </div>
       </Reveal>
     </div>
   );
 }
 
-/* ================================= Página ================================= */
-export default function HomeEs() {
+/* ================================ Página principal ================================ */
+export default function Home() {
   const { fade, fadeUp } = useMotionPresets();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Fanny Samaniego",
-    url: "https://www.fannysamaniego.com/es/",
+    url: "https://www.fannysamaniego.com/",
     logo: "https://www.fannysamaniego.com/apple-touch-icon.png",
     founder: {
       "@type": "Person",
@@ -47,75 +60,73 @@ export default function HomeEs() {
       jobTitle: "Asesora Financiera y Agente Hipotecaria",
       worksFor: { "@type": "Organization", name: "Fanny Samaniego" },
     },
-    makesOffer: [
-      {
-        "@type": "Offer",
-        category: "Coaching Financiero",
-        itemOffered: { "@type": "Service", name: "Coaching y Planificación Financiera Premium" },
-      },
-      {
-        "@type": "Offer",
-        category: "Servicios Hipotecarios",
-        itemOffered: { "@type": "Service", name: "Preparación Hipotecaria y Preaprobación" },
-      },
-      {
-        "@type": "Offer",
-        category: "Planificación Fiscal",
-        itemOffered: { "@type": "Service", name: "Ritmo y Estrategia Fiscal Holística" },
-      },
-    ],
   } as const;
 
   return (
-    <main className="bg-brand-beige min-h-dvh">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <main className="bg-[#FAF8F5] min-h-dvh text-brand-body">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* =============================== HERO =============================== */}
-      <header className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6" aria-label="Hero">
+      <header
+        className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6"
+        aria-label="Hero"
+      >
         <div className="absolute inset-0 -z-10">
-          <Image src="/nature.jpg" alt="" aria-hidden fill priority sizes="100vw" className="object-cover object-center" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/10" />
+          <Image
+            src="/nature.jpg"
+            alt=""
+            aria-hidden
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5" />
         </div>
 
         <StaggerGroup className="w-full px-4">
-          <section className="max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12 bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px] text-center relative">
-            {/* acento dorado sutil */}
-            <div aria-hidden className="absolute -top-1 left-8 right-8 h-[3px] rounded-full bg-brand-gold/80 shadow-[0_1px_0_rgba(0,0,0,0.06)]" />
-
+          <section className="max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
             <Reveal variants={fadeUp}>
-              <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green mb-4 tracking-tight">
+              <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
                 Números claros, decisiones con calma.
               </h1>
             </Reveal>
 
             <Reveal variants={fade}>
-              <p className="font-sans text-xl md:text-2xl text-brand-blue mb-7 leading-relaxed">
-                Cuando estés listo para una guía financiera holística y con corazón, estoy aquí para
-                caminar a tu lado—ofreciendo un acompañamiento que honra tu camino único.
+              <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-2xl mx-auto">
+                Cuando estés lista/o para recibir asesoría financiera humana y
+                holística, estoy aquí para caminar contigo—ofreciendo un
+                acompañamiento que honra tu camino único.
               </p>
             </Reveal>
 
             <Reveal variants={fade}>
-              <nav aria-label="Acciones principales" className="flex flex-col items-center gap-2">
+              <nav
+                aria-label="Acciones principales"
+                className="flex flex-col items-center gap-2"
+              >
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link
                     href="/es/servicios"
                     aria-label="Explorar servicios"
-                    className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition inline-block"
+                    className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
                   >
                     Explorar Servicios
                   </Link>
                   <Link
                     href="/es/herramientas"
                     aria-label="Ver herramientas"
-                    className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+                    className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
                   >
                     Ver Herramientas
                   </Link>
                 </div>
                 <Link
                   href="/es/contacto?intent=hola"
-                  className="px-4 py-2 mt-1 rounded-full border border-brand-blue text-[15px] text-brand-blue hover:bg-brand-blue hover:text-white transition"
+                  className="text-sm text-brand-blue/80 mt-2 hover:text-brand-green underline underline-offset-4"
                 >
                   Iniciar una conversación
                 </Link>
@@ -123,16 +134,31 @@ export default function HomeEs() {
             </Reveal>
 
             <Reveal variants={fade}>
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Insignias de confianza">
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-                  <FaShieldAlt aria-hidden /> Privado y confidencial
-                </span>
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-                  <FaGlobeAmericas aria-hidden /> Bilingüe (ES/EN)
-                </span>
-                <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-gold/60 text-brand-green text-sm">
-                  <FaIdBadge aria-hidden /> Agente hipotecaria con licencia (Nivel 2)
-                </span>
+              <div
+                className="mt-6 flex flex-wrap items-center justify-center gap-2"
+                aria-label="Sellos de confianza"
+              >
+                {[
+                  {
+                    icon: <FaShieldAlt aria-hidden />,
+                    text: "Privado y Confidencial",
+                  },
+                  {
+                    icon: <FaGlobeAmericas aria-hidden />,
+                    text: "Bilingüe (ES/EN)",
+                  },
+                  {
+                    icon: <FaIdBadge aria-hidden />,
+                    text: "Agente Hipotecaria (Nivel 2)",
+                  },
+                ].map((item) => (
+                  <span
+                    key={item.text}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
+                  >
+                    {item.icon} {item.text}
+                  </span>
+                ))}
               </div>
             </Reveal>
           </section>
@@ -140,40 +166,43 @@ export default function HomeEs() {
       </header>
 
       {/* ============================ SOBRE FANNY ============================ */}
-      <RevealPanel className="mt-10" aria-label="Sobre Fanny Samaniego">
-        <StaggerGroup className="flex flex-col md:flex-row items-center gap-8">
+      <RevealPanel className="mt-16" aria-label="Sobre Fanny Samaniego">
+        <StaggerGroup className="flex flex-col md:flex-row items-center gap-10">
           <Reveal variants={fadeUp} className="md:w-1/2 flex justify-center">
             <Image
               src="/fanny.jpg"
               alt="Fanny Samaniego — Asesora Financiera y Agente Hipotecaria en Toronto"
               width={360}
               height={360}
-              className="rounded-full shadow-xl object-cover border-4 border-brand-green"
+              className="rounded-full shadow-md object-cover border-4 border-brand-green/80"
               priority
             />
           </Reveal>
+
           <Reveal variants={fadeUp} className="md:w-1/2">
-            <h2 className="font-serif text-3xl md:text-4xl text-brand-green mb-4 font-bold">Sabiduría por invitación, compartida con el corazón</h2>
-            <p className="font-sans text-lg md:text-xl text-brand-body mb-6 leading-relaxed">
-              Soy Fanny Samaniego—<b>asesora financiera bilingüe, coach holística y agente hipotecaria con licencia</b> en Toronto. Con un equipo coordinado, guiamos a familias profesionales, ejecutivos y dueños de negocio que buscan resultados prácticos sin perder de vista la paz mental y los valores.
+            <h2 className="font-serif text-3xl md:text-4xl text-brand-green/90 mb-4 font-bold">
+              Sabiduría Invitada, Compartida con el Corazón
+            </h2>
+            <p className="font-sans text-lg text-brand-body/90 mb-6 leading-relaxed max-w-2xl">
+              Soy Fanny Samaniego—una <b>asesora financiera bilingüe, coach holística y agente hipotecaria licenciada</b> en Toronto. Con un equipo coordinado, acompañamos a familias profesionales, ejecutivos y emprendedores que desean resultados prácticos sin perder de vista sus valores ni su tranquilidad.
             </p>
-            <ul className="list-disc pl-6 text-brand-body text-base md:text-lg space-y-2 mb-8">
-              <li>Planes que encajan con tu vida—basados en cómo decides y cumples de manera natural.</li>
-              <li>Enfoque opcional de Diseño Humano para personalizar comunicación y ritmo—sin reemplazar fundamentos financieros o legales.</li>
-              <li>Próximos pasos claros después de cada llamada—sin abrumarte.</li>
+            <ul className="list-disc pl-6 text-brand-body/90 text-base space-y-2 mb-8">
+              <li>Planes adaptados a tu estilo de vida y forma natural de decidir.</li>
+              <li>Enfoque opcional desde el Diseño Humano para personalizar la comunicación y ritmo—sin reemplazar fundamentos financieros o legales.</li>
+              <li>Próximos pasos claros después de cada conversación—sin saturarte.</li>
             </ul>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/es/sobre-mi"
-                aria-label="Conoce la historia de Fanny Samaniego"
-                className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition-all inline-block"
+                aria-label="Conocer el recorrido de Fanny Samaniego"
+                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all"
               >
                 Conoce mi historia
               </Link>
               <Link
-                href="/es/contacto?intent=question"
-                aria-label="Iniciar una conversación"
-                className="self-center text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green"
+                href="/es/contacto?intent=pregunta"
+                aria-label="Explorar opciones"
+                className="self-center text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
               >
                 Exploremos tus opciones
               </Link>
@@ -181,149 +210,140 @@ export default function HomeEs() {
           </Reveal>
         </StaggerGroup>
       </RevealPanel>
-
-      {/* ==================== FILOSOFÍA DE INVITACIÓN ==================== */}
-      <RevealPanel className="mt-8" aria-label="Por qué trabajamos por invitación">
-        <SectionTitle title="Por qué trabajamos por invitación" />
+      {/* ======================= FILOSOFÍA DE INVITACIÓN ======================= */}
+      <RevealPanel className="mt-16" aria-label="Filosofía de trabajo por invitación">
+        <SectionTitle title="¿Por qué trabajamos por invitación?" />
         <Reveal variants={fade}>
-          <p className="font-sans text-lg text-brand-body mb-4 text-center max-w-3xl mx-auto leading-relaxed">
-            Los resultados financieros sólidos nacen de relaciones basadas en la confianza y el buen encaje. Todo comienza con una conversación.
+          <p className="font-sans text-lg text-brand-body/90 mb-4 text-center max-w-2xl mx-auto leading-relaxed">
+            Los mejores resultados financieros nacen de relaciones basadas en confianza y afinidad. Cada proceso comienza con una conversación.
           </p>
         </Reveal>
         <StaggerGroup className="text-left max-w-2xl mx-auto">
           <Reveal variants={fadeUp}>
-            <ul className="list-disc pl-6 text-brand-body text-base space-y-2">
-              <li>Confirmamos tus metas y tiempos antes de empezar.</li>
-              <li>Conoces a la persona adecuada de nuestro equipo para cada paso.</li>
-              <li>Diseñamos un plan según tus fortalezas y estilo de decisión (Diseño Humano opcional), manteniendo los fundamentos financieros, fiscales y legales.</li>
+            <ul className="list-disc pl-6 text-brand-body/90 text-base space-y-2">
+              <li>Validamos tus objetivos y tiempos antes de empezar.</li>
+              <li>Te conectamos con la especialista adecuada para cada etapa.</li>
+              <li>Diseñamos un plan personalizado a tu estilo de decisión, manteniendo siempre las bases financieras y legales.</li>
             </ul>
           </Reveal>
         </StaggerGroup>
         <Reveal variants={fade}>
           <div className="mt-6 text-center">
-            <Link href="/es/contacto?intent=hola" className="text-brand-blue underline decoration-2 underline-offset-4 hover:text-brand-green">
-              Cuando estés listo, envía un mensaje →
+            <Link
+              href="/es/contacto?intent=hola"
+              className="text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
+            >
+              Cuando estés lista/o, escríbeme →
             </Link>
           </div>
         </Reveal>
       </RevealPanel>
 
-      {/* ============================ INSIGNIAS ============================ */}
-      <RevealPanel className="mt-8" aria-label="Certificaciones y aliados">
+      {/* ======================= CERTIFICACIONES ======================= */}
+      <RevealPanel className="mt-16" aria-label="Certificaciones y equipo">
+        <SectionTitle title="Confianza profesional, enfoque humano" />
         <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           {[
-            { icon: <FaIdBadge aria-hidden className="text-xl" />, text: "Agente Hipotecaria con Licencia (Nivel 2)" },
-            { icon: <FaUsers aria-hidden className="text-xl" />, text: "Equipo coordinado de especialistas" },
-            { icon: <FaLeaf aria-hidden className="text-xl" />, text: "Personalización con Diseño Humano (opcional)" },
+            { icon: <FaIdBadge aria-hidden className="text-xl" />, text: "Agente Hipotecaria Nivel 2" },
+            { icon: <FaUsers aria-hidden className="text-xl" />, text: "Equipo Coordinado de Especialistas" },
+            { icon: <FaLeaf aria-hidden className="text-xl" />, text: "Personalización opcional con Diseño Humano" },
           ].map((b) => (
             <Reveal key={b.text} variants={fadeUp}>
-              <div className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 will-change-transform hover:-translate-y-1 hover:shadow-xl">
-                <div className="text-2xl text-brand-green flex items-center justify-center">{b.icon}</div>
-                <p className="font-semibold text-brand-blue mt-2">{b.text}</p>
+              <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="text-2xl text-brand-green/90 flex items-center justify-center">{b.icon}</div>
+                <p className="font-semibold text-brand-blue/90 mt-2">{b.text}</p>
               </div>
             </Reveal>
           ))}
         </StaggerGroup>
       </RevealPanel>
 
-      {/* ======================= PREVIA DE SERVICIOS ======================= */}
-      <RevealPanel className="mt-8" aria-label="Servicios principales">
-        <SectionTitle title="Formas en que podemos guiarte" />
+      {/* ======================= SERVICIOS ======================= */}
+      <RevealPanel className="mt-16" aria-label="Servicios principales">
+        <SectionTitle title="Formas en que puedo guiarte" />
         <StaggerGroup className="grid md:grid-cols-3 gap-8">
           {[
             {
               icon: "💡",
-              title: "Orientación Financiera",
-              body: "Acompañamiento claro y con corazón para tus metas financieras—anclado en tus fortalezas naturales.",
+              title: "Guía Financiera",
+              body: "Acompañamiento claro y empático para tus metas financieras—basado en tus fortalezas naturales.",
               bullets: [
-                "Presupuesto y flujo de caja que sí usarás",
-                "Estrategia de deudas, reparación de crédito y sistemas de ahorro",
-                "Diseño Humano opcional para afinar ritmo y accountability",
+                "Planes de flujo y presupuesto aplicables",
+                "Estrategia de deudas y ahorro personalizado",
+                "Opcional: Diseño Humano para ajustar ritmo y seguimiento",
               ],
               href: "/es/servicios#fundamentos",
-              label: "Explorar Orientación Financiera",
-              secondary: { label: "¿Tienes preguntas?", href: "/es/contacto?intent=question" },
+              label: "Explorar Guía Financiera",
             },
             {
               icon: "🌱",
-              title: "Planificación Fiscal Holística",
-              body: "Estrategias prácticas y alineadas a tus valores para conservar más de lo que ganas.",
+              title: "Planeación Fiscal Holística",
+              body: "Estrategias alineadas a tus valores para conservar más de lo que generas.",
               bullets: [
-                "Consideraciones personales y de pequeños negocios",
-                "Planificación amigable con el flujo de caja y enfocada en el cumplimiento",
-                "Recordatorios estacionales y listas de preparación",
+                "Enfoque personal y de pequeño negocio",
+                "Cumplimiento primero, sin estrés",
+                "Recordatorios y listas de verificación estacionales",
               ],
               href: "/es/servicios#legado",
-              label: "Explorar Planificación Fiscal",
-              secondary: { label: "¿Tienes preguntas?", href: "/es/contacto?intent=question" },
+              label: "Explorar Planeación Fiscal",
             },
             {
               icon: "🏡",
-              title: "Asesoría Hipotecaria",
-              body: "Consejería con licencia para primera vivienda, mejoras, refinanciación e inversiones multi-unidad.",
+              title: "Guía Hipotecaria",
+              body: "Asesoría licenciada para primeras compras, renovación o inversión (hasta 10 unidades).",
               bullets: [
-                "Preaprobación y verificación de preparación",
-                "Propiedades de 4–10 unidades y estrategia de inversión",
+                "Pre-aprobación y preparación estratégica",
+                "Propiedades de 4–10 unidades y análisis de inversión",
                 "Optimización de tasa, plazo y estructura",
               ],
               href: "/es/servicios#hipoteca",
-              label: "Explorar Asesoría Hipotecaria",
-              secondary: { label: "Conversemos", href: "/es/contacto?intent=preapproval" },
+              label: "Explorar Guía Hipotecaria",
             },
           ].map((c) => (
             <Reveal key={c.title} variants={fadeUp}>
-              <div className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 will-change-transform hover:-translate-y-1 hover:shadow-xl">
+              <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
                 <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
                   <span aria-hidden>{c.icon}</span>
                 </div>
-                <h3 className="font-serif text-2xl text-brand-blue mb-2 font-bold">{c.title}</h3>
-                <p className="font-sans text-brand-body mb-4">{c.body}</p>
-                <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
+                <h3 className="font-serif text-2xl text-brand-blue/90 mb-2 font-bold">{c.title}</h3>
+                <p className="font-sans text-brand-body/90 mb-4">{c.body}</p>
+                <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
                   {c.bullets.map((b) => (
                     <li key={b}>{b}</li>
                   ))}
                 </ul>
-                <div className="mt-auto space-y-2">
-                  <Link
-                    href={c.href}
-                    aria-label={c.label}
-                    className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all inline-block"
-                  >
-                    {c.label}
-                  </Link>
-                  {c.secondary && (
-                    <div>
-                      <Link href={c.secondary.href} className="text-sm text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green">
-                        {c.secondary.label}
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  href={c.href}
+                  aria-label={c.label}
+                  className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all inline-block"
+                >
+                  {c.label}
+                </Link>
               </div>
             </Reveal>
           ))}
         </StaggerGroup>
       </RevealPanel>
 
-      {/* ============== CONVERSACIONES EN LA MESA — PROGRAMA 4 SEMANAS ============== */}
-      <RevealPanel className="mt-8" aria-label="Conversaciones en la Mesa — programa grupal de 4 semanas">
-        <SectionTitle title="Conversaciones en la Mesa" kicker="Programa grupal de 4 semanas" />
+      {/* ======================= PROGRAMA FAMILIAR ======================= */}
+      <RevealPanel className="mt-16" aria-label="Conversaciones Familiares — Programa de 4 semanas">
+        <SectionTitle title="Conversaciones de Mesa Familiar" kicker="Programa de 4 semanas" />
         <Reveal variants={fade}>
-          <p className="text-center text-brand-body mt-2 max-w-3xl mx-auto">
-            Círculos pequeños y cercanos, dirigidos por Fanny y su equipo—como sentarse alrededor de la mesa—donde podrás hacer preguntas, obtener respuestas claras y salir con próximos pasos que realmente seguirás.
+          <p className="text-center text-brand-body/90 mt-2 max-w-2xl mx-auto leading-relaxed">
+            Círculos pequeños, íntimos y guiados por Fanny y su equipo—como en la mesa de la cocina—donde puedes preguntar, entender, y avanzar con pasos claros.
           </p>
         </Reveal>
 
         <StaggerGroup className="grid md:grid-cols-3 gap-6 mt-8">
           {[
-            { title: "Para quién es", items: ["Compradores por primera vez y recién llegados", "Familias alineando valores y presupuesto", "Inversionistas explorando multi-unidad (4–10)"] },
-            { title: "Qué cubrimos", items: ["Pasos, tasas y preparación hipotecaria", "Flujo de caja, deudas y estrategia de crédito", "Planificación sin estrés, alineada a tus valores"] },
-            { title: "Cómo funciona", items: ["Grupos pequeños (amables y enfocados)", "4 sesiones semanales • 45–60 min", "Próximos pasos simples tras cada llamada"] },
+            { title: "Ideal para", items: ["Compradores primerizos", "Familias que quieren alinear valores y presupuesto", "Inversionistas interesados en 4–10 unidades"] },
+            { title: "Cubrimos", items: ["Pasos de hipoteca, tasas y preparación", "Flujo, crédito y estrategia de deuda", "Planificación sin estrés, alineada a tus valores"] },
+            { title: "Formato", items: ["Grupos pequeños (cálidos y enfocados)", "4 sesiones semanales de 45–60 min", "Acción concreta después de cada encuentro"] },
           ].map((col) => (
             <Reveal key={col.title} variants={fadeUp}>
-              <div className="rounded-2xl border border-brand-green/30 p-6 transition-transform duration-200 hover:-translate-y-0.5">
-                <h4 className="font-serif text-xl text-brand-blue font-bold mb-2">{col.title}</h4>
-                <ul className="list-disc pl-6 text-brand-body space-y-1">
+              <div className="rounded-2xl border border-brand-green/30 p-6 hover:-translate-y-0.5 transition-transform duration-200">
+                <h4 className="font-serif text-xl text-brand-blue/90 font-bold mb-2">{col.title}</h4>
+                <ul className="list-disc pl-6 text-brand-body/90 space-y-1">
                   {col.items.map((it) => (
                     <li key={it}>{it}</li>
                   ))}
@@ -334,37 +354,40 @@ export default function HomeEs() {
         </StaggerGroup>
 
         <Reveal variants={fade}>
-          <div className="text-center mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/es/servicios#familia" className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block">
+          <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/es/servicios#familiar"
+              className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+            >
               Ver detalles del programa
             </Link>
             <Link
-              href={`/es/contacto?intent=package&package=${encodeURIComponent("Conversaciones Familiares Holísticas — Cohorte de 4 semanas")}`}
-              className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+              href={`/es/contacto?intent=paquete&package=${encodeURIComponent("Conversaciones Familiares — 4 Semanas")}`}
+              className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/50 hover:bg-brand-blue/80 hover:text-white transition"
             >
-              Hablemos
+              Habla con nosotras
             </Link>
           </div>
         </Reveal>
       </RevealPanel>
 
       {/* ======================= HERRAMIENTAS Y ARTÍCULOS ======================= */}
-      <RevealPanel className="mt-8" aria-label="Herramientas y artículos útiles">
-        <SectionTitle title="Herramientas y artículos útiles" />
+      <RevealPanel className="mt-16" aria-label="Herramientas y artículos">
+        <SectionTitle title="Herramientas & Artículos Útiles" />
         <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal variants={fadeUp}>
-            <div className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl">
-              <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Herramientas</h3>
-              <p className="text-brand-body mb-6">Calculadoras, listas y apoyos de decisión para avanzar—pensadas para cómo realmente cumples.</p>
-              <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
-                <li>Hoja de presupuesto y flujo de caja</li>
-                <li>Lista de preparación hipotecaria</li>
-                <li>Checklist de temporada de impuestos</li>
+            <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
+              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">Herramientas</h3>
+              <p className="text-brand-body/90 mb-6">Hojas de cálculo, listas y ayudas para decisiones que realmente usarás.</p>
+              <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
+                <li>Plantilla de flujo mensual</li>
+                <li>Lista de verificación hipotecaria</li>
+                <li>Checklist para la temporada de impuestos</li>
               </ul>
               <Link
                 href="/es/herramientas"
                 aria-label="Ver herramientas"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block"
+                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
               >
                 Ver Herramientas
               </Link>
@@ -372,18 +395,18 @@ export default function HomeEs() {
           </Reveal>
 
           <Reveal variants={fadeUp}>
-            <div className="group bg-white rounded-2xl p-8 shadow-lg border border-brand-gold flex flex-col transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl">
-              <h3 className="font-serif text-2xl text-brand-blue font-bold mb-2">Artículos</h3>
-              <p className="text-brand-body mb-6">Lecturas breves y prácticas sobre hipotecas, comportamiento del dinero y básicos fiscales—sin jerga, solo próximos pasos.</p>
-              <ul className="list-disc pl-6 text-brand-body text-sm space-y-1 mb-6">
-                <li>Ruta a tu primera vivienda (edición Toronto)</li>
-                <li>Estrategia de deudas sin espiral de culpa</li>
-                <li>Impuestos para pequeños negocios: qué registrar</li>
+            <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
+              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">Artículos</h3>
+              <p className="text-brand-body/90 mb-6">Lecturas breves y prácticas sobre hipotecas, dinero y planificación fiscal sin jerga técnica.</p>
+              <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
+                <li>Guía para comprar tu primera casa en Toronto</li>
+                <li>Estrategias de deuda sin culpa</li>
+                <li>Lo esencial para impuestos en pequeños negocios</li>
               </ul>
               <Link
                 href="/es/recursos"
                 aria-label="Leer artículos"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition inline-block"
+                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
               >
                 Leer Artículos
               </Link>
@@ -392,16 +415,16 @@ export default function HomeEs() {
         </StaggerGroup>
       </RevealPanel>
 
-      {/* ============================ SUSCRIPCIÓN ============================ */}
-      <RevealPanel className="mt-8" aria-label="Suscríbete para recibir consejos y recursos">
+      {/* ======================= SUSCRIPCIÓN ======================= */}
+      <RevealPanel className="mt-20" aria-label="Suscríbete a tips financieros">
         <Reveal variants={fadeUp}>
-          <div className="text-center max-w-3xl mx-auto">
-            <h3 className="font-serif text-2xl text-brand-green font-bold mb-2">Mantente al día</h3>
-            <p className="text-brand-body mb-6">Recibe consejos mensuales, checklists y recordatorios suaves—bilingües y sin spam.</p>
+          <div className="text-center max-w-3xl mx-auto bg-white/80 rounded-2xl p-10 shadow-sm border border-brand-gold/20">
+            <h3 className="font-serif text-2xl text-brand-green/90 font-bold mb-2">Mantente al tanto</h3>
+            <p className="text-brand-body/90 mb-6">Recibe tips mensuales, listas prácticas y recordatorios — sin spam, en español o inglés.</p>
             <Link
-              href="/es/suscribirme"
-              aria-label="Ir a la página de suscripción"
-              className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold shadow hover:bg-brand-gold hover:text-brand-green border-2 border-brand-blue transition inline-block"
+              href="/es/suscribirse"
+              aria-label="Página de suscripción"
+              className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
             >
               Suscribirme
             </Link>
@@ -409,20 +432,24 @@ export default function HomeEs() {
         </Reveal>
       </RevealPanel>
 
-      {/* =========================== BANDA FINAL =========================== */}
+      {/* ======================= CIERRE ======================= */}
       <Reveal variants={fade}>
-        <section className="py-16 text-center">
-          <h3 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-3">La claridad nace de la conversación.</h3>
-          <p className="text-brand-body mb-5 max-w-xl mx-auto">Sin presión ni prisa—solo guía reflexiva cuando sea el momento adecuado para ti.</p>
+        <section className="py-20 text-center border-t border-brand-gold/10 mt-20">
+          <h3 className="font-serif text-2xl md:text-3xl text-brand-green/90 font-bold mb-3">
+            La claridad nace del diálogo.
+          </h3>
+          <p className="text-brand-body/90 mb-5 max-w-xl mx-auto">
+            Sin presión ni apuro—solo guía consciente cuando tú estés lista/o.
+          </p>
           <Link
             href="/es/contacto?intent=hola"
             aria-label="Iniciar una conversación"
-            className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition inline-block"
+            className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
           >
             Iniciar una conversación
           </Link>
-          <p className="text-xs text-brand-blue/70 mt-3 max-w-xl mx-auto">
-            El Diseño Humano es opcional—solo se usa para personalizar comunicación y ritmo. Nunca reemplaza los fundamentos financieros, fiscales o legales.
+          <p className="text-xs text-brand-blue/60 mt-3 max-w-xl mx-auto">
+            El enfoque de Diseño Humano es opcional y solo se usa para adaptar el acompañamiento. No reemplaza asesoría financiera, legal ni fiscal.
           </p>
         </section>
       </Reveal>
