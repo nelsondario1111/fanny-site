@@ -4,30 +4,40 @@ import Section from "@/components/ui/Section";
 import ToContactButtons from "@/components/ToContactButtons";
 
 export const metadata: Metadata = {
-  title: "10-Year Holistic Tax Review | Fanny Samaniego",
+  title: "Free 10-Year Tax Review — Missed Benefits & Refunds | Fanny Samaniego",
   description:
-    "Find out if you have unclaimed CRA refunds or missed benefits from the past 10 years. Book a free 15-minute consultation with Fanny Samaniego, Holistic Financial Coach in Toronto.",
+    "Recover missed CRA tax refunds and benefits with a 10-year holistic review. Free 15-min call to check eligibility. Bilingual EN/ES support.",
   alternates: {
-    canonical: "https://fannysamaniego.com/en/tax-review",
+    canonical: "https://www.fannysamaniego.com/en/tax-review",
     languages: {
-      "en-CA": "https://fannysamaniego.com/en/tax-review",
-      "es-CA": "https://fannysamaniego.com/es/revision-impuestos",
+      "en-CA": "https://www.fannysamaniego.com/en/tax-review",
+      "es-CA": "https://www.fannysamaniego.com/es/revision-impuestos",
     },
   },
   openGraph: {
-    title: "10-Year Holistic Tax Review | Fanny Samaniego",
+    title: "Free 10-Year Tax Review — Fanny Samaniego",
     description:
-      "Discover if you have unclaimed CRA refunds or missed benefits from the past 10 years. Personalized, holistic review by a licensed financial coach.",
-    url: "https://fannysamaniego.com/en/tax-review",
+      "You may be owed hundreds in tax refunds from the CRA. Book a free 15-min call to find out.",
+    url: "https://www.fannysamaniego.com/en/tax-review",
     type: "website",
+    locale: "en_CA",
+    siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
     images: [
       {
-        url: "/images/resources/tax-review-leaves.jpg",
+        url: "https://www.fannysamaniego.com/og/og-tax-review-en.png", // ✅ static Canva OG banner
         width: 1200,
         height: 630,
-        alt: "10-Year Holistic Tax Review – Fanny Samaniego",
+        alt: "Recover missed CRA tax benefits — 10-Year Review | Fanny Samaniego",
       },
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@fannysamaniego",
+    title: "Free 10-Year Tax Review — Fanny Samaniego",
+    description:
+      "You may be owed hundreds in tax refunds from the CRA. Book a free 15-min call to find out.",
+    images: ["https://www.fannysamaniego.com/og/og-tax-review-en.png"],
   },
 };
 
@@ -38,7 +48,7 @@ export default function TaxReviewPage() {
       <PageHero
         title="10-Year Holistic Tax Review"
         subtitle="You may be missing out on tax refunds and benefits you never knew existed."
-        image="/images/resources/tax-review-leaves.jpg"
+        image="/images/resources/tax-review-leaves.jpg" // ✅ still fine for visual hero
       />
 
       {/* ================= TOP REFUND OPPORTUNITIES ================= */}
@@ -61,7 +71,7 @@ export default function TaxReviewPage() {
               👶 <strong>Canada Child Benefit / GST-HST</strong> — Missed due to filing errors.
             </li>
             <li>
-              💼 <strong>Medical & Work Expenses</strong> — Travel, therapy, or home office costs.
+              💼 <strong>Medical & Work Expenses</strong> — Travel, therapy, or home-office costs.
             </li>
           </ul>
         </div>
@@ -82,13 +92,10 @@ export default function TaxReviewPage() {
               Add Fanny as a CRA representative (Rep ID:{" "}
               <span className="font-semibold text-brand-body">FD26QH9</span>).
             </li>
+            <li>Fanny reviews your last 10 years of tax records with a holistic approach.</li>
+            <li>Receive any eligible refunds or benefits directly from the CRA.</li>
             <li>
-              Fanny gently reviews your last 10 years of tax records with a holistic approach.
-            </li>
-            <li>Receive any eligible refunds, benefits, or credits directly from the CRA.</li>
-            <li>
-              🆓 <strong>No upfront cost:</strong> the review is completely free. You only pay if
-              money is recovered.
+              🆓 <strong>No upfront cost:</strong> you only pay if money is recovered.
             </li>
           </ol>
         </div>
