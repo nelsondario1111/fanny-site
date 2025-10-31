@@ -70,100 +70,88 @@ export default function Home() {
       />
 
       {/* =============================== HERO =============================== */}
-      <header
-        className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden mt-6"
-        aria-label="Hero"
-      >
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/nature.jpg"
-            alt=""
-            aria-hidden
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5" />
-        </div>
+{/* =============================== HERO =============================== */}
+<div
+  className="relative bg-fixed bg-center bg-cover"
+  style={{ backgroundImage: "url('/nature.jpg')" }}
+>
+  <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5" />
 
-        <StaggerGroup className="w-full px-4">
-          <section className="max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
-            <Reveal variants={fadeUp}>
-              <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
-                Clear numbers, calm decisions.
-              </h1>
-            </Reveal>
+  <header
+    className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden"
+    aria-label="Hero"
+  >
+    <StaggerGroup className="w-full px-4">
+      <section className="max-w-content mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-10 sm:pb-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
+        {/* subtle internal top padding instead of margin gap */}
 
-            <Reveal variants={fade}>
-              <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-2xl mx-auto">
-                When you’re ready for holistic, human-centered financial coaching,
-                I’m here to walk alongside you—offering support that honors your
-                unique journey.
-              </p>
-            </Reveal>
+        <Reveal variants={fadeUp}>
+          <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
+            Clear numbers, calm decisions.
+          </h1>
+        </Reveal>
 
-            <Reveal variants={fade}>
-              <nav
-                aria-label="Primary actions"
-                className="flex flex-col items-center gap-2"
+        <Reveal variants={fade}>
+          <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-2xl mx-auto">
+            When you’re ready for holistic, human-centered financial coaching,
+            I’m here to walk alongside you—offering support that honors your
+            unique journey.
+          </p>
+        </Reveal>
+
+        <Reveal variants={fade}>
+          <nav
+            aria-label="Primary actions"
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/en/services"
+                aria-label="Explore services"
+                className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
               >
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    href="/en/services"
-                    aria-label="Explore services"
-                    className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-                  >
-                    Explore Services
-                  </Link>
-                  <Link
-                    href="/en/tools"
-                    aria-label="Browse tools"
-                    className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
-                  >
-                    Browse Tools
-                  </Link>
-                </div>
-                <Link
-                  href="/en/contact?intent=hello"
-                  className="text-sm text-brand-blue/80 mt-2 hover:text-brand-green underline underline-offset-4"
-                >
-                  Start a conversation
-                </Link>
-              </nav>
-            </Reveal>
-
-            <Reveal variants={fade}>
-              <div
-                className="mt-6 flex flex-wrap items-center justify-center gap-2"
-                aria-label="Trust badges"
+                Explore Services
+              </Link>
+              <Link
+                href="/en/tools"
+                aria-label="Browse tools"
+                className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
               >
-                {[
-                  {
-                    icon: <FaShieldAlt aria-hidden />,
-                    text: "Private & Confidential",
-                  },
-                  {
-                    icon: <FaGlobeAmericas aria-hidden />,
-                    text: "Bilingual (EN/ES)",
-                  },
-                  {
-                    icon: <FaIdBadge aria-hidden />,
-                    text: "Licensed Mortgage Agent (L2)",
-                  },
-                ].map((item) => (
-                  <span
-                    key={item.text}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
-                  >
-                    {item.icon} {item.text}
-                  </span>
-                ))}
-              </div>
-            </Reveal>
-          </section>
-        </StaggerGroup>
-      </header>
+                Browse Tools
+              </Link>
+            </div>
+            <Link
+              href="/en/contact?intent=hello"
+              className="text-sm text-brand-blue/80 mt-2 hover:text-brand-green underline underline-offset-4"
+            >
+              Start a conversation
+            </Link>
+          </nav>
+        </Reveal>
+
+        <Reveal variants={fade}>
+          <div
+            className="mt-6 flex flex-wrap items-center justify-center gap-2"
+            aria-label="Trust badges"
+          >
+            {[
+              { icon: <FaShieldAlt aria-hidden />, text: "Private & Confidential" },
+              { icon: <FaGlobeAmericas aria-hidden />, text: "Bilingual (EN/ES)" },
+              { icon: <FaIdBadge aria-hidden />, text: "Licensed Mortgage Agent (L2)" },
+            ].map((item) => (
+              <span
+                key={item.text}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
+              >
+                {item.icon} {item.text}
+              </span>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+    </StaggerGroup>
+  </header>
+</div>
 
       {/* ============================ ABOUT ============================ */}
       <RevealPanel className="mt-16" aria-label="About Fanny Samaniego">
