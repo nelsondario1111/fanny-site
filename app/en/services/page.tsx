@@ -9,7 +9,6 @@ import {
   useMotionPresets,
 } from "@/components/motion-safe";
 
-
 /* ============================ Pricing (CAD) ============================ */
 const PRICING = {
   mortgagePreapproval: 0,
@@ -139,6 +138,8 @@ type Card = {
   tags: string[];
   price: string;
   intent?: Intent;
+  moreHref?: string;
+  moreLabel?: string;
 };
 
 function PackageCard({ c }: { c: Card }) {
@@ -146,6 +147,7 @@ function PackageCard({ c }: { c: Card }) {
   const qs = new URLSearchParams();
   qs.set("intent", c.intent ?? "package");
   qs.set("package", c.title);
+
   return (
     <Reveal variants={fadeUp}>
       <article className={`${CARD} group`} aria-labelledby={`${c.id}-title`}>
@@ -190,6 +192,17 @@ function PackageCard({ c }: { c: Card }) {
           </div>
         )}
 
+        {c.moreHref && c.moreLabel && (
+          <p className="mt-3 text-sm">
+            <Link
+              href={c.moreHref}
+              className="text-brand-blue/90 underline underline-offset-4 hover:text-brand-green"
+            >
+              {c.moreLabel}
+            </Link>
+          </p>
+        )}
+
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href={`/en/contact?${qs.toString()}`}
@@ -228,11 +241,13 @@ function SectionNav() {
       },
       { rootMargin: "-25% 0px -65% 0px", threshold: [0.2, 0.5, 0.8] }
     );
+
     SECTIONS.forEach((s) => {
       const el = document.getElementById(s.id);
       refs.current[s.id] = el;
       if (el) observer.observe(el);
     });
+
     return () => observer.disconnect();
   }, []);
 
@@ -276,7 +291,13 @@ const CARDS: Card[] = [
       "Optional Human Design lens for cadence & decisions",
     ],
     timeline: "~6 months of guided support",
-    tags: ["Executives", "Families", "Business Owners", "Premium"],
+    tags: [
+      "Level 3 · Full Transformation",
+      "Executives",
+      "Families",
+      "Business Owners",
+      "Premium",
+    ],
     price: price(PRICING.elevatePremium),
   },
   {
@@ -291,7 +312,12 @@ const CARDS: Card[] = [
       "Written actions after each session",
     ],
     timeline: "~12 weeks",
-    tags: ["Executives", "Business Owners", "Families"],
+    tags: [
+      "Level 2 · Deep Integration",
+      "Executives",
+      "Business Owners",
+      "Families",
+    ],
     price: price(PRICING.transform6),
   },
   {
@@ -308,7 +334,12 @@ const CARDS: Card[] = [
     timeline: "4–6 weeks (typical)",
     scope:
       "Planning & documentation; tax/legal execution with your professionals.",
-    tags: ["Executives", "Business Owners", "Premium"],
+    tags: [
+      "Level 3 · Executive",
+      "Executives",
+      "Business Owners",
+      "Premium",
+    ],
     price: `From ${price(PRICING.bizOwnerExecPlan)}`,
   },
   {
@@ -324,13 +355,18 @@ const CARDS: Card[] = [
     ],
     timeline: "3 hours (virtual or on-site)",
     scope: "Up to 20 participants. HST applies.",
-    tags: ["Executives", "Business Owners", "Professionals", "Premium"],
+    tags: [
+      "Level 2 · Team Implementation",
+      "Executives",
+      "Business Owners",
+      "Professionals",
+    ],
     price: `From ${price(
       PRICING.workshopTeamVirtual
     )} (virtual) • ${price(PRICING.workshopTeamInPerson)} (in person)`,
   },
 
-  // Foundations
+  // Foundations (Money & Family)
   {
     id: "family-wealth-blueprint",
     section: "foundations",
@@ -343,7 +379,7 @@ const CARDS: Card[] = [
       "Optional Human Design prompts",
     ],
     timeline: "90 minutes + curated follow-up",
-    tags: ["Families", "Premium"],
+    tags: ["Level 1 · Start Here", "Families", "Premium"],
     price: price(PRICING.firstHomePlan),
     intent: "consult",
   },
@@ -360,7 +396,12 @@ const CARDS: Card[] = [
     ],
     timeline: "~90 days (3 sessions + email check-ins)",
     scope: "Advice-only (no product sales).",
-    tags: ["Professionals", "Executives", "Premium"],
+    tags: [
+      "Level 2 · Routine Installed",
+      "Professionals",
+      "Executives",
+      "Premium",
+    ],
     price: price(PRICING.proTuneUp90),
   },
 
@@ -379,7 +420,13 @@ const CARDS: Card[] = [
     timeline: "Usually 1–2 weeks after documents are complete",
     scope:
       "Residential; O.A.C.; no borrower fee in typical prime cases—any exception disclosed in advance.",
-    tags: ["Professionals", "Families", "Newcomers", "Premium"],
+    tags: [
+      "Level 1 · Start Here",
+      "Professionals",
+      "Families",
+      "Newcomers",
+      "Premium",
+    ],
     price: price(PRICING.mortgagePreapproval),
     intent: "preapproval",
   },
@@ -395,7 +442,12 @@ const CARDS: Card[] = [
       "Written summary within 24h",
     ],
     timeline: "60–90 minutes",
-    tags: ["Professionals", "Families", "Executives"],
+    tags: [
+      "Level 1 · Single Decision",
+      "Professionals",
+      "Families",
+      "Executives",
+    ],
     price: price(PRICING.refiRenewal),
   },
   {
@@ -411,7 +463,7 @@ const CARDS: Card[] = [
     ],
     timeline: "~2 hours + notes",
     scope: "Educational analysis; not investment advice.",
-    tags: ["Investors", "Business Owners", "Executives"],
+    tags: ["Level 2 · Investment", "Investors", "Business Owners", "Executives"],
     price: price(PRICING.invest4to10),
   },
 
@@ -428,11 +480,35 @@ const CARDS: Card[] = [
       "1-page decision summary",
     ],
     timeline: "60–75 minutes",
-    tags: ["Business Owners", "Professionals"],
+    tags: ["Level 1 · Setup", "Business Owners", "Professionals"],
     price: price(PRICING.corpPayrollClinic),
   },
+  {
+    id: "tax-review-10y",
+    section: "business",
+    title: "10-Year Holistic Tax Review",
+    desc: "A calm, step-by-step look back over the last decade to uncover missed credits, benefits, and refunds you may still be entitled to.",
+    bullets: [
+      "Review up to 10 years of returns and life events",
+      "Identify gaps in benefits, credits, and key programs",
+      "Simple, CRA-friendly action plan",
+      "Private, judgment-free process",
+    ],
+    timeline: "Typically 6–12 weeks, depending on CRA processing times",
+    scope:
+      "We highlight opportunities and next steps; CRA decisions and timelines remain theirs.",
+    tags: [
+      "Level 2 · Deep Review",
+      "Families",
+      "Professionals",
+      "Newcomers",
+    ],
+    price: price(null),
+    moreHref: "/en/tax-review",
+    moreLabel: "Learn more about the 10-Year Holistic Tax Review →",
+  },
 
-  // Legacy
+  // Legacy & Tax
   {
     id: "tax-strategy",
     section: "legacy",
@@ -445,7 +521,7 @@ const CARDS: Card[] = [
       "Calendar templates",
     ],
     timeline: "75–90 minutes",
-    tags: ["Families", "Professionals"],
+    tags: ["Level 1 · Start Here", "Families", "Professionals"],
     price: price(PRICING.taxSession),
   },
   {
@@ -460,7 +536,7 @@ const CARDS: Card[] = [
       "CPA coordination",
     ],
     timeline: "Annual (2 sessions + touchpoints)",
-    tags: ["Families", "Executives", "Professionals"],
+    tags: ["Level 2 · Ongoing", "Families", "Executives", "Professionals"],
     price: price(PRICING.taxAnnual),
   },
   {
@@ -475,7 +551,7 @@ const CARDS: Card[] = [
       "Documentation hygiene",
     ],
     timeline: "~90 days",
-    tags: ["Business Owners", "Professionals"],
+    tags: ["Level 2 · Routine Installed", "Business Owners", "Professionals"],
     price: price(PRICING.taxSmallBiz90d),
   },
 
@@ -493,11 +569,11 @@ const CARDS: Card[] = [
     ],
     timeline: "Single session (weeknight or Saturday morning)",
     scope: "Open to professionals and families; limited seats.",
-    tags: ["Professionals", "Families"],
+    tags: ["Level 1 · Group", "Professionals", "Families"],
     price: `${price(PRICING.workshopPublicSeat)}/person`,
   },
 
-  // Family
+  // Family / Group
   {
     id: "kt-4w",
     section: "family",
@@ -510,7 +586,7 @@ const CARDS: Card[] = [
       "Kind accountability & Q&A",
     ],
     timeline: "4 weeks",
-    tags: ["Families", "Premium"],
+    tags: ["Level 1 · Group", "Families", "Premium"],
     price: price(PRICING.ktCohort4w),
   },
   {
@@ -520,7 +596,7 @@ const CARDS: Card[] = [
     desc: "A lighter touch to stay in motion: live Q&A, fresh resources, and a friendly place to ask for help.",
     bullets: ["Monthly live Q&A", "Resource drops", "Member space for questions"],
     timeline: "Month-to-month",
-    tags: ["Families"],
+    tags: ["Level 2 · Ongoing", "Families"],
     price: `${price(PRICING.ktMonthly)}/month`,
   },
 
@@ -537,11 +613,11 @@ const CARDS: Card[] = [
       "Credit hygiene routine",
     ],
     timeline: "~30 days",
-    tags: ["Newcomers"],
+    tags: ["Level 1 · Start Here", "Newcomers"],
     price: price(PRICING.newcomerFastTrack),
   },
 
-  // Advice
+  // Advice / Orientation
   {
     id: "discovery",
     section: "advice",
@@ -549,7 +625,13 @@ const CARDS: Card[] = [
     desc: "A short, human conversation. Share your goal and timing; leave with 2–3 clear next steps.",
     bullets: ["2–3 next steps", "No documents yet", "Bilingual EN/ES"],
     timeline: "20–30 minutes",
-    tags: ["Professionals", "Families", "Executives", "Newcomers"],
+    tags: [
+      "Level 0 · Start Here",
+      "Professionals",
+      "Families",
+      "Executives",
+      "Newcomers",
+    ],
     price: price(PRICING.discovery),
     intent: "consult",
   },
@@ -565,7 +647,12 @@ const CARDS: Card[] = [
       "Optional Human Design snapshot",
     ],
     timeline: "90 minutes",
-    tags: ["Professionals", "Business Owners", "Families"],
+    tags: [
+      "Level 1 · Focused",
+      "Professionals",
+      "Business Owners",
+      "Families",
+    ],
     price: price(PRICING.blueprint90),
   },
   {
@@ -579,10 +666,9 @@ const CARDS: Card[] = [
       "Light accountability",
     ],
     timeline: "6–8 weeks",
-    tags: ["Professionals", "Newcomers"],
+    tags: ["Level 2 · Routine Installed", "Professionals", "Newcomers"],
     price: price(PRICING.align3),
   },
-
 ];
 
 /* ============================= Page ============================= */
@@ -606,7 +692,10 @@ export default function ServicesPage() {
       {/* ======= Header ======= */}
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-content mx-auto px-4 py-10">
-          <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
+          <nav
+            className="mb-3 text-sm text-brand-blue/80"
+            aria-label="Breadcrumb"
+          >
             <Link href="/en" className="hover:underline">
               Home
             </Link>
@@ -627,8 +716,9 @@ export default function ServicesPage() {
           <Reveal variants={fade}>
             <p className="mt-2 max-w-3xl text-brand-blue/90">
               Calm, bilingual support for professionals, families, and business
-              owners in the GTA. We blend precision with a steady pace—so
-              decisions feel both clear and kind.
+              owners in the GTA. Many services are organized in gentle levels
+              (Level 0–3), so you can start where you are and grow at your own
+              pace.
             </p>
           </Reveal>
 
@@ -670,7 +760,7 @@ export default function ServicesPage() {
           <SectionTitle
             id="coaching"
             title="Private Coaching & Foundations"
-            subtitle="Build clarity and momentum through personalized 1:1 guidance"
+            subtitle="Orientation, focused blueprints, and multi-session support—organized in gentle levels"
             tint="gold"
           />
           <Grid cards={sectionsWithCards.coaching} />
@@ -683,7 +773,7 @@ export default function ServicesPage() {
           <SectionTitle
             id="mortgage"
             title="Mortgage & Property Strategy"
-            subtitle="Confidence from pre-approval to closing—and beyond"
+            subtitle="Confidence from pre-approval to closing—and early steps for 4–10 unit investments"
             tint="green"
           />
           <Grid cards={sectionsWithCards.mortgage} />
@@ -696,7 +786,7 @@ export default function ServicesPage() {
           <SectionTitle
             id="business"
             title="Business & Tax Strategy"
-            subtitle="Executive clarity and predictable tax rhythms for professionals and owners"
+            subtitle="Executive clarity and predictable tax rhythms for professionals and business owners"
             tint="gold"
           />
           <Grid cards={sectionsWithCards.business} />

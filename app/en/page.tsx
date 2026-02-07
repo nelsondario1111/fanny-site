@@ -70,88 +70,173 @@ export default function Home() {
       />
 
       {/* =============================== HERO =============================== */}
-{/* =============================== HERO =============================== */}
-<div
-  className="relative bg-fixed bg-center bg-cover"
-  style={{ backgroundImage: "url('/nature.jpg')" }}
->
-  <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/0 to-black/5" />
+      <div
+        className="relative bg-fixed bg-center bg-cover"
+        style={{ backgroundImage: "url('/nature.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/10" />
 
-  <header
-    className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden"
-    aria-label="Hero"
-  >
-    <StaggerGroup className="w-full px-4">
-      <section className="max-w-content mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-10 sm:pb-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
-        {/* subtle internal top padding instead of margin gap */}
+        <header
+          className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden"
+          aria-label="Hero"
+        >
+          <StaggerGroup className="w-full px-4">
+            <section className="max-w-content mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-10 sm:pb-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
+              <Reveal variants={fadeUp}>
+                <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
+                  Clear numbers, calm decisions.
+                </h1>
+              </Reveal>
 
-        <Reveal variants={fadeUp}>
-          <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
-            Clear numbers, calm decisions.
-          </h1>
-        </Reveal>
+              <Reveal variants={fade}>
+                <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
+                  When you&apos;re ready for holistic, human-centered financial
+                  coaching—including calm support with 10-year tax reviews and
+                  mortgages—I&apos;m here to walk alongside you, offering
+                  guidance that honors your unique journey.
+                </p>
+              </Reveal>
 
-        <Reveal variants={fade}>
-          <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-2xl mx-auto">
-            When you’re ready for holistic, human-centered financial coaching,
-            I’m here to walk alongside you—offering support that honors your
-            unique journey.
-          </p>
-        </Reveal>
+              <Reveal variants={fade}>
+                <nav
+                  aria-label="Primary actions"
+                  className="flex flex-col items-center gap-2"
+                >
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href="/en/tax-review"
+                      aria-label="Explore 10-Year Holistic Tax Review"
+                      className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                    >
+                      Explore 10-Year Tax Review
+                    </Link>
+                    <Link
+                      href="/en/services"
+                      aria-label="Explore services"
+                      className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                    >
+                      Explore Services
+                    </Link>
+                  </div>
+                  <Link
+                    href="/en/contact?intent=hello"
+                    className="text-sm text-brand-blue/80 mt-2 hover:text-brand-green underline underline-offset-4"
+                  >
+                    Start a conversation
+                  </Link>
+                </nav>
+              </Reveal>
 
-        <Reveal variants={fade}>
-          <nav
-            aria-label="Primary actions"
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/en/services"
-                aria-label="Explore services"
-                className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-              >
-                Explore Services
-              </Link>
-              <Link
-                href="/en/tools"
-                aria-label="Browse tools"
-                className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
-              >
-                Browse Tools
-              </Link>
-            </div>
-            <Link
-              href="/en/contact?intent=hello"
-              className="text-sm text-brand-blue/80 mt-2 hover:text-brand-green underline underline-offset-4"
-            >
-              Start a conversation
-            </Link>
-          </nav>
-        </Reveal>
+              <Reveal variants={fade}>
+                <div
+                  className="mt-6 flex flex-wrap items-center justify-center gap-2"
+                  aria-label="Trust badges"
+                >
+                  {[
+                    {
+                      icon: <FaShieldAlt aria-hidden />,
+                      text: "Private & Confidential",
+                    },
+                    {
+                      icon: <FaGlobeAmericas aria-hidden />,
+                      text: "Bilingual (EN/ES)",
+                    },
+                    {
+                      icon: <FaIdBadge aria-hidden />,
+                      text: "Licensed Mortgage Agent (L2)",
+                    },
+                  ].map((item) => (
+                    <span
+                      key={item.text}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
+                    >
+                      {item.icon} {item.text}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
+            </section>
+          </StaggerGroup>
+        </header>
+      </div>
 
-        <Reveal variants={fade}>
-          <div
-            className="mt-6 flex flex-wrap items-center justify-center gap-2"
-            aria-label="Trust badges"
-          >
-            {[
-              { icon: <FaShieldAlt aria-hidden />, text: "Private & Confidential" },
-              { icon: <FaGlobeAmericas aria-hidden />, text: "Bilingual (EN/ES)" },
-              { icon: <FaIdBadge aria-hidden />, text: "Licensed Mortgage Agent (L2)" },
-            ].map((item) => (
-              <span
-                key={item.text}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
-              >
-                {item.icon} {item.text}
-              </span>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-    </StaggerGroup>
-  </header>
-</div>
+      {/* =================== FEATURED: TAX REVIEW =================== */}
+      <RevealPanel
+        className="mt-16 lg:mt-20"
+        aria-label="Featured Service: 10-Year Holistic Tax Review"
+      >
+        <div className="max-w-5xl mx-auto bg-white/90 rounded-3xl border border-brand-gold/20 shadow-sm px-6 sm:px-10 py-10 sm:py-12">
+          <SectionTitle
+            title="10-Year Holistic Tax Review"
+            kicker="Featured Service"
+          />
+          <StaggerGroup className="flex flex-col md:flex-row gap-8 items-center">
+            <Reveal variants={fadeUp} className="md:w-1/2">
+              <p className="font-sans text-lg text-brand-body/90 leading-relaxed mb-4">
+                If you&apos;ve lived and worked in Canada for several years,
+                there&apos;s a real chance the CRA may owe you money you were
+                never told about—especially if your life has included moves, job
+                changes, kids, or income shifts.
+              </p>
+              <p className="font-sans text-base text-brand-body/90 leading-relaxed mb-4">
+                The 10-Year Holistic Tax Review is a calm, step-by-step process
+                where we look back over the last decade to uncover missed
+                benefits, credits, and opportunities—without blame, shame, or
+                overwhelm.
+              </p>
+              <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
+                <li>Review up to 10 years of filings and life events.</li>
+                <li>Identify missed credits and benefits you may still claim.</li>
+                <li>Keep you informed and in control at every step.</li>
+              </ul>
+              <div className="flex flex-wrap gap-3 items-center">
+                <Link
+                  href="/en/tax-review"
+                  aria-label="Learn more about the 10-Year Holistic Tax Review"
+                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                >
+                  Learn More
+                </Link>
+                <Link
+                  href="/en/contact?intent=tax-review"
+                  aria-label="Book a 15-minute call about the Tax Review"
+                  className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                >
+                  Book a 15-min Call
+                </Link>
+              </div>
+              <p className="mt-2 text-xs text-brand-blue/70">
+                No pressure and no upfront commitment—just a short conversation
+                to see if this review is right for you.
+              </p>
+            </Reveal>
+
+            <Reveal variants={fadeUp} className="md:w-1/2 md:mt-4">
+              <div className="bg-white rounded-2xl border border-brand-gold/30 shadow-md p-6">
+                <h3 className="font-serif text-xl text-brand-blue/90 font-bold mb-3">
+                  Who benefits most
+                </h3>
+                <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-4">
+                  <li>Families with kids, support, or changing benefits.</li>
+                  <li>
+                    Professionals who moved, changed jobs, or had income
+                    swings.
+                  </li>
+                  <li>
+                    Newcomers who weren&apos;t fully guided on Canadian tax
+                    rules.
+                  </li>
+                </ul>
+                <p className="text-xs text-brand-blue/70 leading-relaxed">
+                  All work is private and confidential. The CRA pays any
+                  eligible refunds directly; our role is to help you see what&apos;s
+                  possible and walk through the process with calm, clear steps.
+                </p>
+              </div>
+            </Reveal>
+          </StaggerGroup>
+        </div>
+      </RevealPanel>
 
       {/* ============================ ABOUT ============================ */}
       <RevealPanel className="mt-16" aria-label="About Fanny Samaniego">
@@ -172,7 +257,7 @@ export default function Home() {
               Invited Wisdom, Shared with Heart
             </h2>
             <p className="font-sans text-lg text-brand-body/90 mb-6 leading-relaxed max-w-2xl">
-              I’m Fanny Samaniego—a bilingual{" "}
+              I&apos;m Fanny Samaniego—a bilingual{" "}
               <b>
                 Financial Advisor, holistic coach, and licensed Mortgage Agent
               </b>{" "}
@@ -204,7 +289,7 @@ export default function Home() {
                 aria-label="Start a conversation"
                 className="self-center text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
               >
-                Let’s explore your options
+                Let&apos;s explore your options
               </Link>
             </div>
           </Reveal>
@@ -239,24 +324,41 @@ export default function Home() {
               href="/en/contact?intent=hello"
               className="text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
             >
-              When you’re ready, send a note →
+              When you&apos;re ready, send a note →
             </Link>
           </div>
         </Reveal>
       </RevealPanel>
+
       {/* ============================ BADGES ============================ */}
-      <RevealPanel className="mt-16" aria-label="Professional Certifications and Partners">
+      <RevealPanel
+        className="mt-16"
+        aria-label="Professional Certifications and Partners"
+      >
         <SectionTitle title="Professional Confidence, Human Approach" />
         <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           {[
-            { icon: <FaIdBadge aria-hidden className="text-xl" />, text: "Licensed Mortgage Agent (L2)" },
-            { icon: <FaUsers aria-hidden className="text-xl" />, text: "Coordinated Team of Specialists" },
-            { icon: <FaLeaf aria-hidden className="text-xl" />, text: "Optional Human Design Personalization" },
+            {
+              icon: <FaIdBadge aria-hidden className="text-xl" />,
+              text: "Licensed Mortgage Agent (L2)",
+            },
+            {
+              icon: <FaUsers aria-hidden className="text-xl" />,
+              text: "Coordinated Team of Specialists",
+            },
+            {
+              icon: <FaLeaf aria-hidden className="text-xl" />,
+              text: "Optional Human Design Personalization",
+            },
           ].map((b) => (
             <Reveal key={b.text} variants={fadeUp}>
               <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="text-2xl text-brand-green/90 flex items-center justify-center">{b.icon}</div>
-                <p className="font-semibold text-brand-blue/90 mt-2">{b.text}</p>
+                <div className="text-2xl text-brand-green/90 flex items-center justify-center">
+                  {b.icon}
+                </div>
+                <p className="font-semibold text-brand-blue/90 mt-2">
+                  {b.text}
+                </p>
               </div>
             </Reveal>
           ))}
@@ -283,14 +385,14 @@ export default function Home() {
             {
               icon: "🌱",
               title: "Holistic Tax Planning",
-              body: "Practical, values-aligned strategies to keep more of what you earn.",
+              body: "Practical, values-aligned strategies to keep more of what you earn—starting with options like the 10-Year Holistic Tax Review.",
               bullets: [
                 "Personal & small-business considerations",
                 "Cash-flow friendly, compliance-first planning",
                 "Seasonal reminders and prep checklists",
               ],
-              href: "/en/services#legacy",
-              label: "Explore Tax Planning",
+              href: "/en/tax-review",
+              label: "Explore Tax Review",
             },
             {
               icon: "🏡",
@@ -310,7 +412,9 @@ export default function Home() {
                 <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
                   <span aria-hidden>{c.icon}</span>
                 </div>
-                <h3 className="font-serif text-2xl text-brand-blue/90 mb-2 font-bold">{c.title}</h3>
+                <h3 className="font-serif text-2xl text-brand-blue/90 mb-2 font-bold">
+                  {c.title}
+                </h3>
                 <p className="font-sans text-brand-body/90 mb-4">{c.body}</p>
                 <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
                   {c.bullets.map((b) => (
@@ -331,19 +435,48 @@ export default function Home() {
       </RevealPanel>
 
       {/* ================ KITCHEN TABLE PROGRAM ================= */}
-      <RevealPanel className="mt-16" aria-label="Kitchen Table Conversations — 4-week small-group program">
-        <SectionTitle title="Kitchen Table Conversations" kicker="4-Week Small-Group Program" />
+      <RevealPanel
+        className="mt-16"
+        aria-label="Kitchen Table Conversations — 4-week small-group program"
+      >
+        <SectionTitle
+          title="Kitchen Table Conversations"
+          kicker="4-Week Small-Group Program"
+        />
         <Reveal variants={fade}>
           <p className="text-center text-brand-body/90 mt-2 max-w-2xl mx-auto leading-relaxed">
-            Intimate small-group circles led by Fanny and her team—like sitting around a kitchen table—where you can ask questions, get clear answers, and leave with next steps you’ll actually follow.
+            Intimate small-group circles led by Fanny and her team—like sitting
+            around a kitchen table—where you can ask questions, get clear
+            answers, and leave with next steps you’ll actually follow.
           </p>
         </Reveal>
 
         <StaggerGroup className="grid md:grid-cols-3 gap-6 mt-8">
           {[
-            { title: "Who it’s for", items: ["First-time buyers & newcomers", "Families aligning values & budgets", "Investors exploring multi-unit (4–10)"] },
-            { title: "What we cover", items: ["Mortgage steps, rates & readiness", "Cash-flow, debt & credit strategy", "Values-aligned, stress-free planning"] },
-            { title: "How it works", items: ["Small groups (friendly & focused)", "4 weekly sessions • 45–60 min", "Simple next-steps after each call"] },
+            {
+              title: "Who it’s for",
+              items: [
+                "First-time buyers & newcomers",
+                "Families aligning values & budgets",
+                "Investors exploring multi-unit (4–10)",
+              ],
+            },
+            {
+              title: "What we cover",
+              items: [
+                "Mortgage steps, rates & readiness",
+                "Cash-flow, debt & credit strategy",
+                "Values-aligned, stress-free planning",
+              ],
+            },
+            {
+              title: "How it works",
+              items: [
+                "Small groups (friendly & focused)",
+                "4 weekly sessions • 45–60 min",
+                "Simple next-steps after each call",
+              ],
+            },
           ].map((col) => (
             <Reveal key={col.title} variants={fadeUp}>
               <div className="rounded-2xl border border-brand-green/30 p-6 hover:-translate-y-0.5 transition-transform duration-200">
@@ -369,7 +502,9 @@ export default function Home() {
               View Program Details
             </Link>
             <Link
-              href={`/en/contact?intent=package&package=${encodeURIComponent("Holistic Family Conversations — 4-Week Cohort")}`}
+              href={`/en/contact?intent=package&package=${encodeURIComponent(
+                "Holistic Family Conversations — 4-Week Cohort"
+              )}`}
               className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/50 hover:bg-brand-blue/80 hover:text-white transition"
             >
               Talk to Us
@@ -384,8 +519,13 @@ export default function Home() {
         <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal variants={fadeUp}>
             <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
-              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">Tools</h3>
-              <p className="text-brand-body/90 mb-6">Simple calculators, checklists, and decision helpers to keep things moving—made to match how you actually follow through.</p>
+              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">
+                Tools
+              </h3>
+              <p className="text-brand-body/90 mb-6">
+                Simple calculators, checklists, and decision helpers to keep
+                things moving—made to match how you actually follow through.
+              </p>
               <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
                 <li>Budget & cash-flow worksheet</li>
                 <li>Mortgage readiness checklist</li>
@@ -403,8 +543,13 @@ export default function Home() {
 
           <Reveal variants={fadeUp}>
             <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
-              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">Articles</h3>
-              <p className="text-brand-body/90 mb-6">Short, practical reads on mortgages, money behavior, and tax basics—no jargon, just next steps.</p>
+              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">
+                Articles
+              </h3>
+              <p className="text-brand-body/90 mb-6">
+                Short, practical reads on mortgages, money behavior, and tax
+                basics—no jargon, just next steps.
+              </p>
               <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
                 <li>First-home roadmap (Toronto edition)</li>
                 <li>Debt strategy without the shame spiral</li>
@@ -423,12 +568,18 @@ export default function Home() {
       </RevealPanel>
 
       {/* ============================ SUBSCRIBE ============================ */}
-      <RevealPanel className="mt-20" aria-label="Subscribe to financial tips and resources">
+      <RevealPanel
+        className="mt-20"
+        aria-label="Subscribe to financial tips and resources"
+      >
         <Reveal variants={fadeUp}>
           <div className="text-center max-w-3xl mx-auto bg-white/80 rounded-2xl p-10 shadow-sm border border-brand-gold/20">
-            <h3 className="font-serif text-2xl text-brand-green/90 font-bold mb-2">Stay in the Loop</h3>
+            <h3 className="font-serif text-2xl text-brand-green/90 font-bold mb-2">
+              Stay in the Loop
+            </h3>
             <p className="text-brand-body/90 mb-6">
-              Get monthly tips, checklists, and gentle reminders—bilingual and spam-free.
+              Get monthly tips, checklists, and gentle reminders—bilingual and
+              spam-free.
             </p>
             <Link
               href="/en/subscribe"
@@ -448,7 +599,8 @@ export default function Home() {
             Clarity grows from conversation.
           </h3>
           <p className="text-brand-body/90 mb-5 max-w-xl mx-auto">
-            No pressure, no rush—just thoughtful guidance when it’s right for you.
+            No pressure, no rush—just thoughtful guidance when it&apos;s right
+            for you.
           </p>
           <Link
             href="/en/contact?intent=hello"
@@ -458,7 +610,8 @@ export default function Home() {
             Start a Conversation
           </Link>
           <p className="text-xs text-brand-blue/60 mt-3 max-w-xl mx-auto">
-            Human Design is optional—used only to personalize communication and pacing. It never replaces financial, tax, or legal fundamentals.
+            Human Design is optional—used only to personalize communication and
+            pacing. It never replaces financial, tax, or legal fundamentals.
           </p>
         </section>
       </Reveal>

@@ -258,7 +258,7 @@ const EVENTOS: QuickFilter[] = [
 export default function RecursosClient({
   articles,
   ctaHref = "/es/contacto?intent=pregunta",
-  newsletterHref = "/es/suscribirse",
+  newsletterHref = "/es/suscribir",
   personas,
   featuredSlugs,
   views,
