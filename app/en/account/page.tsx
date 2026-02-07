@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import PageShell from "@/components/ui/PageShell";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Account",
+  description: "Private client account area.",
+  path: "/en/account",
+  locale: "en",
+  noIndex: true,
+});
 
 export default function AccountEn() {
   return (

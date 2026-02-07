@@ -1,5 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import PageShell from "@/components/ui/PageShell";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Thanks for Subscribing",
+  description: "Newsletter subscription confirmation.",
+  path: "/en/thank-you",
+  locale: "en",
+  noIndex: true,
+});
 
 export default function ThankYouPageEn() {
   return (

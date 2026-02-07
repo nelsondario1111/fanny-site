@@ -1,5 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import PageShell from "@/components/ui/PageShell";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Payment Canceled",
+  description: "Payment cancellation confirmation.",
+  path: "/en/cancel",
+  locale: "en",
+  noIndex: true,
+});
 
 export default function CancelPage() {
   return (

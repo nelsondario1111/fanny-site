@@ -1,5 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import PageShell from "@/components/ui/PageShell";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Apply",
+  description: "Application intake start page.",
+  path: "/en/apply",
+  locale: "en",
+  noIndex: true,
+});
 
 export default function ApplyPageEn() {
   return (

@@ -1,5 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import PageShell from "@/components/ui/PageShell";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Payment Success",
+  description: "Payment success confirmation page.",
+  path: "/en/success",
+  locale: "en",
+  noIndex: true,
+});
 
 export default function SuccessPageEn() {
   return (

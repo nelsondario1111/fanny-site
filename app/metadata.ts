@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 /** ---------- Brand & environment ---------- */
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
-  "https://fannysamaniego.com";
+  "https://www.fannysamaniego.com";
 
 const BRAND = {
   siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Fanny Samaniego — Mortgages • Money • Taxes",
@@ -134,7 +134,7 @@ function ogImages(images?: string | string[]) {
     ? images
     : images
     ? [images]
-    : ["/og/og-default.png"];
+    : ["/og/og-fanny-coaching.png"];
   return arr.map((i) => ({
     url: abs(i),
     width: 1200,
@@ -192,7 +192,11 @@ export function buildMetadata({
       creator: BRAND.twitter,
       title: fullTitle,
       description: desc,
-      images: (Array.isArray(images) ? images : images ? [images] : ["/og/og-default.png"]).map(abs),
+      images: (Array.isArray(images)
+        ? images
+        : images
+        ? [images]
+        : ["/og/og-fanny-coaching.png"]).map(abs),
     },
     robots: {
       index: !noIndex,
@@ -220,8 +224,17 @@ export function buildMetadata({
     icons: {
       icon: [
         { url: "/favicon.ico" },
-        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-        { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+        {
+          url: "/android-chrome-192x192.png",
+          type: "image/png",
+          sizes: "192x192",
+        },
+        {
+          url: "/android-chrome-512x512.png",
+          type: "image/png",
+          sizes: "512x512",
+        },
       ],
       apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
       shortcut: ["/favicon.ico"],
@@ -281,7 +294,7 @@ export function siteJsonLd(locale: Lang = "en") {
     "@type": "Organization",
     name: BRAND.org,
     url: SITE_URL,
-    logo: abs("/icon-512.png"),
+    logo: abs("/android-chrome-512x512.png"),
     areaServed: "CA",
     address: {
       "@type": "PostalAddress",
@@ -310,7 +323,11 @@ export function articleJsonLd({
     headline: title || BRAND.siteName,
     description: description || DEFAULT_DESC[locale],
     mainEntityOfPage: url,
-    image: (Array.isArray(images) ? images : images ? [images] : ["/og/og-default.png"]).map(abs),
+    image: (Array.isArray(images)
+      ? images
+      : images
+      ? [images]
+      : ["/og/og-fanny-coaching.png"]).map(abs),
     datePublished: publishedTime ? new Date(publishedTime).toISOString() : undefined,
     dateModified: modifiedTime ? new Date(modifiedTime).toISOString() : undefined,
     author: (authors && authors.length ? authors : [BRAND.org]).map((name) => ({
@@ -320,7 +337,10 @@ export function articleJsonLd({
     publisher: {
       "@type": "Organization",
       name: BRAND.org,
-      logo: { "@type": "ImageObject", url: abs("/icon-512.png") },
+      logo: {
+        "@type": "ImageObject",
+        url: abs("/android-chrome-512x512.png"),
+      },
     },
   };
 }

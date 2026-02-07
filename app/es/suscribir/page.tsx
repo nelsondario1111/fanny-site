@@ -1,7 +1,17 @@
 // app/es/suscribir/page.tsx
+import type { Metadata } from "next";
+import { buildMetadata } from "@/app/metadata";
 import ClientFade from "@/components/ui/ClientFade";
 import PageShell from "@/components/ui/PageShell";
 import SubscribeForm from "@/components/SubscribeForm";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Suscribir",
+  description:
+    "Suscríbete para recibir consejos mensuales bilingües sobre hipotecas, dinero e impuestos.",
+  path: "/es/suscribir",
+  locale: "es",
+});
 
 export default function SuscribirPage() {
   return (
