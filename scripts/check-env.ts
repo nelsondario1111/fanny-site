@@ -18,7 +18,11 @@ if (existsSync(localEnv)) {
   console.log("🧩 Loading environment from .env.production...");
   config({ path: prodEnv });
 } else {
-  console.warn("⚠️ No .env.local or .env.production found in project root.");
+  if (process.env.VERCEL) {
+    console.log("ℹ️ No local .env file found; relying on Vercel environment variables.");
+  } else {
+    console.warn("⚠️ No .env.local or .env.production found in project root.");
+  }
 }
 
 // --------------------------------------------
