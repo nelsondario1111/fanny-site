@@ -1,20 +1,25 @@
+import Link from "next/link";
+import PageShell from "@/components/ui/PageShell";
+
 export default function ExitoPage() {
   return (
-    <main className="bg-brand-beige min-h-screen flex items-center justify-center">
-      <div className="bg-white/90 p-10 rounded-3xl shadow-xl border border-brand-gold max-w-xl text-center">
-        <h1 className="text-3xl font-serif text-brand-green font-bold mb-4">¡Gracias por tu Pago!</h1>
-        <p className="text-brand-body mb-6">
-          Tu pago fue exitoso. Recibirás una confirmación y recibo por correo electrónico.
-          <br />
-          ¡Esperamos acompañarte en tu camino hacia el bienestar financiero!
-        </p>
-        <a
+    <PageShell
+      title="Gracias por tu Pago"
+      subtitle="Tu pago fue exitoso. Recibirás confirmación y recibo por correo electrónico."
+      maxWidthClass="max-w-xl"
+    >
+      <p className="text-center text-brand-body">
+        Gracias por confiar en nuestro acompañamiento para tu bienestar
+        financiero.
+      </p>
+      <div className="mt-6 flex justify-center">
+        <Link
           href="/es"
-          className="inline-block px-6 py-3 bg-brand-gold text-brand-green rounded-full font-semibold shadow hover:bg-brand-blue hover:text-white transition"
+          className="inline-flex items-center rounded-full bg-brand-gold px-8 py-3 font-semibold text-brand-green shadow transition hover:bg-brand-blue hover:text-white"
         >
           Volver al Inicio
-        </a>
+        </Link>
       </div>
-    </main>
+    </PageShell>
   );
 }

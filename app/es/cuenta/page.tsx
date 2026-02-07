@@ -1,19 +1,31 @@
+import PageShell from "@/components/ui/PageShell";
+
 export default function CuentaEs() {
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="text-3xl font-serif font-bold text-brand-green mb-2">Tu cuenta</h1>
-      <p className="text-brand-body">Aquí tendrás tu información personal, documentos y herramientas/regalos privados.</p>
-
-      <section className="mt-6 grid gap-4">
-        <div className="rounded-xl border p-4">
-          <h2 className="font-semibold text-brand-green">Herramientas y Regalos</h2>
-          <p className="text-sm text-brand-body/80">Próximamente: descargas y trackers personalizados.</p>
+    <PageShell
+      title="Tu Cuenta"
+      subtitle="Esta área privada reunirá tus documentos, herramientas y próximos pasos."
+      center={false}
+      maxWidthClass="max-w-4xl"
+    >
+      <section className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
+          <h2 className="font-serif text-xl font-semibold text-brand-green">
+            Herramientas y Regalos
+          </h2>
+          <p className="mt-2 text-sm text-brand-body/80">
+            Próximamente: descargas personalizadas, trackers y recursos guiados.
+          </p>
         </div>
-        <div className="rounded-xl border p-4">
-          <h2 className="font-semibold text-brand-green">Documentos</h2>
-          <p className="text-sm text-brand-body/80">Centro de subida y compartición segura (por añadir).</p>
+        <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
+          <h2 className="font-serif text-xl font-semibold text-brand-green">
+            Documentos
+          </h2>
+          <p className="mt-2 text-sm text-brand-body/80">
+            Aquí tendrás subida segura y compartición privada de archivos.
+          </p>
         </div>
       </section>
-    </main>
+    </PageShell>
   );
 }

@@ -1,4 +1,6 @@
 "use client";
+
+import PageShell from "@/components/ui/PageShell";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPageEs() {
@@ -12,12 +14,14 @@ export default function LoginPageEs() {
   }
 
   return (
-    <main className="mx-auto max-w-md p-8">
-      <h1 className="text-3xl font-serif font-bold text-brand-green mb-2">Ingresar</h1>
-      <p className="text-brand-body mb-6">Inicio de sesión temporal para desarrollo. Integraremos el real después.</p>
+    <PageShell
+      title="Iniciar Sesión"
+      subtitle="Acceso temporal para desarrollo. La autenticación de producción se integrará después."
+      maxWidthClass="max-w-xl"
+    >
       <button onClick={signIn} className="w-full rounded-xl bg-emerald-600 text-white py-3">
         Continuar
       </button>
-    </main>
+    </PageShell>
   );
 }

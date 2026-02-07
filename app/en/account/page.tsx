@@ -1,19 +1,32 @@
+import PageShell from "@/components/ui/PageShell";
+
 export default function AccountEn() {
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="text-3xl font-serif font-bold text-brand-green mb-2">Your account</h1>
-      <p className="text-brand-body">This private area will hold your personal info, uploaded docs, and private tools/gifts.</p>
-
-      <section className="mt-6 grid gap-4">
-        <div className="rounded-xl border p-4">
-          <h2 className="font-semibold text-brand-green">Private Tools & Gifts</h2>
-          <p className="text-sm text-brand-body/80">Coming soon: your personalized downloads and trackers.</p>
+    <PageShell
+      title="Your Account"
+      subtitle="This private area is where your personal documents, tools, and next steps will live."
+      center={false}
+      maxWidthClass="max-w-4xl"
+    >
+      <section className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
+          <h2 className="font-serif text-xl font-semibold text-brand-green">
+            Private Tools & Gifts
+          </h2>
+          <p className="mt-2 text-sm text-brand-body/80">
+            Coming soon: your personalized downloads, trackers, and guided
+            resources.
+          </p>
         </div>
-        <div className="rounded-xl border p-4">
-          <h2 className="font-semibold text-brand-green">Documents</h2>
-          <p className="text-sm text-brand-body/80">Upload center and secure sharing (to be added).</p>
+        <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
+          <h2 className="font-serif text-xl font-semibold text-brand-green">
+            Documents
+          </h2>
+          <p className="mt-2 text-sm text-brand-body/80">
+            Secure uploads and private document sharing will be available here.
+          </p>
         </div>
       </section>
-    </main>
+    </PageShell>
   );
 }
