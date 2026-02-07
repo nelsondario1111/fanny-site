@@ -1,5 +1,5 @@
 /** @type {import('next-sitemap').IConfig} */
-module.exports = {
+const config = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://www.fannysamaniego.com",
   generateRobotsTxt: true,
   sitemapSize: 5000,
@@ -7,3 +7,5 @@ module.exports = {
   priority: 0.7,
   exclude: ["/404"],
 };
+
+export default config;
