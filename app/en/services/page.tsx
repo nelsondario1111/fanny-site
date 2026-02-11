@@ -23,10 +23,8 @@ const PRICING = {
   foundationsGroup: null,
   mortgagePreapproval: 0,
   mortgageOffer: 295,
-  mortgageClosing: 295,
   businessCashflow: 395,
   taxCoordination: 395,
-  specialtySession: 295,
 } as const;
 
 function price(value: number | null) {
@@ -228,21 +226,6 @@ const CARDS: Card[] = [
     ctaHref: packageHref("Offer & Financing Strategy"),
   },
   {
-    id: "mortgage-closing",
-    section: "mortgage",
-    title: "Closing Readiness Review",
-    desc: "Prepare for closing with clear timelines, requirements, and post-close planning.",
-    bullets: [
-      "Review closing checklist and timing",
-      "Surface risk points early",
-      "Confirm post-close priorities",
-    ],
-    tags: ["Mortgage", "Closing", "Execution"],
-    price: price(PRICING.mortgageClosing),
-    ctaLabel: "Book a Discovery Call",
-    ctaHref: packageHref("Closing Readiness Review"),
-  },
-  {
     id: "business-cashflow",
     section: "business",
     title: "Business Strategy & Cash Flow Session",
@@ -271,21 +254,6 @@ const CARDS: Card[] = [
     price: price(PRICING.taxCoordination),
     ctaLabel: "Book a Discovery Call",
     ctaHref: packageHref("Tax Planning Coordination Session"),
-  },
-  {
-    id: "business-specialty",
-    section: "business",
-    title: "Specialty Decision Session",
-    desc: "A focused advisory session for high-stakes decisions that do not fit a standard pathway.",
-    bullets: [
-      "Scope one priority decision",
-      "Evaluate options and implications",
-      "Define immediate action steps",
-    ],
-    tags: ["Specialty", "Advisory", "Focused"],
-    price: price(PRICING.specialtySession),
-    ctaLabel: "Book a Discovery Call",
-    ctaHref: packageHref("Specialty Decision Session"),
   },
 ];
 

@@ -27,10 +27,8 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   { slug: "foundations-small-group", label: "Foundations & Small Group Programs" },
   { slug: "mortgage-preapproval-planning", label: "Pre-Approval Planning" },
   { slug: "mortgage-offer-financing", label: "Offer & Financing Strategy" },
-  { slug: "mortgage-closing-readiness", label: "Closing Readiness Review" },
   { slug: "business-cashflow-session", label: "Business Strategy & Cash Flow Session" },
   { slug: "tax-coordination-session", label: "Tax Planning Coordination Session" },
-  { slug: "specialty-decision-session", label: "Specialty Decision Session" },
 
   // 1:1 Advisory
   { slug: "private-discovery-call", label: "Private Discovery Call" },
@@ -85,10 +83,8 @@ const TITLE_TO_SLUG_EN: Record<string, string> = {
   "Foundations & Small Group Programs": "foundations-small-group",
   "Pre-Approval Planning": "mortgage-preapproval-planning",
   "Offer & Financing Strategy": "mortgage-offer-financing",
-  "Closing Readiness Review": "mortgage-closing-readiness",
   "Business Strategy & Cash Flow Session": "business-cashflow-session",
   "Tax Planning Coordination Session": "tax-coordination-session",
-  "Specialty Decision Session": "specialty-decision-session",
 
   // 1:1 Advisory
   "Private Discovery Call": "private-discovery-call",

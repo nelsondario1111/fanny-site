@@ -31,10 +31,8 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   { slug: "programas-base-grupos", label: "Programas Base y Grupos Pequeños" },
   { slug: "planificacion-preaprobacion", label: "Planificación de Preaprobación" },
   { slug: "oferta-financiamiento", label: "Estrategia de Oferta y Financiamiento" },
-  { slug: "revision-cierre", label: "Revisión de Preparación para Cierre" },
   { slug: "negocio-flujo-caja", label: "Sesión de Estrategia de Negocio y Flujo de Caja" },
   { slug: "coordinacion-planificacion-fiscal", label: "Sesión de Coordinación para Planificación Fiscal" },
-  { slug: "sesion-especializada-decision", label: "Sesión Especializada de Decisión" },
 
   // Asesoría 1:1
   { slug: "consulta-descubrimiento-privada", label: "Consulta Privada de Descubrimiento" },
@@ -89,10 +87,8 @@ const TITLE_TO_SLUG_ES: Record<string, string> = {
   "Programas Base y Grupos Pequeños": "programas-base-grupos",
   "Planificación de Preaprobación": "planificacion-preaprobacion",
   "Estrategia de Oferta y Financiamiento": "oferta-financiamiento",
-  "Revisión de Preparación para Cierre": "revision-cierre",
   "Sesión de Estrategia de Negocio y Flujo de Caja": "negocio-flujo-caja",
   "Sesión de Coordinación para Planificación Fiscal": "coordinacion-planificacion-fiscal",
-  "Sesión Especializada de Decisión": "sesion-especializada-decision",
 
   // Asesoría 1:1
   "Consulta Privada de Descubrimiento": "consulta-descubrimiento-privada",

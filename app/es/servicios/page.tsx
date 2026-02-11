@@ -23,10 +23,8 @@ const PRICING = {
   foundationsGroup: null,
   mortgagePreapproval: 0,
   mortgageOffer: 295,
-  mortgageClosing: 295,
   businessCashflow: 395,
   taxCoordination: 395,
-  specialtySession: 295,
 } as const;
 
 function price(value: number | null) {
@@ -231,21 +229,6 @@ const CARDS: Card[] = [
     ctaHref: packageHref("Estrategia de Oferta y Financiamiento"),
   },
   {
-    id: "mortgage-closing",
-    section: "mortgage",
-    title: "Revisión de Preparación para Cierre",
-    desc: "Llega al cierre con claridad en requisitos, tiempos y próximos pasos.",
-    bullets: [
-      "Revisa checklist y calendario de cierre",
-      "Detecta riesgos con anticipación",
-      "Confirma prioridades post-cierre",
-    ],
-    tags: ["Hipoteca", "Cierre", "Ejecución"],
-    price: price(PRICING.mortgageClosing),
-    ctaLabel: "Reservar llamada de descubrimiento",
-    ctaHref: packageHref("Revisión de Preparación para Cierre"),
-  },
-  {
     id: "business-cashflow",
     section: "business",
     title: "Sesión de Estrategia de Negocio y Flujo de Caja",
@@ -274,21 +257,6 @@ const CARDS: Card[] = [
     price: price(PRICING.taxCoordination),
     ctaLabel: "Reservar llamada de descubrimiento",
     ctaHref: packageHref("Sesión de Coordinación para Planificación Fiscal"),
-  },
-  {
-    id: "business-specialty",
-    section: "business",
-    title: "Sesión Especializada de Decisión",
-    desc: "Sesión enfocada para decisiones de alto impacto que no encajan en una ruta estándar.",
-    bullets: [
-      "Define una decisión prioritaria",
-      "Evalúa alternativas e implicaciones",
-      "Establece acciones concretas inmediatas",
-    ],
-    tags: ["Especializada", "Asesoría", "Enfocada"],
-    price: price(PRICING.specialtySession),
-    ctaLabel: "Reservar llamada de descubrimiento",
-    ctaHref: packageHref("Sesión Especializada de Decisión"),
   },
 ];
 
