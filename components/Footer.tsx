@@ -7,15 +7,11 @@ import LangSwitcher from "@/components/layout/LangSwitcher";
 type FooterProps = { lang?: "en" | "es" };
 
 const SECT = {
-  signature: "signature",
-  foundations: "foundations",
+  startHere: "start-here",
+  strategicMaps: "strategic-maps",
+  support: "support",
   mortgage: "mortgage",
   business: "business",
-  workshops: "workshops",
-  legacy: "legacy",
-  family: "family",
-  newcomers: "newcomers",
-  advice: "advice",
 } as const;
 
 export default function Footer({ lang = "es" }: FooterProps) {
@@ -32,7 +28,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/about`, label: "About" },
         { href: `${base}/testimonials`, label: "Testimonials" },
         { href: `${base}/contact`, label: "Contact" },
-        { href: `${base}/tax-review`, label: "Tax-review" },
+        { href: `${base}/tax-review`, label: "Tax Review" },
       ]
     : [
         { href: `${base}/servicios`, label: "Servicios" },
@@ -41,32 +37,24 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/sobre-mi`, label: "Sobre mí" },
         { href: `${base}/testimonios`, label: "Testimonios" },
         { href: `${base}/contacto`, label: "Contacto" },
-        { href: `${base}/revision-impuestos`, label: "Revision-Imputestos" },
+        { href: `${base}/revision-impuestos`, label: "Revisión de Impuestos" },
       ];
 
   // Use section IDs that exist in both EN/ES services pages
   const serviceLinks = isEn
     ? [
-        { href: `${base}/services#${SECT.signature}`, label: "Signature Packages" },
-        { href: `${base}/services#${SECT.foundations}`, label: "Wealth Foundations" },
-        { href: `${base}/services#${SECT.mortgage}`, label: "Mortgage & Property" },
-        { href: `${base}/services#${SECT.business}`, label: "Business & Professionals" },
-        { href: `${base}/services#${SECT.workshops}`, label: "Workshops" },
-        { href: `${base}/services#${SECT.legacy}`, label: "Legacy & Tax" },
-        { href: `${base}/services#${SECT.family}`, label: "Holistic Conversations" },
-        { href: `${base}/services#${SECT.advice}`, label: "1:1 Advice" },
-        { href: `${base}/services#${SECT.newcomers}`, label: "Newcomers" },
+        { href: `${base}/services#${SECT.startHere}`, label: "Start Here" },
+        { href: `${base}/services#${SECT.strategicMaps}`, label: "Strategic Financial Maps" },
+        { href: `${base}/services#${SECT.support}`, label: "Supplementary Support" },
+        { href: `${base}/services#${SECT.mortgage}`, label: "Mortgage Strategy" },
+        { href: `${base}/services#${SECT.business}`, label: "Business & Tax" },
       ]
     : [
-        { href: `${base}/servicios#${SECT.signature}`, label: "Paquetes Insignia" },
-        { href: `${base}/servicios#${SECT.foundations}`, label: "Fundamentos de Riqueza" },
-        { href: `${base}/servicios#${SECT.mortgage}`, label: "Hipoteca y Propiedad" },
-        { href: `${base}/servicios#${SECT.business}`, label: "Negocios y Profesionales" },
-        { href: `${base}/servicios#${SECT.workshops}`, label: "Talleres" },
-        { href: `${base}/servicios#${SECT.legacy}`, label: "Legado e Impuestos" },
-        { href: `${base}/servicios#${SECT.family}`, label: "Conversaciones Holísticas" },
-        { href: `${base}/servicios#${SECT.advice}`, label: "Asesoría 1:1" },
-        { href: `${base}/servicios#${SECT.newcomers}`, label: "Recién Llegados" },
+        { href: `${base}/servicios#${SECT.startHere}`, label: "Empieza aquí" },
+        { href: `${base}/servicios#${SECT.strategicMaps}`, label: "Mapas financieros estratégicos" },
+        { href: `${base}/servicios#${SECT.support}`, label: "Apoyo complementario" },
+        { href: `${base}/servicios#${SECT.mortgage}`, label: "Estrategia hipotecaria" },
+        { href: `${base}/servicios#${SECT.business}`, label: "Negocios e impuestos" },
       ];
 
   const linksLegal = [{ href: `${base}/${isEn ? "privacy" : "privacidad"}`, label: isEn ? "Privacy" : "Privacidad" }];
@@ -75,7 +63,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
     <footer className="border-t bg-white">
       {/* Top CTA band */}
       <div className="bg-brand-green text-white">
-        <div className="max-w-content mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm">
             {isEn
               ? "Ready to review your plan? Book a discovery call."
@@ -109,7 +97,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Main footer */}
-      <div className="max-w-content mx-auto px-4 py-12 grid gap-10 lg:grid-cols-4">
+      <div className="max-w-content mx-auto px-5 sm:px-8 py-12 grid gap-10 lg:grid-cols-4">
         {/* Brand / mission */}
         <div>
           <p className="font-serif text-lg font-bold text-brand-green">Fanny Samaniego</p>
@@ -199,7 +187,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Legal line */}
-      <div className="text-[11px] leading-relaxed text-gray-600 px-4 max-w-content mx-auto pb-3">
+      <div className="text-[11px] leading-relaxed text-gray-600 px-5 sm:px-8 max-w-content mx-auto pb-3">
         <p>
           {isEn ? (
             <>
@@ -217,9 +205,11 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Bottom */}
-      <div className="text-xs text-gray-500 text-center py-4 border-t">
-        © {new Date().getFullYear()} Fanny Samaniego •{" "}
-        {isEn ? "All rights reserved." : "Todos los derechos reservados."}
+      <div className="border-t">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-4 text-xs text-gray-500 text-center">
+          © {new Date().getFullYear()} Fanny Samaniego •{" "}
+          {isEn ? "All rights reserved." : "Todos los derechos reservados."}
+        </div>
       </div>
     </footer>
   );
