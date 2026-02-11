@@ -21,6 +21,7 @@ import {
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
+import { HUB_CARD_CLASS, ctaButtonClass } from "@/components/sections/hub";
 
 /* ============================= Section Title ============================= */
 function SectionTitle({
@@ -108,13 +109,13 @@ function AboutInner() {
                 <Link
                   href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
                   aria-label="Book a Private Discovery Call"
-                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border border-brand-green/20 hover:bg-brand-gold hover:text-brand-green transition"
+                  className={ctaButtonClass("primary")}
                 >
                   Book a Private Discovery Call
                 </Link>
                 <Link
                   href="/en/services"
-                  className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
+                  className={ctaButtonClass("secondary")}
                 >
                   Explore Services
                 </Link>
@@ -202,7 +203,7 @@ function AboutInner() {
               },
             ].map((card) => (
               <Reveal key={card.title} variants={fadeUp}>
-                <div className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm">
+                <div className={`${HUB_CARD_CLASS} p-5`}>
                   <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
                     {card.icon}
                     {card.title}
@@ -341,13 +342,13 @@ function AboutInner() {
             <Link
               href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
               aria-label="Book a Private Discovery Call"
-              className="inline-block px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className={ctaButtonClass("primary")}
             >
               Book a Private Discovery Call
             </Link>
             <Link
               href="/en/resources"
-              className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
+              className={ctaButtonClass("secondary")}
             >
               Browse Articles & Tools
             </Link>

@@ -2,12 +2,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import {
-  Reveal,
-  StaggerGroup,
-  useMotionPresets,
-} from "@/components/motion-safe";
+  CardGrid,
+  ComparisonTable,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  InfoCard,
+  OfferCard,
+  PageHero,
+  StickySectionNav,
+} from "@/components/sections/hub";
 
 /* ============================ Pricing (CAD) ============================ */
 const PRICING = {
@@ -42,89 +47,6 @@ function price(p: number | null) {
   return `$${p} CAD`;
 }
 
-/* ================== Shared Components ================== */
-function Panel({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  tint,
-}: {
-  title: string;
-  subtitle?: React.ReactNode;
-  id: string;
-  tint: "green" | "gold";
-}) {
-  const { fade, fadeUp } = useMotionPresets();
-  const accent = tint === "green" ? "bg-brand-green/60" : "bg-brand-gold/60";
-
-  return (
-    <div
-      id={id}
-      className="scroll-mt-[160px] sm:scroll-mt-[170px] md:scroll-mt-[180px] lg:scroll-mt-[190px]"
-    >
-      <div className="text-center mb-6">
-        <Reveal variants={fadeUp}>
-          <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </h2>
-        </Reveal>
-
-        <Reveal variants={fade}>
-          <div className="flex justify-center my-4" aria-hidden="true">
-            <div className={`w-16 h-[3px] rounded-full ${accent}`} />
-          </div>
-        </Reveal>
-
-        {subtitle && (
-          <Reveal variants={fadeUp}>
-            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-              {subtitle}
-            </p>
-          </Reveal>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function PriceBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-sm px-3 py-1 rounded-full bg-brand-gold/15 text-brand-green border border-brand-gold/50">
-      {children}
-    </span>
-  );
-}
-
-function TagBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg p-6 transition hover:-translate-y-[1px] hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
-
 type Intent = "consult" | "preapproval" | "package";
 
 type Card = {
@@ -143,138 +65,42 @@ type Card = {
 };
 
 function PackageCard({ c }: { c: Card }) {
-  const { fadeUp } = useMotionPresets();
   const qs = new URLSearchParams();
   qs.set("intent", c.intent ?? "package");
   qs.set("package", c.title);
+  const bookingCta =
+    c.id === "discovery" ? "Book a Discovery Call" : "Book a Strategy Session";
+
+  const meta = [
+    ...(c.timeline ? [{ label: "Timeline", value: c.timeline }] : []),
+    ...(c.scope ? [{ label: "Scope", value: c.scope }] : []),
+  ];
 
   return (
-    <Reveal variants={fadeUp}>
-      <article className={`${CARD} group`} aria-labelledby={`${c.id}-title`}>
-        <div className="flex items-center justify-between gap-3">
-          <h3
-            id={`${c.id}-title`}
-            className="font-serif text-2xl text-brand-green font-bold m-0"
-          >
-            {c.title}
-          </h3>
-          <PriceBadge>{c.price}</PriceBadge>
-        </div>
-
-        {c.tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {c.tags.map((t) => (
-              <TagBadge key={t}>{t}</TagBadge>
-            ))}
-          </div>
-        )}
-
-        <p className="mt-3 text-brand-blue/90">{c.desc}</p>
-
-        <ul className="mt-3 list-disc pl-5 space-y-1 text-brand-blue/90">
-          {c.bullets.slice(0, 4).map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-
-        {(c.timeline || c.scope) && (
-          <div className="mt-3 text-sm text-brand-blue/80 space-y-1">
-            {c.timeline && (
-              <p className="m-0">
-                <strong>Timeline:</strong> {c.timeline}
-              </p>
-            )}
-            {c.scope && (
-              <p className="m-0">
-                <strong>Scope:</strong> {c.scope}
-              </p>
-            )}
-          </div>
-        )}
-
-        {c.moreHref && c.moreLabel && (
-          <p className="mt-3 text-sm">
-            <Link
-              href={c.moreHref}
-              className="text-brand-blue/90 underline underline-offset-4 hover:text-brand-green"
-            >
-              {c.moreLabel}
-            </Link>
-          </p>
-        )}
-
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link
-            href={`/en/contact?${qs.toString()}`}
-            className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-          >
-            Book a Private Consultation
-          </Link>
-        </div>
-      </article>
-    </Reveal>
+    <OfferCard
+      id={c.id}
+      title={c.title}
+      description={c.desc}
+      bullets={c.bullets.slice(0, 4)}
+      price={c.price}
+      tags={c.tags}
+      meta={meta}
+      more={c.moreHref && c.moreLabel ? { href: c.moreHref, label: c.moreLabel } : undefined}
+      cta={{
+        label: bookingCta,
+        href: `/en/contact?${qs.toString()}`,
+      }}
+    />
   );
 }
-
-/* ====================== Sticky Nav ====================== */
 const SECTIONS = [
-  { id: "signature", label: "Signature Packages" },
-  { id: "coaching", label: "Private Coaching" },
-  { id: "mortgage", label: "Mortgage & Property" },
-  { id: "business", label: "Business & Tax" },
-  { id: "workshops", label: "Workshops & Teams" },
-  { id: "holistic", label: "Holistic & Newcomers" },
+  { id: "start-here", label: "Start Here" },
+  { id: "strategic-maps", label: "Strategic Financial Maps" },
+  { id: "support", label: "Supplementary Support" },
+  { id: "mortgage", label: "Mortgage Strategy" },
+  { id: "business", label: "Business & Tax Strategy" },
   { id: "how", label: "How We Work" },
 ] as const;
-
-function SectionNav() {
-  const [active, setActive] = useState<string>("signature");
-  const refs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-25% 0px -65% 0px", threshold: [0.2, 0.5, 0.8] }
-    );
-
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      refs.current[s.id] = el;
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-      <nav
-        className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm"
-        aria-label="On this page"
-      >
-        {SECTIONS.map((s) => (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className={[
-              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-              active === s.id
-                ? "bg-brand-green text-white border-brand-green"
-                : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-            ].join(" ")}
-          >
-            {s.label}
-          </a>
-        ))}
-      </nav>
-    </div>
-  );
-}
 
 /* ============================= Cards Data ============================= */
 const CARDS: Card[] = [
@@ -673,106 +499,132 @@ const CARDS: Card[] = [
 
 /* ============================= Page ============================= */
 export default function ServicesPage() {
-  const { fade } = useMotionPresets();
-
   const sectionsWithCards = useMemo(() => {
+    const byId = (id: string) => CARDS.find((c) => c.id === id);
     const by = (section: string) => CARDS.filter((c) => c.section === section);
+    const byIds = (ids: string[]) =>
+      ids.map(byId).filter((c): c is Card => Boolean(c));
     return {
-      signature: by("signature"),
-      coaching: [...by("foundations"), ...by("advice")],
+      startHere: byIds(["discovery", "blueprint"]),
+      strategicMaps: by("signature"),
+      supplementarySupport: [
+        ...by("foundations"),
+        ...by("advice").filter((c) => !["discovery", "blueprint"].includes(c.id)),
+        ...by("workshops"),
+        ...by("family"),
+        ...by("newcomers"),
+      ],
       mortgage: by("mortgage"),
       business: [...by("business"), ...by("legacy")],
-      workshops: by("workshops"),
-      holistic: [...by("family"), ...by("newcomers")],
     };
   }, []);
 
   return (
     <main id="main" className="bg-white min-h-screen">
-      {/* ======= Header ======= */}
-      <section className="bg-brand-green/5 border-b border-brand-gold/30">
-        <div className="max-w-content mx-auto px-4 py-10">
-          <nav
-            className="mb-3 text-sm text-brand-blue/80"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/en" className="hover:underline">
-              Home
-            </Link>
-            <span className="mx-2" aria-hidden="true">
-              /
-            </span>
-            <span className="text-brand-green" aria-current="page">
-              Services
-            </span>
-          </nav>
+      <PageHero
+        homeHref="/en"
+        homeLabel="Home"
+        currentLabel="Services"
+        title="Start with clarity, then build your financial strategy"
+        subtitle="Begin with a Discovery Call, choose a focused Strategy Session, and move into tiered Strategic Financial Maps when you are ready for deeper implementation."
+        primaryCta={{
+          label: "Book a Discovery Call",
+          href: "/en/contact?intent=consult&package=Private%20Discovery%20Call",
+        }}
+        secondaryCta={{
+          label: "Explore Strategic Financial Maps",
+          href: "#strategic-maps",
+          variant: "secondary",
+        }}
+      />
 
-          <Reveal variants={fade}>
-            <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
-              Professional services, delivered with care
-            </h1>
-          </Reveal>
+      <StickySectionNav
+        sections={SECTIONS}
+        ariaLabel="On this page"
+        defaultActive="start-here"
+      />
 
-          <Reveal variants={fade}>
-            <p className="mt-2 max-w-3xl text-brand-blue/90">
-              Calm, bilingual support for professionals, families, and business
-              owners in the GTA. Many services are organized in gentle levels
-              (Level 0–3), so you can start where you are and grow at your own
-              pace.
-            </p>
-          </Reveal>
-
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/en/contact?intent=consult&package=Private%20Discovery%20Call"
-              className="inline-flex px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-            >
-              Book a Private Consultation
-            </Link>
-            <Link
-              href="/en/resources#overview"
-              className="inline-flex px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-            >
-              Explore Resources
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <SectionNav />
-
-      {/* ======= 1. Signature Packages ======= */}
-      <div className="bg-brand-green/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="signature"
-            title="Signature Packages"
-            subtitle="Comprehensive, coordinated support for major life and business transitions"
-            tint="green"
-          />
-          <Grid cards={sectionsWithCards.signature} />
-        </Panel>
-      </div>
-
-      {/* ======= 2. Private Coaching & Foundations ======= */}
+      {/* ======= 1. Start Here ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
-            id="coaching"
-            title="Private Coaching & Foundations"
-            subtitle="Orientation, focused blueprints, and multi-session support—organized in gentle levels"
+            id="start-here"
+            title="Start Here: Discovery Call + Strategy Sessions"
+            subtitle="Use these two sessions to set direction quickly, then decide whether to continue with deeper support."
             tint="gold"
           />
-          <Grid cards={sectionsWithCards.coaching} />
+          <Grid cards={sectionsWithCards.startHere} />
         </Panel>
       </div>
 
-      {/* ======= 3. Mortgage & Property Strategy ======= */}
+      {/* ======= 2. Strategic Financial Maps ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
+            id="strategic-maps"
+            title="Strategic Financial Maps"
+            subtitle="Comprehensive, coordinated support for major life and business transitions"
+            tint="green"
+          />
+          <div className="mb-6 grid md:grid-cols-3 gap-4">
+            <InfoCard
+              kicker="Tier 1"
+              title="Focused Direction"
+              description="Clarify one high-stakes priority with a practical implementation path."
+            />
+            <InfoCard
+              kicker="Tier 2"
+              title="Deep Integration"
+              description="Install routines and decision systems across cash-flow, mortgage, and tax."
+            />
+            <InfoCard
+              kicker="Tier 3"
+              title="Premium Transformation"
+              description="Full-spectrum planning and ongoing coordination with your professional team."
+            />
+          </div>
+          <ComparisonTable
+            className="mb-6"
+            columns={["Best for", "Typical depth", "Ideal timeline"]}
+            rows={[
+              {
+                label: "Tier 1",
+                values: ["One priority at a time", "Focused strategy + actions", "2-6 weeks"],
+              },
+              {
+                label: "Tier 2",
+                values: ["System installation", "Cross-functional planning", "8-12 weeks"],
+              },
+              {
+                label: "Tier 3",
+                values: ["Full transformation", "Executive-level coordination", "3-6 months"],
+              },
+            ]}
+            footnote="Timelines vary by scope and documentation readiness."
+          />
+          <Grid cards={sectionsWithCards.strategicMaps} />
+        </Panel>
+      </div>
+
+      {/* ======= 3. Supplementary Support ======= */}
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="support"
+            title="Supplementary Support"
+            subtitle="Private coaching, workshops, and cohorts that reinforce your plan with gentle accountability."
+            tint="gold"
+          />
+          <Grid cards={sectionsWithCards.supplementarySupport} />
+        </Panel>
+      </div>
+
+      {/* ======= 4. Mortgage Strategy ======= */}
+      <div className="bg-gradient-to-b from-brand-green/10 to-white border-y border-brand-gold/20">
+        <Panel className="bg-white/90">
+          <SectionTitle
             id="mortgage"
-            title="Mortgage & Property Strategy"
+            title="Mortgage Strategy"
             subtitle="Confidence from pre-approval to closing—and early steps for 4–10 unit investments"
             tint="green"
           />
@@ -780,7 +632,7 @@ export default function ServicesPage() {
         </Panel>
       </div>
 
-      {/* ======= 4. Business & Tax Strategy ======= */}
+      {/* ======= 5. Business & Tax Strategy ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
@@ -793,33 +645,7 @@ export default function ServicesPage() {
         </Panel>
       </div>
 
-      {/* ======= 5. Workshops & Teams ======= */}
-      <div className="bg-brand-green/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="workshops"
-            title="Workshops & Teams"
-            subtitle="Practical, values-aligned learning—public cohorts and private team sessions"
-            tint="green"
-          />
-          <Grid cards={sectionsWithCards.workshops} />
-        </Panel>
-      </div>
-
-      {/* ======= 6. Holistic Conversations & Newcomers ======= */}
-      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="holistic"
-            title="Holistic Conversations & Newcomers"
-            subtitle="Gentle, step-by-step programs for families, groups, and those new to Canada"
-            tint="gold"
-          />
-          <Grid cards={sectionsWithCards.holistic} />
-        </Panel>
-      </div>
-
-      {/* ======= 7. How We Work ======= */}
+      {/* ======= 6. How We Work ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
@@ -829,33 +655,18 @@ export default function ServicesPage() {
             tint="green"
           />
           <div className="grid md:grid-cols-3 gap-6">
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                1) Discovery
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                A brief, kind conversation. If we’re a fit, you’ll get a short
-                plan and a precise checklist—only what’s needed.
-              </p>
-            </div>
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                2) Plan & Execution
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                We model scenarios, prepare documents, and coordinate steps at a
-                manageable pace. You always know what’s next and why.
-              </p>
-            </div>
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                3) Review & Adjust
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                We confirm outcomes against the plan, note any changes, and set
-                your next check-in. Calm and repeatable.
-              </p>
-            </div>
+            <InfoCard
+              title="1) Discovery"
+              description="A brief, kind conversation. If we’re a fit, you’ll get a short plan and a precise checklist—only what’s needed."
+            />
+            <InfoCard
+              title="2) Plan & Execution"
+              description="We model scenarios, prepare documents, and coordinate steps at a manageable pace. You always know what’s next and why."
+            />
+            <InfoCard
+              title="3) Review & Adjust"
+              description="We confirm outcomes against the plan, note any changes, and set your next check-in. Calm and repeatable."
+            />
           </div>
           <div className="mt-6 text-sm text-brand-blue/80 space-y-2">
             <p>
@@ -895,10 +706,10 @@ function Grid({ cards }: { cards: Card[] }) {
     return <p className="text-brand-blue/70">No services available.</p>;
 
   return (
-    <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <CardGrid>
       {cards.map((c) => (
         <PackageCard key={c.id} c={c} />
       ))}
-    </StaggerGroup>
+    </CardGrid>
   );
 }

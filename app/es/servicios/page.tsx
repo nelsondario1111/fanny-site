@@ -2,12 +2,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import {
-  Reveal,
-  StaggerGroup,
-  useMotionPresets,
-} from "@/components/motion-safe";
+  CardGrid,
+  ComparisonTable,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  InfoCard,
+  OfferCard,
+  PageHero,
+  StickySectionNav,
+} from "@/components/sections/hub";
 
 /* ============================ Precios (CAD) ============================ */
 const PRICING = {
@@ -42,86 +47,6 @@ function price(p: number | null) {
   return `$${p}`;
 }
 
-/* ================== Componentes compartidos ================== */
-function Panel({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  tint,
-}: {
-  title: string;
-  subtitle?: React.ReactNode;
-  id: string;
-  tint: "green" | "gold";
-}) {
-  const { fade, fadeUp } = useMotionPresets();
-  const accent = tint === "green" ? "bg-brand-green/60" : "bg-brand-gold/60";
-  return (
-    <div
-      id={id}
-      className="scroll-mt-[160px] sm:scroll-mt-[170px] md:scroll-mt-[180px] lg:scroll-mt-[190px]"
-    >
-      <div className="text-center mb-6">
-        <Reveal variants={fadeUp}>
-          <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </h2>
-        </Reveal>
-        <Reveal variants={fade}>
-          <div className="flex justify-center my-4" aria-hidden="true">
-            <div className={`w-16 h-[3px] rounded-full ${accent}`} />
-          </div>
-        </Reveal>
-        {subtitle && (
-          <Reveal variants={fadeUp}>
-            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-              {subtitle}
-            </p>
-          </Reveal>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function PriceBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-sm px-3 py-1 rounded-full bg-brand-gold/15 text-brand-green border border-brand-gold/50">
-      {children}
-    </span>
-  );
-}
-
-function TagBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg p-6 transition hover:-translate-y-[1px] hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
-
 type Intent = "consult" | "preapproval" | "package";
 
 type Card = {
@@ -138,119 +63,44 @@ type Card = {
 };
 
 function PackageCard({ c }: { c: Card }) {
-  const { fadeUp } = useMotionPresets();
   const qs = new URLSearchParams();
   qs.set("intent", c.intent ?? "package");
   qs.set("package", c.title);
+  const bookingCta =
+    c.id === "discovery"
+      ? "Reservar llamada de descubrimiento"
+      : "Reservar sesión estratégica";
+
+  const meta = [
+    ...(c.timeline ? [{ label: "Duración", value: c.timeline }] : []),
+    ...(c.scope ? [{ label: "Alcance", value: c.scope }] : []),
+  ];
+
   return (
-    <Reveal variants={fadeUp}>
-      <article className={`${CARD} group`} aria-labelledby={`${c.id}-title`}>
-        <div className="flex items-center justify-between gap-3">
-          <h3
-            id={`${c.id}-title`}
-            className="font-serif text-2xl text-brand-green font-bold m-0"
-          >
-            {c.title}
-          </h3>
-          <PriceBadge>{c.price}</PriceBadge>
-        </div>
-        {c.tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {c.tags.map((t) => (
-              <TagBadge key={t}>{t}</TagBadge>
-            ))}
-          </div>
-        )}
-        <p className="mt-3 text-brand-blue/90">{c.desc}</p>
-        <ul className="mt-3 list-disc pl-5 space-y-1 text-brand-blue/90">
-          {c.bullets.slice(0, 4).map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-        {(c.timeline || c.scope) && (
-          <div className="mt-3 text-sm text-brand-blue/80 space-y-1">
-            {c.timeline && (
-              <p className="m-0">
-                <strong>Duración:</strong> {c.timeline}
-              </p>
-            )}
-            {c.scope && (
-              <p className="m-0">
-                <strong>Alcance:</strong> {c.scope}
-              </p>
-            )}
-          </div>
-        )}
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link
-            href={`/es/contacto?${qs.toString()}`}
-            className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-          >
-            Reservar consulta privada
-          </Link>
-        </div>
-      </article>
-    </Reveal>
+    <OfferCard
+      id={c.id}
+      title={c.title}
+      description={c.desc}
+      bullets={c.bullets.slice(0, 4)}
+      price={c.price}
+      tags={c.tags}
+      meta={meta}
+      cta={{
+        label: bookingCta,
+        href: `/es/contacto?${qs.toString()}`,
+      }}
+    />
   );
 }
 
-/* ====================== Navegación Sticky ====================== */
 const SECTIONS = [
-  { id: "signature", label: "Paquetes Principales" },
-  { id: "coaching", label: "Coaching Privado" },
-  { id: "mortgage", label: "Hipotecas y Propiedades" },
-  { id: "business", label: "Negocios y Tributación" },
-  { id: "workshops", label: "Talleres y Equipos" },
-  { id: "holistic", label: "Conversaciones y Nuevos Residentes" },
+  { id: "start-here", label: "Empieza aquí" },
+  { id: "strategic-maps", label: "Mapas Financieros Estratégicos" },
+  { id: "support", label: "Apoyo Complementario" },
+  { id: "mortgage", label: "Estrategia Hipotecaria" },
+  { id: "business", label: "Estrategia de Negocios e Impuestos" },
   { id: "how", label: "Cómo Trabajamos" },
 ] as const;
-
-function SectionNav() {
-  const [active, setActive] = useState<string>("signature");
-  const refs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-25% 0px -65% 0px", threshold: [0.2, 0.5, 0.8] }
-    );
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      refs.current[s.id] = el;
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-      <nav
-        className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm"
-        aria-label="Navegación de secciones"
-      >
-        {SECTIONS.map((s) => (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className={[
-              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-              active === s.id
-                ? "bg-brand-green text-white border-brand-green"
-                : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-            ].join(" ")}
-          >
-            {s.label}
-          </a>
-        ))}
-      </nav>
-    </div>
-  );
-}
 
 /* ============================= Tarjetas (Servicios) ============================= */
 const CARDS: Card[] = [
@@ -570,112 +420,145 @@ const CARDS: Card[] = [
 
 /* ============================= Página ============================= */
 export default function ServiciosPage() {
-  const { fade } = useMotionPresets();
-
   const sectionsWithCards = useMemo(() => {
+    const byId = (id: string) => CARDS.find((c) => c.id === id);
     const by = (section: string) => CARDS.filter((c) => c.section === section);
+    const byIds = (ids: string[]) =>
+      ids.map(byId).filter((c): c is Card => Boolean(c));
     return {
-      signature: by("signature"),
-      coaching: [...by("foundations"), ...by("advice")],
+      startHere: byIds(["discovery", "blueprint"]),
+      strategicMaps: by("signature"),
+      supplementarySupport: [
+        ...by("foundations"),
+        ...by("advice").filter((c) => !["discovery", "blueprint"].includes(c.id)),
+        ...by("workshops"),
+        ...by("family"),
+        ...by("newcomers"),
+      ],
       mortgage: by("mortgage"),
       business: [...by("business"), ...by("legacy")],
-      workshops: by("workshops"),
-      holistic: [...by("family"), ...by("newcomers")],
     };
   }, []);
 
   return (
     <main id="main" className="bg-white min-h-screen">
-      {/* ======= Encabezado ======= */}
-      <section className="bg-brand-green/5 border-b border-brand-gold/30">
-        <div className="max-w-content mx-auto px-4 py-10">
-          <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Ruta">
-            <Link href="/es" className="hover:underline">
-              Inicio
-            </Link>
-            <span className="mx-2" aria-hidden="true">
-              /
-            </span>
-            <span className="text-brand-green" aria-current="page">
-              Servicios
-            </span>
-          </nav>
+      <PageHero
+        homeHref="/es"
+        homeLabel="Inicio"
+        currentLabel="Servicios"
+        title="Empieza con claridad y luego construye tu estrategia financiera"
+        subtitle="Comienza con una llamada de descubrimiento, elige una sesión estratégica enfocada y avanza a Mapas Financieros Estratégicos cuando estés listo para una implementación más profunda."
+        primaryCta={{
+          label: "Reservar llamada de descubrimiento",
+          href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento",
+        }}
+        secondaryCta={{
+          label: "Explorar mapas financieros estratégicos",
+          href: "#strategic-maps",
+          variant: "secondary",
+        }}
+      />
 
-          <Reveal variants={fade}>
-            <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
-              Servicios profesionales, ofrecidos con cuidado
-            </h1>
-          </Reveal>
+      <StickySectionNav
+        sections={SECTIONS}
+        ariaLabel="Navegación de secciones"
+        defaultActive="start-here"
+      />
 
-          <Reveal variants={fade}>
-            <p className="mt-2 max-w-3xl text-brand-blue/90">
-              Apoyo bilingüe para profesionales, familias y empresarios del GTA.
-              Combinamos precisión con un ritmo humano, para que cada decisión
-              sea clara y amable.
-            </p>
-          </Reveal>
-
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento"
-              className="inline-flex px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition"
-            >
-              Reservar consulta privada
-            </Link>
-            <Link
-              href="/es/recursos#overview"
-              className="inline-flex px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition"
-            >
-              Explorar recursos
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <SectionNav />
-
-      {/* ======= Secciones (idénticas al inglés, alternando fondos) ======= */}
-      <div className="bg-brand-green/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="signature"
-            title="Paquetes Principales"
-            subtitle="Acompañamiento integral para transiciones financieras y empresariales"
-            tint="green"
-          />
-          <Grid cards={sectionsWithCards.signature} />
-        </Panel>
-      </div>
-
+      {/* ======= 1. Empieza Aquí ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
-            id="coaching"
-            title="Coaching Privado y Fundamentos"
-            subtitle="Claridad y enfoque mediante sesiones personalizadas 1:1"
+            id="start-here"
+            title="Empieza Aquí: Llamada de descubrimiento + sesiones estratégicas"
+            subtitle="Empieza con estas dos sesiones para definir dirección y decidir con confianza el siguiente nivel de apoyo."
             tint="gold"
           />
-          <Grid cards={sectionsWithCards.coaching} />
+          <Grid cards={sectionsWithCards.startHere} />
         </Panel>
       </div>
 
+      {/* ======= 2. Mapas Financieros Estratégicos ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
+            id="strategic-maps"
+            title="Mapas Financieros Estratégicos"
+            subtitle="Acompañamiento integral y coordinado para transiciones financieras y empresariales clave"
+            tint="green"
+          />
+          <div className="mb-6 grid md:grid-cols-3 gap-4">
+            <InfoCard
+              kicker="Nivel 1"
+              title="Dirección Enfocada"
+              description="Aclara una prioridad de alto impacto con una ruta práctica de implementación."
+            />
+            <InfoCard
+              kicker="Nivel 2"
+              title="Integración Profunda"
+              description="Instala sistemas de decisión y rutinas en flujo de caja, estrategia hipotecaria e impuestos."
+            />
+            <InfoCard
+              kicker="Nivel 3"
+              title="Transformación Premium"
+              description="Planificación completa y coordinación continua con tu equipo de profesionales."
+            />
+          </div>
+          <ComparisonTable
+            className="mb-6"
+            columns={["Ideal para", "Profundidad típica", "Horizonte sugerido"]}
+            rows={[
+              {
+                label: "Nivel 1",
+                values: ["Una prioridad puntual", "Estrategia enfocada + acciones", "2-6 semanas"],
+              },
+              {
+                label: "Nivel 2",
+                values: ["Instalar sistemas", "Planificación transversal", "8-12 semanas"],
+              },
+              {
+                label: "Nivel 3",
+                values: ["Transformación integral", "Coordinación ejecutiva continua", "3-6 meses"],
+              },
+            ]}
+            footnote="Los tiempos pueden variar según alcance y preparación documental."
+          />
+          <Grid cards={sectionsWithCards.strategicMaps} />
+        </Panel>
+      </div>
+
+      {/* ======= 3. Apoyo Complementario ======= */}
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="support"
+            title="Apoyo Complementario"
+            subtitle="Coaching privado, talleres y cohortes para reforzar tu estrategia con acompañamiento práctico."
+            tint="gold"
+          />
+          <Grid cards={sectionsWithCards.supplementarySupport} />
+        </Panel>
+      </div>
+
+      {/* ======= 4. Estrategia Hipotecaria ======= */}
+      <div className="bg-gradient-to-b from-brand-green/10 to-white border-y border-brand-gold/20">
+        <Panel className="bg-white/90">
+          <SectionTitle
             id="mortgage"
-            title="Hipotecas y Propiedades"
-            subtitle="Confianza desde la preaprobación hasta el cierre"
+            title="Estrategia Hipotecaria"
+            subtitle="Confianza desde la preaprobación hasta el cierre, incluyendo primeros pasos en inversión de 4–10 unidades"
             tint="green"
           />
           <Grid cards={sectionsWithCards.mortgage} />
         </Panel>
       </div>
 
+      {/* ======= 5. Estrategia de Negocios e Impuestos ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
             id="business"
-            title="Negocios y Tributación"
+            title="Estrategia de Negocios e Impuestos"
             subtitle="Claridad ejecutiva y ritmos tributarios predecibles para dueños y profesionales"
             tint="gold"
           />
@@ -683,31 +566,7 @@ export default function ServiciosPage() {
         </Panel>
       </div>
 
-      <div className="bg-brand-green/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="workshops"
-            title="Talleres y Equipos"
-            subtitle="Aprendizaje práctico y alineado con valores, para individuos y organizaciones"
-            tint="green"
-          />
-          <Grid cards={sectionsWithCards.workshops} />
-        </Panel>
-      </div>
-
-      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
-        <Panel>
-          <SectionTitle
-            id="holistic"
-            title="Conversaciones Holísticas y Nuevos Residentes"
-            subtitle="Programas suaves y paso a paso para familias y recién llegados a Canadá"
-            tint="gold"
-          />
-          <Grid cards={sectionsWithCards.holistic} />
-        </Panel>
-      </div>
-
-      {/* ======= Cómo Trabajamos ======= */}
+      {/* ======= 6. Cómo Trabajamos ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
@@ -717,33 +576,18 @@ export default function ServiciosPage() {
             tint="green"
           />
           <div className="grid md:grid-cols-3 gap-6">
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                1) Descubrimiento
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                Conversación inicial amable. Si encajamos, recibirás un mini
-                plan y checklist preciso, sin carga innecesaria.
-              </p>
-            </div>
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                2) Plan y Ejecución
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                Modelamos escenarios, preparamos documentos y coordinamos cada
-                paso a un ritmo manejable. Siempre sabrás qué sigue y por qué.
-              </p>
-            </div>
-            <div className={CARD}>
-              <h3 className="font-serif text-xl text-brand-green font-bold">
-                3) Revisión y Ajuste
-              </h3>
-              <p className="mt-2 text-brand-blue/90">
-                Confirmamos resultados, registramos cambios y programamos tu
-                próxima revisión. Calma y consistencia.
-              </p>
-            </div>
+            <InfoCard
+              title="1) Descubrimiento"
+              description="Conversación inicial amable. Si encajamos, recibirás un mini plan y checklist preciso, sin carga innecesaria."
+            />
+            <InfoCard
+              title="2) Plan y Ejecución"
+              description="Modelamos escenarios, preparamos documentos y coordinamos cada paso a un ritmo manejable. Siempre sabrás qué sigue y por qué."
+            />
+            <InfoCard
+              title="3) Revisión y Ajuste"
+              description="Confirmamos resultados, registramos cambios y programamos tu próxima revisión. Calma y consistencia."
+            />
           </div>
 
           <div className="mt-6 text-sm text-brand-blue/80 space-y-2">
@@ -784,10 +628,10 @@ function Grid({ cards }: { cards: Card[] }) {
   if (!cards.length)
     return <p className="text-brand-blue/70">No hay servicios disponibles.</p>;
   return (
-    <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <CardGrid>
       {cards.map((c) => (
         <PackageCard key={c.id} c={c} />
       ))}
-    </StaggerGroup>
+    </CardGrid>
   );
 }

@@ -3,8 +3,17 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import type { Variants, Easing, Transition } from "framer-motion";
+import { motion } from "framer-motion";
+import {
+  ComparisonTable,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  HubTagBadge as TagBadge,
+  InfoCard,
+  PageHero,
+  StickySectionNav,
+  HUB_CARD_CLASS,
+} from "@/components/sections/hub";
 
 /* =============================== Types =============================== */
 export type ClientArticle = {
@@ -43,98 +52,7 @@ type PersonaIndex = {
   slugs: (string | undefined)[];
 };
 
-/* ============================ Motion helpers ============================ */
-const easing: Easing = [0.22, 1, 0.36, 1];
-
-function useAnims() {
-  const prefersReduced = useReducedMotion();
-
-  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
-  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
-
-  const fade: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: base },
-  };
-
-  const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: baseUp },
-  };
-
-  return { fade, fadeUp };
-}
-
-/* ============================== Shared UI ============================== */
-function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  level = "h2",
-}: {
-  title: string;
-  subtitle?: React.ReactNode;
-  id: string;
-  level?: "h1" | "h2";
-}) {
-  const { fade, fadeUp } = useAnims();
-  return (
-    <div id={id} className="scroll-mt-24">
-      <motion.div
-        variants={fade}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="text-center mb-6"
-      >
-        <motion.div variants={fadeUp}>
-          {level === "h1" ? (
-            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h1>
-          ) : (
-            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h2>
-          )}
-        </motion.div>
-        <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
-          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-        </motion.div>
-        {subtitle && (
-          <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-            {subtitle}
-          </motion.p>
-        )}
-      </motion.div>
-    </div>
-  );
-}
-
-function TagBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+const CARD = HUB_CARD_CLASS;
 
 /* ============================== Utilities ============================== */
 const parseDate = (d?: string | Date | null) => {
@@ -465,75 +383,94 @@ export default function ResourcesClient({
     quickKeys.size > 0 ||
     drawerSelectedTags.size > 0;
 
+  const categorySummary = React.useMemo(() => {
+    const counts = new Map<string, number>();
+    articles.forEach((article) => {
+      const key = (article.category || "Guides").trim() || "Guides";
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    });
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6);
+  }, [articles]);
+
+  const featuredArticles = React.useMemo(() => {
+    const defaults = [
+      "5-steps-to-financial-freedom",
+      "smart-money-newcomers-canada-2025",
+      "wealth-with-confidence-women-toronto-2025",
+      "buying-your-first-multi-unit-property",
+      "rent-vs-buy-toronto-2025",
+    ];
+    const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
+      articles.some((article) => article.slug === slug)
+    );
+    const bySlug = new Map(articles.map((article) => [article.slug, article]));
+    return chosen.map((slug) => bySlug.get(slug)).filter((article): article is ClientArticle => Boolean(article));
+  }, [articles, featuredSlugs]);
+
   /* ------------------------------ Section Nav ------------------------------ */
   const SECTIONS = [
-    { id: "overview", label: "Overview" },
-    { id: "featured", label: "Featured" },
+    { id: "start-here", label: "Start Here" },
+    { id: "categories", label: "Categories" },
     { id: "browse", label: "Browse All" },
     { id: "faq", label: "How to Use & FAQ" },
   ] as const;
 
-  function SectionNav() {
-    const [active, setActive] = React.useState<string>("overview");
-    React.useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((e) => e.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          if (visible[0]) setActive(visible[0].target.id);
-        },
-        { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
-      );
-      SECTIONS.forEach((s) => {
-        const el = document.getElementById(s.id);
-        if (el) observer.observe(el);
-      });
-      return () => observer.disconnect();
-    }, []);
-    return (
-      <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-        <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="On this page">
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className={[
-                "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-                active === s.id
-                  ? "bg-brand-green text-white border-brand-green"
-                  : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-              ].join(" ")}
-            >
-              {s.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-    );
-  }
-
   /* --------------------------------- Render --------------------------------- */
   return (
-    <main className="bg-brand-beige min-h-screen pb-16">
-      <SectionNav />
+    <main className="bg-white min-h-screen pb-16">
+      <PageHero
+        homeHref="/en"
+        homeLabel="Home"
+        currentLabel="Resources"
+        title="Helpful Articles & Guides"
+        subtitle="Short, practical reads on mortgages, money behavior, and tax basics for busy professionals and families."
+        primaryCta={{ label: "Book a Discovery Call", href: ctaHref }}
+        secondaryCta={{ label: "Get the Newsletter", href: newsletterHref, variant: "secondary" }}
+      />
+      <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
 
-      {/* HERO / OVERVIEW */}
-      <section id="overview" className="pt-10 px-4 scroll-mt-24">
+      {/* START HERE */}
+      <section id="start-here" className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}>
+          <Panel className="bg-white">
+            <SectionTitle
+              id="start-here-title"
+              title="Start Here"
+              subtitle="Curated primers for common journeys"
+              tint="green"
+            />
+            {featuredArticles.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {featuredArticles.map((article) => (
+                  <ArticleCard
+                    key={`feat-${article.slug}`}
+                    article={article}
+                    saved={savedSlugs.has(article.slug)}
+                    onToggleSave={() => toggleSave(article.slug)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-brand-blue/80 text-center">
+                Featured resources will appear here soon. Use filters below to browse the full library.
+              </p>
+            )}
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* CATEGORIES / FILTERS */}
+      <section className="px-4 mt-8 scroll-mt-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
           <Panel>
             <SectionTitle
-              title="Helpful Articles & Guides"
-              subtitle={<>Short, practical reads on mortgages, money behaviour, and tax basics—written for busy professionals and families. Save what you need, share links, and reach out whenever you want a personal plan.</>}
-              id="overview"
-              level="h1"
+              title="Categories & Filters"
+              subtitle={<>Use personas, goals, and tags to narrow your path, then explore by category.</>}
+              id="categories"
+              tint="gold"
             />
-
-            {/* CTAs */}
-            <div className="mt-2 flex flex-wrap items-center gap-3 justify-center">
-              <Link href={ctaHref} className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition">Talk to Fanny</Link>
-              <Link href={newsletterHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Get the Newsletter</Link>
-            </div>
 
             {/* Personas */}
             <div className="mt-6 flex flex-wrap gap-2 justify-center">
@@ -655,43 +592,61 @@ export default function ResourcesClient({
                 })}
               </div>
             </div>
+
+            <div className="mt-8">
+              <SectionTitle
+                id="category-summary"
+                title="Category Snapshot"
+                subtitle="Quickly scan where the most content sits before you browse everything."
+                tint="green"
+              />
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categorySummary.map(([name, count]) => (
+                  <InfoCard
+                    key={name}
+                    title={name}
+                    description={`${count} ${count === 1 ? "resource" : "resources"}`}
+                  >
+                    <div className="mt-4">
+                      <Link
+                        href="#browse"
+                        className="inline-flex items-center rounded-full px-4 py-2 text-sm border border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                      >
+                        Open in Browse
+                      </Link>
+                    </div>
+                  </InfoCard>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <ComparisonTable
+                columns={["Best for", "Typical time", "Depth"]}
+                rows={[
+                  {
+                    label: "Guides",
+                    values: ["Learning fundamentals", "5-12 min", "Foundational"],
+                  },
+                  {
+                    label: "Checklists",
+                    values: ["Action planning", "8-15 min", "Practical steps"],
+                  },
+                  {
+                    label: "Explainers",
+                    values: ["Clarifying one concept", "4-8 min", "Focused"],
+                  },
+                  {
+                    label: "Deep Dives",
+                    values: ["Complex decisions", "10-18 min", "Detailed analysis"],
+                  },
+                ]}
+                footnote="Formats vary by topic; use filters and personas to narrow your path."
+              />
+            </div>
           </Panel>
         </motion.div>
       </section>
-
-      {/* FEATURED */}
-      {(() => {
-        const defaults = [
-          "5-steps-to-financial-freedom",
-          "smart-money-newcomers-canada-2025",
-          "wealth-with-confidence-women-toronto-2025",
-          "buying-your-first-multi-unit-property",
-          "rent-vs-buy-toronto-2025",
-        ];
-        const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
-          articles.some((a) => a.slug === slug)
-        );
-        const map = new Map(articles.map((a) => [a.slug, a]));
-        const featured = chosen.map((s) => map.get(s)!).filter(Boolean);
-
-        return featured.length > 0 ? (
-          <section id="featured" className="px-4 mt-8 scroll-mt-24">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}>
-              <Panel className="bg-white">
-                <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="font-serif text-2xl text-brand-green font-bold">Start here</h2>
-                  <span className="text-sm text-brand-body/70">Curated primers for common journeys</span>
-                </div>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {featured.map((a) => (
-                    <ArticleCard key={`feat-${a.slug}`} article={a} saved={savedSlugs.has(a.slug)} onToggleSave={() => toggleSave(a.slug)} />
-                  ))}
-                </div>
-              </Panel>
-            </motion.div>
-          </section>
-        ) : null;
-      })()}
 
       {/* RESULTS */}
       <section id="browse" className="px-4 mt-8 scroll-mt-24">
@@ -756,24 +711,41 @@ export default function ResourcesClient({
       <section id="faq" className="px-4 mt-8 scroll-mt-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.18 }}>
           <Panel>
-            <SectionTitle title="How to Use & FAQ" subtitle="Quick tips on search, saving articles, printing, and sharing." id="faq" />
+            <SectionTitle
+              title="How to Use & FAQ"
+              subtitle="Quick tips on search, saving articles, printing, and sharing."
+              id="faq"
+              tint="green"
+            />
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Search & Filter</h3>
-                <p className="text-brand-blue/90 text-sm">Use the search box, choose a persona, and apply a couple of quick filters. Tap <em>More filters</em> for the full list.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Save for Later</h3>
-                <p className="text-brand-blue/90 text-sm">Tap <strong>Save</strong> on any article to keep it handy on this device.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Share</h3>
-                <p className="text-brand-blue/90 text-sm">Send a link with the <strong>Share</strong> button—uses your device’s native share.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Talk to Fanny</h3>
-                <p className="text-brand-blue/90 text-sm">Ready for a personal plan? Use the green button above to book a private consultation.</p>
-              </div>
+              <InfoCard
+                title="Search & Filter"
+                description={
+                  <>
+                    Use the search box, choose a persona, and apply a couple of quick filters. Tap <em>More filters</em> for the full list.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Save for Later"
+                description={
+                  <>
+                    Tap <strong>Save</strong> on any article to keep it handy on this device.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Share"
+                description={
+                  <>
+                    Send a link with the <strong>Share</strong> button-uses your device’s native share.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Talk to Fanny"
+                description="Ready for a personal plan? Use the green button above to book a private consultation."
+              />
             </div>
           </Panel>
         </motion.div>

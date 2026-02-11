@@ -5,6 +5,7 @@ import React from "react";
 import Link from "next/link";
 import ContactoForm from "./ContactoForm";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
+import { HUB_TABLE_CLASS, PageHero, ctaButtonClass } from "@/components/sections/hub";
 
 /* --- Desvanecido sutil, seguro para SSR (nunca oculta contenido) --- */
 const easing: Transition["ease"] = [0.22, 1, 0.36, 1];
@@ -47,56 +48,21 @@ function Panel({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={[
-        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
+  return <div className={[HUB_TABLE_CLASS, className].join(" ")}>{children}</div>;
 }
 
 export default function Contacto() {
   return (
     <main className="bg-brand-beige min-h-screen">
-      {/* Hero (estilizado como otros paneles para consistencia) */}
-      <section className="px-4 pt-12">
-        <div className="max-w-5xl mx-auto">
-          <FadeIn>
-            <Panel className="px-6 sm:px-10 py-10 text-center">
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green tracking-tight">
-                Conectemos y transforma tu vida financiera
-              </h1>
-              <div className="flex justify-center my-5" aria-hidden="true">
-                <div className="w-20 h-[3px] rounded-full bg-brand-gold" />
-              </div>
-              <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-                Reserva una llamada de descubrimiento o cuéntanos en qué estás trabajando.
-                Te responderemos pronto con próximos pasos claros.
-              </p>
-
-              <div className="mt-6 flex items-center justify-center gap-3">
-                {/* Atajo; el formulario también preselecciona según ?package= */}
-                <Link
-                  href="/es/reservar"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold shadow bg-brand-green text-white hover:opacity-90 transition"
-                >
-                  Reservar llamada gratuita
-                </Link>
-                <a
-                  href="mailto:info@fannysamaniego.com"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
-                >
-                  Escribir un email
-                </a>
-              </div>
-            </Panel>
-          </FadeIn>
-        </div>
-      </section>
+      <PageHero
+        homeHref="/es"
+        homeLabel="Inicio"
+        currentLabel="Contacto"
+        title="Conectemos y transforma tu vida financiera"
+        subtitle="Reserva una llamada de descubrimiento o cuéntanos en qué estás trabajando. Te responderemos pronto con próximos pasos claros."
+        primaryCta={{ label: "Reservar llamada gratuita", href: "/es/reservar" }}
+        secondaryCta={{ label: "Escribir un email", href: "mailto:info@fannysamaniego.com", variant: "secondary" }}
+      />
 
       {/* Grid de contenido */}
       <section className="px-4 py-10">
@@ -200,7 +166,7 @@ export default function Contacto() {
                 <div className="mt-6">
                   <Link
                     href="/es/testimonios"
-                    className="inline-flex items-center rounded-full border bg-white px-4 py-2 text-sm font-medium text-brand-green border-brand-green hover:bg-brand-green hover:text-white transition"
+                    className={ctaButtonClass("secondary")}
                   >
                     Leer historias de clientes →
                   </Link>

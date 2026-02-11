@@ -2,15 +2,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import type { JSX as JSXNS } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 // ✅ Primitivas de animación seguras para hidratar
+import { Reveal, useMotionPresets } from "@/components/motion-safe";
 import {
-  Reveal,
-  StaggerGroup,
-  useMotionPresets,
-} from "@/components/motion-safe";
+  CardGrid,
+  ComparisonTable,
+  ctaButtonClass,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  HubTagBadge as TagBadge,
+  InfoCard,
+  PageHero,
+  StickySectionNav,
+  HUB_CARD_CLASS,
+} from "@/components/sections/hub";
 
 import {
   FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
@@ -19,66 +26,7 @@ import {
 } from "react-icons/fa";
 
 /* ============================== UI compartida ============================== */
-function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  level = "h2",
-}: {
-  title: string;
-  subtitle?: ReactNode;
-  id: string;
-  level?: "h1" | "h2";
-}) {
-  const Tag: keyof JSXNS.IntrinsicElements = level;
-  const { fade } = useMotionPresets();
-  return (
-    <div id={id} className="scroll-mt-24">
-      <div className="text-center mb-6">
-        <Reveal variants={fade}>
-          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </Tag>
-        </Reveal>
-        <Reveal variants={fade}>
-          <div className="flex justify-center my-4" aria-hidden="true">
-            <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-          </div>
-        </Reveal>
-        {subtitle && (
-          <Reveal variants={fade}>
-            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
-          </Reveal>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TagBadge({ children }: { children: ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+const CARD = HUB_CARD_CLASS;
 
 /* ============================== Modelo de datos ============================== */
 type Categoria =
@@ -106,11 +54,11 @@ type ToolItem = {
 
 /* ================================ Botones ================================ */
 const ButtonPrimary =
-  "px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition";
+  ctaButtonClass("primary");
 const ButtonGhost =
-  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition";
+  ctaButtonClass("secondary");
 const ButtonGhostGold =
-  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition";
+  ctaButtonClass("ghost");
 
 /* ================================ Herramientas ================================ */
 const TOOLS: ToolItem[] = [
@@ -436,6 +384,8 @@ function matchesQuery(t: ToolItem, q: string) {
 
 /* ======================== Subnavegación pegajosa ======================== */
 const SECTIONS = [
+  { id: "start-here", label: "Empieza aquí" },
+  { id: "compare", label: "Guía de herramientas" },
   { id: "resumen", label: "Resumen" },
   { id: "hipoteca", label: "Hipoteca" },
   { id: "planificacion", label: "Planificación" },
@@ -444,52 +394,6 @@ const SECTIONS = [
   { id: "utilidades", label: "Utilidades" },
   { id: "faq", label: "Cómo usar & Preguntas" },
 ] as const;
-
-function SectionNav() {
-  const [active, setActive] = useState<string>("resumen");
-  const refs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
-    );
-
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      refs.current[s.id] = el;
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-      <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="En esta página">
-        {SECTIONS.map((s) => (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className={[
-              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-              active === s.id
-                ? "bg-brand-green text-white border-brand-green"
-                : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-            ].join(" ")}
-            aria-current={active === s.id ? "true" : undefined}
-          >
-            {s.label}
-          </a>
-        ))}
-      </nav>
-    </div>
-  );
-}
 
 /* ============================== Tarjetas / Grilla ============================== */
 function ToolCard({ t }: { t: ToolItem }) {
@@ -542,11 +446,11 @@ function ToolsGrid({ items }: { items: ToolItem[] }) {
     return <p className="text-brand-blue/70">No hay herramientas que coincidan con los filtros.</p>;
   }
   return (
-    <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <CardGrid>
       {items.map((t) => (
         <ToolCard key={t.id} t={t} />
       ))}
-    </StaggerGroup>
+    </CardGrid>
   );
 }
 
@@ -580,80 +484,121 @@ export default function ToolsPage() {
 
   const handlePrint = () => window.print();
 
-  const { fade } = useMotionPresets();
+  const startHereTools = useMemo(() => {
+    const ids = [
+      "asequibilidad-hipotecaria",
+      "costos-cierre",
+      "calculadora-presupuesto",
+      "seguimiento-patrimonio-neto",
+      "preparacion-impuestos",
+      "preparacion-hipoteca",
+    ];
+    return ids
+      .map((id) => TOOLS.find((tool) => tool.id === id))
+      .filter((tool): tool is ToolItem => Boolean(tool));
+  }, []);
 
   return (
     <main id="main" className="bg-white min-h-screen">
-      {/* Encabezado de marca */}
-      <section className="bg-brand-green/5 border-b border-brand-gold/30">
-        <div className="max-w-content mx-auto px-4 py-10">
-          <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Miga de pan">
-            <a href="/es" className="hover:underline">Inicio</a>
-            <span className="mx-2">/</span>
-            <span className="text-brand-green">Herramientas</span>
-          </nav>
-
-          <Reveal variants={fade}>
-            <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
-              Herramientas para tu bienestar financiero
-            </h1>
-          </Reveal>
-          <Reveal variants={fade}>
-            <p className="mt-2 max-w-3xl text-brand-blue/90">
-              Calculadoras y plantillas prácticas y bilingües—privadas, fáciles de usar y diseñadas para ayudarte a decidir alineado con tus valores (sin registro).
-            </p>
-          </Reveal>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Link
-              href="/es/contacto?intent=consult"
-              className={ButtonPrimary}
-              aria-label="Reservar una consulta privada"
-            >
-              Reservar consulta privada
-            </Link>
-            <button
-              onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
-              className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
-              title={listMode === "grid" ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
-              type="button"
-            >
-              {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />} {listMode === "grid" ? "Lista" : "Cuadrícula"}
-            </button>
-            <button
-              onClick={handlePrint}
-              className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-              title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
-              type="button"
-            >
-              <FaPrint aria-hidden /> Imprimir / Guardar PDF
-            </button>
-          </div>
-
-          {/* Chips de confianza */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaShieldAlt className="text-brand-gold" aria-hidden /> Privadas
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaCheckCircle className="text-brand-gold" aria-hidden /> Gratuitas
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingües
-            </span>
-          </div>
+      <PageHero
+        homeHref="/es"
+        homeLabel="Inicio"
+        currentLabel="Herramientas"
+        title="Herramientas para tu bienestar financiero"
+        subtitle="Calculadoras y plantillas prácticas y bilingües para decidir con claridad y avanzar con confianza."
+        primaryCta={{
+          label: "Reservar llamada de descubrimiento",
+          href: "/es/contacto?intent=consult",
+        }}
+        secondaryCta={{
+          label: "Explorar recursos",
+          href: "/es/recursos",
+          variant: "secondary",
+        }}
+      >
+        <div className="mt-5 flex flex-wrap gap-2">
+          <button
+            onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
+            className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
+            title={listMode === "grid" ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
+            type="button"
+          >
+            {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
+            {listMode === "grid" ? "Lista" : "Cuadrícula"}
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+            title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
+            type="button"
+          >
+            <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          </button>
         </div>
-      </section>
 
-      {/* Subnavegación pegajosa */}
-      <SectionNav />
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaShieldAlt className="text-brand-gold" aria-hidden /> Privadas
+          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaCheckCircle className="text-brand-gold" aria-hidden /> Gratuitas
+          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingues
+          </span>
+        </div>
+      </PageHero>
 
-      {/* Resumen: Búsqueda + Filtros */}
-      <Panel>
+      <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="start-here"
+            title="Empieza aqui: Herramientas clave"
+            subtitle="El camino mas rapido para claridad en hipoteca, flujo, preparacion e impuestos."
+            tint="gold"
+          />
+          <ToolsGrid items={startHereTools} />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="compare"
+            title="Guia por tipo de herramienta"
+            subtitle="Usa esta tabla para elegir rapido el formato que mejor te sirve."
+            tint="green"
+          />
+          <ComparisonTable
+            columns={["Ideal para", "Resultado", "Tiempo estimado"]}
+            rows={[
+              {
+                label: "Calculadoras",
+                values: ["Escenarios y decisiones", "Numeros y supuestos en vivo", "2-8 minutos"],
+              },
+              {
+                label: "Plantillas",
+                values: ["Organizar documentos y rutinas", "Archivos descargables y checklist", "10-25 minutos"],
+              },
+              {
+                label: "Utilidades",
+                values: ["Acompanamiento guiado", "Recomendaciones y siguientes pasos", "3-10 minutos"],
+              },
+            ]}
+            footnote="Todas las herramientas son educativas y pueden complementarse con una sesion estrategica."
+          />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
         <SectionTitle
           id="resumen"
           title="Encuentra la herramienta adecuada"
           subtitle="Busca por palabra clave, filtra por tipo o acota por categoría."
+          tint="gold"
         />
         <div className="grid gap-4">
           {/* Búsqueda */}
@@ -724,85 +669,99 @@ export default function ToolsPage() {
             )}
           </div>
         </div>
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Hipoteca */}
-      <Panel className="mt-8">
-        <SectionTitle id="hipoteca" title="Hipoteca" subtitle="Costos de cierre, pago inicial, seguro y calificación" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="hipoteca" title="Hipoteca" subtitle="Costos de cierre, pago inicial, seguro y calificación" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.hipoteca} />
         ) : (
           <ListBlock items={grouped.hipoteca} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Planificación */}
-      <Panel className="mt-8">
-        <SectionTitle id="planificacion" title="Planificación" subtitle="Pagos, amortización, penalidades, *refi* y alquilar vs comprar" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="planificacion" title="Planificación" subtitle="Pagos, amortización, penalidades, *refi* y alquilar vs comprar" tint="gold" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.planificacion} />
         ) : (
           <ListBlock items={grouped.planificacion} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Inversionistas */}
-      <Panel className="mt-8">
-        <SectionTitle id="inversionistas" title="Inversionistas" subtitle="Flujo de caja, DSCR y valoración" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="inversionistas" title="Inversionistas" subtitle="Flujo de caja, DSCR y valoración" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.inversionistas} />
         ) : (
           <ListBlock items={grouped.inversionistas} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Plantillas */}
-      <Panel className="mt-8">
-        <SectionTitle id="plantillas" title="Plantillas" subtitle="Presupuestos, preparación de hipoteca e impuestos y multiplex" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="plantillas" title="Plantillas" subtitle="Presupuestos, preparación de hipoteca e impuestos y multiplex" tint="gold" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.plantillas} />
         ) : (
           <ListBlock items={grouped.plantillas} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Utilidades */}
-      <Panel className="mt-8">
-        <SectionTitle id="utilidades" title="Utilidades" subtitle="Asistente y herramientas de apoyo" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="utilidades" title="Utilidades" subtitle="Asistente y herramientas de apoyo" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.utilidades} />
         ) : (
           <ListBlock items={grouped.utilidades} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Cómo usar & Preguntas */}
-      <Panel className="mt-8">
-        <SectionTitle id="faq" title="Cómo usamos estas herramientas" subtitle="Privadas, educativas y bilingües" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="faq" title="Cómo usamos estas herramientas" subtitle="Privadas, educativas y bilingües" tint="gold" />
         <div className="grid md:grid-cols-2 gap-6">
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">Qué esperar</h3>
-            <p className="mt-2 text-brand-blue/90">
-              Estas herramientas corren en tu navegador, no requieren cuenta. Los archivos exportados se guardan localmente por ti.
-            </p>
+          <InfoCard
+            title="Que esperar"
+            description="Estas herramientas corren en tu navegador, no requieren cuenta. Los archivos exportados se guardan localmente por ti."
+          >
             <p className="mt-2 text-brand-blue/90">
               Podemos adaptar una herramienta a tu situación o guiarte a la adecuada durante una llamada de descubrimiento.
             </p>
-          </div>
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">Avisos</h3>
+          </InfoCard>
+          <InfoCard
+            title="Avisos"
+            description={
+              <>
+                Herramientas educativas-<em>no</em> constituyen asesoria de inversion, legal ni fiscal. Reglas hipotecarias alineadas con Canada 2025 (stress test, CMHC y LTT ON/Toronto).
+              </>
+            }
+          >
             <p className="mt-2 text-brand-blue/90">
-              Herramientas educativas—<em>no</em> constituyen asesoría de inversión, legal ni fiscal. Reglas hipotecarias alineadas con Canadá 2025 (stress test, CMHC y LTT ON/Toronto).
+              Soporte bilingue (ES/EN). Podemos coordinar con tu CPA y tu abogada/o.
             </p>
-            <p className="mt-2 text-brand-blue/90">Soporte bilingüe (ES/EN). Podemos coordinar con tu CPA y tu abogada/o.</p>
-          </div>
+          </InfoCard>
         </div>
 
         <div className="mt-6 text-center">
-          <Link href="/es/contacto?intent=consult" className="inline-flex" aria-label="Agendar llamada de descubrimiento">
-            <span className="px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold">
-              Agendar llamada de descubrimiento
-            </span>
+          <Link href="/es/contacto?intent=consult" className={ctaButtonClass("primary")} aria-label="Agendar llamada de descubrimiento">
+            Agendar llamada de descubrimiento
           </Link>
           <div className="mt-4 flex items-center justify-center gap-3">
             <Link href="/es/cuenta" className="inline-flex" aria-label="Abrir portal de clientes">
@@ -815,7 +774,8 @@ export default function ToolsPage() {
             </Link>
           </div>
         </div>
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Estilos de impresión */}
       <style jsx global>{`

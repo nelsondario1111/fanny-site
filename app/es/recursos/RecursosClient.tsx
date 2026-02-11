@@ -3,8 +3,17 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import type { Variants, Easing, Transition } from "framer-motion";
+import { motion } from "framer-motion";
+import {
+  ComparisonTable,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  HubTagBadge as TagBadge,
+  InfoCard,
+  PageHero,
+  StickySectionNav,
+  HUB_CARD_CLASS,
+} from "@/components/sections/hub";
 
 /* =============================== Tipos =============================== */
 export type ClientArticle = {
@@ -43,98 +52,7 @@ type PersonaIndex = {
   slugs: (string | undefined)[];
 };
 
-/* ============================ Motion helpers ============================ */
-const easing: Easing = [0.22, 1, 0.36, 1];
-
-function useAnims() {
-  const prefersReduced = useReducedMotion();
-
-  const base: Transition = prefersReduced ? { duration: 0 } : { duration: 0.6, ease: easing };
-  const baseUp: Transition = prefersReduced ? { duration: 0 } : { duration: 0.45, ease: easing };
-
-  const fade: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: base },
-  };
-
-  const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: baseUp },
-  };
-
-  return { fade, fadeUp };
-}
-
-/* ============================== UI Compartida ============================== */
-function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  level = "h2",
-}: {
-  title: string;
-  subtitle?: React.ReactNode;
-  id: string;
-  level?: "h1" | "h2";
-}) {
-  const { fade, fadeUp } = useAnims();
-  return (
-    <div id={id} className="scroll-mt-24">
-      <motion.div
-        variants={fade}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="text-center mb-6"
-      >
-        <motion.div variants={fadeUp}>
-          {level === "h1" ? (
-            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h1>
-          ) : (
-            <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-              {title}
-            </h2>
-          )}
-        </motion.div>
-        <motion.div variants={fade} className="flex justify-center my-4" aria-hidden="true">
-          <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-        </motion.div>
-        {subtitle && (
-          <motion.p variants={fadeUp} className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-            {subtitle}
-          </motion.p>
-        )}
-      </motion.div>
-    </div>
-  );
-}
-
-function TagBadge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+const CARD = HUB_CARD_CLASS;
 
 /* ============================== Utilidades ============================== */
 const parseDate = (d?: string | Date | null) => {
@@ -468,75 +386,94 @@ export default function RecursosClient({
     quickKeys.size > 0 ||
     drawerSelectedTags.size > 0;
 
+  const categorySummary = React.useMemo(() => {
+    const counts = new Map<string, number>();
+    articles.forEach((article) => {
+      const key = (article.category || "Guias").trim() || "Guias";
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    });
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6);
+  }, [articles]);
+
+  const featuredArticles = React.useMemo(() => {
+    const defaults = [
+      "5-steps-to-financial-freedom",
+      "smart-money-newcomers-canada-2025",
+      "wealth-with-confidence-women-toronto-2025",
+      "buying-your-first-multi-unit-property",
+      "rent-vs-buy-toronto-2025",
+    ];
+    const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
+      articles.some((article) => article.slug === slug)
+    );
+    const bySlug = new Map(articles.map((article) => [article.slug, article]));
+    return chosen.map((slug) => bySlug.get(slug)).filter((article): article is ClientArticle => Boolean(article));
+  }, [articles, featuredSlugs]);
+
   /* ------------------------------ Nav de secciones ------------------------------ */
   const SECTIONS = [
-    { id: "overview", label: "Resumen" },
-    { id: "featured", label: "Destacados" },
+    { id: "start-here", label: "Empieza aquí" },
+    { id: "categories", label: "Categorias" },
     { id: "browse", label: "Explorar todo" },
     { id: "faq", label: "Cómo usarlo & FAQ" },
   ] as const;
 
-  function SectionNav() {
-    const [active, setActive] = React.useState<string>("overview");
-    React.useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((e) => e.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          if (visible[0]) setActive(visible[0].target.id);
-        },
-        { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
-      );
-      SECTIONS.forEach((s) => {
-        const el = document.getElementById(s.id);
-        if (el) observer.observe(el);
-      });
-      return () => observer.disconnect();
-    }, []);
-    return (
-      <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-        <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="En esta página">
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className={[
-                "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-                active === s.id
-                  ? "bg-brand-green text-white border-brand-green"
-                  : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-              ].join(" ")}
-            >
-              {s.label}
-            </a>
-          ))}
-        </nav>
-      </div>
-    );
-  }
-
   /* --------------------------------- Render --------------------------------- */
   return (
-    <main className="bg-brand-beige min-h-screen pb-16">
-      <SectionNav />
+    <main className="bg-white min-h-screen pb-16">
+      <PageHero
+        homeHref="/es"
+        homeLabel="Inicio"
+        currentLabel="Recursos"
+        title="Artículos y Guias Utiles"
+        subtitle="Lecturas breves y practicas sobre hipotecas, dinero e impuestos para profesionales y familias con poco tiempo."
+        primaryCta={{ label: "Reservar llamada de descubrimiento", href: ctaHref }}
+        secondaryCta={{ label: "Recibir el boletin", href: newsletterHref, variant: "secondary" }}
+      />
+      <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 
-      {/* HERO / OVERVIEW */}
-      <section id="overview" className="pt-10 px-4 scroll-mt-24">
+      {/* EMPIEZA AQUI */}
+      <section id="start-here" className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}>
+          <Panel className="bg-white">
+            <SectionTitle
+              id="start-here-title"
+              title="Empieza aqui"
+              subtitle="Guias seleccionadas para caminos comunes"
+              tint="green"
+            />
+            {featuredArticles.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2">
+                {featuredArticles.map((article) => (
+                  <ArticleCard
+                    key={`feat-${article.slug}`}
+                    article={article}
+                    saved={savedSlugs.has(article.slug)}
+                    onToggleSave={() => toggleSave(article.slug)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-brand-blue/80 text-center">
+                Pronto veras recursos destacados aqui. Mientras tanto, usa los filtros para explorar toda la biblioteca.
+              </p>
+            )}
+          </Panel>
+        </motion.div>
+      </section>
+
+      {/* CATEGORIAS / FILTROS */}
+      <section className="px-4 mt-8 scroll-mt-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
           <Panel>
             <SectionTitle
-              title="Artículos y Guías Útiles"
-              subtitle={<>Lecturas cortas y prácticas sobre hipotecas, comportamiento con el dinero y bases de impuestos—pensadas para familias y profesionales ocupados. Guarda lo que necesites, comparte enlaces y escríbenos cuando quieras un plan personal.</>}
-              id="overview"
-              level="h1"
+              title="Categorias y filtros"
+              subtitle={<>Usa personas, objetivos y etiquetas para acotar tu ruta antes de explorar todo.</>}
+              id="categories"
+              tint="gold"
             />
-
-            {/* CTAs */}
-            <div className="mt-2 flex flex-wrap items-center gap-3 justify-center">
-              <Link href={ctaHref} className="px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition">Hablar con Fanny</Link>
-              <Link href={newsletterHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Recibir el boletín</Link>
-            </div>
 
             {/* Personas */}
             <div className="mt-6 flex flex-wrap gap-2 justify-center">
@@ -658,43 +595,61 @@ export default function RecursosClient({
                 })}
               </div>
             </div>
+
+            <div className="mt-8">
+              <SectionTitle
+                id="category-summary"
+                title="Resumen por categoria"
+                subtitle="Escanea rapido donde hay mas contenido antes de explorar todo."
+                tint="green"
+              />
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categorySummary.map(([name, count]) => (
+                  <InfoCard
+                    key={name}
+                    title={name}
+                    description={`${count} ${count === 1 ? "recurso" : "recursos"}`}
+                  >
+                    <div className="mt-4">
+                      <Link
+                        href="#browse"
+                        className="inline-flex items-center rounded-full px-4 py-2 text-sm border border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                      >
+                        Abrir en explorar
+                      </Link>
+                    </div>
+                  </InfoCard>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <ComparisonTable
+                columns={["Ideal para", "Tiempo tipico", "Profundidad"]}
+                rows={[
+                  {
+                    label: "Guias",
+                    values: ["Aprender fundamentos", "5-12 min", "Base"],
+                  },
+                  {
+                    label: "Checklists",
+                    values: ["Planificar acciones", "8-15 min", "Pasos practicos"],
+                  },
+                  {
+                    label: "Explicadores",
+                    values: ["Aclarar un concepto", "4-8 min", "Enfocado"],
+                  },
+                  {
+                    label: "Analisis",
+                    values: ["Decisiones complejas", "10-18 min", "Detalle"],
+                  },
+                ]}
+                footnote="Los formatos varian por tema; usa filtros y personas para acotar."
+              />
+            </div>
           </Panel>
         </motion.div>
       </section>
-
-      {/* DESTACADOS */}
-      {(() => {
-        const defaults = [
-          "5-steps-to-financial-freedom",
-          "smart-money-newcomers-canada-2025",
-          "wealth-with-confidence-women-toronto-2025",
-          "buying-your-first-multi-unit-property",
-          "rent-vs-buy-toronto-2025",
-        ];
-        const chosen = (featuredSlugs?.length ? featuredSlugs : defaults).filter((slug) =>
-          articles.some((a) => a.slug === slug)
-        );
-        const map = new Map(articles.map((a) => [a.slug, a]));
-        const featured = chosen.map((s) => map.get(s)!).filter(Boolean);
-
-        return featured.length > 0 ? (
-          <section id="featured" className="px-4 mt-8 scroll-mt-24">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.12 }}>
-              <Panel className="bg-white">
-                <div className="flex items-baseline justify-between mb-4">
-                  <h2 className="font-serif text-2xl text-brand-green font-bold">Comienza aquí</h2>
-                  <span className="text-sm text-brand-body/70">Guías seleccionadas para caminos comunes</span>
-                </div>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {featured.map((a) => (
-                    <ArticleCard key={`feat-${a.slug}`} article={a} saved={savedSlugs.has(a.slug)} onToggleSave={() => toggleSave(a.slug)} />
-                  ))}
-                </div>
-              </Panel>
-            </motion.div>
-          </section>
-        ) : null;
-      })()}
 
       {/* RESULTADOS */}
       <section id="browse" className="px-4 mt-8 scroll-mt-24">
@@ -759,24 +714,41 @@ export default function RecursosClient({
       <section id="faq" className="px-4 mt-8 scroll-mt-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.18 }}>
           <Panel>
-            <SectionTitle title="Cómo usarlo & Preguntas frecuentes" subtitle="Consejos rápidos sobre búsqueda, guardado, impresión y compartir." id="faq" />
+            <SectionTitle
+              title="Cómo usarlo & Preguntas frecuentes"
+              subtitle="Consejos rápidos sobre búsqueda, guardado, impresión y compartir."
+              id="faq"
+              tint="green"
+            />
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Buscar y filtrar</h3>
-                <p className="text-brand-blue/90 text-sm">Usa la barra de búsqueda, elige una persona y aplica un par de filtros rápidos. Toca <em>Más filtros</em> para ver la lista completa.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Guardar para después</h3>
-                <p className="text-brand-blue/90 text-sm">Presiona <strong>Guardar</strong> en cualquier artículo para tenerlo a mano en este dispositivo.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Compartir</h3>
-                <p className="text-brand-blue/90 text-sm">Envía un enlace con el botón <strong>Compartir</strong>—usa la función nativa de tu dispositivo.</p>
-              </div>
-              <div className="rounded-2xl border border-brand-gold/50 p-5">
-                <h3 className="font-serif font-bold text-brand-green text-lg mb-2">Habla con Fanny</h3>
-                <p className="text-brand-blue/90 text-sm">¿Lista/o para un plan personal? Usa el botón verde de arriba para reservar una consulta privada.</p>
-              </div>
+              <InfoCard
+                title="Buscar y filtrar"
+                description={
+                  <>
+                    Usa la barra de búsqueda, elige una persona y aplica un par de filtros rápidos. Toca <em>Más filtros</em> para ver la lista completa.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Guardar para despues"
+                description={
+                  <>
+                    Presiona <strong>Guardar</strong> en cualquier artículo para tenerlo a mano en este dispositivo.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Compartir"
+                description={
+                  <>
+                    Envia un enlace con el botón <strong>Compartir</strong>-usa la función nativa de tu dispositivo.
+                  </>
+                }
+              />
+              <InfoCard
+                title="Habla con Fanny"
+                description="Lista/o para un plan personal? Usa el boton verde de arriba para reservar una consulta privada."
+              />
             </div>
           </Panel>
         </motion.div>

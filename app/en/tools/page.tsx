@@ -2,15 +2,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import type { JSX as JSXNS } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 // ✅ Hydration-safe motion primitives
+import { Reveal, useMotionPresets } from "@/components/motion-safe";
 import {
-  Reveal,
-  StaggerGroup,
-  useMotionPresets,
-} from "@/components/motion-safe";
+  CardGrid,
+  ComparisonTable,
+  ctaButtonClass,
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  HubTagBadge as TagBadge,
+  InfoCard,
+  PageHero,
+  StickySectionNav,
+  HUB_CARD_CLASS,
+} from "@/components/sections/hub";
 
 import {
   FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
@@ -19,67 +26,7 @@ import {
 } from "react-icons/fa";
 
 /* ============================== Shared UI ============================== */
-function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <section
-      className={[
-        "max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white rounded-[28px] border border-brand-gold/60 shadow-sm",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </section>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  id,
-  level = "h2",
-}: {
-  title: string;
-  subtitle?: ReactNode;
-  id: string;
-  level?: "h1" | "h2";
-}) {
-  const Tag: keyof JSXNS.IntrinsicElements = level;
-  const { fade, fadeUp } = useMotionPresets();
-
-  return (
-    <div id={id} className="scroll-mt-24">
-      <div className="text-center mb-6">
-        <Reveal variants={fadeUp}>
-          <Tag className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
-            {title}
-          </Tag>
-        </Reveal>
-        <Reveal variants={fade}>
-          <div className="flex justify-center my-4" aria-hidden="true">
-            <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-          </div>
-        </Reveal>
-        {subtitle && (
-          <Reveal variants={fadeUp}>
-            <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
-          </Reveal>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TagBadge({ children }: { children: ReactNode }) {
-  return (
-    <span className="text-xs px-2.5 py-1 rounded-full bg-white text-brand-green border border-brand-gold/40">
-      {children}
-    </span>
-  );
-}
-
-const CARD =
-  "rounded-3xl border border-brand-gold/60 bg-white shadow-sm hover:shadow-md hover:-translate-y-[1px] transition p-6 focus-within:ring-2 focus-within:ring-brand-gold";
+const CARD = HUB_CARD_CLASS;
 
 /* ============================== Data model ============================== */
 type Category =
@@ -107,11 +54,11 @@ type ToolItem = {
 
 /* ================================ Tools ================================ */
 const ButtonPrimary =
-  "px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition";
+  ctaButtonClass("primary");
 const ButtonGhost =
-  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition";
+  ctaButtonClass("secondary");
 const ButtonGhostGold =
-  "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition";
+  ctaButtonClass("ghost");
 
 const TOOLS: ToolItem[] = [
   // ---- Homeownership / Closing ----
@@ -436,6 +383,8 @@ function matchesQuery(t: ToolItem, q: string) {
 
 /* ======================== On-page sticky section nav ======================== */
 const SECTIONS = [
+  { id: "start-here", label: "Start Here" },
+  { id: "compare", label: "Tool Guide" },
   { id: "overview", label: "Overview" },
   { id: "homeownership", label: "Homeownership" },
   { id: "planning", label: "Planning" },
@@ -444,52 +393,6 @@ const SECTIONS = [
   { id: "utilities", label: "Utilities" },
   { id: "faq", label: "How to Use & FAQ" },
 ] as const;
-
-function SectionNav() {
-  const [active, setActive,] = useState<string>("overview");
-  const refs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 1] }
-    );
-
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
-      refs.current[s.id] = el;
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div className="sticky top-[64px] z-30 bg-white/90 backdrop-blur border-b border-brand-gold/30">
-      <nav className="max-w-content mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-sm" aria-label="On this page">
-        {SECTIONS.map((s) => (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            className={[
-              "px-3 py-1.5 rounded-full border transition whitespace-nowrap",
-              active === s.id
-                ? "bg-brand-green text-white border-brand-green"
-                : "border-brand-gold/40 text-brand-green hover:bg-brand-green/10",
-            ].join(" ")}
-            aria-current={active === s.id ? "true" : undefined}
-          >
-            {s.label}
-          </a>
-        ))}
-      </nav>
-    </div>
-  );
-}
 
 /* ============================== Cards / Grid ============================== */
 function ToolCard({ t }: { t: ToolItem }) {
@@ -542,11 +445,11 @@ function ToolsGrid({ items }: { items: ToolItem[] }) {
     return <p className="text-brand-blue/70">No tools match the current filters.</p>;
   }
   return (
-    <StaggerGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <CardGrid>
       {items.map((t) => (
         <ToolCard key={t.id} t={t} />
       ))}
-    </StaggerGroup>
+    </CardGrid>
   );
 }
 
@@ -580,80 +483,121 @@ export default function ToolsPage() {
 
   const handlePrint = () => window.print();
 
-  const { fade } = useMotionPresets();
+  const startHereTools = useMemo(() => {
+    const ids = [
+      "mortgage-affordability",
+      "closing-costs",
+      "budget-calculator",
+      "net-worth-tracker",
+      "tax-prep",
+      "mortgage-readiness",
+    ];
+    return ids
+      .map((id) => TOOLS.find((tool) => tool.id === id))
+      .filter((tool): tool is ToolItem => Boolean(tool));
+  }, []);
 
   return (
     <main id="main" className="bg-white min-h-screen">
-      {/* Brand band header */}
-      <section className="bg-brand-green/5 border-b border-brand-gold/30">
-        <div className="max-w-content mx-auto px-4 py-10">
-          <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
-            <a href="/en" className="hover:underline">Home</a>
-            <span className="mx-2">/</span>
-            <span className="text-brand-green">Tools</span>
-          </nav>
-
-          <Reveal variants={fade}>
-            <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
-              Tools for your financial wellbeing
-            </h1>
-          </Reveal>
-          <Reveal variants={fade}>
-            <p className="mt-2 max-w-3xl text-brand-blue/90">
-              Practical, bilingual calculators and worksheets—private, easy to use, and designed to help you make values-aligned decisions (no signup required).
-            </p>
-          </Reveal>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Link
-              href="/en/contact?intent=consult"
-              className={ButtonPrimary}
-              aria-label="Book a Private Consultation"
-            >
-              Book a Private Consultation
-            </Link>
-            <button
-              onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
-              className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
-              title={listMode === "grid" ? "Switch to list view" : "Switch to grid view"}
-              type="button"
-            >
-              {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />} {listMode === "grid" ? "List" : "Grid"}
-            </button>
-            <button
-              onClick={handlePrint}
-              className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-              title="Open print dialog (choose 'Save as PDF')"
-              type="button"
-            >
-              <FaPrint aria-hidden /> Print / Save as PDF
-            </button>
-          </div>
-
-          {/* Trust chips */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaShieldAlt className="text-brand-gold" aria-hidden /> Private
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaCheckCircle className="text-brand-gold" aria-hidden /> Free
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-              <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingual
-            </span>
-          </div>
+      <PageHero
+        homeHref="/en"
+        homeLabel="Home"
+        currentLabel="Tools"
+        title="Tools for your financial wellbeing"
+        subtitle="Practical, bilingual calculators and worksheets that help you make confident, values-aligned decisions."
+        primaryCta={{
+          label: "Book a Discovery Call",
+          href: "/en/contact?intent=consult",
+        }}
+        secondaryCta={{
+          label: "Explore Resources",
+          href: "/en/resources",
+          variant: "secondary",
+        }}
+      >
+        <div className="mt-5 flex flex-wrap gap-2">
+          <button
+            onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
+            className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
+            title={listMode === "grid" ? "Switch to list view" : "Switch to grid view"}
+            type="button"
+          >
+            {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
+            {listMode === "grid" ? "List" : "Grid"}
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+            title="Open print dialog (choose 'Save as PDF')"
+            type="button"
+          >
+            <FaPrint aria-hidden /> Print / Save as PDF
+          </button>
         </div>
-      </section>
 
-      {/* Sticky on-page nav */}
-      <SectionNav />
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaShieldAlt className="text-brand-gold" aria-hidden /> Private
+          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaCheckCircle className="text-brand-gold" aria-hidden /> Free
+          </span>
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
+            <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingual
+          </span>
+        </div>
+      </PageHero>
 
-      {/* Overview: Search + Filters */}
-      <Panel>
+      <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="start-here"
+            title="Start Here: Best Tools"
+            subtitle="The fastest path for affordability, cash-flow, readiness, and tax prep."
+            tint="gold"
+          />
+          <ToolsGrid items={startHereTools} />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="compare"
+            title="Tool Type Guide"
+            subtitle="Use this quick table to choose the right format before you dive in."
+            tint="green"
+          />
+          <ComparisonTable
+            columns={["Best for", "Output", "Time to complete"]}
+            rows={[
+              {
+                label: "Calculators",
+                values: ["Scenario math and decisions", "Live numbers and assumptions", "2-8 minutes"],
+              },
+              {
+                label: "Worksheets",
+                values: ["Organizing documents and habits", "Downloadable files and checklists", "10-25 minutes"],
+              },
+              {
+                label: "Utilities",
+                values: ["Guided support and Q&A", "Recommendations and next steps", "3-10 minutes"],
+              },
+            ]}
+            footnote="All tools are educational and can be paired with a private strategy conversation."
+          />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
         <SectionTitle
           id="overview"
           title="Find the right tool fast"
           subtitle="Search by keyword, filter by type, or narrow to a category."
+          tint="gold"
         />
         <div className="grid gap-4">
           {/* Search */}
@@ -724,85 +668,99 @@ export default function ToolsPage() {
             )}
           </div>
         </div>
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Homeownership */}
-      <Panel className="mt-8">
-        <SectionTitle id="homeownership" title="Homeownership" subtitle="Closing costs, down payment, insurance, and qualification" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="homeownership" title="Homeownership" subtitle="Closing costs, down payment, insurance, and qualification" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.homeownership} />
         ) : (
           <ListBlock items={grouped.homeownership} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Planning */}
-      <Panel className="mt-8">
-        <SectionTitle id="planning" title="Planning" subtitle="Payments, amortization, penalties, refinance, and rent vs buy" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="planning" title="Planning" subtitle="Payments, amortization, penalties, refinance, and rent vs buy" tint="gold" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.planning} />
         ) : (
           <ListBlock items={grouped.planning} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Investors */}
-      <Panel className="mt-8">
-        <SectionTitle id="investors" title="Investors" subtitle="Cash flow, DSCR, and valuation helpers" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="investors" title="Investors" subtitle="Cash flow, DSCR, and valuation helpers" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.investors} />
         ) : (
           <ListBlock items={grouped.investors} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Worksheets */}
-      <Panel className="mt-8">
-        <SectionTitle id="worksheets" title="Worksheets" subtitle="Budgets, readiness checklists, and tax season prep" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="worksheets" title="Worksheets" subtitle="Budgets, readiness checklists, and tax season prep" tint="gold" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.worksheets} />
         ) : (
           <ListBlock items={grouped.worksheets} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Utilities */}
-      <Panel className="mt-8">
-        <SectionTitle id="utilities" title="Utilities" subtitle="Assistant and support tools" />
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="utilities" title="Utilities" subtitle="Assistant and support tools" tint="green" />
         {listMode === "grid" ? (
           <ToolsGrid items={grouped.utilities} />
         ) : (
           <ListBlock items={grouped.utilities} />
         )}
-      </Panel>
+        </Panel>
+      </div>
 
       {/* How to Use & FAQ */}
-      <Panel className="mt-8">
-        <SectionTitle id="faq" title="How we use these tools" subtitle="Private, educational, and bilingual" />
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+        <SectionTitle id="faq" title="How we use these tools" subtitle="Private, educational, and bilingual" tint="gold" />
         <div className="grid md:grid-cols-2 gap-6">
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">What to expect</h3>
-            <p className="mt-2 text-brand-blue/90">
-              These tools run in your browser, no account required. Export files are saved locally by you.
-            </p>
+          <InfoCard
+            title="What to expect"
+            description="These tools run in your browser, no account required. Export files are saved locally by you."
+          >
             <p className="mt-2 text-brand-blue/90">
               We can tailor a tool to your situation or guide you to the right one during a discovery call.
             </p>
-          </div>
-          <div className={CARD}>
-            <h3 className="font-serif text-xl text-brand-green font-bold">Disclaimers</h3>
+          </InfoCard>
+          <InfoCard
+            title="Disclaimers"
+            description={
+              <>
+                Educational tools only-<em>not</em> investment, legal, or tax advice. Mortgage rules reflect 2025 Canadian guidelines for stress-test, CMHC, and ON/Toronto LTT.
+              </>
+            }
+          >
             <p className="mt-2 text-brand-blue/90">
-              Educational tools only—<em>not</em> investment, legal, or tax advice. Mortgage rules reflect 2025 Canadian guidelines for stress-test, CMHC, and ON/Toronto LTT.
+              Bilingual support (EN/ES). We can coordinate with your CPA and lawyer as needed.
             </p>
-            <p className="mt-2 text-brand-blue/90">Bilingual support (EN/ES). We can coordinate with your CPA and lawyer as needed.</p>
-          </div>
+          </InfoCard>
         </div>
 
         <div className="mt-6 text-center">
-          <Link href="/en/contact?intent=consult" className="inline-flex" aria-label="Book a discovery call">
-            <span className="px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold">
-              Book a Discovery Call
-            </span>
+          <Link href="/en/contact?intent=consult" className={ctaButtonClass("primary")} aria-label="Book a discovery call">
+            Book a Discovery Call
           </Link>
           <div className="mt-4 flex items-center justify-center gap-3">
             <Link href="/en/client-portal" className="inline-flex" aria-label="Open client portal">
@@ -815,7 +773,8 @@ export default function ToolsPage() {
             </Link>
           </div>
         </div>
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Print styles */}
       <style jsx global>{`

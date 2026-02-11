@@ -7,6 +7,7 @@ import ContactForm from "./ContactForm";
 
 // Motion-safe primitives (now pass variants from useMotionPresets)
 import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
+import { HUB_TABLE_CLASS, PageHero, ctaButtonClass } from "@/components/sections/hub";
 
 /* --- Panel matches global “table” aesthetic site-wide --- */
 function Panel({
@@ -16,16 +17,7 @@ function Panel({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={[
-        "bg-white/95 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
+  return <div className={[HUB_TABLE_CLASS, className].join(" ")}>{children}</div>;
 }
 
 export default function Contact() {
@@ -70,43 +62,15 @@ export default function Contact() {
 
   return (
     <main className="bg-brand-beige min-h-screen">
-      {/* Hero */}
-      <section className="px-4 pt-12">
-        <div className="max-w-5xl mx-auto">
-          <Reveal variants={fadeUp}>
-            <Panel className="px-6 sm:px-10 py-10 text-center">
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-green tracking-tight">
-                Let’s connect and transform your financial life
-              </h1>
-              <div className="flex justify-center my-5" aria-hidden="true">
-                <div className="w-20 h-[3px] rounded-full bg-brand-gold" />
-              </div>
-              <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">
-                Book a free discovery call, or tell us what you’re working on.
-                We’ll reply shortly with clear next steps.
-              </p>
-
-              <div className="mt-6 flex items-center justify-center gap-3">
-                {/* Fast-path CTA; the form below can also preselect based on ?package= */}
-                <Link
-                  href="/en/book"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold shadow bg-brand-green text-white hover:opacity-90 transition"
-                  aria-label="Book a Free Discovery Call"
-                >
-                  Book a Free Discovery Call
-                </Link>
-                <a
-                  href="mailto:info@fannysamaniego.com"
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
-                  aria-label="Email info@fannysamaniego.com"
-                >
-                  Email Us
-                </a>
-              </div>
-            </Panel>
-          </Reveal>
-        </div>
-      </section>
+      <PageHero
+        homeHref="/en"
+        homeLabel="Home"
+        currentLabel="Contact"
+        title="Let’s connect and transform your financial life"
+        subtitle="Book a free discovery call, or tell us what you’re working on. We’ll reply shortly with clear next steps."
+        primaryCta={{ label: "Book a Free Discovery Call", href: "/en/book" }}
+        secondaryCta={{ label: "Email Us", href: "mailto:info@fannysamaniego.com", variant: "secondary" }}
+      />
 
       {/* Content grid */}
       <section className="px-4 py-10">
@@ -221,7 +185,7 @@ export default function Contact() {
                 <div className="mt-6">
                   <Link
                     href="/en/testimonials"
-                    className="inline-flex items-center rounded-full border bg-white px-4 py-2 text-sm font-medium text-brand-green border-brand-green hover:bg-brand-green hover:text-white transition"
+                    className={ctaButtonClass("secondary")}
                   >
                     Read client stories →
                   </Link>

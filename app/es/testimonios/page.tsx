@@ -6,47 +6,12 @@ import Link from "next/link";
 
 // ✅ Primitivas de animación seguras para hidratar
 import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
-
-/* --------------------------- UI local --------------------------- */
-function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div
-      className={[
-        "max-w-4xl mx-auto px-5 sm:px-8 py-10 sm:py-14",
-        "bg-white/95 rounded-[28px] border border-brand-gold shadow-xl",
-        "backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-    >
-      {children}
-    </div>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  center = true,
-}: {
-  title: string;
-  subtitle?: React.ReactNode;
-  center?: boolean;
-}) {
-  return (
-    <header className={center ? "text-center mb-6" : "mb-6"}>
-      <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
-        {title}
-      </h1>
-      <div className="flex justify-center my-4" aria-hidden="true">
-        <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
-      </div>
-      {subtitle && (
-        <p className="text-brand-blue/90 text-lg md:text-xl max-w-2xl mx-auto">{subtitle}</p>
-      )}
-    </header>
-  );
-}
-/* ---------------------------------------------------------------- */
+import {
+  HubPanel as Panel,
+  HubSectionTitle as SectionTitle,
+  PageHero,
+  ctaButtonClass,
+} from "@/components/sections/hub";
 
 type Testimonial = {
   quote: string;
@@ -81,7 +46,7 @@ const TESTIMONIOS: Testimonial[] = [
 
 /* --------------------------------- Página --------------------------------- */
 export default function TestimonialsPage() {
-  const { fade, fadeUp } = useMotionPresets();
+  const { fadeUp } = useMotionPresets();
 
   // JSON-LD para SEO (Review schema sin calificaciones)
   const jsonLd = React.useMemo(() => {
@@ -110,24 +75,26 @@ export default function TestimonialsPage() {
 
   return (
     <main className="bg-brand-beige min-h-screen pb-16">
-      {/* Hero */}
-      <section className="pt-10 px-4">
-        <Reveal variants={fade}>
-          <Panel>
-            <SectionTitle
-              title="Historias de Transformación Financiera"
-              subtitle="Testimonios reales compartidos con permiso. Cada camino es único—estas reflexiones muestran la mezcla de claridad, estructura y compasión que está en el corazón de nuestro trabajo."
-            />
-            <p className="text-sm text-brand-body/80 text-center">
-              Las citas pueden estar ligeramente editadas por claridad. Los resultados varían según las circunstancias de cada persona.
-            </p>
-          </Panel>
-        </Reveal>
-      </section>
+      <PageHero
+        homeHref="/es"
+        homeLabel="Inicio"
+        currentLabel="Testimonios"
+        title="Historias de Transformación Financiera"
+        subtitle="Testimonios reales compartidos con permiso. Cada camino es único-estas reflexiones muestran la mezcla de claridad, estructura y compasión en el corazón de nuestro trabajo."
+        primaryCta={{ label: "Reservar llamada de descubrimiento", href: "/es/contacto?intent=consult" }}
+        secondaryCta={{ label: "Explorar servicios", href: "/es/servicios", variant: "secondary" }}
+      />
 
       {/* Lista de testimonios */}
       <section className="px-4 mt-8">
         <Panel>
+          <SectionTitle
+            id="historias"
+            tint="green"
+            title="Historias de clientes"
+            subtitle="Las citas pueden estar ligeramente editadas por claridad. Los resultados varían según las circunstancias de cada persona."
+          />
+
           <StaggerGroup className="space-y-6">
             {TESTIMONIOS.map(({ quote, name, context, year }, i) => (
               <Reveal key={`${name}-${i}`} variants={fadeUp}>
@@ -147,7 +114,7 @@ export default function TestimonialsPage() {
           <div className="text-center mt-10">
             <Link
               href="/es/contacto?intent=consult"
-              className="inline-block px-8 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow-lg hover:bg-brand-blue hover:text-white transition text-base md:text-lg tracking-wide"
+              className={ctaButtonClass("primary")}
               aria-label="Reservar una consulta gratuita"
             >
               Reserva una consulta gratuita

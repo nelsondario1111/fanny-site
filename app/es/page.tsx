@@ -17,6 +17,7 @@ import {
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
+import { ctaButtonClass } from "@/components/sections/hub";
 
 /* ============================= Título de sección ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -47,6 +48,9 @@ function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
 /* ================================ Página ================================ */
 export default function HomeEs() {
   const { fade, fadeUp } = useMotionPresets();
+  const primaryCtaClass = ctaButtonClass("primary");
+  const secondaryCtaClass = ctaButtonClass("secondary");
+  const ghostCtaClass = ctaButtonClass("ghost");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -106,14 +110,14 @@ export default function HomeEs() {
                     <Link
                       href="/es/revision-impuestos" // ajusta la ruta si usas otro slug
                       aria-label="Explorar Revisión Fiscal de 10 Años"
-                      className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                      className={primaryCtaClass}
                     >
                       Revisar Impuestos de 10 Años
                     </Link>
                     <Link
                       href="/es/servicios"
                       aria-label="Explorar servicios"
-                      className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                      className={secondaryCtaClass}
                     >
                       Explorar Servicios
                     </Link>
@@ -191,16 +195,16 @@ export default function HomeEs() {
               </ul>
               <div className="flex flex-wrap gap-3 items-center">
                 <Link
-                  href="/es/tax-review" // ajusta si usas otro slug
+                  href="/es/revision-impuestos" // ajusta si usas otro slug
                   aria-label="Saber más sobre la Revisión Fiscal de 10 Años"
-                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                  className={primaryCtaClass}
                 >
                   Saber más
                 </Link>
                 <Link
                   href="/es/contacto?intent=tax-review"
                   aria-label="Agendar llamada de 15 minutos sobre la revisión fiscal"
-                  className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                  className={secondaryCtaClass}
                 >
                   Agendar llamada de 15 min
                 </Link>
@@ -279,7 +283,7 @@ export default function HomeEs() {
               <Link
                 href="/es/sobre-mi"
                 aria-label="Descubre la trayectoria de Fanny Samaniego"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all"
+                className={ghostCtaClass}
               >
                 Descubrir mi trayectoria
               </Link>
@@ -381,7 +385,7 @@ export default function HomeEs() {
                 "Estrategias de deuda, crédito y ahorro sostenibles",
                 "Opcional: Diseño Humano para afinar ritmo y seguimiento",
               ],
-              href: "/es/servicios#fundamentos",
+              href: "/es/servicios#support",
               label: "Explorar orientación financiera",
             },
             {
@@ -393,7 +397,7 @@ export default function HomeEs() {
                 "Enfoque cumplido y amable con tu flujo de caja",
                 "Recordatorios estacionales y listas de preparación",
               ],
-              href: "/es/tax-review",
+              href: "/es/revision-impuestos",
               label: "Explorar revisión fiscal",
             },
             {
@@ -426,7 +430,7 @@ export default function HomeEs() {
                 <Link
                   href={c.href}
                   aria-label={c.label}
-                  className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all inline-block"
+                  className={ghostCtaClass}
                 >
                   {c.label}
                 </Link>
@@ -498,8 +502,8 @@ export default function HomeEs() {
         <Reveal variants={fade}>
           <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/es/servicios#familia"
-              className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+              href="/es/servicios#support"
+              className={ghostCtaClass}
             >
               Ver detalles del programa
             </Link>
@@ -507,7 +511,7 @@ export default function HomeEs() {
               href={`/es/contacto?intent=paquete&package=${encodeURIComponent(
                 "Conversaciones Holísticas Familiares — Cohorte de 4 semanas"
               )}`}
-              className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/50 hover:bg-brand-blue/80 hover:text-white transition"
+              className={secondaryCtaClass}
             >
               Hablar con nosotros
             </Link>
@@ -539,7 +543,7 @@ export default function HomeEs() {
               <Link
                 href="/es/herramientas"
                 aria-label="Ver herramientas"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+                className={ghostCtaClass}
               >
                 Ver herramientas
               </Link>
@@ -563,7 +567,7 @@ export default function HomeEs() {
               <Link
                 href="/es/recursos"
                 aria-label="Leer artículos"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+                className={ghostCtaClass}
               >
                 Leer artículos
               </Link>
@@ -587,9 +591,9 @@ export default function HomeEs() {
               spam.
             </p>
             <Link
-              href="/es/suscripcion"
+              href="/es/suscribir"
               aria-label="Ir a la página de suscripción"
-              className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+              className={primaryCtaClass}
             >
               Suscribirme
             </Link>
@@ -610,7 +614,7 @@ export default function HomeEs() {
           <Link
             href="/es/contacto?intent=hola"
             aria-label="Iniciar una conversación"
-            className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+            className={secondaryCtaClass}
           >
             Iniciar conversación
           </Link>

@@ -21,6 +21,7 @@ import {
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
+import { HUB_CARD_CLASS, ctaButtonClass } from "@/components/sections/hub";
 
 /* ============================= Título de sección ============================= */
 function SectionTitle({
@@ -110,13 +111,13 @@ function AboutInnerEs() {
                 <Link
                   href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Privada"
                   aria-label="Reservar una Llamada de Descubrimiento Privada"
-                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border border-brand-green/20 hover:bg-brand-gold hover:text-brand-green transition"
+                  className={ctaButtonClass("primary")}
                 >
                   Reservar Llamada de Descubrimiento
                 </Link>
                 <Link
                   href="/es/servicios"
-                  className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
+                  className={ctaButtonClass("secondary")}
                 >
                   Explorar servicios
                 </Link>
@@ -204,7 +205,7 @@ function AboutInnerEs() {
               },
             ].map((card) => (
               <Reveal key={card.title} variants={fadeUp}>
-                <div className="rounded-2xl border border-brand-gold/60 bg-white p-5 shadow-sm">
+                <div className={`${HUB_CARD_CLASS} p-5`}>
                   <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
                     {card.icon}
                     {card.title}
@@ -347,13 +348,13 @@ function AboutInnerEs() {
             <Link
               href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Privada"
               aria-label="Reservar una Llamada de Descubrimiento Privada"
-              className="inline-block px-10 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className={ctaButtonClass("primary")}
             >
               Reservar llamada
             </Link>
             <Link
               href="/es/recursos"
-              className="px-8 py-3 bg-transparent text-brand-blue rounded-full font-semibold border-2 border-brand-blue hover:bg-brand-green hover:text-white transition"
+              className={ctaButtonClass("secondary")}
             >
               Ver artículos y herramientas
             </Link>

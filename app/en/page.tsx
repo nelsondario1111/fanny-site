@@ -17,6 +17,7 @@ import {
   StaggerGroup,
   useMotionPresets,
 } from "@/components/motion-safe";
+import { ctaButtonClass } from "@/components/sections/hub";
 
 /* ============================= Section Title ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -47,6 +48,9 @@ function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
 /* ================================ Page ================================= */
 export default function Home() {
   const { fade, fadeUp } = useMotionPresets();
+  const primaryCtaClass = ctaButtonClass("primary");
+  const secondaryCtaClass = ctaButtonClass("secondary");
+  const ghostCtaClass = ctaButtonClass("ghost");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -106,14 +110,14 @@ export default function Home() {
                     <Link
                       href="/en/tax-review"
                       aria-label="Explore 10-Year Holistic Tax Review"
-                      className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                      className={primaryCtaClass}
                     >
                       Explore 10-Year Tax Review
                     </Link>
                     <Link
                       href="/en/services"
                       aria-label="Explore services"
-                      className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                      className={secondaryCtaClass}
                     >
                       Explore Services
                     </Link>
@@ -193,14 +197,14 @@ export default function Home() {
                 <Link
                   href="/en/tax-review"
                   aria-label="Learn more about the 10-Year Holistic Tax Review"
-                  className="px-8 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+                  className={primaryCtaClass}
                 >
                   Learn More
                 </Link>
                 <Link
                   href="/en/contact?intent=tax-review"
                   aria-label="Book a 15-minute call about the Tax Review"
-                  className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+                  className={secondaryCtaClass}
                 >
                   Book a 15-min Call
                 </Link>
@@ -280,7 +284,7 @@ export default function Home() {
               <Link
                 href="/en/about"
                 aria-label="Discover Fanny Samaniego's Journey"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all"
+                className={ghostCtaClass}
               >
                 Discover My Journey
               </Link>
@@ -379,7 +383,7 @@ export default function Home() {
                 "Debt strategy, credit repair & savings systems",
                 "Optional Human Design to fine-tune cadence & accountability",
               ],
-              href: "/en/services#foundations",
+              href: "/en/services#support",
               label: "Explore Financial Guidance",
             },
             {
@@ -424,7 +428,7 @@ export default function Home() {
                 <Link
                   href={c.href}
                   aria-label={c.label}
-                  className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition-all inline-block"
+                  className={ghostCtaClass}
                 >
                   {c.label}
                 </Link>
@@ -496,8 +500,8 @@ export default function Home() {
         <Reveal variants={fade}>
           <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/en/services#family"
-              className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+              href="/en/services#support"
+              className={ghostCtaClass}
             >
               View Program Details
             </Link>
@@ -505,7 +509,7 @@ export default function Home() {
               href={`/en/contact?intent=package&package=${encodeURIComponent(
                 "Holistic Family Conversations — 4-Week Cohort"
               )}`}
-              className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/50 hover:bg-brand-blue/80 hover:text-white transition"
+              className={secondaryCtaClass}
             >
               Talk to Us
             </Link>
@@ -534,7 +538,7 @@ export default function Home() {
               <Link
                 href="/en/tools"
                 aria-label="Browse tools"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+                className={ghostCtaClass}
               >
                 Browse Tools
               </Link>
@@ -558,7 +562,7 @@ export default function Home() {
               <Link
                 href="/en/resources"
                 aria-label="Read articles"
-                className="px-8 py-3 bg-transparent text-brand-green rounded-full font-semibold border-2 border-brand-green hover:bg-brand-green hover:text-white transition"
+                className={ghostCtaClass}
               >
                 Read Articles
               </Link>
@@ -584,7 +588,7 @@ export default function Home() {
             <Link
               href="/en/subscribe"
               aria-label="Go to subscription page"
-              className="px-10 py-3 bg-brand-green text-white rounded-full font-semibold border-2 border-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+              className={primaryCtaClass}
             >
               Subscribe
             </Link>
@@ -605,7 +609,7 @@ export default function Home() {
           <Link
             href="/en/contact?intent=hello"
             aria-label="Start a conversation"
-            className="px-8 py-3 bg-transparent text-brand-blue/90 rounded-full font-semibold border-2 border-brand-blue/60 hover:bg-brand-blue/80 hover:text-white transition"
+            className={secondaryCtaClass}
           >
             Start a Conversation
           </Link>
