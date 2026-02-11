@@ -15,6 +15,23 @@ type ServiceOption = { slug: string; label: string };
 
 /** Keep labels EXACTLY matching your Services page titles when used in TITLE_TO_SLUG_EN below */
 const SERVICE_OPTIONS: ServiceOption[] = [
+  // Current services (strategy funnel)
+  { slug: "discovery-call-free", label: "Free Discovery Call (15 min)" },
+  { slug: "clarity-direction-60", label: "Clarity & Direction Session (60 min)" },
+  { slug: "clarity-direction-90", label: "Clarity & Direction Session - Extended (90 min)" },
+  { slug: "strategic-map-tier-1", label: "Tier 1: Goal-Specific Strategic Map" },
+  { slug: "strategic-map-tier-2", label: "Tier 2: Integrated Strategic Map" },
+  { slug: "strategic-map-tier-3", label: "Tier 3: Holistic Life & Financial Strategic Map" },
+  { slug: "coaching-foundations", label: "Coaching & Foundations" },
+  { slug: "workshops-general", label: "Workshops" },
+  { slug: "foundations-small-group", label: "Foundations & Small Group Programs" },
+  { slug: "mortgage-preapproval-planning", label: "Pre-Approval Planning" },
+  { slug: "mortgage-offer-financing", label: "Offer & Financing Strategy" },
+  { slug: "mortgage-closing-readiness", label: "Closing Readiness Review" },
+  { slug: "business-cashflow-session", label: "Business Strategy & Cash Flow Session" },
+  { slug: "tax-coordination-session", label: "Tax Planning Coordination Session" },
+  { slug: "specialty-decision-session", label: "Specialty Decision Session" },
+
   // 1:1 Advisory
   { slug: "private-discovery-call", label: "Private Discovery Call" },
   { slug: "blueprint-90min", label: "90-Minute Blueprint Session" },
@@ -55,6 +72,24 @@ const SERVICE_OPTIONS: ServiceOption[] = [
 
 /** Map the exact package Title (from services page ?package=Title) → the dropdown slug above */
 const TITLE_TO_SLUG_EN: Record<string, string> = {
+  // Current services (strategy funnel)
+  "Free Discovery Call": "discovery-call-free",
+  "Free Discovery Call (15 min)": "discovery-call-free",
+  "Clarity & Direction Session (60 min)": "clarity-direction-60",
+  "Clarity & Direction Session - Extended (90 min)": "clarity-direction-90",
+  "Tier 1: Goal-Specific Strategic Map": "strategic-map-tier-1",
+  "Tier 2: Integrated Strategic Map": "strategic-map-tier-2",
+  "Tier 3: Holistic Life & Financial Strategic Map": "strategic-map-tier-3",
+  "Coaching & Foundations": "coaching-foundations",
+  Workshops: "workshops-general",
+  "Foundations & Small Group Programs": "foundations-small-group",
+  "Pre-Approval Planning": "mortgage-preapproval-planning",
+  "Offer & Financing Strategy": "mortgage-offer-financing",
+  "Closing Readiness Review": "mortgage-closing-readiness",
+  "Business Strategy & Cash Flow Session": "business-cashflow-session",
+  "Tax Planning Coordination Session": "tax-coordination-session",
+  "Specialty Decision Session": "specialty-decision-session",
+
   // 1:1 Advisory
   "Private Discovery Call": "private-discovery-call",
   "90-Minute Blueprint Session": "blueprint-90min",
@@ -127,7 +162,10 @@ export default function ContactForm(props: Props) {
   // Derive the initial slug just once for first render
   const derivedInitialSlug = useMemo(() => {
     if (effectiveIntent === "preapproval") return "mortgage-concierge-preapproval";
-    if (effectiveIntent === "consult") return "private-discovery-call";
+    if (effectiveIntent === "consult") {
+      const mapped = effectivePackage ? TITLE_TO_SLUG_EN[effectivePackage] : undefined;
+      return mapped ?? "private-discovery-call";
+    }
     if (effectiveIntent === "question") return "just-connect";
     if (effectiveIntent === "package") {
       const mapped = effectivePackage ? TITLE_TO_SLUG_EN[effectivePackage] : undefined;

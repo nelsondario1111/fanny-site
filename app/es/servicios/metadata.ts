@@ -4,11 +4,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Servicios — Coaching, Hipotecas y Estrategia Financiera",
   description:
-    "Explora servicios financieros y de hipoteca para profesionales, familias y empresarios en Toronto. Acompañamiento bilingüe, claro y humano.",
+    "Comienza con una llamada de descubrimiento gratis y elige sesiones de Claridad y Dirección, Mapas Financieros Estratégicos y apoyo especializado en hipoteca, negocios e impuestos.",
   openGraph: {
     title: "Servicios — Fanny Samaniego",
     description:
-      "Coaching y soluciones hipotecarias integrales para profesionales y familias en Toronto.",
+      "Estrategia financiera enfocada en decisiones, con un camino claro de descubrimiento a mapas estratégicos y apoyo especializado.",
     url: "https://fannysamaniego.com/es/servicios",
     type: "website",
     locale: "es_CA",

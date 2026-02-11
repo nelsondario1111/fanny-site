@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Intent = "consult" | "preapproval" | "question" | "package";
@@ -19,6 +19,23 @@ type ServiceOption = { slug: string; label: string };
  * cuando se usen en TITLE_TO_SLUG_ES para que el preseleccionado funcione.
  */
 const SERVICE_OPTIONS: ServiceOption[] = [
+  // Servicios actuales (funnel estratégico)
+  { slug: "llamada-descubrimiento-gratis", label: "Llamada de Descubrimiento Gratis (15 min)" },
+  { slug: "claridad-direccion-60", label: "Sesión de Claridad y Dirección (60 min)" },
+  { slug: "claridad-direccion-90", label: "Sesión de Claridad y Dirección - Extendida (90 min)" },
+  { slug: "mapa-estrategico-nivel-1", label: "Nivel 1: Mapa Estratégico Específico por Meta" },
+  { slug: "mapa-estrategico-nivel-2", label: "Nivel 2: Mapa Estratégico Integrado" },
+  { slug: "mapa-estrategico-nivel-3", label: "Nivel 3: Mapa Estratégico Holístico de Vida y Finanzas" },
+  { slug: "coaching-fundamentos", label: "Coaching y Fundamentos" },
+  { slug: "talleres-generales", label: "Talleres" },
+  { slug: "programas-base-grupos", label: "Programas Base y Grupos Pequeños" },
+  { slug: "planificacion-preaprobacion", label: "Planificación de Preaprobación" },
+  { slug: "oferta-financiamiento", label: "Estrategia de Oferta y Financiamiento" },
+  { slug: "revision-cierre", label: "Revisión de Preparación para Cierre" },
+  { slug: "negocio-flujo-caja", label: "Sesión de Estrategia de Negocio y Flujo de Caja" },
+  { slug: "coordinacion-planificacion-fiscal", label: "Sesión de Coordinación para Planificación Fiscal" },
+  { slug: "sesion-especializada-decision", label: "Sesión Especializada de Decisión" },
+
   // Asesoría 1:1
   { slug: "consulta-descubrimiento-privada", label: "Consulta Privada de Descubrimiento" },
   { slug: "sesion-plano-90min", label: "Sesión Plano — 90 minutos" },
@@ -59,6 +76,24 @@ const SERVICE_OPTIONS: ServiceOption[] = [
 
 /** Mapa de TÍTULO EXACTO (desde /es/servicios ?package=) → slug del desplegable */
 const TITLE_TO_SLUG_ES: Record<string, string> = {
+  // Servicios actuales (funnel estratégico)
+  "Llamada de Descubrimiento Gratis": "llamada-descubrimiento-gratis",
+  "Llamada de Descubrimiento Gratis (15 min)": "llamada-descubrimiento-gratis",
+  "Sesión de Claridad y Dirección (60 min)": "claridad-direccion-60",
+  "Sesión de Claridad y Dirección - Extendida (90 min)": "claridad-direccion-90",
+  "Nivel 1: Mapa Estratégico Específico por Meta": "mapa-estrategico-nivel-1",
+  "Nivel 2: Mapa Estratégico Integrado": "mapa-estrategico-nivel-2",
+  "Nivel 3: Mapa Estratégico Holístico de Vida y Finanzas": "mapa-estrategico-nivel-3",
+  "Coaching y Fundamentos": "coaching-fundamentos",
+  Talleres: "talleres-generales",
+  "Programas Base y Grupos Pequeños": "programas-base-grupos",
+  "Planificación de Preaprobación": "planificacion-preaprobacion",
+  "Estrategia de Oferta y Financiamiento": "oferta-financiamiento",
+  "Revisión de Preparación para Cierre": "revision-cierre",
+  "Sesión de Estrategia de Negocio y Flujo de Caja": "negocio-flujo-caja",
+  "Sesión de Coordinación para Planificación Fiscal": "coordinacion-planificacion-fiscal",
+  "Sesión Especializada de Decisión": "sesion-especializada-decision",
+
   // Asesoría 1:1
   "Consulta Privada de Descubrimiento": "consulta-descubrimiento-privada",
   "Sesión Plano — 90 minutos": "sesion-plano-90min",
@@ -123,14 +158,17 @@ export default function ContactoForm(props: Props) {
   const effectivePackage = props.defaultPackage ?? urlPackage;
 
   const initialSlug = useMemo(() => {
-    if (effectiveIntent === "preapproval") return "concierge-preaprobacion";
-    if (effectiveIntent === "consult") return "consulta-descubrimiento-privada";
+    if (effectiveIntent === "preapproval") return "planificacion-preaprobacion";
+    if (effectiveIntent === "consult") {
+      const mapped = effectivePackage ? TITLE_TO_SLUG_ES[effectivePackage] : undefined;
+      return mapped ?? "llamada-descubrimiento-gratis";
+    }
     if (effectiveIntent === "question") return "solo-conectar";
     if (effectiveIntent === "package") {
       const mapped = effectivePackage ? TITLE_TO_SLUG_ES[effectivePackage] : undefined;
-      return mapped ?? "consulta-descubrimiento-privada";
+      return mapped ?? "llamada-descubrimiento-gratis";
     }
-    return "consulta-descubrimiento-privada";
+    return "llamada-descubrimiento-gratis";
   }, [effectiveIntent, effectivePackage]);
 
   const defaultMessage = useMemo(() => {
@@ -138,8 +176,13 @@ export default function ContactoForm(props: Props) {
     return `Sobre: ${effectivePackage}\n`;
   }, [effectivePackage]);
 
+  const [serviceSlug, setServiceSlug] = useState<string>(initialSlug);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setServiceSlug(initialSlug);
+  }, [initialSlug]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -147,7 +190,6 @@ export default function ContactoForm(props: Props) {
     setError(null);
 
     const form = e.currentTarget;
-    const serviceSlug = (form.elements.namedItem("serviceSlug") as HTMLInputElement)?.value || "";
     const serviceLabel = SERVICE_OPTIONS.find((o) => o.slug === serviceSlug)?.label || "";
 
     const payload = {
@@ -173,6 +215,7 @@ export default function ContactoForm(props: Props) {
       if (res.ok) {
         setStatus("success");
         (form as HTMLFormElement).reset();
+        setServiceSlug(initialSlug);
         return;
       } else {
         const { error } = await res.json().catch(() => ({ error: "" }));
@@ -196,7 +239,7 @@ export default function ContactoForm(props: Props) {
       {/* Campos ocultos (contexto backend) */}
       <input type="hidden" name="intent" value={effectiveIntent} />
       {effectivePackage ? <input type="hidden" name="package" value={effectivePackage} /> : null}
-      <input type="hidden" id="serviceSlug" name="serviceSlug" value={initialSlug} />
+      <input type="hidden" id="serviceSlug" name="serviceSlug" value={serviceSlug} />
 
       <div>
         <label className="block font-semibold mb-1 text-brand-blue" htmlFor="name">Nombre</label>
@@ -229,11 +272,8 @@ export default function ContactoForm(props: Props) {
         </label>
         <select
           className="w-full p-3 rounded-xl border border-brand-green/30 bg-white focus:border-brand-gold focus:ring-2 focus:ring-brand-gold transition text-brand-green"
-          id="service" name="service" defaultValue={initialSlug}
-          onChange={(e) => {
-            const hidden = document.getElementById("serviceSlug") as HTMLInputElement | null;
-            if (hidden) hidden.value = e.currentTarget.value;
-          }}
+          id="service" name="service" value={serviceSlug}
+          onChange={(e) => setServiceSlug(e.currentTarget.value)}
           required
         >
           <option value="" disabled>Selecciona una opción...</option>

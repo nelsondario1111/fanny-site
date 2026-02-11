@@ -1,521 +1,329 @@
-// app/en/services/page.tsx
 "use client";
 
 import Link from "next/link";
 import { useMemo } from "react";
 import {
   CardGrid,
-  ComparisonTable,
   HubPanel as Panel,
   HubSectionTitle as SectionTitle,
-  InfoCard,
   OfferCard,
   PageHero,
   StickySectionNav,
 } from "@/components/sections/hub";
 
-/* ============================ Pricing (CAD) ============================ */
 const PRICING = {
-  mortgagePreapproval: 0,
-  refiRenewal: 295,
-  firstHomePlan: 395,
-  proTuneUp90: 1200,
-  bizOwnerExecPlan: 2500,
-  corpPayrollClinic: 395,
-  newcomerFastTrack: 395,
-  invest4to10: 695,
-  annualReviewNonClient: 149,
   discovery: 0,
-  blueprint90: 395,
-  align3: 1200,
-  transform6: 2750,
-  elevatePremium: 4995,
-  alumniRetainerMonthly: 149,
-  taxSession: 395,
-  taxAnnual: 1295,
-  taxSmallBiz90d: 1995,
-  ktCohort4w: 795,
-  ktMonthly: 49,
-  workshopPublicSeat: 149,
-  workshopTeamVirtual: 2400,
-  workshopTeamInPerson: 2800,
+  clarity60: 150,
+  clarity90: 225,
+  mapTier1: 2500,
+  mapTier2: 3500,
+  mapTier3: 5000,
+  coachingFoundations: null,
+  workshops: null,
+  foundationsGroup: null,
+  mortgagePreapproval: 0,
+  mortgageOffer: 295,
+  mortgageClosing: 295,
+  businessCashflow: 395,
+  taxCoordination: 395,
+  specialtySession: 295,
 } as const;
 
-function price(p: number | null) {
-  if (p === null) return "Contact for pricing";
-  if (p === 0) return "Free";
-  return `$${p} CAD`;
+function price(value: number | null) {
+  if (value === null) return "Contact for pricing";
+  if (value === 0) return "Free";
+  return `$${value.toLocaleString()} CAD`;
 }
 
-type Intent = "consult" | "preapproval" | "package";
+type ServiceSection =
+  | "start-here"
+  | "strategic-maps"
+  | "support"
+  | "mortgage"
+  | "business";
 
 type Card = {
   id: string;
-  section: string;
+  section: ServiceSection;
   title: string;
   desc: string;
   bullets: string[];
-  timeline?: string;
-  scope?: string;
   tags: string[];
   price: string;
-  intent?: Intent;
-  moreHref?: string;
-  moreLabel?: string;
+  ctaLabel: "Book a Discovery Call" | "Book a Clarity & Direction Session" | "Explore Strategic Financial Maps";
+  ctaHref: string;
 };
 
-function PackageCard({ c }: { c: Card }) {
+function packageHref(title: string) {
   const qs = new URLSearchParams();
-  qs.set("intent", c.intent ?? "package");
-  qs.set("package", c.title);
-  const bookingCta =
-    c.id === "discovery" ? "Book a Discovery Call" : "Book a Strategy Session";
-
-  const meta = [
-    ...(c.timeline ? [{ label: "Timeline", value: c.timeline }] : []),
-    ...(c.scope ? [{ label: "Scope", value: c.scope }] : []),
-  ];
-
-  return (
-    <OfferCard
-      id={c.id}
-      title={c.title}
-      description={c.desc}
-      bullets={c.bullets.slice(0, 4)}
-      price={c.price}
-      tags={c.tags}
-      meta={meta}
-      more={c.moreHref && c.moreLabel ? { href: c.moreHref, label: c.moreLabel } : undefined}
-      cta={{
-        label: bookingCta,
-        href: `/en/contact?${qs.toString()}`,
-      }}
-    />
-  );
+  qs.set("intent", "package");
+  qs.set("package", title);
+  return `/en/contact?${qs.toString()}`;
 }
+
+const CARDS: Card[] = [
+  {
+    id: "discovery",
+    section: "start-here",
+    title: "Free Discovery Call (15 min)",
+    desc: "A short first conversation to understand your goals and identify your best next step.",
+    bullets: [
+      "Clarify priorities and timing",
+      "Choose the right first service",
+      "Leave with a clear action path",
+    ],
+    tags: ["Level 0", "Start Here", "Bilingual EN/ES"],
+    price: price(PRICING.discovery),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: "/en/contact?intent=consult&package=Free%20Discovery%20Call",
+  },
+  {
+    id: "clarity-60",
+    section: "start-here",
+    title: "Clarity & Direction Session (60 min)",
+    desc: "Focused strategy support for one decision that needs structure and momentum.",
+    bullets: [
+      "Review options and tradeoffs",
+      "Prioritize the next 2-3 actions",
+      "Leave with practical written guidance",
+    ],
+    tags: ["Level 1", "Decision-Focused", "Advisory"],
+    price: price(PRICING.clarity60),
+    ctaLabel: "Book a Clarity & Direction Session",
+    ctaHref: packageHref("Clarity & Direction Session (60 min)"),
+  },
+  {
+    id: "clarity-90",
+    section: "start-here",
+    title: "Clarity & Direction Session - Extended (90 min)",
+    desc: "Extended guidance for clients balancing multiple connected financial decisions.",
+    bullets: [
+      "Work through interdependent priorities",
+      "Build a realistic implementation sequence",
+      "Get a confidence-building strategy plan",
+    ],
+    tags: ["Level 1", "Decision-Focused", "Extended"],
+    price: price(PRICING.clarity90),
+    ctaLabel: "Book a Clarity & Direction Session",
+    ctaHref: packageHref("Clarity & Direction Session - Extended (90 min)"),
+  },
+  {
+    id: "map-tier-1",
+    section: "strategic-maps",
+    title: "Tier 1: Goal-Specific Strategic Map",
+    desc: "Best for one high-priority goal that needs a clear strategy and execution path.",
+    bullets: [
+      "Define the target outcome",
+      "Map milestones and sequence",
+      "Set near-term implementation actions",
+    ],
+    tags: ["Tier 1", "Strategic Planning", "Focused Scope"],
+    price: price(PRICING.mapTier1),
+    ctaLabel: "Explore Strategic Financial Maps",
+    ctaHref: packageHref("Tier 1: Goal-Specific Strategic Map"),
+  },
+  {
+    id: "map-tier-2",
+    section: "strategic-maps",
+    title: "Tier 2: Integrated Strategic Map",
+    desc: "Designed for clients managing multiple priorities that must work together.",
+    bullets: [
+      "Integrate decisions across priorities",
+      "Align cash flow, timing, and capacity",
+      "Reduce friction in implementation",
+    ],
+    tags: ["Tier 2", "Integrated", "Strategic Planning"],
+    price: price(PRICING.mapTier2),
+    ctaLabel: "Explore Strategic Financial Maps",
+    ctaHref: packageHref("Tier 2: Integrated Strategic Map"),
+  },
+  {
+    id: "map-tier-3",
+    section: "strategic-maps",
+    title: "Tier 3: Holistic Life & Financial Strategic Map",
+    desc: "Comprehensive planning for major life, business, and long-term financial transitions.",
+    bullets: [
+      "Unify personal and financial priorities",
+      "Coordinate expert collaboration",
+      "Install a long-range implementation roadmap",
+    ],
+    tags: ["Tier 3", "Holistic", "Premium Advisory"],
+    price: price(PRICING.mapTier3),
+    ctaLabel: "Explore Strategic Financial Maps",
+    ctaHref: packageHref("Tier 3: Holistic Life & Financial Strategic Map"),
+  },
+  {
+    id: "support-coaching",
+    section: "support",
+    title: "Coaching & Foundations",
+    desc: "Supplementary coaching to support execution, accountability, and consistency.",
+    bullets: [
+      "Private implementation check-ins",
+      "Progress tracking and adjustment",
+      "Decision support between milestones",
+    ],
+    tags: ["Supplementary", "Coaching", "Foundations"],
+    price: price(PRICING.coachingFoundations),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Coaching & Foundations"),
+  },
+  {
+    id: "support-workshops",
+    section: "support",
+    title: "Workshops",
+    desc: "Structured group learning for families, professionals, and newcomers.",
+    bullets: [
+      "Practical education format",
+      "Templates and planning tools",
+      "Actionable next steps from each session",
+    ],
+    tags: ["Supplementary", "Group", "Education"],
+    price: price(PRICING.workshops),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Workshops"),
+  },
+  {
+    id: "support-foundations-group",
+    section: "support",
+    title: "Foundations & Small Group Programs",
+    desc: "Guided small-group support that reinforces strategy with steady implementation.",
+    bullets: [
+      "Small group accountability",
+      "Practical routines for momentum",
+      "Supportive peer learning environment",
+    ],
+    tags: ["Supplementary", "Small Group", "Implementation"],
+    price: price(PRICING.foundationsGroup),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Foundations & Small Group Programs"),
+  },
+  {
+    id: "mortgage-preapproval",
+    section: "mortgage",
+    title: "Pre-Approval Planning",
+    desc: "Build a strong readiness path before you submit your mortgage application.",
+    bullets: [
+      "Assess affordability and documentation",
+      "Clarify lender-fit scenarios",
+      "Map timing with confidence",
+    ],
+    tags: ["Mortgage", "Start Here", "Readiness"],
+    price: price(PRICING.mortgagePreapproval),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Pre-Approval Planning"),
+  },
+  {
+    id: "mortgage-offer",
+    section: "mortgage",
+    title: "Offer & Financing Strategy",
+    desc: "Make stronger offers with financing strategy tailored to your real constraints.",
+    bullets: [
+      "Compare scenario tradeoffs",
+      "Set practical offer guardrails",
+      "Coordinate financing next steps",
+    ],
+    tags: ["Mortgage", "Offer Strategy", "Decision Support"],
+    price: price(PRICING.mortgageOffer),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Offer & Financing Strategy"),
+  },
+  {
+    id: "mortgage-closing",
+    section: "mortgage",
+    title: "Closing Readiness Review",
+    desc: "Prepare for closing with clear timelines, requirements, and post-close planning.",
+    bullets: [
+      "Review closing checklist and timing",
+      "Surface risk points early",
+      "Confirm post-close priorities",
+    ],
+    tags: ["Mortgage", "Closing", "Execution"],
+    price: price(PRICING.mortgageClosing),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Closing Readiness Review"),
+  },
+  {
+    id: "business-cashflow",
+    section: "business",
+    title: "Business Strategy & Cash Flow Session",
+    desc: "Decision support for business owners balancing growth, stability, and personal goals.",
+    bullets: [
+      "Review cash flow pressure points",
+      "Prioritize strategic decisions",
+      "Set practical next milestones",
+    ],
+    tags: ["Business", "Strategy", "Cash Flow"],
+    price: price(PRICING.businessCashflow),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Business Strategy & Cash Flow Session"),
+  },
+  {
+    id: "business-tax",
+    section: "business",
+    title: "Tax Planning Coordination Session",
+    desc: "Prepare strategy questions and planning priorities before tax decisions are finalized.",
+    bullets: [
+      "Clarify priorities for your advisor team",
+      "Sequence filing and planning steps",
+      "Reduce last-minute decision stress",
+    ],
+    tags: ["Tax", "Coordination", "Planning"],
+    price: price(PRICING.taxCoordination),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Tax Planning Coordination Session"),
+  },
+  {
+    id: "business-specialty",
+    section: "business",
+    title: "Specialty Decision Session",
+    desc: "A focused advisory session for high-stakes decisions that do not fit a standard pathway.",
+    bullets: [
+      "Scope one priority decision",
+      "Evaluate options and implications",
+      "Define immediate action steps",
+    ],
+    tags: ["Specialty", "Advisory", "Focused"],
+    price: price(PRICING.specialtySession),
+    ctaLabel: "Book a Discovery Call",
+    ctaHref: packageHref("Specialty Decision Session"),
+  },
+];
+
 const SECTIONS = [
   { id: "start-here", label: "Start Here" },
   { id: "strategic-maps", label: "Strategic Financial Maps" },
   { id: "support", label: "Supplementary Support" },
   { id: "mortgage", label: "Mortgage Strategy" },
-  { id: "business", label: "Business & Tax Strategy" },
-  { id: "how", label: "How We Work" },
+  { id: "business", label: "Business & Tax" },
 ] as const;
 
-/* ============================= Cards Data ============================= */
-const CARDS: Card[] = [
-  // Signature
-  {
-    id: "elevate",
-    section: "signature",
-    title: "Elevate (Premium Transformation Package)",
-    desc: "End-to-end leadership for your finances: mortgage strategy, tax rhythm, business alignment, and money calm—under one coordinated umbrella.",
-    bullets: [
-      "Financial blueprint across cash-flow, mortgage, and tax",
-      "6+ private sessions with written plans",
-      "Coordination with accountant & lawyer",
-      "Optional Human Design lens for cadence & decisions",
-    ],
-    timeline: "~6 months of guided support",
-    tags: [
-      "Level 3 · Full Transformation",
-      "Executives",
-      "Families",
-      "Business Owners",
-      "Premium",
-    ],
-    price: price(PRICING.elevatePremium),
-  },
-  {
-    id: "transform",
-    section: "signature",
-    title: "Transform (6-Session Package)",
-    desc: "Depth without overwhelm: we install a working system across cash-flow, credit hygiene, and tax set-asides.",
-    bullets: [
-      "End-to-end plan",
-      "Clear guardrails",
-      "Lender-ready documentation",
-      "Written actions after each session",
-    ],
-    timeline: "~12 weeks",
-    tags: [
-      "Level 2 · Deep Integration",
-      "Executives",
-      "Business Owners",
-      "Families",
-    ],
-    price: price(PRICING.transform6),
-  },
-  {
-    id: "exec-teaming",
-    section: "signature",
-    title: "Executive Wealth Teaming (Founder/Professional)",
-    desc: "Align owner pay, banking, and records lenders respect—collaborating with your accountant and lawyer.",
-    bullets: [
-      "Compensation matrix (salary/dividends)",
-      "HST cadence; reserves & buffers",
-      "CPA/lawyer coordination",
-      "Leadership & decision cadence (optional)",
-    ],
-    timeline: "4–6 weeks (typical)",
-    scope:
-      "Planning & documentation; tax/legal execution with your professionals.",
-    tags: [
-      "Level 3 · Executive",
-      "Executives",
-      "Business Owners",
-      "Premium",
-    ],
-    price: `From ${price(PRICING.bizOwnerExecPlan)}`,
-  },
-  {
-    id: "team-workshop",
-    section: "signature",
-    title: "Financial Wellness Workshop (Private Team)",
-    desc: "A focused 3-hour session: cash-flow cadence, lender-credible records, and a shared language for money at work.",
-    bullets: [
-      "Pre-survey + tailored agenda",
-      "3-hour live workshop with Q&A",
-      "Slide deck + resource bundle (EN/ES)",
-      "Follow-up summary",
-    ],
-    timeline: "3 hours (virtual or on-site)",
-    scope: "Up to 20 participants. HST applies.",
-    tags: [
-      "Level 2 · Team Implementation",
-      "Executives",
-      "Business Owners",
-      "Professionals",
-    ],
-    price: `From ${price(
-      PRICING.workshopTeamVirtual
-    )} (virtual) • ${price(PRICING.workshopTeamInPerson)} (in person)`,
-  },
+function PackageCard({ c }: { c: Card }) {
+  return (
+    <OfferCard
+      id={c.id}
+      title={c.title}
+      description={c.desc}
+      bullets={c.bullets.slice(0, 3)}
+      price={c.price}
+      tags={c.tags}
+      cta={{
+        label: c.ctaLabel,
+        href: c.ctaHref,
+      }}
+    />
+  );
+}
 
-  // Foundations (Money & Family)
-  {
-    id: "family-wealth-blueprint",
-    section: "foundations",
-    title: "Family Wealth Blueprint (with FHSA Options)",
-    desc: "Right-sized plan for professional families: savings cadence, FHSA coordination, and a lender-credible pre-approval path.",
-    bullets: [
-      "FHSA single/couple optimization",
-      "Savings rhythm & down-payment map",
-      "Stress-test-aware affordability",
-      "Optional Human Design prompts",
-    ],
-    timeline: "90 minutes + curated follow-up",
-    tags: ["Level 1 · Start Here", "Families", "Premium"],
-    price: price(PRICING.firstHomePlan),
-    intent: "consult",
-  },
-  {
-    id: "pro-tune-up",
-    section: "foundations",
-    title: "Professional Financial Tune-Up (90 Days)",
-    desc: "A focused, human pace to steady cash-flow, real set-asides, and clean credit hygiene—built for busy professionals.",
-    bullets: [
-      "Weekly money cadence",
-      "Quarterly tax set-asides",
-      "Automation checklist",
-      "Optional Human Design personalization",
-    ],
-    timeline: "~90 days (3 sessions + email check-ins)",
-    scope: "Advice-only (no product sales).",
-    tags: [
-      "Level 2 · Routine Installed",
-      "Professionals",
-      "Executives",
-      "Premium",
-    ],
-    price: price(PRICING.proTuneUp90),
-  },
-
-  // Mortgage
-  {
-    id: "mortgage-concierge",
-    section: "mortgage",
-    title: "Mortgage Concierge — Readiness & Pre-Approval",
-    desc: "Prepare, match, and package your file so lenders say yes with confidence—calmly.",
-    bullets: [
-      "Precise checklist; secure intake",
-      "Scenario stress-tests & lender matching",
-      "Support from appraisal to close",
-      "Optional Human Design brief",
-    ],
-    timeline: "Usually 1–2 weeks after documents are complete",
-    scope:
-      "Residential; O.A.C.; no borrower fee in typical prime cases—any exception disclosed in advance.",
-    tags: [
-      "Level 1 · Start Here",
-      "Professionals",
-      "Families",
-      "Newcomers",
-      "Premium",
-    ],
-    price: price(PRICING.mortgagePreapproval),
-    intent: "preapproval",
-  },
-  {
-    id: "refi-renewal",
-    section: "mortgage",
-    title: "Refinance & Renewal Strategy",
-    desc: "Clean math, clear trade-offs, and a short written plan.",
-    bullets: [
-      "Refi vs. renew modeling",
-      "Penalty & rate break-even analysis",
-      "Prepayment guardrails",
-      "Written summary within 24h",
-    ],
-    timeline: "60–90 minutes",
-    tags: [
-      "Level 1 · Single Decision",
-      "Professionals",
-      "Families",
-      "Executives",
-    ],
-    price: price(PRICING.refiRenewal),
-  },
-  {
-    id: "invest-4-10",
-    section: "mortgage",
-    title: "Investment Starter: 4–10 Units (DSCR)",
-    desc: "Honest numbers and safer conditions for your first small building—clarity without drama.",
-    bullets: [
-      "GMR/OPEX/NOI/DSCR modeling",
-      "Offer & condition playbook",
-      "First-90-days plan",
-      "Lender conversation prep",
-    ],
-    timeline: "~2 hours + notes",
-    scope: "Educational analysis; not investment advice.",
-    tags: ["Level 2 · Investment", "Investors", "Business Owners", "Executives"],
-    price: price(PRICING.invest4to10),
-  },
-
-  // Business
-  {
-    id: "pay-yourself-clinic",
-    section: "business",
-    title: "Incorporation / Pay-Yourself Clinic",
-    desc: "One clear conversation to map owner pay, payroll/dividends, and next steps with your accountant.",
-    bullets: [
-      "Owner pay matrix",
-      "Payroll & remittance basics",
-      "Dividend timing considerations",
-      "1-page decision summary",
-    ],
-    timeline: "60–75 minutes",
-    tags: ["Level 1 · Setup", "Business Owners", "Professionals"],
-    price: price(PRICING.corpPayrollClinic),
-  },
-  {
-    id: "tax-review-10y",
-    section: "business",
-    title: "10-Year Holistic Tax Review",
-    desc: "A calm, step-by-step look back over the last decade to uncover missed credits, benefits, and refunds you may still be entitled to.",
-    bullets: [
-      "Review up to 10 years of returns and life events",
-      "Identify gaps in benefits, credits, and key programs",
-      "Simple, CRA-friendly action plan",
-      "Private, judgment-free process",
-    ],
-    timeline: "Typically 6–12 weeks, depending on CRA processing times",
-    scope:
-      "We highlight opportunities and next steps; CRA decisions and timelines remain theirs.",
-    tags: [
-      "Level 2 · Deep Review",
-      "Families",
-      "Professionals",
-      "Newcomers",
-    ],
-    price: price(null),
-    moreHref: "/en/tax-review",
-    moreLabel: "Learn more about the 10-Year Holistic Tax Review →",
-  },
-
-  // Legacy & Tax
-  {
-    id: "tax-strategy",
-    section: "legacy",
-    title: "Personal / Family Tax Strategy Session",
-    desc: "Set a quarterly rhythm and right-sized set-asides—predictable, compliant, and kind to your nervous system.",
-    bullets: [
-      "Quarterly schedule",
-      "Right-sized set-asides",
-      "Receipts & records checklist",
-      "Calendar templates",
-    ],
-    timeline: "75–90 minutes",
-    tags: ["Level 1 · Start Here", "Families", "Professionals"],
-    price: price(PRICING.taxSession),
-  },
-  {
-    id: "legacy-annual",
-    section: "legacy",
-    title: "Legacy & Tax Rhythm (Annual)",
-    desc: "Two key sessions + gentle check-ins so deadlines don’t sneak up.",
-    bullets: [
-      "Mid-year tune-up",
-      "Pre-year-end planning",
-      "Optional cadence prompts",
-      "CPA coordination",
-    ],
-    timeline: "Annual (2 sessions + touchpoints)",
-    tags: ["Level 2 · Ongoing", "Families", "Executives", "Professionals"],
-    price: price(PRICING.taxAnnual),
-  },
-  {
-    id: "smallbiz-setup",
-    section: "legacy",
-    title: "Small-Biz / Independent 90-Day Setup",
-    desc: "Bring cash-flow, HST cycle, and owner pay into a system that scales—and that lenders recognize.",
-    bullets: [
-      "HST cadence",
-      "Pay-yourself plan",
-      "Owner reserves & buffers",
-      "Documentation hygiene",
-    ],
-    timeline: "~90 days",
-    tags: ["Level 2 · Routine Installed", "Business Owners", "Professionals"],
-    price: price(PRICING.taxSmallBiz90d),
-  },
-
-  // Workshops
-  {
-    id: "public-money-clarity",
-    section: "workshops",
-    title: "Money Clarity Workshop (Public Cohort)",
-    desc: "Practical, values-aligned learning to steady cash-flow, plan set-asides, and understand mortgage stress-tests.",
-    bullets: [
-      "2.5–3 hour live session",
-      "Budget & set-aside templates you keep",
-      "Mortgage stress-test primer (Canada 2025 rules)",
-      "Optional Human Design prompts",
-    ],
-    timeline: "Single session (weeknight or Saturday morning)",
-    scope: "Open to professionals and families; limited seats.",
-    tags: ["Level 1 · Group", "Professionals", "Families"],
-    price: `${price(PRICING.workshopPublicSeat)}/person`,
-  },
-
-  // Family / Group
-  {
-    id: "kt-4w",
-    section: "family",
-    title: "Kitchen Table Conversations — 4-Week Cohort",
-    desc: "Small group, warm pace. Meet weekly, share real numbers, and practice gentle money routines together.",
-    bullets: [
-      "Weekly live sessions (small group)",
-      "Optional Human Design prompts",
-      "Templates & checklists to keep",
-      "Kind accountability & Q&A",
-    ],
-    timeline: "4 weeks",
-    tags: ["Level 1 · Group", "Families", "Premium"],
-    price: price(PRICING.ktCohort4w),
-  },
-  {
-    id: "kt-monthly",
-    section: "family",
-    title: "Kitchen Table Conversations — Monthly Circle",
-    desc: "A lighter touch to stay in motion: live Q&A, fresh resources, and a friendly place to ask for help.",
-    bullets: ["Monthly live Q&A", "Resource drops", "Member space for questions"],
-    timeline: "Month-to-month",
-    tags: ["Level 2 · Ongoing", "Families"],
-    price: `${price(PRICING.ktMonthly)}/month`,
-  },
-
-  // Newcomers
-  {
-    id: "newcomer-30d",
-    section: "newcomers",
-    title: "Newcomer Wealth Integration (30 Days)",
-    desc: "Gentle setup for banking, credit, and rent reporting—so your profile reads clearly to lenders.",
-    bullets: [
-      "Account & phone-plan map",
-      "Secured card strategy & limits",
-      "Rent-reporting options",
-      "Credit hygiene routine",
-    ],
-    timeline: "~30 days",
-    tags: ["Level 1 · Start Here", "Newcomers"],
-    price: price(PRICING.newcomerFastTrack),
-  },
-
-  // Advice / Orientation
-  {
-    id: "discovery",
-    section: "advice",
-    title: "Private Discovery Call",
-    desc: "A short, human conversation. Share your goal and timing; leave with 2–3 clear next steps.",
-    bullets: ["2–3 next steps", "No documents yet", "Bilingual EN/ES"],
-    timeline: "20–30 minutes",
-    tags: [
-      "Level 0 · Start Here",
-      "Professionals",
-      "Families",
-      "Executives",
-      "Newcomers",
-    ],
-    price: price(PRICING.discovery),
-    intent: "consult",
-  },
-  {
-    id: "blueprint",
-    section: "advice",
-    title: "90-Minute Blueprint Session",
-    desc: "One priority handled with care: affordability, tax rhythm, credit cleanup, or renewal strategy.",
-    bullets: [
-      "Focused scope",
-      "Personalized numbers",
-      "Written actions within 24h",
-      "Optional Human Design snapshot",
-    ],
-    timeline: "90 minutes",
-    tags: [
-      "Level 1 · Focused",
-      "Professionals",
-      "Business Owners",
-      "Families",
-    ],
-    price: price(PRICING.blueprint90),
-  },
-  {
-    id: "align-3",
-    section: "advice",
-    title: "Align (3-Session Package)",
-    desc: "Install gentle routines and momentum—without overwhelm.",
-    bullets: [
-      "Money rhythm & automation",
-      "Tax set-asides that stick",
-      "Light accountability",
-    ],
-    timeline: "6–8 weeks",
-    tags: ["Level 2 · Routine Installed", "Professionals", "Newcomers"],
-    price: price(PRICING.align3),
-  },
-];
-
-/* ============================= Page ============================= */
 export default function ServicesPage() {
   const sectionsWithCards = useMemo(() => {
-    const byId = (id: string) => CARDS.find((c) => c.id === id);
-    const by = (section: string) => CARDS.filter((c) => c.section === section);
-    const byIds = (ids: string[]) =>
-      ids.map(byId).filter((c): c is Card => Boolean(c));
+    const by = (section: ServiceSection) => CARDS.filter((card) => card.section === section);
+
     return {
-      startHere: byIds(["discovery", "blueprint"]),
-      strategicMaps: by("signature"),
-      supplementarySupport: [
-        ...by("foundations"),
-        ...by("advice").filter((c) => !["discovery", "blueprint"].includes(c.id)),
-        ...by("workshops"),
-        ...by("family"),
-        ...by("newcomers"),
-      ],
+      startHere: by("start-here"),
+      strategicMaps: by("strategic-maps"),
+      support: by("support"),
       mortgage: by("mortgage"),
-      business: [...by("business"), ...by("legacy")],
+      business: by("business"),
     };
   }, []);
 
@@ -525,11 +333,11 @@ export default function ServicesPage() {
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Services"
-        title="Start with clarity, then build your financial strategy"
-        subtitle="Begin with a Discovery Call, choose a focused Strategy Session, and move into tiered Strategic Financial Maps when you are ready for deeper implementation."
+        title="Clarity & Direction for Your Financial Life - with Human-Centered Strategy"
+        subtitle="Start with a free discovery call and choose the advisory support that fits your goals - from clarity sessions to strategic planning and holistic financial maps."
         primaryCta={{
-          label: "Book a Discovery Call",
-          href: "/en/contact?intent=consult&package=Private%20Discovery%20Call",
+          label: "Book a Free Discovery Call",
+          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call",
         }}
         secondaryCta={{
           label: "Explore Strategic Financial Maps",
@@ -544,155 +352,97 @@ export default function ServicesPage() {
         defaultActive="start-here"
       />
 
-      {/* ======= 1. Start Here ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
             id="start-here"
-            title="Start Here: Discovery Call + Strategy Sessions"
-            subtitle="Use these two sessions to set direction quickly, then decide whether to continue with deeper support."
+            title="Decision-Focused Strategy Work"
+            subtitle="These are your core services for clients who are ready to take action."
             tint="gold"
           />
           <Grid cards={sectionsWithCards.startHere} />
         </Panel>
       </div>
 
-      {/* ======= 2. Strategic Financial Maps ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
             id="strategic-maps"
-            title="Strategic Financial Maps"
-            subtitle="Comprehensive, coordinated support for major life and business transitions"
+            title="Strategic Financial Maps - Goal-Focused Advisory"
+            subtitle="Move from clarity to deeper planning with tiered strategic support."
             tint="green"
           />
-          <div className="mb-6 grid md:grid-cols-3 gap-4">
-            <InfoCard
-              kicker="Tier 1"
-              title="Focused Direction"
-              description="Clarify one high-stakes priority with a practical implementation path."
-            />
-            <InfoCard
-              kicker="Tier 2"
-              title="Deep Integration"
-              description="Install routines and decision systems across cash-flow, mortgage, and tax."
-            />
-            <InfoCard
-              kicker="Tier 3"
-              title="Premium Transformation"
-              description="Full-spectrum planning and ongoing coordination with your professional team."
-            />
-          </div>
-          <ComparisonTable
-            className="mb-6"
-            columns={["Best for", "Typical depth", "Ideal timeline"]}
-            rows={[
-              {
-                label: "Tier 1",
-                values: ["One priority at a time", "Focused strategy + actions", "2-6 weeks"],
-              },
-              {
-                label: "Tier 2",
-                values: ["System installation", "Cross-functional planning", "8-12 weeks"],
-              },
-              {
-                label: "Tier 3",
-                values: ["Full transformation", "Executive-level coordination", "3-6 months"],
-              },
-            ]}
-            footnote="Timelines vary by scope and documentation readiness."
-          />
           <Grid cards={sectionsWithCards.strategicMaps} />
+          <p className="mt-6 rounded-2xl border border-brand-gold/40 bg-white/95 p-4 text-sm text-brand-blue/90">
+            If you begin with a Clarity & Direction Session and proceed with a Strategic Financial
+            Map within 30 days, your session fee may be credited toward the full engagement.
+          </p>
         </Panel>
       </div>
 
-      {/* ======= 3. Supplementary Support ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
             id="support"
-            title="Supplementary Support"
-            subtitle="Private coaching, workshops, and cohorts that reinforce your plan with gentle accountability."
+            title="Supplementary Support - Coaching & Workshops"
+            subtitle="Supportive programs that reinforce your core strategy work."
             tint="gold"
           />
-          <Grid cards={sectionsWithCards.supplementarySupport} />
+          <Grid cards={sectionsWithCards.support} />
         </Panel>
       </div>
 
-      {/* ======= 4. Mortgage Strategy ======= */}
       <div className="bg-gradient-to-b from-brand-green/10 to-white border-y border-brand-gold/20">
         <Panel className="bg-white/90">
           <SectionTitle
             id="mortgage"
-            title="Mortgage Strategy"
-            subtitle="Confidence from pre-approval to closing—and early steps for 4–10 unit investments"
+            title="Mortgage Strategy - Practical Confidence from Pre-Approval to Closing"
+            subtitle="A distinct strategy track that supports clear property decisions."
             tint="green"
           />
           <Grid cards={sectionsWithCards.mortgage} />
         </Panel>
       </div>
 
-      {/* ======= 5. Business & Tax Strategy ======= */}
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
             id="business"
-            title="Business & Tax Strategy"
-            subtitle="Executive clarity and predictable tax rhythms for professionals and business owners"
+            title="Business, Tax & Specialty Sessions"
+            subtitle="Focused advisory support for business planning and tax-related decisions."
             tint="gold"
           />
           <Grid cards={sectionsWithCards.business} />
         </Panel>
       </div>
 
-      {/* ======= 6. How We Work ======= */}
       <div className="bg-brand-green/5 border-t border-brand-gold/20">
         <Panel>
           <SectionTitle
-            id="how"
-            title="How We Work"
-            subtitle="Steady, transparent, and human"
+            id="next-step"
+            title="Ready for Your Next Step?"
+            subtitle="Choose the first action that fits your current priorities."
             tint="green"
           />
-          <div className="grid md:grid-cols-3 gap-6">
-            <InfoCard
-              title="1) Discovery"
-              description="A brief, kind conversation. If we’re a fit, you’ll get a short plan and a precise checklist—only what’s needed."
-            />
-            <InfoCard
-              title="2) Plan & Execution"
-              description="We model scenarios, prepare documents, and coordinate steps at a manageable pace. You always know what’s next and why."
-            />
-            <InfoCard
-              title="3) Review & Adjust"
-              description="We confirm outcomes against the plan, note any changes, and set your next check-in. Calm and repeatable."
-            />
-          </div>
-          <div className="mt-6 text-sm text-brand-blue/80 space-y-2">
-            <p>
-              <strong>Notes:</strong> Prices are in CAD and may be subject to
-              HST. Mortgage services are typically free for qualified borrowers
-              because compensation is paid by the lender on closing. Fees may
-              apply in non-prime/private/commercial cases and will be disclosed
-              in advance. All mortgages are O.A.C. (on approved credit).
-            </p>
-            <p>
-              Coaching services are independent of mortgage compensation and do
-              not replace legal, tax, or accounting advice. We coordinate with
-              your chosen professionals as needed. Bilingual support (EN/ES).
-            </p>
-            <p>
-              For workshops: virtual sessions are available Canada-wide;
-              in-person sessions may include travel. Seat-based public cohorts
-              are limited to preserve Q&A quality.
-            </p>
-            <p className="mb-0">
-              Prefer Spanish?{" "}
-              <Link href="/es/servicios" className="underline">
-                Ver servicios en español
-              </Link>
-              .
-            </p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              href="/en/contact?intent=consult&package=Free%20Discovery%20Call"
+              className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+            >
+              Book a Discovery Call
+            </Link>
+            <Link
+              href={packageHref("Clarity & Direction Session (60 min)")}
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+            >
+              Book a Clarity & Direction Session
+            </Link>
+            <Link
+              href="#strategic-maps"
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 text-brand-green hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+            >
+              Explore Strategic Financial Maps
+            </Link>
           </div>
         </Panel>
       </div>
@@ -700,15 +450,15 @@ export default function ServicesPage() {
   );
 }
 
-/* ============================ Grid Renderer ============================ */
 function Grid({ cards }: { cards: Card[] }) {
-  if (!cards.length)
+  if (!cards.length) {
     return <p className="text-brand-blue/70">No services available.</p>;
+  }
 
   return (
     <CardGrid>
-      {cards.map((c) => (
-        <PackageCard key={c.id} c={c} />
+      {cards.map((card) => (
+        <PackageCard key={card.id} c={card} />
       ))}
     </CardGrid>
   );
