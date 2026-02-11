@@ -1,7 +1,7 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import Section from "@/components/ui/Section";
-import ToContactButtons from "@/components/ToContactButtons";
 
 export const metadata: Metadata = {
   title: "Revisión Holística de Impuestos de 10 Años | Fanny Samaniego",
@@ -42,6 +42,9 @@ export const metadata: Metadata = {
 };
 
 export default function RevisionImpuestosPage() {
+  const pkg = "Revisión Holística de Impuestos de 10 Años";
+  const queryPkg = encodeURIComponent(pkg);
+
   return (
     <main className="flex flex-col">
       {/* ================= HERO ================= */}
@@ -104,7 +107,26 @@ export default function RevisionImpuestosPage() {
             Asegurémonos de que tu dinero regrese a ti, de manera segura y compasiva.
           </p>
 
-          <ToContactButtons lang="es" align="center" />
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              href={`/es/contacto?intent=question&package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition bg-brand-green text-white hover:opacity-90"
+            >
+              Verificar si calificas
+            </Link>
+            <Link
+              href={`/es/reservar?package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
+            >
+              Reservar llamada de 15 min
+            </Link>
+            <Link
+              href={`/es/contacto?intent=package&package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
+            >
+              Iniciar revisión de impuestos
+            </Link>
+          </div>
         </div>
       </Section>
     </main>

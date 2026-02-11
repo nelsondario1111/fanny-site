@@ -29,6 +29,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   { slug: "mortgage-offer-financing", label: "Offer & Financing Strategy" },
   { slug: "business-cashflow-session", label: "Business Strategy & Cash Flow Session" },
   { slug: "tax-coordination-session", label: "Tax Planning Coordination Session" },
+  { slug: "tax-review-10y", label: "10-Year Holistic Tax Review" },
 
   // 1:1 Advisory
   { slug: "private-discovery-call", label: "Private Discovery Call" },
@@ -85,6 +86,7 @@ const TITLE_TO_SLUG_EN: Record<string, string> = {
   "Offer & Financing Strategy": "mortgage-offer-financing",
   "Business Strategy & Cash Flow Session": "business-cashflow-session",
   "Tax Planning Coordination Session": "tax-coordination-session",
+  "10-Year Holistic Tax Review": "tax-review-10y",
 
   // 1:1 Advisory
   "Private Discovery Call": "private-discovery-call",

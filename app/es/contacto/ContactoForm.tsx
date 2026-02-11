@@ -33,6 +33,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   { slug: "oferta-financiamiento", label: "Estrategia de Oferta y Financiamiento" },
   { slug: "negocio-flujo-caja", label: "Sesión de Estrategia de Negocio y Flujo de Caja" },
   { slug: "coordinacion-planificacion-fiscal", label: "Sesión de Coordinación para Planificación Fiscal" },
+  { slug: "revision-impuestos-10-anos", label: "Revisión Holística de Impuestos de 10 Años" },
 
   // Asesoría 1:1
   { slug: "consulta-descubrimiento-privada", label: "Consulta Privada de Descubrimiento" },
@@ -89,6 +90,7 @@ const TITLE_TO_SLUG_ES: Record<string, string> = {
   "Estrategia de Oferta y Financiamiento": "oferta-financiamiento",
   "Sesión de Estrategia de Negocio y Flujo de Caja": "negocio-flujo-caja",
   "Sesión de Coordinación para Planificación Fiscal": "coordinacion-planificacion-fiscal",
+  "Revisión Holística de Impuestos de 10 Años": "revision-impuestos-10-anos",
 
   // Asesoría 1:1
   "Consulta Privada de Descubrimiento": "consulta-descubrimiento-privada",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import HydratedResources from "./HydratedResources";
+import ResourcesClient from "./ResourcesClient";
 import { getAllArticles } from "@/lib/getArticles";
 import type { ClientArticle } from "./ResourcesClient";
 
@@ -299,7 +299,7 @@ export default async function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HydratedResources
+      <ResourcesClient
         articles={processed}
         personas={personaIndex}
         featuredSlugs={featuredSlugs}

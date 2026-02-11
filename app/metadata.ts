@@ -53,6 +53,7 @@ const ALT_PAIRS: Pair[] = [
   { en: "/en/login", es: "/es/iniciar-sesion" },
   { en: "/en/privacy", es: "/es/privacidad" },
   { en: "/en/services", es: "/es/servicios" },
+  { en: "/en/services/*", es: "/es/servicios/*" },
   { en: "/en/subscribe", es: "/es/suscribir" },
   { en: "/en/success", es: "/es/success" },
   { en: "/en/terms", es: "/es/terminos" },

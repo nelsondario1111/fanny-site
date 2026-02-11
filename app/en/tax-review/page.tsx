@@ -1,7 +1,7 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
 import Section from "@/components/ui/Section";
-import ToContactButtons from "@/components/ToContactButtons";
 
 export const metadata: Metadata = {
   title:
@@ -45,6 +45,9 @@ export const metadata: Metadata = {
 };
 
 export default function TaxReviewPage() {
+  const pkg = "10-Year Holistic Tax Review";
+  const queryPkg = encodeURIComponent(pkg);
+
   return (
     <main className="flex flex-col">
       {/* ================= HERO ================= */}
@@ -143,7 +146,26 @@ export default function TaxReviewPage() {
             </span>
           </p>
 
-          <ToContactButtons lang="en" align="center" />
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              href={`/en/contact?intent=question&package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition bg-brand-green text-white hover:opacity-90"
+            >
+              Check if you qualify
+            </Link>
+            <Link
+              href={`/en/book?package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
+            >
+              Book 15-min Tax Review Call
+            </Link>
+            <Link
+              href={`/en/contact?intent=package&package=${queryPkg}`}
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
+            >
+              Start Tax Review Intake
+            </Link>
+          </div>
 
           <p className="mt-6 text-sm text-gray-600">
             Prefer Spanish? The 10-year review is also available en Español —

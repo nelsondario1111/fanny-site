@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useMemo } from "react";
 import {
   CardGrid,
   HubPanel as Panel,
@@ -10,6 +7,7 @@ import {
   PageHero,
   StickySectionNav,
 } from "@/components/sections/hub";
+import type { ServiceId } from "@/lib/services/details";
 
 const PRICING = {
   discovery: 0,
@@ -41,7 +39,7 @@ type ServiceSection =
   | "business";
 
 type Card = {
-  id: string;
+  id: ServiceId;
   section: ServiceSection;
   title: string;
   desc: string;
@@ -278,22 +276,23 @@ function PackageCard({ c }: { c: Card }) {
         label: c.ctaLabel,
         href: c.ctaHref,
       }}
+      more={{
+        label: "See service details",
+        href: `/en/services/${c.id}`,
+      }}
     />
   );
 }
 
 export default function ServicesPage() {
-  const sectionsWithCards = useMemo(() => {
-    const by = (section: ServiceSection) => CARDS.filter((card) => card.section === section);
-
-    return {
-      startHere: by("start-here"),
-      strategicMaps: by("strategic-maps"),
-      support: by("support"),
-      mortgage: by("mortgage"),
-      business: by("business"),
-    };
-  }, []);
+  const by = (section: ServiceSection) => CARDS.filter((card) => card.section === section);
+  const sectionsWithCards = {
+    startHere: by("start-here"),
+    strategicMaps: by("strategic-maps"),
+    support: by("support"),
+    mortgage: by("mortgage"),
+    business: by("business"),
+  };
 
   return (
     <main id="main" className="bg-white min-h-screen">
