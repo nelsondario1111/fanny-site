@@ -472,11 +472,16 @@ export default function ServiciosPage() {
           label: "Reservar llamada de descubrimiento gratis",
           href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
         }}
-        highlights={[
-          "Asesoría bilingüe en español e inglés",
-          "Estrategia integrada: hipoteca, impuestos y flujo",
-          "Sesiones virtuales y apoyo en Toronto",
+        proofStats={[
+          { value: "2 idiomas", label: "Asesoría en español + inglés" },
+          { value: "Inicio 15 min", label: "Llamada de descubrimiento gratis" },
+          { value: "Integrado", label: "Hipoteca, impuestos y estrategia financiera" },
         ]}
+        validation={{
+          text: "Acompañamiento privado y centrado en la persona, con próximos pasos claros en cada etapa.",
+          ctaLabel: "Leer testimonios",
+          ctaHref: "/es/testimonios",
+        }}
       />
 
       <StickySectionNav

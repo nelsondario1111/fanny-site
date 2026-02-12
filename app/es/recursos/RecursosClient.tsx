@@ -429,11 +429,16 @@ export default function RecursosClient({
         currentLabel="Recursos"
         title="Artículos y guías prácticas"
         subtitle="Lecturas breves sobre hipotecas, hábitos financieros e impuestos para profesionales y familias con poco tiempo."
-        highlights={[
-          "Lecturas breves para agendas ocupadas",
-          "Temas bilingües sobre hipoteca, dinero e impuestos",
-          "Cada recurso incluye siguientes pasos prácticos",
+        proofStats={[
+          { value: "2 idiomas", label: "Recursos en español + inglés" },
+          { value: "3 temas", label: "Hipoteca, hábitos financieros e impuestos" },
+          { value: "Lectura rápida", label: "Contenido creado para agendas ocupadas" },
         ]}
+        validation={{
+          text: "Cada artículo es educativo y práctico, pensado para ayudarte a decidir tu próximo paso con más claridad.",
+          ctaLabel: "Explorar servicios",
+          ctaHref: "/es/servicios",
+        }}
       />
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 

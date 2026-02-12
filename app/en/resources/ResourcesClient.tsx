@@ -426,11 +426,16 @@ export default function ResourcesClient({
         currentLabel="Resources"
         title="Practical Articles & Guides"
         subtitle="Short reads on mortgages, money habits, and tax basics for busy professionals and families."
-        highlights={[
-          "Short reads built for busy schedules",
-          "Bilingual topics across mortgage, money, and tax",
-          "Each resource includes practical next steps",
+        proofStats={[
+          { value: "2 languages", label: "English + Spanish resources" },
+          { value: "3 themes", label: "Mortgage, money habits, and tax basics" },
+          { value: "Quick reads", label: "Built for busy schedules" },
         ]}
+        validation={{
+          text: "Every article is educational, practical, and designed to help you make your next decision with more clarity.",
+          ctaLabel: "Explore services",
+          ctaHref: "/en/services",
+        }}
       />
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
 

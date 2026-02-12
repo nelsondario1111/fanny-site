@@ -505,11 +505,16 @@ export default function ToolsPage() {
         currentLabel="Tools"
         title="Tools for Financial Clarity"
         subtitle="Practical bilingual calculators and worksheets to support clear, confident decisions."
-        highlights={[
-          "Most tools work with no account required",
-          "Bilingual calculators and worksheets",
-          "Educational tools designed for real decisions",
+        proofStats={[
+          { value: "2 languages", label: "English + Spanish tools" },
+          { value: "No account", label: "Most tools open instantly" },
+          { value: "Action-ready", label: "Built for practical decisions" },
         ]}
+        validation={{
+          text: "These tools are educational and designed to support real-world decisions before your next advisory conversation.",
+          ctaLabel: "Book discovery call",
+          ctaHref: "/en/contact?intent=consult",
+        }}
       />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />

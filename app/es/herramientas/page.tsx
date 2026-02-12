@@ -506,11 +506,16 @@ export default function ToolsPage() {
         currentLabel="Herramientas"
         title="Herramientas para claridad financiera"
         subtitle="Calculadoras y plantillas prácticas y bilingües para apoyar decisiones claras y con confianza."
-        highlights={[
-          "La mayoría funciona sin crear cuenta",
-          "Calculadoras y plantillas bilingües",
-          "Herramientas educativas para decisiones reales",
+        proofStats={[
+          { value: "2 idiomas", label: "Herramientas en español + inglés" },
+          { value: "Sin cuenta", label: "La mayoría abre al instante" },
+          { value: "Accionables", label: "Pensadas para decisiones reales" },
         ]}
+        validation={{
+          text: "Estas herramientas son educativas y están diseñadas para apoyar decisiones reales antes de tu próxima sesión de asesoría.",
+          ctaLabel: "Reservar llamada",
+          ctaHref: "/es/contacto?intent=consult",
+        }}
       />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />

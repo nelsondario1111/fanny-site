@@ -469,11 +469,16 @@ export default function ServicesPage() {
           label: "Book a Free Discovery Call",
           href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
         }}
-        highlights={[
-          "Bilingual advisory in English and Spanish",
-          "Integrated mortgage, tax, and cash-flow strategy",
-          "Virtual sessions plus Toronto-based support",
+        proofStats={[
+          { value: "2 languages", label: "English + Spanish advisory" },
+          { value: "15-min start", label: "Free discovery call available" },
+          { value: "Integrated", label: "Mortgage, tax, and money strategy" },
         ]}
+        validation={{
+          text: "Private, human-centered guidance with clear next steps at every stage.",
+          ctaLabel: "Read client stories",
+          ctaHref: "/en/testimonials",
+        }}
       />
 
       <StickySectionNav

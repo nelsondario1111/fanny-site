@@ -343,7 +343,8 @@ export function PageHero({
   subtitle,
   primaryCta,
   secondaryCta,
-  highlights,
+  proofStats,
+  validation,
   children,
 }: {
   homeHref: string;
@@ -353,7 +354,8 @@ export function PageHero({
   subtitle: ReactNode;
   primaryCta?: { label: string; href: string; variant?: CTAButtonVariant };
   secondaryCta?: { label: string; href: string; variant?: CTAButtonVariant };
-  highlights?: string[];
+  proofStats?: { value: string; label: string }[];
+  validation?: { text: string; ctaLabel?: string; ctaHref?: string };
   children?: ReactNode;
 }) {
   const { fade } = useMotionPresets();
@@ -392,18 +394,35 @@ export function PageHero({
           />
         )}
 
-        {highlights && highlights.length > 0 && (
+        {proofStats && proofStats.length > 0 && (
           <Reveal variants={fade}>
-            <ul className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl">
-              {highlights.map((item) => (
+            <ul className="mt-5 grid gap-2 sm:grid-cols-3 max-w-4xl">
+              {proofStats.map((item) => (
                 <li
-                  key={`${currentLabel}-${item}`}
-                  className="rounded-2xl border border-brand-gold/35 bg-white/85 px-3.5 py-2 text-sm text-brand-green shadow-sm"
+                  key={`${currentLabel}-${item.label}`}
+                  className="rounded-2xl border border-brand-gold/35 bg-white/90 px-3.5 py-3 shadow-sm"
                 >
-                  {item}
+                  <p className="font-brand text-xl leading-tight text-brand-green">{item.value}</p>
+                  <p className="mt-0.5 text-xs text-brand-blue/85">{item.label}</p>
                 </li>
               ))}
             </ul>
+          </Reveal>
+        )}
+
+        {validation && (
+          <Reveal variants={fade}>
+            <div className="mt-4 max-w-4xl rounded-2xl border border-brand-gold/35 bg-white/90 px-4 py-3 shadow-sm sm:flex sm:items-center sm:justify-between sm:gap-4">
+              <p className="text-sm text-brand-blue/90">{validation.text}</p>
+              {validation.ctaLabel && validation.ctaHref ? (
+                <Link
+                  href={validation.ctaHref}
+                  className="mt-2 inline-flex items-center rounded-full border border-brand-green/35 px-3 py-1.5 text-xs font-semibold text-brand-green transition hover:bg-brand-green hover:text-white sm:mt-0"
+                >
+                  {validation.ctaLabel}
+                </Link>
+              ) : null}
+            </div>
           </Reveal>
         )}
 

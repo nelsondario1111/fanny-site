@@ -90,6 +90,30 @@ export default async function ServiceDetailPage(
     "inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full border border-brand-gold/40 bg-white text-brand-green font-semibold hover:bg-brand-gold/15 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
   const PANEL_CLASS =
     "rounded-3xl border border-brand-gold/30 bg-white/95 shadow-[0_12px_30px_rgba(47,74,53,0.1)]";
+  const isStrategicMapTier = detail.id === "map-tier-1" || detail.id === "map-tier-2" || detail.id === "map-tier-3";
+  const strategicMapRows = [
+    {
+      id: "map-tier-1",
+      tier: "Nivel 1",
+      investment: "$2,500 CAD",
+      timeline: "2-6 semanas",
+      focus: "Una meta prioritaria",
+    },
+    {
+      id: "map-tier-2",
+      tier: "Nivel 2",
+      investment: "$3,500 CAD",
+      timeline: "8-12 semanas",
+      focus: "Plan integrado de múltiples prioridades",
+    },
+    {
+      id: "map-tier-3",
+      tier: "Nivel 3",
+      investment: "$5,000 CAD",
+      timeline: "3-6 meses",
+      focus: "Estrategia holística de largo plazo",
+    },
+  ] as const;
 
   return (
     <main className="min-h-screen bg-brand-beige pb-16">
@@ -193,6 +217,58 @@ export default async function ServiceDetailPage(
               <h2 className="font-brand text-2xl text-brand-green">Resultado Esperado</h2>
               <p className="mt-4 leading-relaxed text-brand-blue/90">{detail.outcome}</p>
             </section>
+
+            {isStrategicMapTier && (
+              <section className={`${PANEL_CLASS} overflow-hidden`}>
+                <div className="p-6 md:p-7 pb-0">
+                  <h2 className="font-brand text-2xl text-brand-green">Comparativo rápido de niveles</h2>
+                  <p className="mt-2 text-sm text-brand-blue/85">
+                    Compara los tres niveles de mapa estratégico y elige el alcance que mejor encaja con tu etapa actual.
+                  </p>
+                </div>
+                <div className="mt-4 overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-brand-green/5 border-y border-brand-gold/25">
+                      <tr>
+                        <th className="px-4 py-3 text-left font-semibold text-brand-green">Nivel</th>
+                        <th className="px-4 py-3 text-left font-semibold text-brand-green">Inversión</th>
+                        <th className="px-4 py-3 text-left font-semibold text-brand-green">Tiempo típico</th>
+                        <th className="px-4 py-3 text-left font-semibold text-brand-green">Ideal para</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {strategicMapRows.map((row) => {
+                        const active = row.id === detail.id;
+                        return (
+                          <tr
+                            key={row.id}
+                            className={[
+                              "border-b border-brand-gold/20 last:border-b-0",
+                              active ? "bg-brand-green/10" : "bg-white",
+                            ].join(" ")}
+                          >
+                            <td className="px-4 py-3 text-brand-green font-semibold">
+                              {row.tier} {active ? "• Actual" : ""}
+                            </td>
+                            <td className="px-4 py-3 text-brand-blue/90">{row.investment}</td>
+                            <td className="px-4 py-3 text-brand-blue/90">{row.timeline}</td>
+                            <td className="px-4 py-3 text-brand-blue/90">{row.focus}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="px-6 py-4 border-t border-brand-gold/20">
+                  <Link
+                    href="/es/servicios#strategic-maps"
+                    className="text-sm text-brand-blue hover:text-brand-green underline underline-offset-4"
+                  >
+                    Comparar todos los Mapas Estratégicos en la página de servicios
+                  </Link>
+                </div>
+              </section>
+            )}
 
             {detail.scopeNote && (
               <section className="rounded-2xl border border-brand-gold/45 bg-brand-gold/12 p-5">

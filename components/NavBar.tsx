@@ -110,7 +110,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
   const convoHref = `${base}/${t("contact", "contacto")}?intent=${t("hello", "hola")}`;
   const brandSubtitle = t("Holistic Financial Consultant", "Consultora financiera holística");
   const UTILITY_LINK =
-    "inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-xs hover:bg-white/20 transition";
+    "inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10 text-xs hover:bg-white/20 transition sm:h-auto sm:w-auto sm:gap-1 sm:px-2.5 sm:py-1";
 
   const LINK_BASE =
     "inline-flex items-center h-10 px-0 text-[14px] font-medium leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
@@ -132,16 +132,23 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
         >
           <div className="max-w-content mx-auto px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
-              <a className={UTILITY_LINK} href="tel:14167268420">
-                <Phone size={12} /> (416) 726-8420
+              <a
+                className={UTILITY_LINK}
+                href="tel:14167268420"
+                aria-label={t("Call (416) 726-8420", "Llamar al (416) 726-8420")}
+              >
+                <Phone size={12} />
+                <span className="hidden sm:inline">(416) 726-8420</span>
               </a>
               <a
                 className={UTILITY_LINK}
                 href="https://wa.me/14167268420"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={t("Open WhatsApp chat", "Abrir chat de WhatsApp")}
               >
-                <MessageCircle size={12} /> WhatsApp
+                <MessageCircle size={12} />
+                <span className="hidden sm:inline">WhatsApp</span>
               </a>
             </div>
             <LangToggle invert lang={lang} />

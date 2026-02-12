@@ -47,6 +47,11 @@ export default function HomeEs() {
   const primaryCtaClass = ctaButtonClass("primary");
   const secondaryCtaClass = ctaButtonClass("secondary");
   const ghostCtaClass = ctaButtonClass("ghost");
+  const heroProofStats = [
+    { value: "2 idiomas", label: "Atención en español + inglés" },
+    { value: "15 min", label: "Llamada de descubrimiento gratis" },
+    { value: "Nivel 2", label: "Agente hipotecaria en Ontario" },
+  ] as const;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -85,19 +90,19 @@ export default function HomeEs() {
           aria-label="Hero"
         >
           <StaggerGroup className="w-full px-4">
-            <section className="max-w-content mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-10 sm:pb-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
+            <section className="max-w-content mx-auto px-5 sm:px-8 pt-5 sm:pt-7 pb-8 sm:pb-12 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
               <Reveal variants={fadeUp}>
-                <h1 className="font-brand font-bold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
+                <h1 className="font-brand font-bold text-4xl sm:text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
                   Números claros, decisiones con calma.
                 </h1>
               </Reveal>
 
               <Reveal variants={fade}>
-                <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
+                <p className="font-sans text-base sm:text-lg md:text-xl text-brand-blue/90 mb-5 leading-relaxed max-w-xl mx-auto">
                   <span className="block">Consultora financiera holística</span>
                   <span className="block">Impuestos • Hipotecas • Estrategia financiera</span>
                   <span className="block mt-2">
-                    Cuando estés lista/o, estoy aquí para acompañarte con números claros y decisiones en calma.
+                    Te acompaño para avanzar con números claros y decisiones prácticas, en calma.
                   </span>
                 </p>
               </Reveal>
@@ -126,14 +131,44 @@ export default function HomeEs() {
               </Reveal>
 
               <Reveal variants={fade}>
-                <TrustChips lang="es" />
+                <ul className="mx-auto mt-5 grid w-full max-w-3xl grid-cols-2 gap-1.5 text-left sm:grid-cols-3 sm:gap-2">
+                  {heroProofStats.map((item, index) => (
+                    <li
+                      key={item.label}
+                      className={[
+                        "rounded-2xl border border-brand-gold/35 bg-white/90 px-3 py-2.5 shadow-sm",
+                        index === 2 ? "col-span-2 sm:col-span-1" : "",
+                      ].join(" ")}
+                    >
+                      <p className="font-brand text-lg sm:text-xl leading-tight text-brand-green">{item.value}</p>
+                      <p className="mt-0.5 text-[11px] sm:text-xs text-brand-blue/85">{item.label}</p>
+                    </li>
+                  ))}
+                </ul>
               </Reveal>
             </section>
           </StaggerGroup>
         </header>
       </div>
 
-      <RevealPanel className="mt-10" aria-label="Rutas para empezar">
+      <RevealPanel className="mt-6" aria-label="Confianza y validación">
+        <div className="max-w-content mx-auto rounded-3xl border border-brand-gold/30 bg-white/90 px-5 py-4 shadow-[0_10px_24px_rgba(47,74,53,0.08)] sm:px-8">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <p className="text-sm text-brand-blue/90">
+              Acompañamiento privado y práctico con próximos pasos claros. Los resultados varían según cada situación.
+            </p>
+            <Link
+              href="/es/testimonios"
+              className="inline-flex items-center justify-center rounded-full border border-brand-green/35 px-3 py-1.5 text-xs font-semibold text-brand-green transition hover:bg-brand-green hover:text-white"
+            >
+              Leer testimonios
+            </Link>
+          </div>
+          <TrustChips lang="es" className="mt-3 justify-start" />
+        </div>
+      </RevealPanel>
+
+      <RevealPanel className="mt-8" aria-label="Rutas para empezar">
         <StartHereDecisionWidget lang="es" />
       </RevealPanel>
 
