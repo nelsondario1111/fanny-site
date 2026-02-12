@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, Languages, Shield, Landmark } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cubicBezier, m, useReducedMotion } from "framer-motion";
 
 type Lang = "en" | "es";
@@ -28,17 +28,24 @@ const CHIP_COPY: Record<Lang, Array<{ icon: ReactNode; text: string }>> = {
 
 export default function TrustChips({ lang, className = "" }: TrustChipsProps) {
   const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const shouldAnimate = mounted && !reduce;
   const easeOut = cubicBezier(0.22, 1, 0.36, 1);
   const listVariants = {
     hidden: {},
-    visible: reduce ? {} : { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+    visible: shouldAnimate ? { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } : {},
   };
   const itemVariants = {
-    hidden: { opacity: 0, y: 8 },
+    hidden: { opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 8 : 0 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: reduce ? { duration: 0 } : { duration: 0.45, ease: easeOut },
+      transition: shouldAnimate ? { duration: 0.45, ease: easeOut } : { duration: 0 },
     },
   };
 
@@ -46,9 +53,8 @@ export default function TrustChips({ lang, className = "" }: TrustChipsProps) {
     <m.div
       className={`mt-5 flex flex-wrap items-center justify-center gap-2 ${className}`.trim()}
       aria-label={lang === "en" ? "Trust signals" : "Sellos de confianza"}
-      initial={reduce ? false : "hidden"}
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      initial={shouldAnimate ? "hidden" : false}
+      animate="visible"
       variants={listVariants}
     >
       {CHIP_COPY[lang].map((item) => (
