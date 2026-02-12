@@ -79,10 +79,8 @@ export default function TestimonialsPage() {
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Testimonials"
-        title="Stories of Financial Transformation"
-        subtitle="Real client stories shared with permission. Each journey is unique-these reflections highlight the blend of clarity, structure, and compassion at the core of our work."
-        primaryCta={{ label: "Book a Discovery Call", href: "/en/contact?intent=consult" }}
-        secondaryCta={{ label: "Explore Services", href: "/en/services", variant: "secondary" }}
+        title="Client Stories"
+        subtitle="Real client reflections shared with permission. Quotes may be lightly edited for clarity, and outcomes vary by situation."
       />
 
       {/* Testimonials list */}

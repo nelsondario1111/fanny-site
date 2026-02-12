@@ -16,7 +16,6 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 
 /* =============================== Types =============================== */
 export type ClientArticle = {
@@ -425,16 +424,9 @@ export default function ResourcesClient({
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Resources"
-        title="Helpful Articles & Guides"
-        subtitle="Short, practical reads on mortgages, money behavior, and tax basics for busy professionals and families."
-        primaryCta={{
-          label: "Book a Free Discovery Call",
-          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
-        }}
-        secondaryCta={{ label: "Explore Services", href: "/en/services", variant: "secondary" }}
-      >
-        <TrustChips lang="en" />
-      </PageHero>
+        title="Practical Articles & Guides"
+        subtitle="Short reads on mortgages, money habits, and tax basics for busy professionals and families."
+      />
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
 
       <section className="px-4 mt-8 scroll-mt-24">

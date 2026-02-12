@@ -16,7 +16,6 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 
 /* =============================== Tipos =============================== */
 export type ClientArticle = {
@@ -428,16 +427,9 @@ export default function RecursosClient({
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Recursos"
-        title="Artículos y Guias Utiles"
-        subtitle="Lecturas breves y practicas sobre hipotecas, dinero e impuestos para profesionales y familias con poco tiempo."
-        primaryCta={{
-          label: "Reservar llamada de descubrimiento gratis",
-          href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
-        }}
-        secondaryCta={{ label: "Explorar servicios", href: "/es/servicios", variant: "secondary" }}
-      >
-        <TrustChips lang="es" />
-      </PageHero>
+        title="Artículos y guías prácticas"
+        subtitle="Lecturas breves sobre hipotecas, hábitos financieros e impuestos para profesionales y familias con poco tiempo."
+      />
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 
       <section className="px-4 mt-8 scroll-mt-24">

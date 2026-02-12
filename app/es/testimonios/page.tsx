@@ -79,10 +79,8 @@ export default function TestimonialsPage() {
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Testimonios"
-        title="Historias de Transformación Financiera"
-        subtitle="Testimonios reales compartidos con permiso. Cada camino es único-estas reflexiones muestran la mezcla de claridad, estructura y compasión en el corazón de nuestro trabajo."
-        primaryCta={{ label: "Reservar llamada de descubrimiento", href: "/es/contacto?intent=consult" }}
-        secondaryCta={{ label: "Explorar servicios", href: "/es/servicios", variant: "secondary" }}
+        title="Historias de clientes"
+        subtitle="Testimonios reales compartidos con permiso. Algunas citas pueden editarse levemente por claridad y los resultados varían según cada situación."
       />
 
       {/* Lista de testimonios */}

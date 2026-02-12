@@ -58,10 +58,8 @@ export default function Contacto() {
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Contacto"
-        title="Conectemos y transforma tu vida financiera"
-        subtitle="Reserva una llamada de descubrimiento o cuéntanos en qué estás trabajando. Te responderemos pronto con próximos pasos claros."
-        primaryCta={{ label: "Reservar llamada gratuita", href: "/es/reservar" }}
-        secondaryCta={{ label: "Escribir un email", href: "mailto:info@fannysamaniego.com", variant: "secondary" }}
+        title="Conversemos sobre tu próximo paso financiero"
+        subtitle="Reserva una llamada de descubrimiento o cuéntanos en qué estás trabajando. Te responderemos con próximos pasos claros."
       />
 
       {/* Grid de contenido */}

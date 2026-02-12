@@ -20,12 +20,11 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 
 import {
-  FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
+  FaCalculator, FaHome, FaClipboardList,
   FaFileExcel, FaFileCsv, FaPercent, FaBuilding, FaChartLine, FaBalanceScale,
-  FaMoneyBillWave, FaPiggyBank, FaRobot, FaSignInAlt, FaPrint, FaListUl, FaThLarge
+  FaMoneyBillWave, FaPiggyBank, FaRobot, FaSignInAlt, FaListUl, FaThLarge
 } from "react-icons/fa";
 
 /* ============================== Shared UI ============================== */
@@ -484,8 +483,6 @@ export default function ToolsPage() {
   const toggleCat = (c: Category) =>
     setActiveCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
 
-  const handlePrint = () => window.print();
-
   const startHereTools = useMemo(() => {
     const ids = [
       "mortgage-affordability",
@@ -506,51 +503,9 @@ export default function ToolsPage() {
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Tools"
-        title="Tools for your financial wellbeing"
-        subtitle="Practical, bilingual calculators and worksheets that help you make confident, values-aligned decisions."
-        primaryCta={{
-          label: "Book a Free Discovery Call",
-          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
-        }}
-        secondaryCta={{
-          label: "Explore Services",
-          href: "/en/services",
-          variant: "secondary",
-        }}
-      >
-        <TrustChips lang="en" />
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button
-            onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
-            className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
-            title={listMode === "grid" ? "Switch to list view" : "Switch to grid view"}
-            type="button"
-          >
-            {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
-            {listMode === "grid" ? "List" : "Grid"}
-          </button>
-          <button
-            onClick={handlePrint}
-            className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-            title="Open print dialog (choose 'Save as PDF')"
-            type="button"
-          >
-            <FaPrint aria-hidden /> Print / Save as PDF
-          </button>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaShieldAlt className="text-brand-gold" aria-hidden /> Private
-          </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaCheckCircle className="text-brand-gold" aria-hidden /> Free
-          </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingual
-          </span>
-        </div>
-      </PageHero>
+        title="Tools for Financial Clarity"
+        subtitle="Practical bilingual calculators and worksheets to support clear, confident decisions."
+      />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
 
@@ -620,8 +575,19 @@ export default function ToolsPage() {
               className="w-full rounded-full border border-brand-gold/60 bg-white px-5 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
               aria-label="Search tools"
             />
-            <div className="text-sm text-brand-blue/70 self-center">
-              Showing <b>{filtered.length}</b> of {TOOLS.length}
+            <div className="flex items-center gap-2 self-center">
+              <div className="text-sm text-brand-blue/70">
+                Showing <b>{filtered.length}</b> of {TOOLS.length}
+              </div>
+              <button
+                onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
+                className="px-3 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2 text-sm"
+                title={listMode === "grid" ? "Switch to list view" : "Switch to grid view"}
+                type="button"
+              >
+                {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
+                {listMode === "grid" ? "List" : "Grid"}
+              </button>
             </div>
           </div>
 

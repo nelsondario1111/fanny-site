@@ -10,7 +10,6 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 import HowItWorksTimeline from "@/components/HowItWorksTimeline";
 import type { ServiceId } from "@/lib/services/details";
 
@@ -467,20 +466,13 @@ export default function ServiciosPage() {
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Servicios"
-        title="Claridad y Dirección para tu vida financiera - con estrategia centrada en la persona"
-        subtitle="Empieza con una llamada de descubrimiento gratis y elige el nivel de asesoría que mejor se adapte a tus metas: desde sesiones de claridad hasta mapas financieros estratégicos integrales."
+        title="Claridad y dirección para tu vida financiera"
+        subtitle="Empieza con una llamada de descubrimiento gratis y elige el nivel de asesoría que mejor se ajusta a tus prioridades, desde sesiones de claridad hasta mapas financieros estratégicos."
         primaryCta={{
           label: "Reservar llamada de descubrimiento gratis",
           href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
         }}
-        secondaryCta={{
-          label: "Explorar mapas financieros estratégicos",
-          href: "#strategic-maps",
-          variant: "secondary",
-        }}
-      >
-        <TrustChips lang="es" />
-      </PageHero>
+      />
 
       <StickySectionNav
         sections={SECTIONS}

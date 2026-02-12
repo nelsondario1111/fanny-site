@@ -66,10 +66,8 @@ export default function Contact() {
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Contact"
-        title="Let’s connect and transform your financial life"
-        subtitle="Book a free discovery call, or tell us what you’re working on. We’ll reply shortly with clear next steps."
-        primaryCta={{ label: "Book a Free Discovery Call", href: "/en/book" }}
-        secondaryCta={{ label: "Email Us", href: "mailto:info@fannysamaniego.com", variant: "secondary" }}
+        title="Let’s Talk About Your Next Financial Step"
+        subtitle="Book a free discovery call or tell us what you’re working on. We’ll reply with clear next steps."
       />
 
       {/* Content grid */}

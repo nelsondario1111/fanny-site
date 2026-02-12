@@ -94,9 +94,11 @@ export default function HomeEs() {
 
               <Reveal variants={fade}>
                 <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
-                  Consultora financiera holística | Impuestos • Hipotecas •
-                  Estrategia financiera. Cuando estés lista/o, estoy aquí para
-                  acompañarte con números claros y decisiones en calma.
+                  <span className="block">Consultora financiera holística</span>
+                  <span className="block">Impuestos • Hipotecas • Estrategia financiera</span>
+                  <span className="block mt-2">
+                    Cuando estés lista/o, estoy aquí para acompañarte con números claros y decisiones en calma.
+                  </span>
                 </p>
               </Reveal>
 

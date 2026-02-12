@@ -20,12 +20,11 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 
 import {
-  FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
+  FaCalculator, FaHome, FaClipboardList,
   FaFileExcel, FaFileCsv, FaPercent, FaBuilding, FaChartLine, FaBalanceScale,
-  FaMoneyBillWave, FaPiggyBank, FaRobot, FaSignInAlt, FaPrint, FaListUl, FaThLarge
+  FaMoneyBillWave, FaPiggyBank, FaRobot, FaSignInAlt, FaListUl, FaThLarge
 } from "react-icons/fa";
 
 /* ============================== UI compartida ============================== */
@@ -485,8 +484,6 @@ export default function ToolsPage() {
   const toggleCat = (c: Categoria) =>
     setActiveCats((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
 
-  const handlePrint = () => window.print();
-
   const startHereTools = useMemo(() => {
     const ids = [
       "asequibilidad-hipotecaria",
@@ -507,51 +504,9 @@ export default function ToolsPage() {
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Herramientas"
-        title="Herramientas para tu bienestar financiero"
-        subtitle="Calculadoras y plantillas prácticas y bilingües para decidir con claridad y avanzar con confianza."
-        primaryCta={{
-          label: "Reservar llamada de descubrimiento gratis",
-          href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
-        }}
-        secondaryCta={{
-          label: "Explorar servicios",
-          href: "/es/servicios",
-          variant: "secondary",
-        }}
-      >
-        <TrustChips lang="es" />
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button
-            onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
-            className="px-4 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2"
-            title={listMode === "grid" ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
-            type="button"
-          >
-            {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
-            {listMode === "grid" ? "Lista" : "Cuadrícula"}
-          </button>
-          <button
-            onClick={handlePrint}
-            className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-            title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
-            type="button"
-          >
-            <FaPrint aria-hidden /> Imprimir / Guardar PDF
-          </button>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaShieldAlt className="text-brand-gold" aria-hidden /> Privadas
-          </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaCheckCircle className="text-brand-gold" aria-hidden /> Gratuitas
-          </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-gold/40 text-brand-green">
-            <FaGlobeAmericas className="text-brand-gold" aria-hidden /> Bilingues
-          </span>
-        </div>
-      </PageHero>
+        title="Herramientas para claridad financiera"
+        subtitle="Calculadoras y plantillas prácticas y bilingües para apoyar decisiones claras y con confianza."
+      />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 
@@ -621,8 +576,19 @@ export default function ToolsPage() {
               className="w-full rounded-full border border-brand-gold/60 bg-white px-5 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
               aria-label="Buscar herramientas"
             />
-            <div className="text-sm text-brand-blue/70 self-center">
-              Mostrando <b>{filtered.length}</b> de {TOOLS.length}
+            <div className="flex items-center gap-2 self-center">
+              <div className="text-sm text-brand-blue/70">
+                Mostrando <b>{filtered.length}</b> de {TOOLS.length}
+              </div>
+              <button
+                onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
+                className="px-3 py-2 border-2 border-brand-green text-brand-green rounded-full hover:bg-brand-green hover:text-white transition inline-flex items-center gap-2 text-sm"
+                title={listMode === "grid" ? "Cambiar a vista de lista" : "Cambiar a vista de cuadrícula"}
+                type="button"
+              >
+                {listMode === "grid" ? <FaListUl aria-hidden /> : <FaThLarge aria-hidden />}{" "}
+                {listMode === "grid" ? "Lista" : "Cuadrícula"}
+              </button>
             </div>
           </div>
 

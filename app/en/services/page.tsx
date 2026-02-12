@@ -10,7 +10,6 @@ import {
 } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import StickyNextStepBar from "@/components/StickyNextStepBar";
-import TrustChips from "@/components/TrustChips";
 import HowItWorksTimeline from "@/components/HowItWorksTimeline";
 import type { ServiceId } from "@/lib/services/details";
 
@@ -464,20 +463,13 @@ export default function ServicesPage() {
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Services"
-        title="Clarity & Direction for Your Financial Life - with Human-Centered Strategy"
-        subtitle="Start with a free discovery call and choose the advisory support that fits your goals - from clarity sessions to strategic planning and holistic financial maps."
+        title="Clarity and Direction for Your Financial Life"
+        subtitle="Start with a free discovery call and choose the advisory support that matches your priorities, from clarity sessions to strategic financial maps."
         primaryCta={{
           label: "Book a Free Discovery Call",
           href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
         }}
-        secondaryCta={{
-          label: "Explore Strategic Financial Maps",
-          href: "#strategic-maps",
-          variant: "secondary",
-        }}
-      >
-        <TrustChips lang="en" />
-      </PageHero>
+      />
 
       <StickySectionNav
         sections={SECTIONS}
