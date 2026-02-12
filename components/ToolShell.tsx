@@ -22,7 +22,7 @@ export default function ToolShell({ title, subtitle, lang = "en", children }: To
               <FaArrowLeft aria-hidden /> {lang === "es" ? "Volver a Herramientas" : "Back to Tools"}
             </Link>
           </div>
-          <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+          <h1 className="font-brand font-bold text-3xl md:text-4xl text-brand-green tracking-tight">
             {title}
           </h1>
           {subtitle && <p className="text-brand-blue/90 text-lg mt-3">{subtitle}</p>}

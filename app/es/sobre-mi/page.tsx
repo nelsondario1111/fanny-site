@@ -35,7 +35,7 @@ function SectionTitle({
   return (
     <div className="text-center mb-6">
       <Reveal variants={fadeUp}>
-        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+        <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight">
           {title}
         </h1>
       </Reveal>
@@ -131,7 +131,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="Credenciales y datos rápidos">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               Credenciales y datos rápidos
             </h2>
           </Reveal>
@@ -158,7 +158,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="Equipo multidisciplinario">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               Un equipo multidisciplinario—bajo un mismo paraguas
             </h2>
           </Reveal>
@@ -206,7 +206,7 @@ function AboutInnerEs() {
             ].map((card) => (
               <Reveal key={card.title} variants={fadeUp}>
                 <div className={`${HUB_CARD_CLASS} p-5`}>
-                  <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
+                  <div className="flex items-center gap-2 font-sans text-lg text-brand-green font-semibold">
                     {card.icon}
                     {card.title}
                   </div>
@@ -229,7 +229,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="Cómo usamos IA">
         <RevealPanel>
           <div className="text-center">
-            <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green">
+            <h3 className="font-sans text-xl md:text-2xl font-semibold text-brand-green">
               Cómo usamos IA (con revisión humana)
             </h3>
             <p className="mt-2 text-brand-blue/90 max-w-3xl mx-auto">
@@ -247,7 +247,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="Nuestra filosofía">
         <RevealPanel className="text-center">
           <Reveal variants={fadeUp}>
-            <h3 className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2">
+            <h3 className="font-sans text-xl md:text-2xl text-brand-green font-semibold mb-2">
               ¿Por qué “Guía por invitación”?
             </h3>
           </Reveal>
@@ -282,7 +282,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="A quién servimos">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               A quién servimos mejor
             </h2>
           </Reveal>
@@ -305,7 +305,7 @@ function AboutInnerEs() {
       {/* CUMPLIMIENTO Y NOTAS */}
       <section className="px-4 mt-8" aria-label="Cumplimiento y notas importantes">
         <RevealPanel>
-          <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green text-center">
+          <h3 className="font-sans text-xl md:text-2xl font-semibold text-brand-green text-center">
             Notas sobre cumplimiento y alcance
           </h3>
           <div className="mt-3 text-sm md:text-base text-brand-blue/90 max-w-4xl mx-auto space-y-2">
@@ -333,7 +333,7 @@ function AboutInnerEs() {
       <section className="px-4 mt-8" aria-label="Llamado a la acción de contacto">
         <RevealPanel className="text-center">
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-green mb-3">
               ¿Listo para comenzar la conversación?
             </h2>
           </Reveal>

@@ -376,7 +376,7 @@ export default function Page() {
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Ingresos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Ingresos</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Ingresos</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Ingreso de solicitante (anual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -400,7 +400,7 @@ export default function Page() {
 
         {/* Costos de vivienda calificables */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Costos de vivienda (calificables)</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Costos de vivienda (calificables)</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Impuestos a la propiedad (anual)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -432,7 +432,7 @@ export default function Page() {
 
         {/* Otras deudas & ratios */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Deudas y ratios</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Deudas y ratios</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Otras deudas mensuales (pagos mínimos)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -458,7 +458,7 @@ export default function Page() {
 
         {/* Financiamiento: tasa, amortización y pago inicial */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Financiamiento</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financiamiento</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -547,7 +547,7 @@ export default function Page() {
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Cobertura y restricciones</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Cobertura y restricciones</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Ingreso mensual bruto</span><span className="font-medium">{money(grossMonthlyIncome, 2)}</span></div>
             <div className="flex justify-between"><span>Costos de vivienda (calificables)</span><span className="font-medium">{money(fixedHousingMonthly, 2)}</span></div>
@@ -569,7 +569,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Hipoteca máxima (por pago)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Hipoteca máxima (por pago)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Amortización</span><span className="font-medium">{amortYears} años</span></div>
             <div className="flex justify-between"><span>Principal soportable @ tasa de calificación</span><span className="font-semibold">{money(maxSupportableLoan)}</span></div>
@@ -589,7 +589,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Precio máximo de compra</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Precio máximo de compra</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Pago inicial (estimado)</span><span className="font-medium">{money(downPaymentCAD)}</span></div>
             <div className="flex justify-between"><span>Incluir estimación de prima</span><span className="font-medium">{includeDefaultPremium ? "Sí" : "No"}</span></div>
@@ -607,7 +607,7 @@ export default function Page() {
 
       {/* Encabezado para impresión */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Asequibilidad Hipotecaria — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Asequibilidad Hipotecaria — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

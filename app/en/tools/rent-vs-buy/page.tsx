@@ -336,7 +336,7 @@ export default function Page() {
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Buy */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Buy — Price & Financing</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Buy — Price & Financing</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Purchase Price (CAD)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -417,7 +417,7 @@ export default function Page() {
 
         {/* Rent */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Rent — Price & Growth</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Rent — Price & Growth</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Starting Rent (monthly)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -442,7 +442,7 @@ export default function Page() {
 
         {/* Horizon & assumptions */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Horizon & Assumptions</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Horizon & Assumptions</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Horizon (years)</label>
@@ -472,7 +472,7 @@ export default function Page() {
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Monthly Cashflow (Month 1)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Monthly Cashflow (Month 1)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner cash out</span><span className="font-medium">{money(results.ownerCashMonth1, 2)}</span></div>
             <div className="flex justify-between"><span>Renter cash out</span><span className="font-medium">{money(results.renterCashMonth1, 2)}</span></div>
@@ -485,7 +485,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Total Cash Out (Horizon)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Total Cash Out (Horizon)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner total cash out</span><span className="font-medium">{money(results.totalOwnerCashOut, 0)}</span></div>
             <div className="flex justify-between"><span>Renter total cash out</span><span className="font-medium">{money(results.totalRenterCashOut, 0)}</span></div>
@@ -501,7 +501,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Net Worth at Horizon</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Net Worth at Horizon</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner equity (after sale costs & mortgage)</span><span className="font-medium">{money(results.ownerNetWorth, 0)}</span></div>
             <div className="flex justify-between"><span>Renter’s invested assets</span><span className="font-medium">{money(results.renterNetWorth, 0)}</span></div>
@@ -530,7 +530,7 @@ export default function Page() {
 
       {/* Print header (only when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Rent vs. Buy — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Rent vs. Buy — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

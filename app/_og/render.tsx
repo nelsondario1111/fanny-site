@@ -95,8 +95,9 @@ export async function renderOG({
       ? "Impuestos • Hipotecas • Estrategia financiera"
       : "Taxes • Mortgages • Money Strategy");
 
-  const fontFamily =
-    'Lato, "Playfair Display", ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+  const sansFontFamily =
+    '"DM Sans", ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  const displayFontFamily = 'Fraunces, Georgia, "Times New Roman", serif';
 
   return new ImageResponse(
     (
@@ -107,7 +108,7 @@ export async function renderOG({
           display: "flex",
           flexDirection: "column",
           position: "relative",
-          fontFamily,
+          fontFamily: sansFontFamily,
         }}
       >
         <Background />
@@ -133,10 +134,11 @@ export async function renderOG({
           />
           <div
             style={{
+              fontFamily: displayFontFamily,
               fontSize: 28,
-              fontWeight: 800,
+              fontWeight: 650,
               color: BRAND.green,
-              letterSpacing: -0.2,
+              letterSpacing: -0.25,
             }}
           >
             {site}
@@ -172,8 +174,9 @@ export async function renderOG({
 
           <div
             style={{
+              fontFamily: displayFontFamily,
               fontSize: 64,
-              fontWeight: 900,
+              fontWeight: 650,
               color: BRAND.blue,
               lineHeight: 1.05,
               letterSpacing: -0.5,

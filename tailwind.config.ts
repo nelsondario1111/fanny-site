@@ -16,8 +16,9 @@ const config: Config = {
         'brand-body': '#2F3B3D',
       },
       fontFamily: {
-        sans: ["var(--font-lato)", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
-        serif: ["var(--font-playfair)", "Georgia", "Times New Roman", "serif"],
+        sans: ["var(--font-dm-sans)", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        serif: ["var(--font-fraunces)", "Georgia", "Times New Roman", "serif"],
+        brand: ["var(--font-fraunces)", "Georgia", "Times New Roman", "serif"],
       },
       borderRadius: {
         xl: "1rem",
@@ -42,13 +43,32 @@ const config: Config = {
         DEFAULT: {
           css: {
             color: theme('colors.brand-body'),
+            fontFamily: theme('fontFamily.sans').join(", "),
             a: {
               color: theme('colors.brand-blue'),
               '&:hover': { color: theme('colors.brand-green') },
             },
-            h1: { color: theme('colors.brand-green') },
-            h2: { color: theme('colors.brand-green') },
-            h3: { color: theme('colors.brand-blue') },
+            h1: {
+              color: theme('colors.brand-green'),
+              fontFamily: theme('fontFamily.brand').join(", "),
+              fontWeight: "700",
+              letterSpacing: "-0.015em",
+            },
+            h2: {
+              color: theme('colors.brand-green'),
+              fontFamily: theme('fontFamily.brand').join(", "),
+              fontWeight: "600",
+              letterSpacing: "-0.012em",
+            },
+            h3: {
+              color: theme('colors.brand-blue'),
+              fontFamily: theme('fontFamily.sans').join(", "),
+              fontWeight: "600",
+            },
+            h4: {
+              fontFamily: theme('fontFamily.sans').join(", "),
+              fontWeight: "600",
+            },
             blockquote: {
               color: theme('colors.brand-blue'),
               borderLeftColor: theme('colors.brand-gold'),

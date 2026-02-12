@@ -670,7 +670,7 @@ export default function RecursosClient({
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}>
           <Panel>
             <div className="flex items-baseline justify-between mb-6">
-              <h2 className="font-serif text-2xl text-brand-green font-bold">
+              <h2 className="font-brand text-2xl text-brand-green font-semibold">
                 {selectedMode === "All" ? "Todos los recursos" : "Guardados"}
                 {(quickKeys.size > 0 || drawerSelectedTags.size > 0) && (
                   <span className="ml-2 text-base text-brand-body/70">
@@ -712,7 +712,7 @@ export default function RecursosClient({
 
             {/* Bloque de ayuda */}
             <div className="mt-12 rounded-2xl border border-brand-gold bg-neutral-50 p-6">
-              <h3 className="text-base font-serif font-bold text-brand-green">¿No encuentras el recurso exacto?</h3>
+              <h3 className="text-base font-sans font-semibold text-brand-green">¿No encuentras el recurso exacto?</h3>
               <p className="mt-1 text-sm text-brand-blue/90">Cuéntanos qué estás trabajando y te apuntamos a la herramienta correcta—o la creamos para ti.</p>
               <div className="mt-4">
                 <Link href={ctaHref} className="inline-flex items-center rounded-full px-4 py-2 text-sm border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">
@@ -821,7 +821,7 @@ function FilterDrawer({
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
       <div className="absolute right-0 top-0 h-full w-full sm:w-[520px] bg-white shadow-xl border-l border-brand-gold overflow-hidden">
         <div className="p-5 border-b border-brand-gold/50 flex items-center justify-between">
-          <h2 id="filter-heading" className="font-serif text-xl text-brand-green font-bold">Filtros</h2>
+          <h2 id="filter-heading" className="font-brand text-xl text-brand-green font-semibold">Filtros</h2>
           <button onClick={onClose} className="px-3 py-1.5 rounded-full border border-brand-green text-brand-green hover:bg-brand-green hover:text-white text-sm">Listo</button>
         </div>
 
@@ -922,7 +922,7 @@ function ArticleCard({
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 border border-brand-gold text-brand-green font-serif text-lg">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/80 border border-brand-gold text-brand-green font-sans text-lg">
               {initials(article.category)}
             </div>
           </div>
@@ -936,7 +936,7 @@ function ArticleCard({
           {dateStr && <time className="text-brand-body/70 ml-auto">{dateStr}</time>}
         </div>
 
-        <h3 className="font-serif text-xl md:text-2xl text-brand-blue font-bold mb-2 leading-snug">
+        <h3 className="font-sans text-xl md:text-2xl text-brand-blue font-semibold mb-2 leading-snug">
           <Link href={href} className="hover:underline">{safeTitle(article)}</Link>
         </h3>
 
@@ -956,7 +956,7 @@ function ArticleCard({
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Link href={href} className="inline-block">
             <button
-              className="px-6 py-2 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow hover:bg-brand-blue hover:text-white transition"
+              className="px-6 py-2 bg-brand-gold text-brand-green rounded-full font-sans font-bold shadow hover:bg-brand-blue hover:text-white transition"
               onClick={() => {
                 try {
                   const key = "resource:recent:es";
@@ -1020,7 +1020,7 @@ function ListRow({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-brand-green font-serif">{initials(article.category)}</span>
+            <span className="text-brand-green font-sans">{initials(article.category)}</span>
           </div>
         )}
       </div>
@@ -1028,7 +1028,7 @@ function ListRow({
       {/* Título */}
       <div className="col-start-2 md:col-start-2 md:col-span-1">
         <Link href={href} className="block">
-          <h3 className="font-serif font-bold text-brand-blue text-lg leading-snug hover:underline line-clamp-3">
+          <h3 className="font-sans font-semibold text-brand-blue text-lg leading-snug hover:underline line-clamp-3">
             {safeTitle(article)}
           </h3>
         </Link>

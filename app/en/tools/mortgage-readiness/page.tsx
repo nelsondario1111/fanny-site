@@ -746,7 +746,7 @@ export default function Page() {
 
       {/* Print header */}
       <div className="hidden print:block mt-2 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">
+        <div className="font-sans font-bold text-brand-green text-2xl">
           Mortgage Readiness — Checklist
         </div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
@@ -767,7 +767,7 @@ export default function Page() {
                 <div>
                   <h3
                     className={classNames(
-                      "font-serif text-base md:text-lg font-bold",
+                      "font-sans text-base md:text-lg font-bold",
                       toneToText[meta.tone]
                     )}
                   >
@@ -1120,7 +1120,7 @@ export default function Page() {
 
       {/* Helpful tools & services */}
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
-        <h4 className="font-serif text-base md:text-lg text-brand-green font-bold mb-2">
+        <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Helpful tools & services
         </h4>
         <ul className="list-disc ml-5 text-sm space-y-1">

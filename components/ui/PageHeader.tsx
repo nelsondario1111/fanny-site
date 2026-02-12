@@ -11,7 +11,7 @@ export default function PageHeader({ title, subtitle, children }: Props) {
   return (
     <header className="bg-brand-beige px-4 pt-10">
       <Panel as="div" className="text-center">
-        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+        <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight">
           {title}
         </h1>
         <div className="flex justify-center my-4">

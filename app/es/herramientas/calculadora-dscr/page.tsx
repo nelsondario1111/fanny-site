@@ -221,7 +221,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* NOI */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Ingresos</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Ingresos</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">NOI (anual, CAD)</label>
           <input
             type="number"
@@ -314,7 +314,7 @@ export default function Page() {
 
         {/* Términos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Términos del préstamo</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Términos del préstamo</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Tasa de interés (anual %)</label>
             <input
@@ -358,7 +358,7 @@ export default function Page() {
 
         {/* Modo de financiamiento */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Financiamiento propuesto</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financiamiento propuesto</h3>
 
           <div className="flex gap-4 items-center mb-3">
             <label className="inline-flex items-center gap-2">
@@ -429,7 +429,7 @@ export default function Page() {
 
       {/* Encabezado de impresión (solo al imprimir) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">DSCR (Vista del Prestamista) — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">DSCR (Vista del Prestamista) — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -437,7 +437,7 @@ export default function Page() {
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">DSCR y servicio de deuda</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">DSCR y servicio de deuda</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Préstamo propuesto</span><span className="font-medium">{money(proposedLoan)}</span></div>
             <div className="flex justify-between"><span>Servicio de deuda mensual (P&I)</span><span className="font-medium">{money(pmtMonthly, 2)}</span></div>
@@ -453,7 +453,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Préstamo máx. por DSCR objetivo</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Préstamo máx. por DSCR objetivo</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>DSCR objetivo</span><span className="font-medium">{dscrTarget.toFixed(2)}</span></div>
             <div className="flex justify-between"><span>Pago mensual máx. permitido</span><span className="font-medium">{money((noiAnnual / 12) / dscrTarget, 2)}</span></div>
@@ -472,7 +472,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Contexto LTV</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Contexto LTV</h3>
           {mode === "purchaseLTV" ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between"><span>Precio de compra</span><span className="font-medium">{money(purchasePrice)}</span></div>

@@ -108,6 +108,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
   const base = `/${lang}`;
   const t = (en: string, es: string) => (lang === "en" ? en : es);
   const convoHref = `${base}/${t("contact", "contacto")}?intent=${t("hello", "hola")}`;
+  const brandSubtitle = "Holistic Financial Consultant";
 
   const LINK_BASE =
     "inline-flex items-center h-10 px-0 text-[15px] leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
@@ -163,8 +164,13 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
               height={32}
               className="rounded-full border border-brand-gold"
             />
-            <span className="font-serif text-lg font-bold text-brand-green tracking-tight">
-              Fanny Samaniego
+            <span className="flex flex-col leading-tight">
+              <span className="font-brand text-lg font-semibold text-brand-green tracking-[-0.015em]">
+                Fanny Samaniego
+              </span>
+              <span className="hidden sm:block font-sans text-[10px] font-medium uppercase text-brand-blue/80 tracking-[0.14em]">
+                {brandSubtitle}
+              </span>
             </span>
           </Link>
 

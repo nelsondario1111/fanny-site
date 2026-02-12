@@ -366,7 +366,7 @@ export default function Page() {
         {/* Debts list */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Your Debts</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Your Debts</h3>
             <button
               type="button"
               onClick={addDebt}
@@ -437,7 +437,7 @@ export default function Page() {
 
         {/* Strategy & timing */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Strategy</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Strategy</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -478,7 +478,7 @@ export default function Page() {
 
         {/* Results */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Results</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Results</h3>
 
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
@@ -527,7 +527,7 @@ export default function Page() {
 
       {/* Schedule preview */}
       <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
-        <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Schedule (first 24 months preview)</h3>
+        <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Schedule (first 24 months preview)</h3>
         <div className="overflow-auto rounded-xl border border-brand-gold/40">
           <table className="w-full text-sm">
             <thead className="bg-brand-beige/40 text-brand-blue">
@@ -616,7 +616,7 @@ export default function Page() {
 
       {/* Print header */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Debt Paydown — Plan Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Debt Paydown — Plan Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

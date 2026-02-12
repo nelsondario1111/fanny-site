@@ -223,7 +223,7 @@ export default function Page() {
       <form className="grid grid-cols-1 2xl:grid-cols-5 gap-6">
         {/* Income & guidance */}
         <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 grid gap-4 2xl:col-span-2">
-          <h3 className="font-serif text-base md:text-lg text-brand-green font-bold">Income (take-home)</h3>
+          <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold">Income (take-home)</h3>
 
           {/* Mobile stacked */}
           <Stack>
@@ -332,7 +332,7 @@ export default function Page() {
 
         {/* Expenses (single column except ultra-wide) */}
         <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 grid gap-6 2xl:col-span-3">
-          <h3 className="font-serif text-base md:text-lg text-brand-green font-bold">Expenses</h3>
+          <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold">Expenses</h3>
 
           {/* ----- NEEDS ----- */}
           <div>
@@ -561,7 +561,7 @@ export default function Page() {
 
       {/* Similar tools */}
       <div className="mt-6 rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
-        <h4 className="font-serif text-base md:text-lg text-brand-green font-bold mb-2">Similar tools</h4>
+        <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">Similar tools</h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li><Link href="/en/tools/net-worth" className="underline">Net Worth Tracker</Link></li>
           <li><Link href="/en/tools/debt-snowball" className="underline">Debt Snowball / Payoff Planner</Link></li>

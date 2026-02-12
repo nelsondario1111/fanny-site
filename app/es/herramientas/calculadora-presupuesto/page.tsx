@@ -50,7 +50,7 @@ function SectionTitle({
 }) {
   return (
     <div className={center ? "text-center mb-6" : "mb-6"}>
-      <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+      <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight">
         {title}
       </h1>
       <div className="flex justify-center my-4">
@@ -163,7 +163,7 @@ export default function CalculadoraHipotecaria() {
       {/* FORMULARIO */}
       <section className="px-4 mt-8 print:hidden">
         <Panel as="form" onSubmit={handleSubmit}>
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-6">
+          <h2 className="font-brand text-2xl md:text-3xl text-brand-green font-semibold mb-6">
             Ingresa los detalles de tu hipoteca
           </h2>
 
@@ -294,21 +294,21 @@ export default function CalculadoraHipotecaria() {
           <div className="mt-6 grid sm:grid-cols-3 gap-3">
             <button
               type="submit"
-              className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
+              className="px-6 py-3 bg-brand-gold text-brand-green font-sans font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
             >
               Calcular
             </button>
             <button
               type="button"
               onClick={handleReset}
-              className="px-6 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
+              className="px-6 py-3 border-2 border-brand-gold text-brand-green font-sans font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
             >
               Reiniciar
             </button>
             <button
               type="button"
               onClick={handlePrint}
-              className="px-6 py-3 bg-brand-blue text-white font-serif font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
+              className="px-6 py-3 bg-brand-blue text-white font-sans font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
             >
               Imprimir (PDF)
             </button>
@@ -329,14 +329,14 @@ export default function CalculadoraHipotecaria() {
                 height={96}
                 className="mx-auto"
               />
-              <div className="font-serif font-bold text-brand-green">
+              <div className="font-sans font-bold text-brand-green">
                 Fanny Samaniego — Coach & Asesora Financiera Holística
               </div>
               <div className="text-xs text-brand-blue">Preparado el {fechaImpresion}</div>
               <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
             </div>
 
-            <h2 className="font-serif text-2xl md:text-3xl text-brand-green font-bold mb-4 text-center">
+            <h2 className="font-brand text-2xl md:text-3xl text-brand-green font-semibold mb-4 text-center">
               Resumen de Hipoteca
             </h2>
 
@@ -386,7 +386,7 @@ export default function CalculadoraHipotecaria() {
             {/* Detalle multi-unidad */}
             {multi && (
               <div className="mt-6 rounded-2xl border border-brand-blue/40 p-5 bg-brand-blue/5 max-w-3xl mx-auto">
-                <h3 className="font-serif text-xl text-brand-blue font-bold mb-2">
+                <h3 className="font-sans text-xl text-brand-blue font-semibold mb-2">
                   Vista rápida multi-unidad
                 </h3>
                 <table className="w-full text-left border-separate border-spacing-y-2">
@@ -434,7 +434,7 @@ export default function CalculadoraHipotecaria() {
               <button
                 onClick={handlePrint}
                 type="button"
-                className="px-6 py-3 bg-brand-gold text-brand-green font-serif font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition inline-flex items-center gap-2"
+                className="px-6 py-3 bg-brand-gold text-brand-green font-sans font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition inline-flex items-center gap-2"
               >
                 <FaPrint aria-hidden /> Imprimir resultados (PDF)
               </button>
@@ -448,7 +448,7 @@ export default function CalculadoraHipotecaria() {
         <Panel>
           <div className="flex items-center gap-2 mb-4">
             <FaQuestionCircle className="text-brand-blue text-2xl" aria-hidden />
-            <h3 className="font-serif text-2xl text-brand-green font-bold m-0">
+            <h3 className="font-sans text-2xl text-brand-green font-semibold m-0">
               Preguntas frecuentes y guía
             </h3>
           </div>

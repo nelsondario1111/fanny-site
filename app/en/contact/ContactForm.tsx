@@ -385,7 +385,7 @@ export default function ContactForm(props: Props) {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg disabled:opacity-70"
+        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-sans font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg disabled:opacity-70"
       >
         {status === "sending" ? "Sending..." : "Request Info / Book"}
       </button>

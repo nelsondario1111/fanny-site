@@ -85,7 +85,7 @@ export default async function ServiceDetailPage(
             <span className="text-brand-green">{detail.title}</span>
           </nav>
 
-          <h1 className="mt-4 font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 className="mt-4 font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
             {detail.title}
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-brand-blue/90">{detail.subtitle}</p>
@@ -126,7 +126,7 @@ export default async function ServiceDetailPage(
         <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_19rem] gap-6">
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6 md:p-8 space-y-8">
             <section>
-              <h2 className="font-serif text-2xl text-brand-green">Ideal For</h2>
+              <h2 className="font-brand text-2xl text-brand-green">Ideal For</h2>
               <ul className="mt-3 list-disc pl-5 space-y-2 text-brand-blue/90">
                 {detail.idealFor.map((item) => (
                   <li key={`${detail.id}-ideal-${item}`}>{item}</li>
@@ -135,7 +135,7 @@ export default async function ServiceDetailPage(
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-brand-green">What This Includes</h2>
+              <h2 className="font-brand text-2xl text-brand-green">What This Includes</h2>
               <ul className="mt-3 list-disc pl-5 space-y-2 text-brand-blue/90">
                 {detail.includes.map((item) => (
                   <li key={`${detail.id}-includes-${item}`}>{item}</li>
@@ -144,7 +144,7 @@ export default async function ServiceDetailPage(
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-brand-green">How It Works</h2>
+              <h2 className="font-brand text-2xl text-brand-green">How It Works</h2>
               <ol className="mt-3 list-decimal pl-5 space-y-2 text-brand-blue/90">
                 {detail.process.map((item) => (
                   <li key={`${detail.id}-process-${item}`}>{item}</li>
@@ -153,7 +153,7 @@ export default async function ServiceDetailPage(
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl text-brand-green">Expected Outcome</h2>
+              <h2 className="font-brand text-2xl text-brand-green">Expected Outcome</h2>
               <p className="mt-3 text-brand-blue/90">{detail.outcome}</p>
             </section>
 
@@ -169,7 +169,7 @@ export default async function ServiceDetailPage(
 
           <aside className="space-y-4">
             <section className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-5">
-              <h2 className="font-serif text-xl text-brand-green">Quick Facts</h2>
+              <h2 className="font-brand text-xl text-brand-green">Quick Facts</h2>
               <p className="mt-3 text-sm text-brand-blue/80">
                 <strong>Service:</strong> {detail.title}
               </p>
@@ -182,7 +182,7 @@ export default async function ServiceDetailPage(
             </section>
 
             <section className="rounded-3xl border border-brand-gold/40 bg-brand-green/5 shadow-sm p-5">
-              <h2 className="font-serif text-xl text-brand-green">Language</h2>
+              <h2 className="font-brand text-xl text-brand-green">Language</h2>
               <p className="mt-3 text-sm text-brand-blue/90">
                 This page is also available in Spanish.
               </p>

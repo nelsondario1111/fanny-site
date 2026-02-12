@@ -83,7 +83,7 @@ export default function Contacto() {
           <FadeIn delay={0.08}>
             <div className="space-y-6">
               <Panel className="p-6 sm:p-8">
-                <h2 className="text-xl font-serif font-bold text-brand-green">
+                <h2 className="text-xl font-brand font-semibold text-brand-green">
                   Datos de contacto
                 </h2>
                 <ul className="mt-4 space-y-3 text-brand-green">
@@ -135,7 +135,7 @@ export default function Contacto() {
               </Panel>
 
               <Panel className="p-6 sm:p-8">
-                <h2 className="text-xl font-serif font-bold text-brand-green">
+                <h2 className="text-xl font-brand font-semibold text-brand-green">
                   ¿Por qué reservar una llamada?
                 </h2>
                 <ul className="mt-3 space-y-2 text-brand-body">

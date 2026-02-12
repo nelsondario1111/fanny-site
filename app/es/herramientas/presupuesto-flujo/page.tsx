@@ -111,7 +111,7 @@ export default function PresupuestoFlujoPage() {
       <section className="max-w-6xl mx-auto">
         <div className="bg-white/95 rounded-[28px] border border-brand-gold shadow-xl p-6 sm:p-10">
           <header className="text-center mb-6">
-            <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+            <h1 className="font-brand font-bold text-3xl md:text-4xl text-brand-green tracking-tight">
               Hoja de Presupuesto y Flujo de Caja
             </h1>
             <p className="text-brand-blue/90 mt-2 max-w-2xl mx-auto">

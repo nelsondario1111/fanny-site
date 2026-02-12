@@ -1,6 +1,6 @@
 // app/layout.tsx
 import "./globals.css";
-import { lato, playfair } from "./fonts";
+import { dmSans, fraunces } from "./fonts";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
@@ -65,8 +65,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body
         className={[
-          lato.variable,
-          playfair.variable,
+          dmSans.variable,
+          fraunces.variable,
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >

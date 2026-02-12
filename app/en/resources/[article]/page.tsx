@@ -208,7 +208,7 @@ export default async function ArticlePage(
           </div>
 
           {/* Title + meta chips */}
-          <h1 id="top" className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 id="top" className="font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
             {a.title}
           </h1>
 
@@ -301,7 +301,7 @@ export default async function ArticlePage(
                   className="block rounded-2xl border border-brand-gold/40 bg-white p-4 hover:bg-brand-blue/5 transition"
                 >
                   <div className="text-xs text-brand-body/70">Previous</div>
-                  <div className="font-serif font-semibold text-brand-blue mt-1 line-clamp-2">
+                  <div className="font-sans font-semibold text-brand-blue mt-1 line-clamp-2">
                     {prev.title ?? "Previous article"}
                   </div>
                 </Link>
@@ -314,7 +314,7 @@ export default async function ArticlePage(
                   className="block rounded-2xl border border-brand-gold/40 bg-white p-4 hover:bg-brand-blue/5 transition text-right"
                 >
                   <div className="text-xs text-brand-body/70">Next</div>
-                  <div className="font-serif font-semibold text-brand-blue mt-1 line-clamp-2">
+                  <div className="font-sans font-semibold text-brand-blue mt-1 line-clamp-2">
                     {next.title ?? "Next article"}
                   </div>
                 </Link>

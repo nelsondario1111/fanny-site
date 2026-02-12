@@ -28,7 +28,7 @@ export default function PrivacyPage() {
             </nav>
           </div>
 
-          <h1 className="font-serif text-3xl sm:text-4xl font-extrabold text-brand-blue tracking-tight">
+          <h1 className="font-brand text-3xl sm:text-4xl font-bold text-brand-blue tracking-tight">
             Privacy Policy
           </h1>
           <p className="mt-3 text-brand-blue/80">
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
         <div className="max-w-5xl mx-auto px-4 py-10 sm:py-14 space-y-8">
           {/* Quick links / TOC */}
           <div className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-xl text-brand-blue font-bold mb-3">What’s inside</h2>
+            <h2 className="font-brand text-xl text-brand-blue font-semibold mb-3">What’s inside</h2>
             <ul className="list-disc ml-5 space-y-1 text-brand-blue/90">
               <li><a className="hover:text-brand-gold underline-offset-2 hover:underline" href="#data-we-collect">Data we collect</a></li>
               <li><a className="hover:text-brand-gold underline-offset-2 hover:underline" href="#how-we-use-data">How we use your data</a></li>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
 
           {/* Data we collect */}
           <article id="data-we-collect" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Data we collect</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Data we collect</h2>
             <p className="text-brand-blue/90 mb-3">
               We collect the minimum information needed to provide our services and improve your experience:
             </p>
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
 
           {/* How we use */}
           <article id="how-we-use-data" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">How we use your data</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">How we use your data</h2>
             <ul className="list-disc ml-5 space-y-2 text-brand-blue/90">
               <li>To provide services you request (e.g., calls, coaching, resources).</li>
               <li>To respond to inquiries and customer support requests.</li>
@@ -107,7 +107,7 @@ export default function PrivacyPage() {
 
           {/* Legal basis */}
           <article id="legal-basis" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Legal basis</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Legal basis</h2>
             <p className="text-brand-blue/90">
               Where applicable (e.g., GDPR), our processing relies on one or more of the following legal bases:
             </p>
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
 
           {/* Cookies */}
           <article id="cookies" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Cookies & analytics</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Cookies & analytics</h2>
             <p className="text-brand-blue/90 mb-3">
               We may use essential cookies to enable core functionality and optional analytics to understand usage and
               improve content. You can control cookies through your browser settings. If we use analytics, we strive to
@@ -135,7 +135,7 @@ export default function PrivacyPage() {
 
           {/* Sharing */}
           <article id="sharing" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Sharing & disclosure</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Sharing & disclosure</h2>
             <p className="text-brand-blue/90 mb-3">
               We share data only with trusted providers who help us operate our website and services (e.g., web hosting,
               email delivery) and only to the extent necessary to perform their work for us.
@@ -149,7 +149,7 @@ export default function PrivacyPage() {
 
           {/* Retention */}
           <article id="retention" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Data retention</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Data retention</h2>
             <p className="text-brand-blue/90">
               We keep data only as long as necessary for the purposes described in this policy (or as required by law).
               When no longer needed, we take steps to delete or anonymize it.
@@ -158,7 +158,7 @@ export default function PrivacyPage() {
 
           {/* Rights */}
           <article id="your-rights" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Your rights</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Your rights</h2>
             <p className="text-brand-blue/90">
               Depending on your location, you may have rights to access, correct, delete, or restrict the processing of
               your personal data, and to withdraw consent. To make a request, contact us using the details below. We’ll
@@ -168,7 +168,7 @@ export default function PrivacyPage() {
 
           {/* Security */}
           <article id="security" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Security</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Security</h2>
             <p className="text-brand-blue/90">
               We use reasonable organizational and technical measures to protect your data. However, no method of
               transmission or storage is 100% secure, so we cannot guarantee absolute security.
@@ -177,7 +177,7 @@ export default function PrivacyPage() {
 
           {/* Children */}
           <article id="children" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Children’s privacy</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Children’s privacy</h2>
             <p className="text-brand-blue/90">
               Our services are intended for adults. If you believe a child provided us personal information without
               consent, please contact us and we’ll take appropriate action.
@@ -186,7 +186,7 @@ export default function PrivacyPage() {
 
           {/* Contact */}
           <article id="contact" className="bg-white border border-brand-gold/30 rounded-2xl shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-blue font-bold mb-4">Contact us</h2>
+            <h2 className="font-brand text-2xl text-brand-blue font-semibold mb-4">Contact us</h2>
             <p className="text-brand-blue/90">
               For privacy questions or requests, contact us at{" "}
               <a href="mailto:info@fannysamaniego.com" className="underline hover:text-brand-gold">

@@ -49,7 +49,7 @@ export default function PrimaryCtaButton({
     <Link
       href={href}
       className={[
-        "inline-block px-10 py-3 rounded-full font-serif font-bold shadow",
+        "inline-block px-10 py-3 rounded-full font-sans font-bold shadow",
         "bg-brand-green text-white border-2 border-brand-gold",
         "hover:bg-brand-gold hover:text-brand-green transition",
         className,

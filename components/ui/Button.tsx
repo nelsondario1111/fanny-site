@@ -14,7 +14,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold transition min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+    "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-sans font-bold transition min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
   const styles: Record<Variant, string> = {
     primary: "bg-brand-green text-white hover:opacity-90",
     secondary:

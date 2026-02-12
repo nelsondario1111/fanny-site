@@ -355,7 +355,7 @@ export default function Page() {
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
         <div className="grid md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
-            <h3 className="font-serif text-base md:text-lg text-brand-green font-bold flex items-center gap-2">
+            <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold flex items-center gap-2">
               <Info className="h-5 w-5" />
               What is DSCR?
             </h3>
@@ -386,7 +386,7 @@ export default function Page() {
 
       {/* Quick DSCR Check */}
       <section id="quick-check" className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
-        <h3 className="font-serif text-base md:text-lg text-brand-green font-bold flex items-center gap-2">
+        <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold flex items-center gap-2">
           <Calculator className="h-5 w-5" />
           Quick DSCR Check
         </h3>
@@ -464,7 +464,7 @@ export default function Page() {
 
       {/* Max Loan by DSCR */}
       <section id="max-loan" className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
-        <h3 className="font-serif text-base md:text-lg text-brand-green font-bold flex items-center gap-2">
+        <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold flex items-center gap-2">
           <Calculator className="h-5 w-5" />
           Max Loan by DSCR (estimates)
         </h3>
@@ -534,7 +534,7 @@ export default function Page() {
 
       {/* Program snapshot (editable) */}
       <section id="programs" className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
-        <h3 className="font-serif text-base md:text-lg text-brand-green font-bold flex items-center gap-2">
+        <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold flex items-center gap-2">
           <FileText className="h-5 w-5" />
           Lender / Program Snapshot (edit as needed)
         </h3>
@@ -653,7 +653,7 @@ export default function Page() {
 
       {/* Checklist */}
       <section id="checklist" className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
-        <h3 className="font-serif text-base md:text-lg text-brand-green font-bold flex items-center gap-2">
+        <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold flex items-center gap-2">
           <ListChecks className="h-5 w-5" />
           What to confirm with your lender
         </h3>
@@ -775,7 +775,7 @@ export default function Page() {
 
       {/* Helpful links / CTA */}
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
-        <h4 className="font-serif text-base md:text-lg text-brand-green font-bold mb-2">
+        <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Next steps & helpful tools
         </h4>
         <ul className="list-disc ml-5 text-sm space-y-1">

@@ -407,7 +407,7 @@ export default function Page() {
             <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className={classNames("font-serif text-base md:text-lg font-bold", toneToText[meta.tone])}>
+                  <h3 className={classNames("font-sans text-base md:text-lg font-semibold", toneToText[meta.tone])}>
                     {meta.title}
                   </h3>
                   {meta.blurb && <p className="text-sm text-brand-blue/80 mt-1">{meta.blurb}</p>}
@@ -607,7 +607,7 @@ export default function Page() {
 
       {/* Herramientas y servicios útiles */}
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
-        <h4 className="font-serif text-base md:text-lg text-brand-green font-bold mb-2">
+        <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Herramientas y servicios útiles
         </h4>
         <ul className="list-disc ml-5 text-sm space-y-1">

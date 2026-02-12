@@ -108,7 +108,7 @@ export default function StartHereDecisionWidget({
       aria-label={copy.title}
     >
       <div className="text-center">
-        <h2 className="font-serif text-2xl md:text-3xl font-semibold tracking-tight text-brand-green">
+        <h2 className="font-brand text-2xl md:text-3xl font-semibold tracking-tight text-brand-green">
           {copy.title}
         </h2>
         <p className="mt-2 text-brand-blue/90">{copy.subtitle}</p>
@@ -120,7 +120,7 @@ export default function StartHereDecisionWidget({
             key={bucket.title}
             className="rounded-2xl border border-brand-gold/30 bg-brand-gold/5 p-4"
           >
-            <h3 className="font-serif text-xl text-brand-green font-semibold">{bucket.title}</h3>
+            <h3 className="font-sans text-xl text-brand-green font-semibold">{bucket.title}</h3>
             <p className="mt-1 text-xs uppercase tracking-wide text-brand-blue/75">{bucket.subtitle}</p>
 
             <div className="mt-4 flex flex-col gap-2">

@@ -182,7 +182,7 @@ export default function BudgetCashflowPage() {
             {/* Header */}
             <header className="mb-6">
               <div className="text-center">
-                <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+                <h1 className="font-brand font-bold text-3xl md:text-4xl text-brand-green tracking-tight">
                   Budget &amp; Cash-flow Worksheet
                 </h1>
                 <p className="text-brand-blue/90 mt-2 max-w-2xl mx-auto">

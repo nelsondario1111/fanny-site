@@ -338,7 +338,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Compra y financiamiento */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Compra y financiamiento</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Compra y financiamiento</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Precio de compra (CAD)</label>
           <input
             type="number"
@@ -411,7 +411,7 @@ export default function Page() {
 
         {/* Ingreso por alquiler */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Ingreso por alquiler</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Ingreso por alquiler</h3>
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-12 font-semibold text-sm text-brand-blue">
               <div className="col-span-6">Unidad</div>
@@ -498,7 +498,7 @@ export default function Page() {
 
         {/* Gastos operativos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Gastos operativos</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Gastos operativos</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Impuesto a la propiedad (mensual)</label>
@@ -618,7 +618,7 @@ export default function Page() {
 
       {/* Encabezado al imprimir (solo visible al imprimir) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Flujo de Caja de Alquileres — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Flujo de Caja de Alquileres — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado el {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -627,7 +627,7 @@ export default function Page() {
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Resumen de ingresos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Ingresos (anual)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Ingresos (anual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Alquiler Bruto Potencial (GPR)</span><span className="font-medium">{money(gprRentAnnual)}</span></div>
             <div className="flex justify-between"><span>Pérdida por vacancia/morosidad</span><span className="font-medium">−{money(vacancyLossAnnual)}</span></div>
@@ -638,7 +638,7 @@ export default function Page() {
 
         {/* Gastos operativos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Gastos operativos (anual)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Gastos operativos (anual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Gastos fijos</span><span className="font-medium">−{money(fixedOpexAnnual)}</span></div>
             <div className="flex justify-between"><span>Administración</span><span className="font-medium">−{money(mgmtAnnual)}</span></div>
@@ -651,7 +651,7 @@ export default function Page() {
 
         {/* Rendimientos y deuda */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Rendimientos y deuda</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Rendimientos y deuda</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Servicio anual de la deuda (ADS)</span><span className="font-medium">−{money(adsAnnual)}</span></div>
             <div className="flex justify-between"><span>Flujo de caja (antes de impuestos)</span><span className="font-semibold">{money(cashFlowBeforeTax)}</span></div>

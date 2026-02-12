@@ -18,6 +18,7 @@ const SECT = {
 export default function Footer({ lang = "es" }: FooterProps) {
   const isEn = lang === "en";
   const base = isEn ? "/en" : "/es";
+  const brandSubtitle = "Holistic Financial Consultant";
 
   const ctaHref = `${base}/${isEn ? "contact" : "contacto"}?intent=consult`;
 
@@ -105,12 +106,20 @@ export default function Footer({ lang = "es" }: FooterProps) {
       <div className="max-w-content mx-auto px-5 sm:px-8 py-12 grid gap-10 lg:grid-cols-4">
         {/* Brand / mission */}
         <div>
-          <p className="font-serif text-lg font-bold text-brand-green">Fanny Samaniego</p>
-          <p className="text-sm text-brand-body mt-2">
-            {isEn
-              ? "Holistic Financial Consultant | Taxes • Mortgages • Money Strategy | Clear numbers, calm decisions."
-              : "Consultora financiera holística | Impuestos • Hipotecas • Estrategia financiera | Números claros, decisiones con calma."}
+          <p className="font-brand text-lg font-semibold text-brand-green tracking-[-0.015em]">
+            Fanny Samaniego
           </p>
+          <p className="mt-1 font-sans text-[10px] font-medium uppercase text-brand-blue/80 tracking-[0.14em]">
+            {brandSubtitle}
+          </p>
+          <div className="mt-3 space-y-1 text-sm leading-snug">
+            <p className="text-brand-body">
+              {isEn ? "Taxes, mortgages, and money strategy." : "Impuestos, hipotecas y estrategia financiera."}
+            </p>
+            <p className="font-medium text-brand-gold">
+              {isEn ? "Clear numbers, calm decisions." : "Números claros, decisiones con calma."}
+            </p>
+          </div>
           <div className="mt-4">
             <LangSwitcher />
           </div>

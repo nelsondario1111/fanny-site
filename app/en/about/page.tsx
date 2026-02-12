@@ -35,7 +35,7 @@ function SectionTitle({
   return (
     <div className="text-center mb-6">
       <Reveal variants={fadeUp}>
-        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight">
+        <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight">
           {title}
         </h1>
       </Reveal>
@@ -129,7 +129,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="Credentials and quick facts">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               Credentials & Quick Facts
             </h2>
           </Reveal>
@@ -156,7 +156,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="Multidisciplinary team">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               A Multidisciplinary Team—Under One Umbrella
             </h2>
           </Reveal>
@@ -204,7 +204,7 @@ function AboutInner() {
             ].map((card) => (
               <Reveal key={card.title} variants={fadeUp}>
                 <div className={`${HUB_CARD_CLASS} p-5`}>
-                  <div className="flex items-center gap-2 font-serif text-lg text-brand-green font-semibold">
+                  <div className="flex items-center gap-2 font-sans text-lg text-brand-green font-semibold">
                     {card.icon}
                     {card.title}
                   </div>
@@ -227,7 +227,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="How we use AI">
         <RevealPanel>
           <div className="text-center">
-            <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green">
+            <h3 className="font-sans text-xl md:text-2xl font-semibold text-brand-green">
               How We Use AI (with human review)
             </h3>
             <p className="mt-2 text-brand-blue/90 max-w-3xl mx-auto">
@@ -244,7 +244,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="Our philosophy">
         <RevealPanel className="text-center">
           <Reveal variants={fadeUp}>
-            <h3 className="font-serif text-xl md:text-2xl text-brand-green font-bold mb-2">
+            <h3 className="font-sans text-xl md:text-2xl text-brand-green font-semibold mb-2">
               Why “Guidance by Invitation”?
             </h3>
           </Reveal>
@@ -277,7 +277,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="Who we serve">
         <RevealPanel>
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-semibold text-brand-blue mb-5 text-center">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-blue mb-5 text-center">
               Who We Serve Best
             </h2>
           </Reveal>
@@ -300,7 +300,7 @@ function AboutInner() {
       {/* COMPLIANCE & NOTES */}
       <section className="px-4 mt-8" aria-label="Compliance and important notes">
         <RevealPanel>
-          <h3 className="font-serif text-xl md:text-2xl font-bold text-brand-green text-center">
+          <h3 className="font-sans text-xl md:text-2xl font-semibold text-brand-green text-center">
             Notes on Compliance & Scope
           </h3>
           <div className="mt-3 text-sm md:text-base text-brand-blue/90 max-w-4xl mx-auto space-y-2">
@@ -327,7 +327,7 @@ function AboutInner() {
       <section className="px-4 mt-8" aria-label="Contact call-to-action">
         <RevealPanel className="text-center">
           <Reveal variants={fadeUp}>
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-green mb-3">
+            <h2 className="text-2xl md:text-3xl font-brand font-semibold text-brand-green mb-3">
               Ready to start the conversation?
             </h2>
           </Reveal>

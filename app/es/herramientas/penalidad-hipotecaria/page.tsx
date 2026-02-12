@@ -196,7 +196,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Básicos de la hipoteca */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Básicos de la hipoteca</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Básicos de la hipoteca</h3>
 
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">
@@ -286,7 +286,7 @@ export default function Page() {
 
         {/* Entradas para IRD */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">
             Entradas IRD (simple)
           </h3>
           <p className="text-sm text-brand-blue/80 mb-3">
@@ -338,7 +338,7 @@ export default function Page() {
 
         {/* Resultados rápidos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">
             Resultados rápidos
           </h3>
           <div className="space-y-2 text-sm">
@@ -391,7 +391,7 @@ export default function Page() {
 
       {/* Encabezado de impresión (solo al imprimir) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">
+        <div className="font-sans font-bold text-brand-green text-2xl">
           Penalidad Hipotecaria — Estimación
         </div>
         <div className="text-xs text-brand-blue">Preparado {printDate}</div>
@@ -401,7 +401,7 @@ export default function Page() {
       {/* Paneles comparativos */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             Detalle — Interés 3 meses
           </h3>
           <p className="text-sm text-brand-blue/80 mb-2">
@@ -425,7 +425,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             Detalle — IRD (simple)
           </h3>
           <p className="text-sm text-brand-blue/80 mb-2">

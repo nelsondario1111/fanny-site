@@ -174,7 +174,7 @@ export default function SubscribeForm({
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-serif font-bold bg-brand-green text-white hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold min-h-[44px] disabled:opacity-60"
+          className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-sans font-bold bg-brand-green text-white hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold min-h-[44px] disabled:opacity-60"
         >
           {loading ? t.submitting : t.submit}
         </button>

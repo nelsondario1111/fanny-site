@@ -24,7 +24,7 @@ export default function KitchenTableConversationsPage() {
             <span className="text-brand-green">Kitchen Table Conversations</span>
           </nav>
 
-          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-extrabold text-brand-green tracking-tight">
+          <h1 className="mt-4 font-brand text-4xl md:text-5xl font-bold text-brand-green tracking-tight">
             Kitchen Table Conversations
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-brand-blue/90 leading-relaxed">
@@ -61,7 +61,7 @@ export default function KitchenTableConversationsPage() {
       <section className="py-10 lg:py-12">
         <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">Who It Is For</h2>
+            <h2 className="font-brand text-2xl text-brand-green">Who It Is For</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>First-time buyers and newcomers</li>
               <li>Families aligning values with budget decisions</li>
@@ -70,7 +70,7 @@ export default function KitchenTableConversationsPage() {
           </article>
 
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">What We Cover</h2>
+            <h2 className="font-brand text-2xl text-brand-green">What We Cover</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>Mortgage steps, rates, and readiness</li>
               <li>Cash-flow, debt, and credit strategy</li>
@@ -79,7 +79,7 @@ export default function KitchenTableConversationsPage() {
           </article>
 
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">How It Works</h2>
+            <h2 className="font-brand text-2xl text-brand-green">How It Works</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>Small group format (friendly and focused)</li>
               <li>4 weekly sessions of 45-60 minutes</li>
@@ -92,7 +92,7 @@ export default function KitchenTableConversationsPage() {
       <section className="pb-14">
         <div className="max-w-screen-xl mx-auto px-4">
           <div className="rounded-3xl border border-brand-gold/40 bg-brand-green/5 p-6 md:p-8">
-            <h2 className="font-serif text-2xl md:text-3xl text-brand-green">Expected Outcome</h2>
+            <h2 className="font-brand text-2xl md:text-3xl text-brand-green">Expected Outcome</h2>
             <p className="mt-4 text-brand-blue/90 max-w-3xl leading-relaxed">
               You finish the program with calmer decision-making, better household money conversations,
               and a practical sequence for your next mortgage, tax, or cash-flow steps.

@@ -257,7 +257,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Inputs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           {/* Income & debts */}
           <div className="grid sm:grid-cols-2 gap-3">
@@ -403,7 +403,7 @@ export default function Page() {
 
         {/* Results */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Results</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
             <div>
@@ -526,7 +526,7 @@ export default function Page() {
       {/* Footer note / CTA */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h4 className="font-serif text-lg text-brand-green font-bold mb-2">Notes</h4>
+          <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Notes</h4>
           <ul className="list-disc pl-6 space-y-2 text-brand-body">
             <li>Qualifying rate uses the greater of your contract rate + 2% or the benchmark.</li>
             <li>GDS counts: mortgage payment + property tax + heat + 50% condo fees. TDS adds other monthly debts.</li>
@@ -535,7 +535,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h4 className="font-serif text-lg text-brand-green font-bold mb-2">Need a human review?</h4>
+          <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Need a human review?</h4>
           <p className="text-brand-body mb-3">We’ll translate this into a lender-ready plan and next steps.</p>
           <Link href="/en/contact?intent=pre-approval" className="inline-flex">
             <button

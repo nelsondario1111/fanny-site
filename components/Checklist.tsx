@@ -79,7 +79,7 @@ export default function Checklist({
   return (
     <section className="max-w-4xl mx-auto">
       <header className="text-center mb-6">
-        <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+        <h1 className="font-brand font-bold text-3xl md:text-4xl text-brand-green tracking-tight">
           {title}
         </h1>
         {subtitle && (
@@ -123,7 +123,7 @@ export default function Checklist({
         <div className="space-y-6 print:space-y-4">
           {sections.map((sec, si) => (
             <div key={sec.title} className="border border-brand-green/20 rounded-xl p-4">
-              <h2 className="font-serif text-xl text-brand-green mb-3">{sec.title}</h2>
+              <h2 className="font-brand text-xl text-brand-green mb-3">{sec.title}</h2>
               <ul className="space-y-2">
                 {sec.items.map((it, ii) => {
                   const k = `${si}:${ii}`;

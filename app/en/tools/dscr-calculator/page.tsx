@@ -250,7 +250,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* NOI */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Income</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Income</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">
             NOI (annual, CAD)
           </label>
@@ -362,7 +362,7 @@ export default function Page() {
 
         {/* Terms */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Loan Terms</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Loan Terms</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">
               Interest Rate (annual %)
@@ -414,7 +414,7 @@ export default function Page() {
 
         {/* Financing Mode */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">
             Proposed Financing
           </h3>
 
@@ -493,7 +493,7 @@ export default function Page() {
 
       {/* Print header (only on print) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">
+        <div className="font-sans font-bold text-brand-green text-2xl">
           DSCR (Lender View) — Summary
         </div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
@@ -503,7 +503,7 @@ export default function Page() {
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             DSCR & Debt Service
           </h3>
           <div className="space-y-2 text-sm">
@@ -533,7 +533,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             Max Loan by DSCR Target
           </h3>
           <div className="space-y-2 text-sm">
@@ -564,7 +564,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             LTV Context
           </h3>
           {mode === "purchaseLTV" ? (

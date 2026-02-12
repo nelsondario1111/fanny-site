@@ -260,7 +260,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Inputs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           <div className="grid sm:grid-cols-2 gap-3">
             <label className="block">
@@ -334,7 +334,7 @@ export default function Page() {
 
         {/* Results + Chart */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Results</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
             <div>

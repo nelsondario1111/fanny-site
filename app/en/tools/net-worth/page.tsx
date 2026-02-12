@@ -280,7 +280,7 @@ export default function Page() {
         {/* Left: Assets */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Assets</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Assets</h3>
             <button type="button" onClick={addAssetSection} className="underline">+ Add asset section</button>
           </div>
 
@@ -310,7 +310,7 @@ export default function Page() {
         {/* Right: Liabilities */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Liabilities</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Liabilities</h3>
             <button type="button" onClick={addLiabSection} className="underline">+ Add liability section</button>
           </div>
 
@@ -346,7 +346,7 @@ export default function Page() {
 
       {/* Similar tools */}
       <div className="mt-6 rounded-2xl border border-brand-gold bg-white p-5">
-        <h4 className="font-serif text-lg text-brand-green font-bold mb-2">Similar tools</h4>
+        <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Similar tools</h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li><Link href="/en/tools/budget-calculator" className="underline">Holistic Budget Calculator</Link></li>
           <li><Link href="/en/tools/debt-snowball" className="underline">Debt Snowball / Payoff Planner</Link></li>

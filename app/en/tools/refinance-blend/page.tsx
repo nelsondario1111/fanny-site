@@ -444,7 +444,7 @@ export default function Page() {
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Current Mortgage */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Current Mortgage</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Current Mortgage</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -595,7 +595,7 @@ export default function Page() {
 
         {/* Refinance (new mortgage) */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Refinance — New Mortgage</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Refinance — New Mortgage</h3>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
@@ -664,7 +664,7 @@ export default function Page() {
         {/* Blend & Extend */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Blend & Extend (Optional)</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Blend & Extend (Optional)</h3>
             <label className="inline-flex items-center gap-2">
               <input type="checkbox" checked={useBlend} onChange={(e) => setUseBlend(e.target.checked)} />
               <span>Include in comparison</span>
@@ -762,7 +762,7 @@ export default function Page() {
 
         {/* Analysis Horizon */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Analysis Horizon</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Analysis Horizon</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Horizon (years)</label>
           <input
             type="number"
@@ -782,7 +782,7 @@ export default function Page() {
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Stay */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Stay (No Change)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Stay (No Change)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
               <span>Monthly payment</span>
@@ -801,7 +801,7 @@ export default function Page() {
 
         {/* Refinance */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Refinance — New Mortgage</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Refinance — New Mortgage</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
               <span>Monthly payment</span>
@@ -834,7 +834,7 @@ export default function Page() {
 
         {/* Blend */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Blend & Extend</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Blend & Extend</h3>
           {results.blend ? (
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
@@ -889,7 +889,7 @@ export default function Page() {
 
       {/* Print header (appears only when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Refinance & Blend — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Refinance & Blend — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

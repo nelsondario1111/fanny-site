@@ -174,7 +174,7 @@ export default function TaxReviewPage() {
           transition={{ duration: 0.7 }}
           className="max-w-2xl mx-auto"
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-brand-green">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-brand-green">
             Reclaim What’s Rightfully Yours
           </h2>
           <p className="text-lg md:text-xl mb-10 text-gray-700 leading-relaxed">

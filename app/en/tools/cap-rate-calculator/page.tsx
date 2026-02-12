@@ -231,7 +231,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Purchase & Costs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Purchase & Project Costs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Purchase & Project Costs</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Purchase Price (CAD)</label>
           <input
             type="number"
@@ -266,7 +266,7 @@ export default function Page() {
 
         {/* NOI input + helper */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Net Operating Income (NOI)</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Net Operating Income (NOI)</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">NOI (annual, CAD)</label>
           <input
             type="number"
@@ -359,7 +359,7 @@ export default function Page() {
 
         {/* Financing (optional) */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Simple Financing (for levered returns)</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Simple Financing (for levered returns)</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Down Payment (% of price)</label>
@@ -410,7 +410,7 @@ export default function Page() {
 
       {/* Print header (only when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Cap Rate & Cash-on-Cash — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Cap Rate & Cash-on-Cash — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -419,7 +419,7 @@ export default function Page() {
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Unlevered */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Unlevered Metrics</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Unlevered Metrics</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>NOI (annual)</span><span className="font-medium">{money(noiAnnual)}</span></div>
             <div className="flex justify-between"><span>Cap Rate (NOI ÷ Price)</span><span className="font-semibold">{pct(capRate)}</span></div>
@@ -430,7 +430,7 @@ export default function Page() {
 
         {/* Debt & Coverage */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Debt Service & Coverage</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Debt Service & Coverage</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Annual Debt Service (ADS)</span><span className="font-medium">−{money(adsAnnual)}</span></div>
             <div className="flex justify-between border-t pt-2 mt-2"><span>DSCR (NOI ÷ ADS)</span><span className="font-semibold">{Number.isFinite(dscr) ? dscr.toFixed(2) : "—"}</span></div>
@@ -441,7 +441,7 @@ export default function Page() {
 
         {/* Levered returns */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Levered Returns</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Levered Returns</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Levered Cash Flow (NOI − ADS)</span><span className="font-medium">{money(leveredCF)}</span></div>
             <div className="flex justify-between border-t pt-2 mt-2"><span>Cash Invested</span><span className="font-medium">{money(cashInvested)}</span></div>

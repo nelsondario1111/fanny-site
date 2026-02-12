@@ -235,7 +235,7 @@ export default function Page() {
         {/* Activos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Activos</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Activos</h3>
             <button
               type="button"
               onClick={addAsset}
@@ -292,7 +292,7 @@ export default function Page() {
         {/* Pasivos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Pasivos</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Pasivos</h3>
             <button
               type="button"
               onClick={addLiability}
@@ -348,7 +348,7 @@ export default function Page() {
 
         {/* Registro + Ratios */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Registro y ratios</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Registro y ratios</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -402,7 +402,7 @@ export default function Page() {
 
       {/* Tabla de registros */}
       <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
-        <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Registros guardados</h3>
+        <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Registros guardados</h3>
         {snapshots.length === 0 ? (
           <p className="text-sm text-brand-blue/70">Aún no hay registros. Elige una fecha y haz clic en <b>Agregar registro</b>.</p>
         ) : (
@@ -454,7 +454,7 @@ export default function Page() {
 
       {/* Encabezado de impresión (solo al imprimir) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Patrimonio Neto — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Patrimonio Neto — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

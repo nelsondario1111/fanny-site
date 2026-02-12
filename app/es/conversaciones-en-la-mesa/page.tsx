@@ -24,7 +24,7 @@ export default function ConversacionesMesaPage() {
             <span className="text-brand-green">Conversaciones en la Mesa</span>
           </nav>
 
-          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-extrabold text-brand-green tracking-tight">
+          <h1 className="mt-4 font-brand text-4xl md:text-5xl font-bold text-brand-green tracking-tight">
             Conversaciones en la Mesa
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-brand-blue/90 leading-relaxed">
@@ -61,7 +61,7 @@ export default function ConversacionesMesaPage() {
       <section className="py-10 lg:py-12">
         <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">Para Quién Es</h2>
+            <h2 className="font-brand text-2xl text-brand-green">Para Quién Es</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>Compradores primerizos y recién llegados</li>
               <li>Familias alineando valores y presupuesto</li>
@@ -70,7 +70,7 @@ export default function ConversacionesMesaPage() {
           </article>
 
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">Qué Trabajamos</h2>
+            <h2 className="font-brand text-2xl text-brand-green">Qué Trabajamos</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>Pasos hipotecarios, tasas y preparación</li>
               <li>Estrategia de flujo de caja, deuda y crédito</li>
@@ -79,7 +79,7 @@ export default function ConversacionesMesaPage() {
           </article>
 
           <article className="rounded-3xl border border-brand-gold/40 bg-white shadow-sm p-6">
-            <h2 className="font-serif text-2xl text-brand-green">Cómo Funciona</h2>
+            <h2 className="font-brand text-2xl text-brand-green">Cómo Funciona</h2>
             <ul className="mt-4 list-disc pl-5 space-y-2 text-brand-blue/90">
               <li>Formato en grupo pequeño (amable y enfocado)</li>
               <li>4 sesiones semanales de 45-60 minutos</li>
@@ -92,7 +92,7 @@ export default function ConversacionesMesaPage() {
       <section className="pb-14">
         <div className="max-w-screen-xl mx-auto px-4">
           <div className="rounded-3xl border border-brand-gold/40 bg-brand-green/5 p-6 md:p-8">
-            <h2 className="font-serif text-2xl md:text-3xl text-brand-green">Resultado Esperado</h2>
+            <h2 className="font-brand text-2xl md:text-3xl text-brand-green">Resultado Esperado</h2>
             <p className="mt-4 text-brand-blue/90 max-w-3xl leading-relaxed">
               Terminas el programa con decisiones más calmadas, mejores conversaciones de dinero en casa
               y una secuencia clara para tus próximos pasos en hipoteca, impuestos y flujo de caja.

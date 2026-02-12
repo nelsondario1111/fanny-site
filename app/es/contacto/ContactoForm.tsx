@@ -326,7 +326,7 @@ export default function ContactoForm(props: Props) {
 
       <button
         type="submit" disabled={status === "sending"}
-        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-serif font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg"
+        className="w-full px-8 py-3 bg-brand-gold text-brand-green rounded-full font-sans font-bold shadow-lg hover:bg-brand-blue hover:text-white transition text-lg"
       >
         {status === "sending" ? "Enviando..." : "Solicitar info / Reservar"}
       </button>

@@ -20,7 +20,7 @@ export default function CuentaEs() {
     >
       <section className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
-          <h2 className="font-serif text-xl font-semibold text-brand-green">
+          <h2 className="font-brand text-xl font-semibold text-brand-green">
             Herramientas y Regalos
           </h2>
           <p className="mt-2 text-sm text-brand-body/80">
@@ -28,7 +28,7 @@ export default function CuentaEs() {
           </p>
         </div>
         <div className="rounded-2xl border border-brand-gold/30 bg-white p-5 shadow-sm">
-          <h2 className="font-serif text-xl font-semibold text-brand-green">
+          <h2 className="font-brand text-xl font-semibold text-brand-green">
             Documentos
           </h2>
           <p className="mt-2 text-sm text-brand-body/80">

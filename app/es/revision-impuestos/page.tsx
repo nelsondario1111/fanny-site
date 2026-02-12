@@ -169,7 +169,7 @@ export default function RevisionImpuestosPage() {
       {/* ================= CTA ================= */}
       <Section className="animate-fade-up py-16 md:py-20 text-center">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-brand-green">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-brand-green">
             Reclama lo que es Tuyo por Derecho
           </h2>
           <p className="text-lg md:text-xl mb-10 text-gray-700 leading-relaxed">
@@ -180,19 +180,19 @@ export default function RevisionImpuestosPage() {
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href={`/es/contacto?intent=question&package=${queryPkg}`}
-              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition bg-brand-green text-white hover:opacity-90"
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-sans font-bold shadow transition bg-brand-green text-white hover:opacity-90"
             >
               Verificar si calificas
             </Link>
             <Link
               href={`/es/reservar?package=${queryPkg}`}
-              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-sans font-bold shadow transition border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
             >
               Reservar llamada de 15 min
             </Link>
             <Link
               href={`/es/contacto?intent=package&package=${queryPkg}`}
-              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
+              className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-sans font-bold shadow transition border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
             >
               Iniciar revisión de impuestos
             </Link>

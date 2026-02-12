@@ -323,7 +323,7 @@ export default function Page() {
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Comprar */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Comprar — Precio y financiamiento</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Comprar — Precio y financiamiento</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Precio de compra (CAD)</label>
             <input
@@ -422,7 +422,7 @@ export default function Page() {
 
         {/* Alquilar */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Alquilar — Precio y crecimiento</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Alquilar — Precio y crecimiento</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Alquiler inicial (mensual)</label>
             <input
@@ -453,7 +453,7 @@ export default function Page() {
 
         {/* Horizonte y supuestos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Horizonte y supuestos</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Horizonte y supuestos</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Horizonte (años)</label>
@@ -489,7 +489,7 @@ export default function Page() {
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Flujo mensual (Mes 1)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Flujo mensual (Mes 1)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Egreso propietario</span><span className="font-medium">{money(results.ownerCashMonth1, 2)}</span></div>
             <div className="flex justify-between"><span>Egreso inquilino</span><span className="font-medium">{money(results.renterCashMonth1, 2)}</span></div>
@@ -504,7 +504,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Egreso total (Horizonte)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Egreso total (Horizonte)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Egreso total propietario</span><span className="font-medium">{money(results.totalOwnerCashOut, 0)}</span></div>
             <div className="flex justify-between"><span>Egreso total inquilino</span><span className="font-medium">{money(results.totalRenterCashOut, 0)}</span></div>
@@ -520,7 +520,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Patrimonio al horizonte</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Patrimonio al horizonte</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Patrimonio del propietario (tras costos de venta y saldo)</span><span className="font-medium">{money(results.ownerNetWorth, 0)}</span></div>
             <div className="flex justify-between"><span>Activos invertidos del inquilino</span><span className="font-medium">{money(results.renterNetWorth, 0)}</span></div>
@@ -541,7 +541,7 @@ export default function Page() {
 
       {/* Encabezado al imprimir */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Alquilar vs Comprar — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Alquilar vs Comprar — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado el {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

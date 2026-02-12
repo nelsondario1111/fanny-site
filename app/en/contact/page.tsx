@@ -92,7 +92,7 @@ export default function Contact() {
           <StaggerGroup className="space-y-6">
             <Reveal variants={fadeUp}>
               <Panel className="p-6 sm:p-8">
-                <h2 className="text-xl font-serif font-bold text-brand-green">
+                <h2 className="text-xl font-brand font-semibold text-brand-green">
                   Contact details
                 </h2>
 
@@ -150,7 +150,7 @@ export default function Contact() {
 
             <Reveal variants={fadeUp}>
               <Panel className="p-6 sm:p-8">
-                <h2 className="text-xl font-serif font-bold text-brand-green">
+                <h2 className="text-xl font-brand font-semibold text-brand-green">
                   Why book a call?
                 </h2>
                 <ul className="mt-3 space-y-2 text-brand-body">

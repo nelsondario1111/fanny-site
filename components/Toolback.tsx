@@ -20,7 +20,7 @@ export default function ToolBack({ title, children }: Props) {
           <FaArrowLeft aria-hidden /> Back to Tools
         </Link>
         {title ? (
-          <h1 className="m-0 font-serif text-2xl md:text-3xl text-brand-green font-extrabold tracking-tight">
+          <h1 className="m-0 font-brand text-2xl md:text-3xl text-brand-green font-bold tracking-tight">
             {title}
           </h1>
         ) : null}

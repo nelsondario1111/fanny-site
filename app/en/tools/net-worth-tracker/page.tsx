@@ -230,7 +230,7 @@ export default function Page() {
         {/* Assets */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Assets</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Assets</h3>
             <button
               type="button"
               onClick={addAsset}
@@ -287,7 +287,7 @@ export default function Page() {
         {/* Liabilities */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-serif text-lg text-brand-green font-bold">Liabilities</h3>
+            <h3 className="font-sans text-lg text-brand-green font-semibold">Liabilities</h3>
             <button
               type="button"
               onClick={addLiability}
@@ -343,7 +343,7 @@ export default function Page() {
 
         {/* Snapshot + Ratios */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Snapshot & Ratios</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Snapshot & Ratios</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -397,7 +397,7 @@ export default function Page() {
 
       {/* Snapshots table */}
       <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
-        <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Saved Snapshots</h3>
+        <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Saved Snapshots</h3>
         {snapshots.length === 0 ? (
           <p className="text-sm text-brand-blue/70">No snapshots yet. Choose a date and click <b>Add Snapshot</b>.</p>
         ) : (
@@ -449,7 +449,7 @@ export default function Page() {
 
       {/* Print header (only when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Net Worth — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Net Worth — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

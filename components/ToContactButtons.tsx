@@ -33,7 +33,7 @@ function ButtonLink({
   external?: boolean;
 }) {
   const classes = cn(
-    "inline-flex items-center rounded-full px-5 py-2.5 text-sm font-serif font-bold shadow transition",
+    "inline-flex items-center rounded-full px-5 py-2.5 text-sm font-sans font-bold shadow transition",
     ctaVariants[variant]
   );
 

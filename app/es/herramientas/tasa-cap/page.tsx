@@ -231,7 +231,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Compra y costos */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Compra y costos del proyecto</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Compra y costos del proyecto</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Precio de compra (CAD)</label>
           <input
             type="number"
@@ -266,7 +266,7 @@ export default function Page() {
 
         {/* NOI + asistente */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Ingreso Operativo Neto (NOI)</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Ingreso Operativo Neto (NOI)</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">NOI (anual, CAD)</label>
           <input
             type="number"
@@ -359,7 +359,7 @@ export default function Page() {
 
         {/* Financiamiento (opcional) */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Financiamiento simple (retornos apalancados)</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financiamiento simple (retornos apalancados)</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Pago inicial (% del precio)</label>
@@ -410,7 +410,7 @@ export default function Page() {
 
       {/* Encabezado de impresión (solo al imprimir) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Tasa Cap & Cash-on-Cash — Resumen</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Tasa Cap & Cash-on-Cash — Resumen</div>
         <div className="text-xs text-brand-blue">Preparado {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -419,7 +419,7 @@ export default function Page() {
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Sin deuda */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Métricas sin deuda</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Métricas sin deuda</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>NOI (anual)</span><span className="font-medium">{money(noiAnnual)}</span></div>
             <div className="flex justify-between"><span>Tasa Cap (NOI ÷ Precio)</span><span className="font-semibold">{pct(capRate)}</span></div>
@@ -430,7 +430,7 @@ export default function Page() {
 
         {/* Servicio de deuda y cobertura */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Servicio de deuda y cobertura</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Servicio de deuda y cobertura</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Servicio de deuda anual (ADS)</span><span className="font-medium">−{money(adsAnnual)}</span></div>
             <div className="flex justify-between border-t pt-2 mt-2"><span>DSCR (NOI ÷ ADS)</span><span className="font-semibold">{Number.isFinite(dscr) ? dscr.toFixed(2) : "—"}</span></div>
@@ -441,7 +441,7 @@ export default function Page() {
 
         {/* Retornos apalancados */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Retornos apalancados</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Retornos apalancados</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Flujo de caja apalancado (NOI − ADS)</span><span className="font-medium">{money(leveredCF)}</span></div>
             <div className="flex justify-between border-t pt-2 mt-2"><span>Efectivo invertido</span><span className="font-medium">{money(cashInvested)}</span></div>

@@ -296,7 +296,7 @@ export default function Page() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Entradas */}
         <section className="rounded-2xl border border-brand-gold/50 bg-white p-4 sm:p-6">
-          <h2 className="font-serif text-xl text-brand-green font-bold mb-3">Entradas</h2>
+          <h2 className="font-brand text-xl text-brand-green font-semibold mb-3">Entradas</h2>
 
           <div className="grid sm:grid-cols-2 gap-4">
             {/* Ingresos y deudas */}
@@ -444,7 +444,7 @@ export default function Page() {
 
         {/* Resultados */}
         <section className="rounded-2xl border border-brand-gold/50 bg-white p-4 sm:p-6">
-          <h2 className="font-serif text-xl text-brand-green font-bold mb-3">Resultados</h2>
+          <h2 className="font-brand text-xl text-brand-green font-semibold mb-3">Resultados</h2>
 
           <div className="space-y-3">
             <div className="rounded-xl border border-brand-gold/40 p-3">
@@ -551,7 +551,7 @@ export default function Page() {
 
       {/* Herramientas similares */}
       <div className="mt-6 rounded-2xl border border-brand-gold/50 bg-brand-beige/40 p-4">
-        <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Herramientas similares</h3>
+        <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Herramientas similares</h3>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li>
             <Link href="/es/herramientas/accesibilidad-hipotecaria" className="underline">
@@ -598,7 +598,7 @@ export default function Page() {
       <div className="mt-6 text-center">
         <Link
           href="/es/contacto?intent=consult"
-          className="inline-block px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
+          className="inline-block px-8 py-3 border-2 border-brand-gold text-brand-green font-sans font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
         >
           Agendar llamada de descubrimiento
         </Link>

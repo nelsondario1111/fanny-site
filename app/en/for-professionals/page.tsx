@@ -31,7 +31,7 @@ export default function Page() {
             <span className="mx-2">/</span>
             <span className="text-brand-green">For Professionals</span>
           </nav>
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 className="font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
             High-trust planning for busy professionals
           </h1>
           <p className="mt-3 max-w-3xl text-brand-blue/90">

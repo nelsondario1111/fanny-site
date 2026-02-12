@@ -378,7 +378,7 @@ export default function Page() {
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Incomes */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Incomes</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Incomes</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Borrower Income (annual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -402,7 +402,7 @@ export default function Page() {
 
         {/* Housing costs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Qualifying Housing Costs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Qualifying Housing Costs</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Property Taxes (annual)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -434,7 +434,7 @@ export default function Page() {
 
         {/* Other debts & ratios */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Debts & Ratios</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Debts & Ratios</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Other Monthly Debts (minimums)</label>
             <input type="number" min={0} inputMode="decimal"
@@ -460,7 +460,7 @@ export default function Page() {
 
         {/* Rate, amortization, down payment */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Financing</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financing</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -549,7 +549,7 @@ export default function Page() {
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Coverage & Constraints</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Coverage & Constraints</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Gross Monthly Income</span><span className="font-medium">{money(grossMonthlyIncome, 2)}</span></div>
             <div className="flex justify-between"><span>Fixed Housing Costs (qual.)</span><span className="font-medium">{money(fixedHousingMonthly, 2)}</span></div>
@@ -571,7 +571,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Max Mortgage (by payment)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Max Mortgage (by payment)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Amortization</span><span className="font-medium">{amortYears} years</span></div>
             <div className="flex justify-between"><span>Supportable Principal @ Qual. Rate</span><span className="font-semibold">{money(maxSupportableLoan)}</span></div>
@@ -591,7 +591,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Max Purchase Price</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Max Purchase Price</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Down Payment (est.)</span><span className="font-medium">{money(downPaymentCAD)}</span></div>
             <div className="flex justify-between"><span>Include Premium Estimate</span><span className="font-medium">{includeDefaultPremium ? "Yes" : "No"}</span></div>
@@ -609,7 +609,7 @@ export default function Page() {
 
       {/* Print headers */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Mortgage Affordability — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Mortgage Affordability — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>

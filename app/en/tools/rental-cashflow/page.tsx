@@ -335,7 +335,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Purchase & Financing */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Purchase & Financing</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Purchase & Financing</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Purchase Price (CAD)</label>
           <input
             type="number"
@@ -408,7 +408,7 @@ export default function Page() {
 
         {/* Rental Income */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Rental Income</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Rental Income</h3>
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-12 font-semibold text-sm text-brand-blue">
               <div className="col-span-6">Unit</div>
@@ -489,7 +489,7 @@ export default function Page() {
 
         {/* Operating Expenses */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Operating Expenses</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Operating Expenses</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Property Taxes (monthly)</label>
@@ -609,7 +609,7 @@ export default function Page() {
 
       {/* Print header (only visible when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Rental Cash-Flow — Summary</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Rental Cash-Flow — Summary</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -618,7 +618,7 @@ export default function Page() {
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Income Summary */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Income Summary (Annual)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Income Summary (Annual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Gross Potential Rent (GPR)</span><span className="font-medium">{money(gprRentAnnual)}</span></div>
             <div className="flex justify-between"><span>Vacancy & Credit Loss</span><span className="font-medium">−{money(vacancyLossAnnual)}</span></div>
@@ -629,7 +629,7 @@ export default function Page() {
 
         {/* Operating Expenses */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Operating Expenses (Annual)</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Operating Expenses (Annual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Fixed expenses</span><span className="font-medium">−{money(fixedOpexAnnual)}</span></div>
             <div className="flex justify-between"><span>Management</span><span className="font-medium">−{money(mgmtAnnual)}</span></div>
@@ -642,7 +642,7 @@ export default function Page() {
 
         {/* Returns & Financing */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">Returns & Financing</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Returns & Financing</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Annual Debt Service (ADS)</span><span className="font-medium">−{money(adsAnnual)}</span></div>
             <div className="flex justify-between"><span>Cash Flow (before tax)</span><span className="font-semibold">{money(cashFlowBeforeTax)}</span></div>

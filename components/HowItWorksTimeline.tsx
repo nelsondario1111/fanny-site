@@ -27,7 +27,7 @@ export default function HowItWorksTimeline({
       aria-label={title}
     >
       <div className="text-center">
-        <h2 className="font-serif text-2xl md:text-3xl font-semibold tracking-tight text-brand-green">
+        <h2 className="font-brand text-2xl md:text-3xl font-semibold tracking-tight text-brand-green">
           {title}
         </h2>
         {subtitle && <p className="mt-2 max-w-3xl mx-auto text-brand-blue/90">{subtitle}</p>}
@@ -42,7 +42,7 @@ export default function HowItWorksTimeline({
             <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-green text-xs font-semibold text-white">
               {idx + 1}
             </div>
-            <h3 className="mt-3 font-serif text-lg font-semibold text-brand-green">{step.title}</h3>
+            <h3 className="mt-3 font-sans text-lg font-semibold text-brand-green">{step.title}</h3>
             <p className="mt-2 text-sm text-brand-blue/90">{step.detail}</p>
           </li>
         ))}

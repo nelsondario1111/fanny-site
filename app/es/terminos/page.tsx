@@ -88,7 +88,7 @@ function SectionTitle({
     <motion.div variants={fade} initial="hidden" animate="visible" className="text-center mb-6">
       <motion.h1
         variants={fadeUp}
-        className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
+        className="font-sans font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight"
       >
         {title}
       </motion.h1>
@@ -116,7 +116,7 @@ function TermSection({
   const { fadeUp } = useAnims();
   return (
     <motion.div variants={fadeUp} className="space-y-3" id={id}>
-      <h2 className="font-serif text-2xl font-semibold text-brand-green">{heading}</h2>
+      <h2 className="font-brand text-2xl font-semibold text-brand-green">{heading}</h2>
       <div className="prose prose-brand max-w-none">{children}</div>
     </motion.div>
   );

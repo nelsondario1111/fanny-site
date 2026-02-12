@@ -81,7 +81,7 @@ export default function AIBadge({
             className="w-full max-w-lg rounded-2xl border border-brand-gold bg-white p-5 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div id={titleId} className="font-serif text-xl font-bold text-brand-green">
+            <div id={titleId} className="font-sans text-xl font-bold text-brand-green">
               {copy.title}
             </div>
             <div id={bodyId} className="mt-3 space-y-2 text-sm text-brand-blue/90">

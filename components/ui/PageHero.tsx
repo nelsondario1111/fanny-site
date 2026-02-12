@@ -23,7 +23,7 @@ export default function PageHero({
             {kicker}
           </div>
         )}
-        <h1 className="font-serif font-extrabold text-4xl md:text-5xl text-brand-green tracking-tight mb-4">
+        <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight mb-4">
           {title}
         </h1>
         {subtitle && (

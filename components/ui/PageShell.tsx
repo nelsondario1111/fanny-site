@@ -33,7 +33,7 @@ export default function PageShell({
         )}
       >
         <header className={center ? "text-center" : undefined}>
-          <h1 className="font-serif text-3xl font-extrabold tracking-tight text-brand-green md:text-5xl">
+          <h1 className="font-brand text-3xl font-bold tracking-tight text-brand-green md:text-5xl">
             {title}
           </h1>
           <div

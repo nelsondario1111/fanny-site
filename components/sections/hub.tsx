@@ -82,7 +82,7 @@ export function HubSectionTitle({
         )}
 
         <Reveal variants={fadeUp}>
-          <h2 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">
+          <h2 className="font-brand font-semibold text-3xl md:text-4xl text-brand-green tracking-tight">
             {title}
           </h2>
         </Reveal>
@@ -145,7 +145,7 @@ export function InfoCard({
     <Reveal variants={fadeUp}>
       <article className={`${HUB_CARD_CLASS} ${className}`.trim()}>
         {kicker && <p className="text-xs uppercase tracking-wide text-brand-blue/75 mb-1">{kicker}</p>}
-        <h3 className="font-serif text-xl text-brand-green font-bold m-0">{title}</h3>
+        <h3 className="font-sans text-xl text-brand-green font-semibold m-0">{title}</h3>
         {description && <p className="mt-2 text-brand-blue/90">{description}</p>}
         {children}
       </article>
@@ -229,7 +229,7 @@ export function OfferCard({
                   {icon}
                 </div>
               )}
-              <h3 id={`${id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
+              <h3 id={`${id}-title`} className="font-sans text-2xl text-brand-green font-semibold m-0">
                 {title}
               </h3>
             </div>
@@ -372,7 +372,7 @@ export function PageHero({
         </nav>
 
         <Reveal variants={fade}>
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 className="font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
             {title}
           </h1>
         </Reveal>

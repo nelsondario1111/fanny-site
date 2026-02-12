@@ -408,7 +408,7 @@ function ToolCard({ t }: { t: ToolItem }) {
           <div className="w-14 h-14 rounded-full bg-brand-green/10 border flex items-center justify-center">
             {t.icon}
           </div>
-          <h3 id={`${t.id}-title`} className="font-serif text-2xl text-brand-green font-bold m-0">
+          <h3 id={`${t.id}-title`} className="font-sans text-2xl text-brand-green font-semibold m-0">
             {t.title}
           </h3>
         </div>
@@ -819,7 +819,7 @@ function ListBlock({ items }: { items: ToolItem[] }) {
             </div>
             <div className="grow">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h4 className="font-serif text-lg text-brand-green font-bold m-0">{t.title}</h4>
+                <h4 className="font-sans text-lg text-brand-green font-semibold m-0">{t.title}</h4>
                 <span className="px-3 py-1 rounded-full text-xs border border-brand-gold text-brand-green">
                   {t.category} • {t.type}
                 </span>

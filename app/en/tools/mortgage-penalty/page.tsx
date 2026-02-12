@@ -280,7 +280,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Mortgage Basics */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Mortgage Basics</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Mortgage Basics</h3>
 
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Mortgage Type</label>
@@ -359,7 +359,7 @@ export default function Page() {
 
         {/* Term / Maturity */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Remaining Term</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Remaining Term</h3>
 
           <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
             <label className="inline-flex items-center gap-2">
@@ -424,7 +424,7 @@ export default function Page() {
 
         {/* IRD Inputs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold mb-2">IRD (Simple) Inputs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">IRD (Simple) Inputs</h3>
           <p className="text-sm text-brand-blue/80 mb-3">
             IRD estimates can vary by lender. We use:{" "}
             <b>Effective Balance × (Contract − Comparison) × (Remaining Months ÷ 12)</b>.
@@ -471,7 +471,7 @@ export default function Page() {
 
       {/* Quick results */}
       <section className="mt-8 rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-        <h3 className="font-serif text-lg text-brand-green font-bold mb-2">Quick Results</h3>
+        <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Quick Results</h3>
         <div className="grid md:grid-cols-2 gap-3 text-sm">
           <div className="flex justify-between">
             <span>Effective Balance (after prepayment)</span>
@@ -525,7 +525,7 @@ export default function Page() {
 
       {/* Print header (only when printing) */}
       <div className="hidden print:block mt-6 mb-3 text-center">
-        <div className="font-serif font-bold text-brand-green text-2xl">Mortgage Penalty — Estimate</div>
+        <div className="font-sans font-bold text-brand-green text-2xl">Mortgage Penalty — Estimate</div>
         <div className="text-xs text-brand-blue">Prepared {printDate}</div>
         <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
       </div>
@@ -533,7 +533,7 @@ export default function Page() {
       {/* Comparison panels */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">3-Month Interest Detail</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">3-Month Interest Detail</h3>
           <p className="text-sm text-brand-blue/80 mb-2">
             Typically used for variable-rate mortgages or when it’s greater for fixed-rate penalties.
           </p>
@@ -554,7 +554,7 @@ export default function Page() {
         </section>
 
         <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
-          <h3 className="font-serif text-xl text-brand-green font-bold mb-2">IRD (Simple) Detail</h3>
+          <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">IRD (Simple) Detail</h3>
           <p className="text-sm text-brand-blue/80 mb-2">
             This estimate compares your contract rate to a current comparable term rate.
           </p>

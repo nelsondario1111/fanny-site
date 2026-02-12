@@ -63,7 +63,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
     <main className="min-h-screen bg-white py-12">
       <section className="max-w-5xl mx-auto px-4">
         <div className="rounded-3xl border border-brand-gold/40 bg-brand-green/5 p-6 md:p-8">
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 className="font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
             {isEn ? "Client Library" : "Biblioteca de Clientes"}
           </h1>
           <p className="mt-3 max-w-3xl text-brand-blue/90">
@@ -75,7 +75,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
 
         {!unlocked ? (
           <section className="mt-8 max-w-2xl rounded-3xl border border-brand-gold/40 bg-white p-6 shadow-sm">
-            <h2 className="font-serif text-2xl text-brand-green">
+            <h2 className="font-brand text-2xl text-brand-green">
               {isEn ? "Enter Access Code" : "Ingresar codigo de acceso"}
             </h2>
             <p className="mt-2 text-sm text-brand-blue/80">
@@ -104,7 +104,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
         ) : (
           <section className="mt-8 grid gap-6 md:grid-cols-2">
             <article className="rounded-3xl border border-brand-gold/40 bg-white p-6 shadow-sm">
-              <h2 className="font-serif text-2xl text-brand-green">
+              <h2 className="font-brand text-2xl text-brand-green">
                 {isEn ? "Checklist Library" : "Biblioteca de checklists"}
               </h2>
               <ul className="mt-4 list-disc space-y-2 pl-5 text-brand-blue/90">
@@ -127,7 +127,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
             </article>
 
             <article className="rounded-3xl border border-brand-gold/40 bg-white p-6 shadow-sm">
-              <h2 className="font-serif text-2xl text-brand-green">
+              <h2 className="font-brand text-2xl text-brand-green">
                 {isEn ? "Document Upload Guidance" : "Guia para carga de documentos"}
               </h2>
               <ul className="mt-4 list-disc space-y-2 pl-5 text-brand-blue/90">
@@ -139,7 +139,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
             </article>
 
             <article className="rounded-3xl border border-brand-gold/40 bg-white p-6 shadow-sm">
-              <h2 className="font-serif text-2xl text-brand-green">
+              <h2 className="font-brand text-2xl text-brand-green">
                 {isEn ? "What to Expect" : "Que esperar"}
               </h2>
               <ol className="mt-4 list-decimal space-y-2 pl-5 text-brand-blue/90">
@@ -150,7 +150,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
             </article>
 
             <article className="rounded-3xl border border-brand-gold/40 bg-white p-6 shadow-sm">
-              <h2 className="font-serif text-2xl text-brand-green">
+              <h2 className="font-brand text-2xl text-brand-green">
                 {isEn ? "Intake & Support Links" : "Enlaces de intake y soporte"}
               </h2>
               <div className="mt-4 flex flex-wrap gap-2">

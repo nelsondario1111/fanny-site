@@ -209,7 +209,7 @@ export default function Page() {
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Inputs</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           <label className="block">
             <span className="block text-sm text-brand-blue/80">Purchase price</span>
@@ -273,7 +273,7 @@ export default function Page() {
 
         {/* Results */}
         <section className="rounded-2xl border border-brand-gold bg-white p-5">
-          <h3 className="font-serif text-lg text-brand-green font-bold">Results</h3>
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
             <div>
@@ -382,7 +382,7 @@ export default function Page() {
 
       {/* Notes / disclaimers */}
       <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
-        <h4 className="font-serif text-lg text-brand-green font-bold mb-2">Notes</h4>
+        <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Notes</h4>
         <ul className="list-disc pl-6 space-y-2 text-brand-body">
           <li>Ontario LTT tiers: 0.5% to $55k; 1.0% $55k–$250k; 1.5% $250k–$400k; 2.0% $400k–$2M; 2.5% over $2M (1–2 single-family residences).</li>
           <li>Toronto MLTT adds higher luxury tiers for purchases of $3M+ (up to 7.5% over $20M).</li>

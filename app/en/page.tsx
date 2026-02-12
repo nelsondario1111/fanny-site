@@ -28,7 +28,7 @@ function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
         </Reveal>
       )}
       <Reveal variants={fadeUp}>
-        <h2 className="font-serif text-3xl md:text-4xl text-brand-green/90 font-bold tracking-tight">
+        <h2 className="font-brand text-3xl md:text-4xl text-brand-green/90 font-semibold tracking-tight">
           {title}
         </h2>
       </Reveal>
@@ -84,7 +84,7 @@ export default function Home() {
           <StaggerGroup className="w-full px-4">
             <section className="max-w-content mx-auto px-5 sm:px-8 pt-6 sm:pt-8 pb-10 sm:pb-14 bg-white/90 rounded-2xl border border-brand-gold/20 shadow-md backdrop-blur-[2px] text-center relative">
               <Reveal variants={fadeUp}>
-                <h1 className="font-serif font-extrabold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
+                <h1 className="font-brand font-bold text-5xl md:text-6xl text-brand-green/90 mb-4 tracking-tight">
                   Clear numbers, calm decisions.
                 </h1>
               </Reveal>
@@ -195,7 +195,7 @@ export default function Home() {
 
             <Reveal variants={fadeUp} className="md:w-1/2 md:mt-4">
               <div className="bg-white rounded-2xl border border-brand-gold/30 shadow-md p-6">
-                <h3 className="font-serif text-xl text-brand-blue/90 font-bold mb-3">
+                <h3 className="font-sans text-xl text-brand-blue/90 font-semibold mb-3">
                   Who benefits most
                 </h3>
                 <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-4">
@@ -235,7 +235,7 @@ export default function Home() {
           </Reveal>
 
           <Reveal variants={fadeUp} className="md:w-1/2">
-            <h2 className="font-serif text-3xl md:text-4xl text-brand-green/90 mb-4 font-bold">
+            <h2 className="font-brand text-3xl md:text-4xl text-brand-green/90 mb-4 font-semibold">
               Invited Wisdom, Shared with Heart
             </h2>
             <p className="font-sans text-lg text-brand-body/90 mb-6 leading-relaxed max-w-2xl">
@@ -358,7 +358,7 @@ export default function Home() {
           ].map((col) => (
             <Reveal key={col.title} variants={fadeUp}>
               <div className="rounded-2xl border border-brand-green/30 p-6 hover:-translate-y-0.5 transition-transform duration-200">
-                <h4 className="font-serif text-xl text-brand-blue/90 font-bold mb-2">
+                <h4 className="font-sans text-xl text-brand-blue/90 font-semibold mb-2">
                   {col.title}
                 </h4>
                 <ul className="list-disc pl-6 text-brand-body/90 space-y-1">
@@ -391,7 +391,7 @@ export default function Home() {
         <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Reveal variants={fadeUp}>
             <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
-              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">
+              <h3 className="font-sans text-2xl text-brand-blue/90 font-semibold mb-2">
                 Tools
               </h3>
               <p className="text-brand-body/90 mb-6">
@@ -415,7 +415,7 @@ export default function Home() {
 
           <Reveal variants={fadeUp}>
             <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col hover:-translate-y-0.5 hover:shadow-lg transition-transform">
-              <h3 className="font-serif text-2xl text-brand-blue/90 font-bold mb-2">
+              <h3 className="font-sans text-2xl text-brand-blue/90 font-semibold mb-2">
                 Articles
               </h3>
               <p className="text-brand-body/90 mb-6">
@@ -446,7 +446,7 @@ export default function Home() {
       >
         <Reveal variants={fadeUp}>
           <div className="text-center max-w-3xl mx-auto bg-white/80 rounded-2xl p-10 shadow-sm border border-brand-gold/20">
-            <h3 className="font-serif text-2xl text-brand-green/90 font-bold mb-2">
+            <h3 className="font-sans text-2xl text-brand-green/90 font-semibold mb-2">
               Stay in the Loop
             </h3>
             <p className="text-brand-body/90 mb-6">
@@ -467,7 +467,7 @@ export default function Home() {
       {/* =========================== FINAL BAND =========================== */}
       <Reveal variants={fade}>
         <section className="py-20 text-center border-t border-brand-gold/10 mt-20">
-          <h3 className="font-serif text-2xl md:text-3xl text-brand-green/90 font-bold mb-3">
+          <h3 className="font-sans text-2xl md:text-3xl text-brand-green/90 font-semibold mb-3">
             Clarity grows from conversation.
           </h3>
           <p className="text-brand-body/90 mb-5 max-w-xl mx-auto">

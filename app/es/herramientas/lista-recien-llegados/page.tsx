@@ -545,7 +545,7 @@ export default function Page() {
                 <div>
                   <h3
                     className={classNames(
-                      "font-serif text-base md:text-lg font-bold",
+                      "font-sans text-base md:text-lg font-bold",
                       toneToText[meta.tone]
                     )}
                   >
@@ -750,7 +750,7 @@ export default function Page() {
 
       {/* Herramientas y servicios útiles */}
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
-        <h4 className="font-serif text-base md:text-lg text-brand-green font-bold mb-2">
+        <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Herramientas y servicios útiles
         </h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
