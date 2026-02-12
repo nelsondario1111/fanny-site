@@ -246,6 +246,7 @@ const SECTIONS = [
   { id: "start-here", label: "Empieza aquí" },
   { id: "strategic-maps", label: "Mapas estratégicos" },
   { id: "support", label: "Apoyo complementario" },
+  { id: "kitchen-table", label: "Conversaciones en la Mesa" },
   { id: "mortgage", label: "Estrategia hipotecaria" },
   { id: "business", label: "Negocios e impuestos" },
 ] as const;
@@ -344,6 +345,43 @@ export default function ServiciosPage() {
             tint="gold"
           />
           <Grid cards={sectionsWithCards.support} />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="kitchen-table"
+            title="Conversaciones en la Mesa"
+            subtitle="Programa grupal de 4 semanas para familias, recién llegados y compradores primerizos."
+            tint="green"
+          />
+          <article className="rounded-3xl border border-brand-gold/40 bg-white/95 p-6 md:p-8 shadow-sm">
+            <p className="text-brand-blue/90 leading-relaxed">
+              Este programa en cohorte te ayuda a ganar claridad financiera con un formato
+              cercano y guiado. Cada semana se enfoca en decisiones reales para que salgas
+              con acciones simples y aplicables.
+            </p>
+            <ul className="mt-4 list-disc pl-5 space-y-1 text-brand-blue/90">
+              <li>Grupos pequeños con preguntas en vivo y aprendizaje compartido</li>
+              <li>4 sesiones semanales (45-60 min) con pasos concretos</li>
+              <li>Apoyo en preguntas de hipoteca, flujo de caja e impuestos</li>
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/es/conversaciones-en-la-mesa"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+              >
+                Ver detalles del programa
+              </Link>
+              <Link
+                href={packageHref("Conversaciones en la Mesa — Cohorte 4 semanas")}
+                className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              >
+                Unirme a la cohorte de 4 semanas
+              </Link>
+            </div>
+          </article>
         </Panel>
       </div>
 

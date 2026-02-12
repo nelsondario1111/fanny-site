@@ -71,7 +71,7 @@ export default async function ServiceDetailPage(
   const detail = getServiceDetail("en", service);
   if (!detail) notFound();
 
-  const discoveryHref = "/en/contact?intent=consult&package=Free%20Discovery%20Call";
+  const discoveryHref = "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)";
 
   return (
     <main className="min-h-screen bg-white">

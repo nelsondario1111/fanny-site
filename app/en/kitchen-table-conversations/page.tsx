@@ -43,13 +43,13 @@ export default function KitchenTableConversationsPage() {
               Join the 4-Week Cohort
             </Link>
             <Link
-              href="/en/contact?intent=consult&package=Free%20Discovery%20Call"
+              href="/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)"
               className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
             >
               Book a Discovery Call
             </Link>
             <Link
-              href="/en/services#support"
+              href="/en/services#kitchen-table"
               className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 text-brand-green hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
             >
               Back to Services

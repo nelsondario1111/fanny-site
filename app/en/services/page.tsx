@@ -70,7 +70,7 @@ const CARDS: Card[] = [
     tags: ["Level 0", "Start Here", "Bilingual EN/ES"],
     price: price(PRICING.discovery),
     ctaLabel: "Book a Discovery Call",
-    ctaHref: "/en/contact?intent=consult&package=Free%20Discovery%20Call",
+    ctaHref: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
   },
   {
     id: "clarity-60",
@@ -243,6 +243,7 @@ const SECTIONS = [
   { id: "start-here", label: "Start Here" },
   { id: "strategic-maps", label: "Strategic Financial Maps" },
   { id: "support", label: "Supplementary Support" },
+  { id: "kitchen-table", label: "Kitchen Table Conversations" },
   { id: "mortgage", label: "Mortgage Strategy" },
   { id: "business", label: "Business & Tax" },
 ] as const;
@@ -288,7 +289,7 @@ export default function ServicesPage() {
         subtitle="Start with a free discovery call and choose the advisory support that fits your goals - from clarity sessions to strategic planning and holistic financial maps."
         primaryCta={{
           label: "Book a Free Discovery Call",
-          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call",
+          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
         }}
         secondaryCta={{
           label: "Explore Strategic Financial Maps",
@@ -343,6 +344,43 @@ export default function ServicesPage() {
         </Panel>
       </div>
 
+      <div className="bg-brand-green/5 border-t border-brand-gold/20">
+        <Panel>
+          <SectionTitle
+            id="kitchen-table"
+            title="Kitchen Table Conversations"
+            subtitle="4-week small-group support for families, newcomers, and first-time buyers."
+            tint="green"
+          />
+          <article className="rounded-3xl border border-brand-gold/40 bg-white/95 p-6 md:p-8 shadow-sm">
+            <p className="text-brand-blue/90 leading-relaxed">
+              This cohort-style program gives you practical financial clarity in a warm,
+              guided group setting. Each week focuses on real-life decisions so you leave
+              with simple next steps you can actually follow.
+            </p>
+            <ul className="mt-4 list-disc pl-5 space-y-1 text-brand-blue/90">
+              <li>Small groups with real-time Q&A and shared learning</li>
+              <li>4 weekly sessions (45-60 min) with action-focused takeaways</li>
+              <li>Support for mortgage, cash-flow, and tax-related planning questions</li>
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href="/en/kitchen-table-conversations"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+              >
+                View Program Details
+              </Link>
+              <Link
+                href={packageHref("Kitchen Table Conversations — 4-Week Cohort")}
+                className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              >
+                Join the 4-Week Cohort
+              </Link>
+            </div>
+          </article>
+        </Panel>
+      </div>
+
       <div className="bg-gradient-to-b from-brand-green/10 to-white border-y border-brand-gold/20">
         <Panel className="bg-white/90">
           <SectionTitle
@@ -377,7 +415,7 @@ export default function ServicesPage() {
           />
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/en/contact?intent=consult&package=Free%20Discovery%20Call"
+              href="/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)"
               className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
             >
               Book a Discovery Call

@@ -10,6 +10,7 @@ const SECT = {
   startHere: "start-here",
   strategicMaps: "strategic-maps",
   support: "support",
+  kitchenTable: "kitchen-table",
   mortgage: "mortgage",
   business: "business",
 } as const;
@@ -46,6 +47,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/services#${SECT.startHere}`, label: "Start Here" },
         { href: `${base}/services#${SECT.strategicMaps}`, label: "Strategic Financial Maps" },
         { href: `${base}/services#${SECT.support}`, label: "Supplementary Support" },
+        { href: `${base}/services#${SECT.kitchenTable}`, label: "Kitchen Table Conversations" },
         { href: `${base}/services#${SECT.mortgage}`, label: "Mortgage Strategy" },
         { href: `${base}/services#${SECT.business}`, label: "Business & Tax" },
       ]
@@ -53,6 +55,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
         { href: `${base}/servicios#${SECT.startHere}`, label: "Empieza aquí" },
         { href: `${base}/servicios#${SECT.strategicMaps}`, label: "Mapas financieros estratégicos" },
         { href: `${base}/servicios#${SECT.support}`, label: "Apoyo complementario" },
+        { href: `${base}/servicios#${SECT.kitchenTable}`, label: "Conversaciones en la Mesa" },
         { href: `${base}/servicios#${SECT.mortgage}`, label: "Estrategia hipotecaria" },
         { href: `${base}/servicios#${SECT.business}`, label: "Negocios e impuestos" },
       ];

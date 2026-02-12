@@ -383,8 +383,8 @@ export default function Home() {
                 "Debt strategy, credit repair & savings systems",
                 "Optional Human Design to fine-tune cadence & accountability",
               ],
-              href: "/en/services#support",
-              label: "Explore Financial Guidance",
+              href: "/en/services#strategic-maps",
+              label: "Explore Strategic Financial Maps",
             },
             {
               icon: "🌱",
@@ -395,8 +395,8 @@ export default function Home() {
                 "Cash-flow friendly, compliance-first planning",
                 "Seasonal reminders and prep checklists",
               ],
-              href: "/en/tax-review",
-              label: "Explore Tax Review",
+              href: "/en/services#business",
+              label: "Explore Business & Tax Services",
             },
             {
               icon: "🏡",
@@ -500,7 +500,7 @@ export default function Home() {
         <Reveal variants={fade}>
           <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/en/services#support"
+              href="/en/services#kitchen-table"
               className={ghostCtaClass}
             >
               View on Services Page

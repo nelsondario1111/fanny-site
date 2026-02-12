@@ -384,8 +384,8 @@ export default function HomeEs() {
                 "Estrategias de deuda, crédito y ahorro sostenibles",
                 "Opcional: Diseño Humano para afinar ritmo y seguimiento",
               ],
-              href: "/es/servicios#support",
-              label: "Explorar orientación financiera",
+              href: "/es/servicios#strategic-maps",
+              label: "Explorar mapas financieros estratégicos",
             },
             {
               icon: "🌱",
@@ -396,8 +396,8 @@ export default function HomeEs() {
                 "Enfoque cumplido y amable con tu flujo de caja",
                 "Recordatorios estacionales y listas de preparación",
               ],
-              href: "/es/revision-impuestos",
-              label: "Explorar revisión fiscal",
+              href: "/es/servicios#business",
+              label: "Explorar negocios e impuestos",
             },
             {
               icon: "🏡",
@@ -501,7 +501,7 @@ export default function HomeEs() {
         <Reveal variants={fade}>
           <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/es/servicios#support"
+              href="/es/servicios#kitchen-table"
               className={ghostCtaClass}
             >
               Ver en página de servicios
