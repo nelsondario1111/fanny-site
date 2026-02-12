@@ -71,7 +71,7 @@ export default function HomeEs() {
 
       {/* =============================== HERO =============================== */}
       <div
-        className="relative bg-fixed bg-center bg-cover"
+        className="relative bg-scroll md:bg-fixed bg-center bg-cover"
         style={{ backgroundImage: "url('/nature.jpg')" }}
       >
         <HeroScrollAccents className="z-[1]" />
