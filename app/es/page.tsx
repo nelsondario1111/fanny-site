@@ -13,6 +13,7 @@ import {
 import { ctaButtonClass } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import TrustChips from "@/components/TrustChips";
+import HeroScrollAccents from "@/components/ui/HeroScrollAccents";
 
 /* ============================= Título de sección ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -73,10 +74,11 @@ export default function HomeEs() {
         className="relative bg-fixed bg-center bg-cover"
         style={{ backgroundImage: "url('/nature.jpg')" }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/10" />
+        <HeroScrollAccents className="z-[1]" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/5 to-black/10" />
 
         <header
-          className="relative min-h-[60dvh] flex items-center justify-center overflow-hidden"
+          className="relative z-20 min-h-[60dvh] flex items-center justify-center overflow-hidden"
           aria-label="Hero"
         >
           <StaggerGroup className="w-full px-4">
@@ -274,10 +276,33 @@ export default function HomeEs() {
 
       {/* ==================== ENTRADA A SERVICIOS ==================== */}
       <RevealPanel className="mt-16" aria-label="Explorar catálogo completo de servicios">
-        <Reveal variants={fade}>
-          <div className="text-center">
-            <Link href="/es/servicios" aria-label="Explorar todos los servicios" className={ghostCtaClass}>
-              Explorar todos los servicios
+        <Reveal variants={fadeUp}>
+          <div className="mx-auto max-w-3xl rounded-2xl border border-brand-gold/30 bg-gradient-to-r from-white via-brand-beige/70 to-white p-6 text-center">
+            <p className="text-sm text-brand-blue/80 mb-4">
+              ¿Lista/o para ver el mapa completo?
+            </p>
+            <Link
+              href="/es/servicios"
+              aria-label="Explorar todos los servicios"
+              className={[
+                ghostCtaClass,
+                "group relative overflow-hidden border-2 border-brand-gold/50 bg-white/90 px-8 py-3 shadow-sm",
+                "motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-md",
+              ].join(" ")}
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-full bg-gradient-to-r from-transparent via-brand-gold/35 to-transparent motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:translate-x-[360%]"
+              />
+              <span className="relative z-10 inline-flex items-center gap-2">
+                Explorar todos los servicios
+                <span
+                  aria-hidden="true"
+                  className="motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-1"
+                >
+                  →
+                </span>
+              </span>
             </Link>
           </div>
         </Reveal>

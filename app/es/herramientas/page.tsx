@@ -502,7 +502,7 @@ export default function ToolsPage() {
   }, []);
 
   return (
-    <main id="main" className="bg-white min-h-screen pb-24">
+    <main id="main" className="bg-brand-beige min-h-screen pb-24">
       <PageHero
         homeHref="/es"
         homeLabel="Inicio"
@@ -555,7 +555,7 @@ export default function ToolsPage() {
 
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 
-      <div className="bg-white border-t border-brand-gold/20">
+      <div className="bg-brand-beige border-t border-brand-gold/20">
         <Panel>
           <StartHereDecisionWidget lang="es" />
         </Panel>

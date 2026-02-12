@@ -450,7 +450,7 @@ export default function ServicesPage() {
   };
 
   return (
-    <main id="main" className="bg-white min-h-screen pb-24">
+    <main id="main" className="bg-brand-beige min-h-screen pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_FAQ_JSON_LD) }}
@@ -485,7 +485,7 @@ export default function ServicesPage() {
         defaultActive="start-here"
       />
 
-      <div className="bg-white border-t border-brand-gold/20">
+      <div className="bg-brand-beige border-t border-brand-gold/20">
         <Panel>
           <HowItWorksTimeline
             title="How Services Work"
@@ -597,7 +597,7 @@ export default function ServicesPage() {
         </Panel>
       </div>
 
-      <div className="bg-gradient-to-b from-brand-green/10 to-white border-y border-brand-gold/20">
+      <div className="bg-gradient-to-b from-brand-green/10 to-brand-beige border-y border-brand-gold/20">
         <Panel className="bg-white/90">
           <SectionTitle
             id="mortgage"

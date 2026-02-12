@@ -420,7 +420,7 @@ export default function ResourcesClient({
 
   /* --------------------------------- Render --------------------------------- */
   return (
-    <main className="bg-white min-h-screen pb-24">
+    <main className="bg-brand-beige min-h-screen pb-24">
       <PageHero
         homeHref="/en"
         homeLabel="Home"

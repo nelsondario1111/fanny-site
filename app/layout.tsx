@@ -6,6 +6,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import TrackingEvents from "@/components/TrackingEvents";
+import ScrollProgressBar from "@/components/ui/ScrollProgressBar";
 
 /** -------------------------------------------------------------
  *  Viewport meta (no change)
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >
+        <ScrollProgressBar />
         {children}
         <TrackingEvents />
         <Analytics />

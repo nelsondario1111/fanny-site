@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { Reveal, StaggerGroup, useMotionPresets } from "@/components/motion-safe";
+import HeroScrollAccents from "@/components/ui/HeroScrollAccents";
 
 export type HubTint = "green" | "gold";
 
@@ -355,8 +356,9 @@ export function PageHero({
 }) {
   const { fade } = useMotionPresets();
   return (
-    <section className="bg-brand-green/5 border-b border-brand-gold/30">
-      <div className="max-w-content mx-auto px-4 py-10">
+    <section className="relative overflow-hidden bg-brand-green/5 border-b border-brand-gold/30">
+      <HeroScrollAccents />
+      <div className="relative z-10 max-w-content mx-auto px-4 py-10">
         <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
           <Link href={homeHref} className="hover:underline">
             {homeLabel}
