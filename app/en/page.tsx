@@ -92,7 +92,7 @@ export default function Home() {
               <Reveal variants={fade}>
                 <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
                   <span className="block">Holistic Financial Consultant</span>
-                  <span className="block">Taxes • Mortgages • Money Strategy.</span>
+                  <span className="block">Taxes • Mortgages • Money Strategy</span>
                   <span className="block mt-2">
                     When you&apos;re ready, I&apos;m here to walk alongside
                     you with clear numbers and calm, practical decisions.
