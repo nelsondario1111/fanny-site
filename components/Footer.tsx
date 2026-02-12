@@ -117,7 +117,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
               {isEn ? "Taxes, mortgages, and money strategy." : "Impuestos, hipotecas y estrategia financiera."}
             </p>
             <p className="font-medium text-brand-gold">
-              {isEn ? "Clear numbers, calm decisions." : "Números claros, decisiones con calma."}
+              {isEn ? "Clear numbers, calm decisions" : "Números claros, decisiones con calma."}
             </p>
           </div>
           <div className="mt-4">
