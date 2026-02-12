@@ -52,7 +52,8 @@ export async function generateMetadata(
       url: esUrl,
       type: "website",
       locale: "es_CA",
-      siteName: "Fanny Samaniego — Hipotecas • Dinero • Impuestos",
+      siteName:
+        "Fanny Samaniego — Consultora Financiera Holística | Impuestos • Hipotecas • Estrategia financiera",
     },
     twitter: {
       card: "summary_large_image",

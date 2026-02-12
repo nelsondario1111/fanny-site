@@ -52,7 +52,8 @@ export async function generateMetadata(
       url: enUrl,
       type: "website",
       locale: "en_CA",
-      siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
+      siteName:
+        "Fanny Samaniego — Holistic Financial Consultant | Taxes • Mortgages • Money Strategy",
     },
     twitter: {
       card: "summary_large_image",

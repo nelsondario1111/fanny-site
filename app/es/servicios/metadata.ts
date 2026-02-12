@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     url: "https://fannysamaniego.com/es/servicios",
     type: "website",
     locale: "es_CA",
-    siteName: "Fanny Samaniego — Hipotecas • Dinero • Impuestos",
+    siteName:
+      "Fanny Samaniego — Consultora Financiera Holística | Impuestos • Hipotecas • Estrategia financiera",
   },
   alternates: {
     canonical: "https://fannysamaniego.com/es/servicios",

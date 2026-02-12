@@ -6,9 +6,9 @@ import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
 
 export const metadata: Metadata = {
-  title: "Fanny Samaniego — Coaching & Soluciones Hipotecarias",
+  title: "Fanny Samaniego — Consultora Financiera Holística",
   description:
-    "Coaching financiero con enfoque humano y soluciones hipotecarias en Toronto.",
+    "Consultoría financiera holística para impuestos, hipotecas y estrategia financiera en Toronto. Números claros, decisiones con calma.",
 };
 
 export default function EsLayout({ children }: { children: React.ReactNode }) {

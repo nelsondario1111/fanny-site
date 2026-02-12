@@ -28,7 +28,8 @@ export const metadata: Metadata = {
     description:
       "Discover if you have unclaimed CRA refunds or missed benefits from the past 10 years. Personalized, holistic review by a licensed financial coach.",
     url: "https://fannysamaniego.com/en/tax-review",
-    siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
+    siteName:
+      "Fanny Samaniego — Holistic Financial Consultant | Taxes • Mortgages • Money Strategy",
     locale: "en_CA",
     type: "website",
     images: [

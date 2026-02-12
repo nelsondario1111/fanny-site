@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 
 /* ============================================================================
-   🌿 Global SEO for Fanny — Mortgages • Money • Taxes
+   🌿 Global SEO for Fanny — Holistic Financial Consultant
    - Supports bilingual EN/ES pages across the GTA audience
    - Handles canonicals + hreflang pairs (explicit + wildcard)
    - Fixes OG image resolution issues for per-page metadata
@@ -14,7 +14,9 @@ const SITE_URL =
   "https://www.fannysamaniego.com";
 
 const BRAND = {
-  siteName: process.env.NEXT_PUBLIC_SITE_NAME || "Fanny Samaniego — Mortgages • Money • Taxes",
+  siteName:
+    process.env.NEXT_PUBLIC_SITE_NAME ||
+    "Fanny Samaniego — Holistic Financial Consultant | Taxes • Mortgages • Money Strategy",
   org: "Fanny Samaniego",
   twitter: process.env.NEXT_PUBLIC_TWITTER || "@fannysamaniego",
   themeColor: "#1b6b5f",
@@ -31,8 +33,8 @@ export const LOCALES = { en: "en", es: "es" } as const;
 export type Lang = keyof typeof LOCALES;
 
 const DEFAULT_DESC: Record<Lang, string> = {
-  en: "Mortgage strategy, practical money behaviour, and tax basics for busy professionals and families in the GTA.",
-  es: "Estrategia hipotecaria, hábitos prácticos con el dinero e impuestos básicos para profesionales y familias en el GTA.",
+  en: "Holistic financial consulting for taxes, mortgages, and money strategy in the GTA. Clear numbers, calm decisions.",
+  es: "Consultoría financiera holística para impuestos, hipotecas y estrategia financiera en el GTA. Números claros, decisiones con calma.",
 };
 
 /* ============================================================================

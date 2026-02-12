@@ -94,10 +94,10 @@ export default function Home() {
 
               <Reveal variants={fade}>
                 <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
-                  When you&apos;re ready for holistic, human-centered financial
-                  coaching—including calm support with 10-year tax reviews and
-                  mortgages—I&apos;m here to walk alongside you, offering
-                  guidance that honors your unique journey.
+                  Holistic Financial Consultant | Taxes • Mortgages • Money
+                  Strategy. When you&apos;re ready, I&apos;m here to walk
+                  alongside you with clear numbers and calm, practical
+                  decisions.
                 </p>
               </Reveal>
 

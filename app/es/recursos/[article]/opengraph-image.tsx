@@ -11,7 +11,7 @@ export default async function GET(req: NextRequest, ctx: { params: { article: st
   const url = new URL(req.url);
 
   const t = url.searchParams.get("t") || undefined;
-  const st = url.searchParams.get("st") || "Hipotecas • Dinero • Impuestos";
+  const st = url.searchParams.get("st") || "Impuestos • Hipotecas • Estrategia financiera";
 
   return renderOG({
     title: t ?? article,

@@ -7,11 +7,11 @@ import BackToTopButton from "@/components/BackToTopButton";
 
 export const metadata: Metadata = {
   title: {
-    default: "Fanny Samaniego — Coaching & Mortgage Solutions",
+    default: "Fanny Samaniego — Holistic Financial Consultant",
     template: "%s • Fanny Samaniego",
   },
   description:
-    "Human-centered financial coaching & mortgage solutions in Toronto. Bilingual (EN/ES).",
+    "Holistic financial consulting for taxes, mortgages, and money strategy in Toronto. Clear numbers, calm decisions. Bilingual (EN/ES).",
 };
 
 export default function EnLayout({ children }: { children: React.ReactNode }) {

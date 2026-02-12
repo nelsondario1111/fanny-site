@@ -94,10 +94,9 @@ export default function HomeEs() {
 
               <Reveal variants={fade}>
                 <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
-                  Cuando estés listo(a) para un acompañamiento financiero humano
-                  y consciente—including apoyo tranquilo con revisiones
-                  fiscales de 10 años e hipotecas—estoy aquí para caminar a tu
-                  lado, honrando tu proceso único.
+                  Consultora financiera holística | Impuestos • Hipotecas •
+                  Estrategia financiera. Cuando estés lista/o, estoy aquí para
+                  acompañarte con números claros y decisiones en calma.
                 </p>
               </Reveal>
 

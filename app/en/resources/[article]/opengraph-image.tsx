@@ -12,7 +12,7 @@ export default async function GET(req: NextRequest, ctx: { params: { article: st
 
   // Optional overrides via query (?t=...&st=...)
   const t = url.searchParams.get("t") || undefined;
-  const st = url.searchParams.get("st") || "Mortgages • Money • Taxes";
+  const st = url.searchParams.get("st") || "Taxes • Mortgages • Money Strategy";
 
   return renderOG({
     title: t ?? article,

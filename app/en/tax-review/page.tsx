@@ -23,7 +23,8 @@ export const metadata: Metadata = {
     url: "https://www.fannysamaniego.com/en/tax-review",
     type: "website",
     locale: "en_CA",
-    siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
+    siteName:
+      "Fanny Samaniego — Holistic Financial Consultant | Taxes • Mortgages • Money Strategy",
     images: [
       {
         url: "https://www.fannysamaniego.com/og/og-tax-review-en.png", // ✅ static Canva OG banner

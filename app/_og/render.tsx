@@ -11,8 +11,8 @@ export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_CONTENT_TYPE = "image/png";
 
 const BRAND = {
-  name: "Fanny — Mortgages & Money",
-  nameES: "Fanny — Hipotecas y Dinero",
+  name: "Fanny — Holistic Financial Consultant",
+  nameES: "Fanny — Consultora Financiera Holística",
   url:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
     (process.env.NODE_ENV === "production"
@@ -92,8 +92,8 @@ export async function renderOG({
   const finalSubtitle =
     subtitle ??
     (locale === "es"
-      ? "Hipotecas • Dinero • Impuestos"
-      : "Mortgages • Money • Taxes");
+      ? "Impuestos • Hipotecas • Estrategia financiera"
+      : "Taxes • Mortgages • Money Strategy");
 
   const fontFamily =
     'Lato, "Playfair Display", ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial';

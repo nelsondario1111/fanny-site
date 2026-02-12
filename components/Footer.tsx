@@ -103,8 +103,8 @@ export default function Footer({ lang = "es" }: FooterProps) {
           <p className="font-serif text-lg font-bold text-brand-green">Fanny Samaniego</p>
           <p className="text-sm text-brand-body mt-2">
             {isEn
-              ? "Human-centered financial coaching and mortgages in Toronto. Clear numbers, calm decisions."
-              : "Coaching financiero con enfoque humano e hipotecas en Toronto. Números claros, decisiones en calma."}
+              ? "Holistic Financial Consultant | Taxes • Mortgages • Money Strategy | Clear numbers, calm decisions."
+              : "Consultora financiera holística | Impuestos • Hipotecas • Estrategia financiera | Números claros, decisiones con calma."}
           </p>
           <div className="mt-4">
             <LangSwitcher />

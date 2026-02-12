@@ -21,7 +21,8 @@ export const metadata: Metadata = {
     url: "https://www.fannysamaniego.com/es/revision-impuestos",
     type: "website",
     locale: "es_CA",
-    siteName: "Fanny Samaniego — Hipotecas • Dinero • Impuestos",
+    siteName:
+      "Fanny Samaniego — Consultora Financiera Holística | Impuestos • Hipotecas • Estrategia financiera",
     images: [
       {
         url: "https://www.fannysamaniego.com/og/og-tax-review-es.png", // ✅ static Canva OG banner (Spanish)

@@ -12,7 +12,8 @@ export const metadata: Metadata = {
     url: "https://fannysamaniego.com/en/services",
     type: "website",
     locale: "en_CA",
-    siteName: "Fanny Samaniego — Mortgages • Money • Taxes",
+    siteName:
+      "Fanny Samaniego — Holistic Financial Consultant | Taxes • Mortgages • Money Strategy",
   },
   alternates: {
     canonical: "https://fannysamaniego.com/en/services",
