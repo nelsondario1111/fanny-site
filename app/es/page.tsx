@@ -408,7 +408,7 @@ export default function HomeEs() {
                 "Propiedades multi-unidad e inversión",
                 "Optimización de tasa, plazo y estructura",
               ],
-              href: "/es/servicios#hipoteca",
+              href: "/es/servicios#mortgage",
               label: "Explorar asesoría hipotecaria",
             },
           ].map((c) => (
@@ -504,11 +504,11 @@ export default function HomeEs() {
               href="/es/servicios#support"
               className={ghostCtaClass}
             >
-              Ver detalles del programa
+              Ver en página de servicios
             </Link>
             <Link
-              href={`/es/contacto?intent=paquete&package=${encodeURIComponent(
-                "Conversaciones Holísticas Familiares — Cohorte de 4 semanas"
+              href={`/es/contacto?intent=package&package=${encodeURIComponent(
+                "Conversaciones en la Mesa — Cohorte 4 semanas"
               )}`}
               className={secondaryCtaClass}
             >

@@ -503,11 +503,11 @@ export default function Home() {
               href="/en/services#support"
               className={ghostCtaClass}
             >
-              View Program Details
+              View on Services Page
             </Link>
             <Link
               href={`/en/contact?intent=package&package=${encodeURIComponent(
-                "Holistic Family Conversations — 4-Week Cohort"
+                "Kitchen Table Conversations — 4-Week Cohort"
               )}`}
               className={secondaryCtaClass}
             >

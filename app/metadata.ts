@@ -54,6 +54,7 @@ const ALT_PAIRS: Pair[] = [
   { en: "/en/for-professionals", es: "/es/para-profesionales" },
   { en: "/en/login", es: "/es/iniciar-sesion" },
   { en: "/en/privacy", es: "/es/privacidad" },
+  { en: "/en/kitchen-table-conversations", es: "/es/conversaciones-en-la-mesa" },
   { en: "/en/services", es: "/es/servicios" },
   { en: "/en/services/*", es: "/es/servicios/*" },
   { en: "/en/subscribe", es: "/es/suscribir" },

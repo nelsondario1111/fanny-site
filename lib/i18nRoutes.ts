@@ -151,6 +151,14 @@ export function buildAlternateHref(pathname: string, target: Locale): string {
     "/es/revision-impuestos": { en: "/en/tax-review", es: "/es/revision-impuestos" },
     "/en/book": { en: "/en/book", es: "/es/reservar" },
     "/es/reservar": { en: "/en/book", es: "/es/reservar" },
+    "/en/kitchen-table-conversations": {
+      en: "/en/kitchen-table-conversations",
+      es: "/es/conversaciones-en-la-mesa",
+    },
+    "/es/conversaciones-en-la-mesa": {
+      en: "/en/kitchen-table-conversations",
+      es: "/es/conversaciones-en-la-mesa",
+    },
   };
 
   // Direct match first
