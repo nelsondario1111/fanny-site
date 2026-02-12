@@ -91,8 +91,9 @@ export default function Home() {
 
               <Reveal variants={fade}>
                 <p className="font-sans text-lg md:text-xl text-brand-blue/90 mb-6 leading-relaxed max-w-xl mx-auto">
-                  Holistic Financial Consultant | Taxes • Mortgages • Money
-                  Strategy. When you&apos;re ready, I&apos;m here to walk
+                  Holistic Financial Consultant
+                   Taxes • Mortgages • Money
+                  Strategy.When you&apos;re ready, I&apos;m here to walk
                   alongside you with clear numbers and calm, practical
                   decisions.
                 </p>
