@@ -16,9 +16,8 @@ const config: Config = {
         'brand-body': '#2F3B3D',
       },
       fontFamily: {
-        sans: ['Lato', 'Open Sans', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        serif: ['Playfair Display', 'Merriweather', 'serif'],
-        script: ['Pacifico', 'Dancing Script', 'cursive'],
+        sans: ["var(--font-lato)", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        serif: ["var(--font-playfair)", "Georgia", "Times New Roman", "serif"],
       },
       borderRadius: {
         xl: "1rem",

@@ -1,6 +1,6 @@
 // app/layout.tsx
 import "./globals.css";
-import { lato, playfair, pacifico } from "./fonts";
+import { lato, playfair } from "./fonts";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
@@ -66,7 +66,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={[
           lato.variable,
           playfair.variable,
-          pacifico.variable,
           "font-sans bg-brand-beige text-brand-body min-h-dvh antialiased flex flex-col",
         ].join(" ")}
       >
