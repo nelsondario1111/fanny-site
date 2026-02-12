@@ -18,3 +18,8 @@ Thumbs.db
 .next/
 .next.bak*/
 out/
+
+# Next.js build output / caches
+.next/
+.next.bak*/
+out/
