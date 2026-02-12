@@ -116,13 +116,6 @@ export default function Home() {
                     >
                       Explore Services
                     </Link>
-                    <Link
-                      href="/en/tax-review"
-                      aria-label="See 10-Year Holistic Tax Review"
-                      className={secondaryCtaClass}
-                    >
-                      See 10-Year Tax Review
-                    </Link>
                   </div>
                   <Link
                     href="/en/contact?intent=hello"

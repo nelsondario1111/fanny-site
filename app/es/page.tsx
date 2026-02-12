@@ -113,13 +113,6 @@ export default function HomeEs() {
                     >
                       Explorar Servicios
                     </Link>
-                    <Link
-                      href="/es/revision-impuestos"
-                      aria-label="Ver Revisión Fiscal de 10 Años"
-                      className={secondaryCtaClass}
-                    >
-                      Ver Revisión Fiscal de 10 Años
-                    </Link>
                   </div>
                   <Link
                     href="/es/contacto?intent=hola"
