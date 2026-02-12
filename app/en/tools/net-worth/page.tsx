@@ -348,7 +348,7 @@ export default function Page() {
       <div className="mt-6 rounded-2xl border border-brand-gold bg-white p-5">
         <h4 className="font-serif text-lg text-brand-green font-bold mb-2">Similar tools</h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
-          <li><Link href="/en/tools/holistic-budget" className="underline">Holistic Budget Calculator</Link></li>
+          <li><Link href="/en/tools/budget-calculator" className="underline">Holistic Budget Calculator</Link></li>
           <li><Link href="/en/tools/debt-snowball" className="underline">Debt Snowball / Payoff Planner</Link></li>
           <li><Link href="/en/tools/mortgage-calculator" className="underline">Mortgage Payment Calculator</Link></li>
           <li><Link href="/en/tools/affordability-stress-test" className="underline">Affordability &amp; Stress Test</Link></li>

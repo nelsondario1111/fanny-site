@@ -218,7 +218,7 @@ function defaultTasks(): Task[] {
       section: "financing",
       title: "Get pre-approval (rate hold) and confirm DSCR/NOI documentation",
       done: false,
-      linkHref: "/en/services/financial-planning",
+      linkHref: "/en/services#mortgage",
       linkLabel: "Planning session",
       priority: "high",
     },
@@ -1098,11 +1098,11 @@ export default function Page() {
           </li>
           <li>
             Work with us:{" "}
-            <Link href="/en/clients/portal" className="underline">
-              Client portal
+            <Link href="/en/client-library" className="underline">
+              Client library
             </Link>{" "}
             •{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#mortgage" className="underline">
               Planning session
             </Link>
           </li>

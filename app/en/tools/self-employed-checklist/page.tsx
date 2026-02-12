@@ -148,7 +148,7 @@ function defaultTasks(): Task[] {
       id: uid(),
       section: "strategy",
       title: "Book a discovery call to map your mortgage path & timing",
-      linkHref: "/en/services/financial-planning",
+      linkHref: "/en/services#mortgage",
       linkLabel: "Book a planning session",
       done: false,
       priority: "high",
@@ -200,7 +200,7 @@ function defaultTasks(): Task[] {
 
     // LIABILITIES & CREDIT
     { id: uid(), section: "liabilities_credit", title: "List all monthly debt payments (cards/LOC/loans/leases)", done: false, priority: "high" },
-    { id: uid(), section: "liabilities_credit", title: "Check credit score & utilization; reduce balances if needed", done: false, linkHref: "/en/services/credit-building", linkLabel: "Credit-building guidance" },
+    { id: uid(), section: "liabilities_credit", title: "Check credit score & utilization; reduce balances if needed", done: false, linkHref: "/en/services#mortgage", linkLabel: "Credit-building guidance" },
     { id: uid(), section: "liabilities_credit", title: "Student loans / support / alimony documentation (if any)", done: false },
 
     // PROPERTY & MORTGAGE
@@ -209,14 +209,14 @@ function defaultTasks(): Task[] {
     { id: uid(), section: "property_mortgage", title: "Run a stress test scenario", done: false, linkHref: "/en/tools/affordability-stress-test", linkLabel: "Affordability & Stress Test" },
 
     // FINALIZE & SUBMIT
-    { id: uid(), section: "finalize_submit", title: "Upload full package to secure client portal", done: false, linkHref: "/en/clients/portal", linkLabel: "Client portal", priority: "high" },
+    { id: uid(), section: "finalize_submit", title: "Upload full package to secure client portal", done: false, linkHref: "/en/client-library", linkLabel: "Client library", priority: "high" },
     { id: uid(), section: "finalize_submit", title: "Review/sign lender forms & disclosures", done: false },
     { id: uid(), section: "finalize_submit", title: "Confirm down payment, closing costs, and lawyer details", done: false },
 
     // AFTER APPROVAL
     { id: uid(), section: "after_approval", title: "Home insurance binder; coordinate with lawyer & lender", done: false },
     { id: uid(), section: "after_approval", title: "Set up automatic payments and an emergency buffer", done: false },
-    { id: uid(), section: "after_approval", title: "Organize copies of all documents in a secure folder", done: false, linkHref: "/en/clients/portal", linkLabel: "Client portal" },
+    { id: uid(), section: "after_approval", title: "Organize copies of all documents in a secure folder", done: false, linkHref: "/en/client-library", linkLabel: "Client library" },
   ];
 }
 
@@ -638,8 +638,8 @@ export default function Page() {
       <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <SummaryCard icon={<Calculator className="h-5 w-5" />} label="Use the estimator" value="Estimate adjusted income" href="#income-estimator" />
-          <SummaryCard icon={<FileText className="h-5 w-5" />} label="Document hub" value="Upload securely" href="/en/clients/portal" />
-          <SummaryCard icon={<Building2 className="h-5 w-5" />} label="Pre-approval" value="Start with your broker" href="/en/services/financial-planning" />
+          <SummaryCard icon={<FileText className="h-5 w-5" />} label="Document hub" value="Upload securely" href="/en/client-library" />
+          <SummaryCard icon={<Building2 className="h-5 w-5" />} label="Pre-approval" value="Start with your broker" href="/en/services#mortgage" />
           <div className="rounded-xl border border-brand-gold/50 bg-brand-beige/40 p-3 md:p-4 flex items-center justify-between">
             <div>
               <div className="text-xs md:text-sm text-brand-blue/80">Overall progress</div>
@@ -911,11 +911,11 @@ export default function Page() {
           </li>
           <li>
             Work with us:{" "}
-            <Link href="/en/clients/portal" className="underline">
-              Client portal
+            <Link href="/en/client-library" className="underline">
+              Client library
             </Link>{" "}
             •{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#mortgage" className="underline">
               Planning session
             </Link>
           </li>

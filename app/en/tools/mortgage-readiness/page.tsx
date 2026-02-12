@@ -166,7 +166,7 @@ function defaultTasks(): Task[] {
       section: "credit_score",
       title: "Credit utilization under ~30% (pay down high balances)",
       done: false,
-      linkHref: "/en/services/credit-building",
+      linkHref: "/en/services#mortgage",
       linkLabel: "Credit-building guidance",
     },
     { id: uid(), section: "credit_score", title: "Dispute/resolve any errors on your report", done: false },
@@ -702,7 +702,7 @@ export default function Page() {
             icon={<Building2 className="h-5 w-5" />}
             label="Pre-approval"
             value="Start early"
-            href="/en/services/financial-planning"
+            href="/en/services#mortgage"
           />
           <div className="rounded-xl border border-brand-gold/50 bg-brand-beige/40 p-3 md:p-4 flex items-center justify-between">
             <div>
@@ -1136,7 +1136,7 @@ export default function Page() {
           </li>
           <li>
             Build credit & improve utilization:{" "}
-            <Link href="/en/services/credit-building" className="underline">
+            <Link href="/en/services#mortgage" className="underline">
               Credit-building guidance
             </Link>
           </li>
@@ -1152,11 +1152,11 @@ export default function Page() {
           </li>
           <li>
             Upload securely & work with us:{" "}
-            <Link href="/en/clients/portal" className="underline">
-              Client portal
+            <Link href="/en/client-library" className="underline">
+              Client library
             </Link>{" "}
             •{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#mortgage" className="underline">
               Planning session
             </Link>
           </li>

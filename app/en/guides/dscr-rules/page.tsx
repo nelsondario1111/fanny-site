@@ -797,11 +797,11 @@ export default function Page() {
           </li>
           <li>
             Work with us:{" "}
-            <Link href="/en/clients/portal" className="underline">
-              Client portal
+            <Link href="/en/client-library" className="underline">
+              Client library
             </Link>{" "}
             •{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#mortgage" className="underline">
               Planning session
             </Link>
           </li>

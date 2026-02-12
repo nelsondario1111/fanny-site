@@ -166,7 +166,7 @@ const DEFAULT_TASKS: Task[] = [
     section: "first_2w",
     title: "Start your Canadian credit file (secured or low-limit card; set auto-pay)",
     done: false,
-    linkHref: "/en/services/credit-building",
+    linkHref: "/en/services#mortgage",
     linkLabel: "Credit-building guidance",
   },
   {
@@ -226,7 +226,7 @@ const DEFAULT_TASKS: Task[] = [
     section: "months_3_6",
     title: "Consider TFSA/RRSP (eligibility, contribution room) and set contributions",
     done: false,
-    linkHref: "/en/services/financial-planning",
+    linkHref: "/en/services#strategic-maps",
     linkLabel: "Planning session",
   },
   {
@@ -235,7 +235,7 @@ const DEFAULT_TASKS: Task[] = [
     title:
       "Prepare first Canadian tax filing (save pay stubs/receipts; confirm credits/benefits)",
     done: false,
-    linkHref: "/en/services/taxes",
+    linkHref: "/en/services#business",
     linkLabel: "Tax support",
   },
   {
@@ -1182,17 +1182,17 @@ export default function Page() {
           </li>
           <li>
             Optimize benefits & taxes:{" "}
-            <Link href="/en/services/taxes" className="underline">
+            <Link href="/en/services#business" className="underline">
               Tax support
             </Link>{" "}
             •{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#strategic-maps" className="underline">
               Financial planning session
             </Link>
           </li>
           <li>
-            Client portal:{" "}
-            <Link href="/en/clients/portal" className="underline">
+            Client library:{" "}
+            <Link href="/en/client-library" className="underline">
               Log in to share docs & track progress
             </Link>
           </li>

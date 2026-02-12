@@ -3,11 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
-import {
-  FaIdBadge,
-  FaUsers,
-  FaLeaf,
-} from "react-icons/fa";
 
 import {
   Reveal,
@@ -279,142 +274,15 @@ export default function Home() {
         </StaggerGroup>
       </RevealPanel>
 
-      {/* ==================== INVITATION PHILOSOPHY ==================== */}
-      <RevealPanel className="mt-16" aria-label="Why We Work by Invitation">
-        <SectionTitle title="Why We Work by Invitation" />
+      {/* ==================== SERVICES ENTRY ==================== */}
+      <RevealPanel className="mt-16" aria-label="Explore full service catalog">
         <Reveal variants={fade}>
-          <p className="font-sans text-lg text-brand-body/90 mb-4 text-center max-w-2xl mx-auto leading-relaxed">
-            Strong financial outcomes grow from relationships built on trust and
-            mutual fit. Every client journey begins with a meaningful
-            conversation.
-          </p>
-        </Reveal>
-        <StaggerGroup className="text-left max-w-2xl mx-auto">
-          <Reveal variants={fadeUp}>
-            <ul className="list-disc pl-6 text-brand-body/90 text-base space-y-2">
-              <li>We confirm your goals and timing before we start.</li>
-              <li>You meet the right specialist for each step.</li>
-              <li>
-                We craft a plan around your strengths and decision style—while
-                staying grounded in financial, tax, and legal basics.
-              </li>
-            </ul>
-          </Reveal>
-        </StaggerGroup>
-        <Reveal variants={fade}>
-          <div className="mt-6 text-center">
-            <Link
-              href="/en/contact?intent=hello"
-              className="text-brand-blue/80 underline decoration-2 underline-offset-4 hover:text-brand-green"
-            >
-              When you&apos;re ready, send a note →
+          <div className="text-center">
+            <Link href="/en/services" aria-label="Explore full services" className={ghostCtaClass}>
+              Explore Full Services
             </Link>
           </div>
         </Reveal>
-      </RevealPanel>
-
-      {/* ============================ BADGES ============================ */}
-      <RevealPanel
-        className="mt-16"
-        aria-label="Professional Certifications and Partners"
-      >
-        <SectionTitle title="Professional Confidence, Human Approach" />
-        <StaggerGroup className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-          {[
-            {
-              icon: <FaIdBadge aria-hidden className="text-xl" />,
-              text: "Licensed Mortgage Agent (L2)",
-            },
-            {
-              icon: <FaUsers aria-hidden className="text-xl" />,
-              text: "Coordinated Team of Specialists",
-            },
-            {
-              icon: <FaLeaf aria-hidden className="text-xl" />,
-              text: "Optional Human Design Personalization",
-            },
-          ].map((b) => (
-            <Reveal key={b.text} variants={fadeUp}>
-              <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="text-2xl text-brand-green/90 flex items-center justify-center">
-                  {b.icon}
-                </div>
-                <p className="font-semibold text-brand-blue/90 mt-2">
-                  {b.text}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </StaggerGroup>
-      </RevealPanel>
-
-      {/* ======================= SERVICES PREVIEW ======================= */}
-      <RevealPanel className="mt-16" aria-label="Core Services">
-        <SectionTitle title="Ways We Can Guide You" />
-        <StaggerGroup className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: "💡",
-              title: "Financial Guidance",
-              body: "Clear, heart-centered support for your financial goals—anchored in your natural strengths.",
-              bullets: [
-                "Budget & cash-flow plans you’ll actually use",
-                "Debt strategy, credit repair & savings systems",
-                "Optional Human Design to fine-tune cadence & accountability",
-              ],
-              href: "/en/services#strategic-maps",
-              label: "Explore Strategic Financial Maps",
-            },
-            {
-              icon: "🌱",
-              title: "Holistic Tax Planning",
-              body: "Practical, values-aligned strategies to keep more of what you earn—starting with options like the 10-Year Holistic Tax Review.",
-              bullets: [
-                "Personal & small-business considerations",
-                "Cash-flow friendly, compliance-first planning",
-                "Seasonal reminders and prep checklists",
-              ],
-              href: "/en/services#business",
-              label: "Explore Business & Tax Services",
-            },
-            {
-              icon: "🏡",
-              title: "Mortgage Guidance",
-              body: "Licensed advice for first homes, upgrades, refinancing, and multi-unit investments.",
-              bullets: [
-                "Pre-approval & readiness check",
-                "4–10 unit properties & investment strategy",
-                "Rate, term & structure optimization",
-              ],
-              href: "/en/services#mortgage",
-              label: "Explore Mortgage Guidance",
-            },
-          ].map((c) => (
-            <Reveal key={c.title} variants={fadeUp}>
-              <div className="group bg-white rounded-2xl p-8 shadow-md border border-brand-gold/20 flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="w-14 h-14 mb-4 rounded-full bg-brand-green flex items-center justify-center text-white text-2xl">
-                  <span aria-hidden>{c.icon}</span>
-                </div>
-                <h3 className="font-serif text-2xl text-brand-blue/90 mb-2 font-bold">
-                  {c.title}
-                </h3>
-                <p className="font-sans text-brand-body/90 mb-4">{c.body}</p>
-                <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
-                  {c.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-                <Link
-                  href={c.href}
-                  aria-label={c.label}
-                  className={ghostCtaClass}
-                >
-                  {c.label}
-                </Link>
-              </div>
-            </Reveal>
-          ))}
-        </StaggerGroup>
       </RevealPanel>
 
       {/* ================ KITCHEN TABLE PROGRAM ================= */}
@@ -479,18 +347,12 @@ export default function Home() {
         <Reveal variants={fade}>
           <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/en/services#kitchen-table"
-              className={ghostCtaClass}
-            >
-              View on Services Page
-            </Link>
-            <Link
               href={`/en/contact?intent=package&package=${encodeURIComponent(
                 "Kitchen Table Conversations — 4-Week Cohort"
               )}`}
               className={secondaryCtaClass}
             >
-              Talk to Us
+              Join the Next Cohort
             </Link>
           </div>
         </Reveal>
