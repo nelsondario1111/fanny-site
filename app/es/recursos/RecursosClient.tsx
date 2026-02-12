@@ -429,6 +429,11 @@ export default function RecursosClient({
         currentLabel="Recursos"
         title="Artículos y guías prácticas"
         subtitle="Lecturas breves sobre hipotecas, hábitos financieros e impuestos para profesionales y familias con poco tiempo."
+        highlights={[
+          "Lecturas breves para agendas ocupadas",
+          "Temas bilingües sobre hipoteca, dinero e impuestos",
+          "Cada recurso incluye siguientes pasos prácticos",
+        ]}
       />
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
 

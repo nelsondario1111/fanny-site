@@ -505,6 +505,11 @@ export default function ToolsPage() {
         currentLabel="Tools"
         title="Tools for Financial Clarity"
         subtitle="Practical bilingual calculators and worksheets to support clear, confident decisions."
+        highlights={[
+          "Most tools work with no account required",
+          "Bilingual calculators and worksheets",
+          "Educational tools designed for real decisions",
+        ]}
       />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />

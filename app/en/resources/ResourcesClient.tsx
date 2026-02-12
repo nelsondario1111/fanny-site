@@ -426,6 +426,11 @@ export default function ResourcesClient({
         currentLabel="Resources"
         title="Practical Articles & Guides"
         subtitle="Short reads on mortgages, money habits, and tax basics for busy professionals and families."
+        highlights={[
+          "Short reads built for busy schedules",
+          "Bilingual topics across mortgage, money, and tax",
+          "Each resource includes practical next steps",
+        ]}
       />
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
 

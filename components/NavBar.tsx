@@ -108,10 +108,12 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
   const base = `/${lang}`;
   const t = (en: string, es: string) => (lang === "en" ? en : es);
   const convoHref = `${base}/${t("contact", "contacto")}?intent=${t("hello", "hola")}`;
-  const brandSubtitle = "Holistic Financial Consultant";
+  const brandSubtitle = t("Holistic Financial Consultant", "Consultora financiera holística");
+  const UTILITY_LINK =
+    "inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-xs hover:bg-white/20 transition";
 
   const LINK_BASE =
-    "inline-flex items-center h-10 px-0 text-[15px] leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+    "inline-flex items-center h-10 px-0 text-[14px] font-medium leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
   const LINK_ACTIVE = "text-brand-green font-semibold";
   const LINK_IDLE = "text-brand-blue hover:text-brand-green";
   const UNDERLINE =
@@ -126,15 +128,15 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="bg-brand-green text-white"
+          className="bg-gradient-to-r from-brand-green via-brand-green to-brand-green/90 text-white border-b border-brand-gold/25"
         >
-          <div className="max-w-content mx-auto px-4 py-1 text-sm flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <a className="inline-flex items-center gap-1 hover:underline" href="tel:14167268420">
+          <div className="max-w-content mx-auto px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <a className={UTILITY_LINK} href="tel:14167268420">
                 <Phone size={12} /> (416) 726-8420
               </a>
               <a
-                className="inline-flex items-center gap-1 hover:underline"
+                className={UTILITY_LINK}
                 href="https://wa.me/14167268420"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -150,22 +152,24 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
       {/* Main Header */}
       <header
         className={[
-          "sticky top-0 z-[200] backdrop-blur supports-[backdrop-filter]:bg-white/80 transition-shadow",
-          scrolled ? "shadow-[0_1px_0_0_rgba(211,182,122,0.45)]" : "shadow-none",
+          "sticky top-0 z-[200] backdrop-blur-md transition-all border-b",
+          scrolled
+            ? "bg-white/95 border-brand-gold/30 shadow-[0_10px_30px_rgba(47,74,53,0.10)]"
+            : "bg-white/88 border-brand-gold/20 shadow-none",
         ].join(" ")}
       >
-        <div className="max-w-content mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-content mx-auto px-4 h-[68px] flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href={base} className="flex items-center gap-2">
+          <Link href={base} className="flex items-center gap-2.5">
             <Image
               src="/logo.png"
               alt="Fanny Samaniego"
               width={32}
               height={32}
-              className="rounded-full border border-brand-gold"
+              className="rounded-full border border-brand-gold shadow-sm"
             />
             <span className="flex flex-col leading-tight">
-              <span className="font-brand text-lg font-semibold text-brand-green tracking-[-0.015em]">
+              <span className="font-brand text-[1.1rem] font-semibold text-brand-green tracking-[-0.015em]">
                 Fanny Samaniego
               </span>
               <span className="hidden sm:block font-sans text-[10px] font-medium uppercase text-brand-blue/80 tracking-[0.14em]">
@@ -175,7 +179,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 font-sans">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 font-sans">
             {NAV.map((n) => (
               <Link
                 key={n.href}
@@ -187,7 +191,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
             ))}
             <Link
               href={convoHref}
-              className="ml-1 inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition"
+              className="ml-2 inline-flex items-center gap-1 rounded-full bg-brand-green text-white px-3.5 py-2 text-xs font-semibold shadow-[0_8px_20px_rgba(47,74,53,0.2)] hover:-translate-y-[1px] hover:bg-brand-green/90 transition"
             >
               <Calendar size={12} /> {t("Start a conversation", "Iniciar conversación")}
             </Link>
@@ -196,7 +200,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
           {/* Mobile Toggle */}
           <button
             type="button"
-            className="lg:hidden inline-flex items-center justify-center rounded-xl border border-brand-green/30 p-2 text-brand-green"
+            className="lg:hidden inline-flex items-center justify-center rounded-xl border border-brand-green/30 bg-white/80 p-2 text-brand-green shadow-sm"
             aria-label={t("Toggle menu", "Abrir menú")}
             aria-expanded={open}
             onClick={() => setOpen((s) => !s)}
@@ -213,7 +217,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="lg:hidden border-t border-brand-gold bg-white"
+              className="lg:hidden border-t border-brand-gold/35 bg-white/95 backdrop-blur-md shadow-[0_10px_30px_rgba(47,74,53,0.1)]"
             >
               <div className="max-w-content mx-auto px-4 py-4 flex flex-col gap-2">
                 {NAV.map((n) => (
@@ -221,10 +225,10 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
                     key={n.href}
                     href={n.href}
                     className={[
-                      "rounded-lg px-3 py-2 text-base",
+                      "rounded-lg px-3 py-2 text-base border",
                       pathname.startsWith(n.href)
-                        ? "bg-brand-green text-white"
-                        : "text-brand-blue hover:bg-brand-green/10",
+                        ? "bg-brand-green border-brand-green text-white shadow-sm"
+                        : "border-brand-gold/30 text-brand-blue hover:bg-brand-green/10",
                     ].join(" ")}
                     onClick={() => setOpen(false)}
                   >
@@ -235,7 +239,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
                   <LangToggle lang={lang} />
                   <Link
                     href={convoHref}
-                    className="inline-flex items-center gap-1 rounded-full border border-brand-green text-brand-green px-3 py-1.5 text-xs font-semibold hover:bg-brand-green hover:text-white transition"
+                    className="inline-flex items-center gap-1 rounded-full bg-brand-green text-white px-3 py-1.5 text-xs font-semibold shadow-sm hover:bg-brand-green/90 transition"
                     onClick={() => setOpen(false)}
                   >
                     <Calendar size={12} /> {t("Start a conversation", "Iniciar conversación")}

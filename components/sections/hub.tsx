@@ -14,23 +14,23 @@ import HeroScrollAccents from "@/components/ui/HeroScrollAccents";
 export type HubTint = "green" | "gold";
 
 export const HUB_PANEL_CLASS =
-  "max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 rounded-[28px] border border-brand-gold/40 shadow-lg backdrop-blur-[1px]";
+  "max-w-content mx-auto px-5 sm:px-8 py-10 sm:py-14 rounded-[26px] border border-brand-gold/30 shadow-[0_14px_34px_rgba(47,74,53,0.10)] backdrop-blur-[1px]";
 
 export const HUB_CARD_CLASS =
-  "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg p-6 transition hover:-translate-y-[1px] hover:shadow-xl focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
+  "rounded-3xl border border-brand-gold/30 bg-white/95 shadow-[0_10px_24px_rgba(47,74,53,0.08)] p-6 transition hover:-translate-y-[1px] hover:shadow-[0_16px_30px_rgba(47,74,53,0.14)] focus-within:ring-2 focus-within:ring-brand-gold backdrop-blur-[1px]";
 
 export const HUB_TABLE_CLASS =
-  "rounded-3xl border border-brand-gold/40 bg-white/95 shadow-lg backdrop-blur-[1px]";
+  "rounded-3xl border border-brand-gold/30 bg-white/95 shadow-[0_10px_24px_rgba(47,74,53,0.08)] backdrop-blur-[1px]";
 
 export type CTAButtonVariant = "primary" | "secondary" | "ghost";
 
 const CTA_STYLES: Record<CTAButtonVariant, string> = {
   primary:
-    "inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold",
+    "inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-green text-white font-semibold border border-brand-green/20 shadow-[0_8px_20px_rgba(47,74,53,0.2)] hover:-translate-y-[1px] hover:bg-brand-green/90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold",
   secondary:
-    "inline-flex items-center justify-center px-5 py-2.5 rounded-full border-2 border-brand-blue/40 bg-white text-brand-blue font-semibold shadow-sm hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40",
+    "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-green/30 bg-white text-brand-green font-semibold shadow-sm hover:bg-brand-green/5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40",
   ghost:
-    "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 bg-white text-brand-green font-semibold hover:bg-brand-gold hover:text-brand-green transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold",
+    "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 bg-white text-brand-green font-semibold hover:bg-brand-gold/15 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold",
 };
 
 export function ctaButtonClass(variant: CTAButtonVariant = "primary") {
@@ -343,6 +343,7 @@ export function PageHero({
   subtitle,
   primaryCta,
   secondaryCta,
+  highlights,
   children,
 }: {
   homeHref: string;
@@ -352,14 +353,15 @@ export function PageHero({
   subtitle: ReactNode;
   primaryCta?: { label: string; href: string; variant?: CTAButtonVariant };
   secondaryCta?: { label: string; href: string; variant?: CTAButtonVariant };
+  highlights?: string[];
   children?: ReactNode;
 }) {
   const { fade } = useMotionPresets();
   return (
-    <section className="relative overflow-hidden bg-brand-green/5 border-b border-brand-gold/30">
+    <section className="relative overflow-hidden bg-gradient-to-b from-brand-green/10 via-brand-green/5 to-brand-beige border-b border-brand-gold/30">
       <HeroScrollAccents />
-      <div className="relative z-10 max-w-content mx-auto px-4 py-10">
-        <nav className="mb-3 text-sm text-brand-blue/80" aria-label="Breadcrumb">
+      <div className="relative z-10 max-w-content mx-auto px-4 py-11 sm:py-12">
+        <nav className="mb-4 text-xs sm:text-sm text-brand-blue/80" aria-label="Breadcrumb">
           <Link href={homeHref} className="hover:underline">
             {homeLabel}
           </Link>
@@ -372,13 +374,13 @@ export function PageHero({
         </nav>
 
         <Reveal variants={fade}>
-          <h1 className="font-brand text-3xl md:text-4xl font-semibold tracking-tight text-brand-green">
+          <h1 className="max-w-4xl font-brand text-3xl md:text-5xl font-semibold tracking-tight text-brand-green">
             {title}
           </h1>
         </Reveal>
 
         <Reveal variants={fade}>
-          <p className="mt-2 max-w-3xl text-brand-blue/90">{subtitle}</p>
+          <p className="mt-3 max-w-2xl text-base md:text-lg leading-relaxed text-brand-blue/90">{subtitle}</p>
         </Reveal>
 
         {(primaryCta || secondaryCta) && (
@@ -388,6 +390,21 @@ export function PageHero({
               ...(secondaryCta ? [secondaryCta] : []),
             ]}
           />
+        )}
+
+        {highlights && highlights.length > 0 && (
+          <Reveal variants={fade}>
+            <ul className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl">
+              {highlights.map((item) => (
+                <li
+                  key={`${currentLabel}-${item}`}
+                  className="rounded-2xl border border-brand-gold/35 bg-white/85 px-3.5 py-2 text-sm text-brand-green shadow-sm"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         )}
 
         {children}

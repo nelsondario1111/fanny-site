@@ -469,6 +469,11 @@ export default function ServicesPage() {
           label: "Book a Free Discovery Call",
           href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
         }}
+        highlights={[
+          "Bilingual advisory in English and Spanish",
+          "Integrated mortgage, tax, and cash-flow strategy",
+          "Virtual sessions plus Toronto-based support",
+        ]}
       />
 
       <StickySectionNav

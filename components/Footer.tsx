@@ -18,7 +18,7 @@ const SECT = {
 export default function Footer({ lang = "es" }: FooterProps) {
   const isEn = lang === "en";
   const base = isEn ? "/en" : "/es";
-  const brandSubtitle = "Holistic Financial Consultant";
+  const brandSubtitle = isEn ? "Holistic Financial Consultant" : "Consultora financiera holística";
 
   const ctaHref = `${base}/${isEn ? "contact" : "contacto"}?intent=consult`;
 
@@ -64,27 +64,30 @@ export default function Footer({ lang = "es" }: FooterProps) {
       ];
 
   const linksLegal = [{ href: `${base}/${isEn ? "privacy" : "privacidad"}`, label: isEn ? "Privacy" : "Privacidad" }];
+  const topPillClass =
+    "inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs hover:bg-white/20 transition";
+  const linkClass = "text-brand-blue/90 hover:text-brand-green transition";
 
   return (
-    <footer className="border-t bg-white">
+    <footer className="border-t border-brand-gold/25 bg-gradient-to-b from-white to-brand-beige/40">
       {/* Top CTA band */}
-      <div className="bg-brand-green text-white">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sm">
+      <div className="bg-gradient-to-r from-brand-green via-brand-green to-brand-green/90 text-white border-b border-brand-gold/25">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <p className="text-sm text-white/95">
             {isEn
               ? "Ready to review your plan? Book a discovery call."
               : "¿Lista/o para revisar tu plan? Reserva una llamada de descubrimiento."}
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <a
-              className="inline-flex items-center gap-1 hover:underline"
+              className={topPillClass}
               href="tel:14167268420"
               aria-label={isEn ? "Call (416) 726-8420" : "Llamar al (416) 726-8420"}
             >
               <Phone size={14} /> (416) 726-8420
             </a>
             <a
-              className="inline-flex items-center gap-1 hover:underline"
+              className={topPillClass}
               href="https://wa.me/14167268420"
               target="_blank"
               rel="noopener noreferrer"
@@ -94,7 +97,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
             </a>
             <Link
               href={ctaHref}
-              className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-green px-3 py-1.5 text-xs font-semibold hover:opacity-90 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-green px-3.5 py-1.5 text-xs font-semibold shadow-[0_8px_20px_rgba(47,74,53,0.2)] hover:-translate-y-[1px] hover:opacity-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
             >
               <Calendar size={14} /> {isEn ? "Book" : "Reservar"}
             </Link>
@@ -103,10 +106,10 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Main footer */}
-      <div className="max-w-content mx-auto px-5 sm:px-8 py-12 grid gap-10 lg:grid-cols-4">
+      <div className="max-w-content mx-auto px-5 sm:px-8 py-12 grid gap-8 lg:grid-cols-4">
         {/* Brand / mission */}
-        <div>
-          <p className="font-brand text-lg font-semibold text-brand-green tracking-[-0.015em]">
+        <div className="rounded-2xl border border-brand-gold/25 bg-white/85 p-5 shadow-sm">
+          <p className="font-brand text-[1.35rem] font-semibold text-brand-green tracking-[-0.015em]">
             Fanny Samaniego
           </p>
           <p className="mt-1 font-sans text-[10px] font-medium uppercase text-brand-blue/80 tracking-[0.14em]">
@@ -114,10 +117,10 @@ export default function Footer({ lang = "es" }: FooterProps) {
           </p>
           <div className="mt-3 space-y-1 text-sm leading-snug">
             <p className="text-brand-body">
-              {isEn ? "Taxes, mortgages, and money strategy." : "Impuestos, hipotecas y estrategia financiera."}
+              {isEn ? "Taxes • Mortgages • Money Strategy" : "Impuestos • Hipotecas • Estrategia financiera"}
             </p>
             <p className="font-medium text-brand-gold">
-              {isEn ? "Clear numbers, calm decisions" : "Números claros, decisiones con calma."}
+              {isEn ? "Clear numbers, calm decisions." : "Números claros, decisiones con calma."}
             </p>
           </div>
           <div className="mt-4">
@@ -126,33 +129,35 @@ export default function Footer({ lang = "es" }: FooterProps) {
         </div>
 
         {/* Explore */}
-        <nav className="grid grid-cols-2 gap-6 text-sm lg:col-span-2">
-          <ul className="space-y-2">
-            <li className="font-medium text-brand-green">{isEn ? "Explore" : "Explora"}</li>
+        <nav className="grid grid-cols-1 gap-6 text-sm sm:grid-cols-2 lg:col-span-2">
+          <ul className="rounded-2xl border border-brand-gold/25 bg-white/85 p-5 space-y-2.5 shadow-sm">
+            <li className="text-[11px] uppercase tracking-[0.12em] text-brand-green/80">
+              {isEn ? "Explore" : "Explora"}
+            </li>
             {linksPrimary.map((l) => (
               <li key={l.href}>
-                <Link className="underline underline-offset-4 hover:text-brand-green" href={l.href}>
+                <Link className={linkClass} href={l.href}>
                   {l.label}
                 </Link>
               </li>
             ))}
             <li className="pt-3">
               {linksLegal.map((l) => (
-                <Link key={l.href} className="mr-4 text-xs underline underline-offset-4" href={l.href}>
+                <Link key={l.href} className="mr-4 text-xs text-brand-blue/80 hover:text-brand-green transition" href={l.href}>
                   {l.label}
                 </Link>
               ))}
             </li>
           </ul>
 
-          <ul className="space-y-2">
-            <li className="font-medium text-brand-green">
+          <ul className="rounded-2xl border border-brand-gold/25 bg-white/85 p-5 space-y-2.5 shadow-sm">
+            <li className="text-[11px] uppercase tracking-[0.12em] text-brand-green/80">
               {isEn ? "Key services" : "Servicios clave"}
             </li>
             {serviceLinks.map((l) => (
               <li key={l.href} className="flex items-start gap-1.5">
                 <ArrowRight size={14} className="mt-0.5 text-brand-gold" />
-                <Link className="underline underline-offset-4 hover:text-brand-green" href={l.href}>
+                <Link className={linkClass} href={l.href}>
                   {l.label}
                 </Link>
               </li>
@@ -160,7 +165,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
             <li className="pt-2">
               <Link
                 href={`${base}/${isEn ? "services" : "servicios"}`}
-                className="text-xs text-brand-blue hover:text-brand-green underline"
+                className="text-xs text-brand-blue hover:text-brand-green transition"
               >
                 {isEn ? "See all services →" : "Ver todos los servicios →"}
               </Link>
@@ -169,15 +174,17 @@ export default function Footer({ lang = "es" }: FooterProps) {
         </nav>
 
         {/* Newsletter */}
-        <div>
-          <p className="font-medium text-brand-green">{isEn ? "Newsletter" : "Boletín"}</p>
-          <p className="text-sm text-brand-body mt-1">
+        <div className="rounded-2xl border border-brand-gold/25 bg-white/85 p-5 shadow-sm">
+          <p className="text-[11px] uppercase tracking-[0.12em] text-brand-green/80">
+            {isEn ? "Newsletter" : "Boletín"}
+          </p>
+          <p className="text-sm text-brand-body mt-2">
             {isEn ? "Practical, simple ideas—no spam." : "Ideas prácticas y simples—sin spam."}
           </p>
           <form
             action="/api/subscribe"
             method="post"
-            className="mt-3 flex gap-2"
+            className="mt-3 flex flex-col gap-2 sm:flex-row"
             aria-label={isEn ? "Newsletter subscription form" : "Formulario de suscripción"}
           >
             {/* Honeypot */}
@@ -191,9 +198,12 @@ export default function Footer({ lang = "es" }: FooterProps) {
               type="email"
               required
               placeholder={isEn ? "Your email" : "Tu correo"}
-              className="border rounded-xl px-3 py-2 flex-1"
+              className="h-10 rounded-xl border border-brand-gold/45 bg-white px-3 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-brand-gold/45"
             />
-            <button className="rounded-xl px-4 py-2 border shadow bg-white hover:bg-gray-50" type="submit">
+            <button
+              className="h-10 rounded-xl px-4 bg-brand-green text-white text-sm font-semibold shadow-sm hover:bg-brand-green/90 transition"
+              type="submit"
+            >
               {isEn ? "Join" : "Unirme"}
             </button>
           </form>
@@ -201,7 +211,7 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Legal line */}
-      <div className="text-[11px] leading-relaxed text-gray-600 px-5 sm:px-8 max-w-content mx-auto pb-3">
+      <div className="border-t border-brand-gold/20 text-[11px] leading-relaxed text-brand-blue/75 px-5 sm:px-8 max-w-content mx-auto py-4">
         <p>
           {isEn ? (
             <>
@@ -219,8 +229,8 @@ export default function Footer({ lang = "es" }: FooterProps) {
       </div>
 
       {/* Bottom */}
-      <div className="border-t">
-        <div className="max-w-content mx-auto px-5 sm:px-8 py-4 text-xs text-gray-500 text-center">
+      <div className="border-t border-brand-gold/20">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-4 text-xs text-brand-blue/65 text-center">
           © {new Date().getFullYear()} Fanny Samaniego •{" "}
           {isEn ? "All rights reserved." : "Todos los derechos reservados."}
         </div>

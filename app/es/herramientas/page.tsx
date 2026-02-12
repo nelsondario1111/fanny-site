@@ -506,6 +506,11 @@ export default function ToolsPage() {
         currentLabel="Herramientas"
         title="Herramientas para claridad financiera"
         subtitle="Calculadoras y plantillas prácticas y bilingües para apoyar decisiones claras y con confianza."
+        highlights={[
+          "La mayoría funciona sin crear cuenta",
+          "Calculadoras y plantillas bilingües",
+          "Herramientas educativas para decisiones reales",
+        ]}
       />
 
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />

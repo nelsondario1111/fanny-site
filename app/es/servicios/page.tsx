@@ -472,6 +472,11 @@ export default function ServiciosPage() {
           label: "Reservar llamada de descubrimiento gratis",
           href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
         }}
+        highlights={[
+          "Asesoría bilingüe en español e inglés",
+          "Estrategia integrada: hipoteca, impuestos y flujo",
+          "Sesiones virtuales y apoyo en Toronto",
+        ]}
       />
 
       <StickySectionNav
