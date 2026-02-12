@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Calendar, Phone, MessageCircle } from "lucide-react";
+import { createPortal } from "react-dom";
 
 import { buildAlternateHref, detectLang, type Locale } from "@/lib/i18nRoutes";
 
@@ -94,9 +95,12 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
   const pathname = usePathname() || "/";
   const lang: Locale = propLang ?? (pathname.startsWith("/es") ? "es" : "en");
   const NAV = navFor(lang);
+  const headerRef = React.useRef<HTMLElement>(null);
 
   const [open, setOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+  const [mobileMenuTop, setMobileMenuTop] = React.useState(108);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 6);
@@ -104,6 +108,36 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  React.useEffect(() => {
+    const previous = document.body.style.overflow;
+    if (open) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+
+    const updateTop = () => {
+      const rect = headerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setMobileMenuTop(Math.max(56, Math.round(rect.bottom)));
+    };
+
+    updateTop();
+    window.addEventListener("resize", updateTop);
+    window.addEventListener("scroll", updateTop, { passive: true });
+    return () => {
+      window.removeEventListener("resize", updateTop);
+      window.removeEventListener("scroll", updateTop);
+    };
+  }, [open]);
 
   const base = `/${lang}`;
   const t = (en: string, es: string) => (lang === "en" ? en : es);
@@ -158,6 +192,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
 
       {/* Main Header */}
       <header
+        ref={headerRef}
         className={[
           "sticky top-0 z-[200] backdrop-blur-md transition-all border-b",
           scrolled
@@ -207,7 +242,7 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
           {/* Mobile Toggle */}
           <button
             type="button"
-            className="lg:hidden inline-flex items-center justify-center rounded-xl border border-brand-green/30 bg-white/80 p-2 text-brand-green shadow-sm"
+            className="lg:hidden inline-flex items-center justify-center rounded-xl border border-brand-gold/35 bg-white p-2 text-brand-green/90 transition hover:bg-brand-green/5"
             aria-label={t("Toggle menu", "Abrir menú")}
             aria-expanded={open}
             onClick={() => setOpen((s) => !s)}
@@ -215,48 +250,66 @@ export default function NavBar({ lang: propLang }: { lang?: Locale }) {
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="lg:hidden border-t border-brand-gold/35 bg-white/95 backdrop-blur-md shadow-[0_10px_30px_rgba(47,74,53,0.1)]"
-            >
-              <div className="max-w-content mx-auto px-4 py-4 flex flex-col gap-2">
-                {NAV.map((n) => (
-                  <Link
-                    key={n.href}
-                    href={n.href}
-                    className={[
-                      "rounded-lg px-3 py-2 text-base border",
-                      pathname.startsWith(n.href)
-                        ? "bg-brand-green border-brand-green text-white shadow-sm"
-                        : "border-brand-gold/30 text-brand-blue hover:bg-brand-green/10",
-                    ].join(" ")}
-                    onClick={() => setOpen(false)}
-                  >
-                    {n.label}
-                  </Link>
-                ))}
-                <div className="flex items-center justify-between pt-2">
-                  <LangToggle lang={lang} />
-                  <Link
-                    href={convoHref}
-                    className="inline-flex items-center gap-1 rounded-full bg-brand-green text-white px-3 py-1.5 text-xs font-semibold shadow-sm hover:bg-brand-green/90 transition"
-                    onClick={() => setOpen(false)}
-                  >
-                    <Calendar size={12} /> {t("Start a conversation", "Iniciar conversación")}
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <>
+                <motion.button
+                  type="button"
+                  aria-label={t("Close menu", "Cerrar menú")}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="fixed inset-x-0 bottom-0 z-[285] bg-brand-green/35 backdrop-blur-[1px] lg:hidden"
+                  style={{ top: mobileMenuTop }}
+                />
+                <motion.div
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={t("Navigation menu", "Menú de navegación")}
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="fixed inset-x-0 bottom-0 z-[290] overflow-y-auto border-t border-brand-gold/35 bg-white/95 backdrop-blur-md shadow-[0_10px_30px_rgba(47,74,53,0.1)] lg:hidden"
+                  style={{ top: mobileMenuTop }}
+                >
+                  <div className="max-w-content mx-auto px-4 py-3 flex flex-col gap-1.5">
+                    {NAV.map((n) => (
+                      <Link
+                        key={n.href}
+                        href={n.href}
+                        className={[
+                          "rounded-lg px-3 py-2 text-[15px] border",
+                          pathname.startsWith(n.href)
+                            ? "bg-brand-green border-brand-green text-white shadow-sm"
+                            : "border-brand-gold/30 text-brand-blue hover:bg-brand-green/10",
+                        ].join(" ")}
+                        onClick={() => setOpen(false)}
+                      >
+                        {n.label}
+                      </Link>
+                    ))}
+                    <div className="pt-2">
+                      <Link
+                        href={convoHref}
+                        className="w-full inline-flex items-center justify-center gap-1 rounded-full bg-brand-green text-white px-3 py-2 text-sm font-semibold shadow-sm hover:bg-brand-green/90 transition"
+                        onClick={() => setOpen(false)}
+                      >
+                        <Calendar size={14} /> {t("Start a conversation", "Iniciar conversación")}
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </>
   );
 }

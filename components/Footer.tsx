@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, MessageCircle, Calendar, ArrowRight } from "lucide-react";
 import LangSwitcher from "@/components/layout/LangSwitcher";
 
@@ -109,9 +110,18 @@ export default function Footer({ lang = "es" }: FooterProps) {
       <div className="max-w-content mx-auto px-5 sm:px-8 py-12 grid gap-8 lg:grid-cols-4">
         {/* Brand / mission */}
         <div className="rounded-2xl border border-brand-gold/25 bg-white/85 p-5 shadow-sm">
-          <p className="font-brand text-[1.35rem] font-semibold text-brand-green tracking-[-0.015em]">
-            Fanny Samaniego
-          </p>
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/logo.png"
+              alt="Fanny Samaniego logo"
+              width={36}
+              height={36}
+              className="rounded-full border border-brand-gold shadow-sm"
+            />
+            <p className="font-brand text-[1.35rem] font-semibold text-brand-green tracking-[-0.015em]">
+              Fanny Samaniego
+            </p>
+          </div>
           <p className="mt-1 font-sans text-[10px] font-medium uppercase text-brand-blue/80 tracking-[0.14em]">
             {brandSubtitle}
           </p>

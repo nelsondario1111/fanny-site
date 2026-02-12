@@ -130,22 +130,16 @@ export default function Home() {
                 </nav>
               </Reveal>
 
-              <Reveal variants={fade}>
-                <ul className="mx-auto mt-5 grid w-full max-w-3xl grid-cols-2 gap-1.5 text-left sm:grid-cols-3 sm:gap-2">
-                  {heroProofStats.map((item, index) => (
-                    <li
-                      key={item.label}
-                      className={[
-                        "rounded-2xl border border-brand-gold/35 bg-white/90 px-3 py-2.5 shadow-sm",
-                        index === 2 ? "col-span-2 sm:col-span-1" : "",
-                      ].join(" ")}
-                    >
+              <StaggerGroup className="mx-auto mt-5 grid w-full max-w-3xl grid-cols-2 gap-1.5 text-left sm:grid-cols-3 sm:gap-2">
+                {heroProofStats.map((item, index) => (
+                  <Reveal key={item.label} variants={fadeUp} className={index === 2 ? "col-span-2 sm:col-span-1" : ""}>
+                    <div className="rounded-2xl border border-brand-gold/35 bg-white/90 px-3 py-2.5 shadow-sm">
                       <p className="font-brand text-lg sm:text-xl leading-tight text-brand-green">{item.value}</p>
                       <p className="mt-0.5 text-[11px] sm:text-xs text-brand-blue/85">{item.label}</p>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
+                    </div>
+                  </Reveal>
+                ))}
+              </StaggerGroup>
             </section>
           </StaggerGroup>
         </header>
