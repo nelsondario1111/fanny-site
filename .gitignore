@@ -13,3 +13,8 @@ Thumbs.db
 # Env files
 .env*
 *.log
+
+# Next.js build output / caches
+.next/
+.next.bak*/
+out/
