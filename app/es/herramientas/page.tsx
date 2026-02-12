@@ -658,8 +658,8 @@ export default function ToolsPage() {
                   className={[
                     "px-3 py-2 rounded-full border-2 text-sm transition",
                     active
-                      ? "border-brand-gold bg-brand-gold text-white"
-                      : "border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white",
+                      ? "border-brand-gold bg-brand-gold text-brand-green"
+                      : "border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green",
                   ].join(" ")}
                   aria-pressed={active}
                   title={`Filtrar por ${c}`}
@@ -672,7 +672,7 @@ export default function ToolsPage() {
               <button
                 type="button"
                 onClick={() => setActiveCats([])}
-                className="px-3 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition text-sm"
+                className="px-3 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition text-sm"
               >
                 Limpiar categorías
               </button>

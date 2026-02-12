@@ -4,15 +4,8 @@
 
 /* ---------- Base color vars (kept minimal; Tailwind handles most theming) ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f7f3eb;
+  --foreground: #2f3b3d;
 }
 
 /* Apply system foreground/background only if you actually use these vars */

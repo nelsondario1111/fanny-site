@@ -262,7 +262,7 @@ export default function Page() {
         </button>
         <button
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition"
+          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
         >
           Restablecer valores
         </button>
@@ -598,7 +598,7 @@ export default function Page() {
       <div className="mt-6 text-center">
         <Link
           href="/es/contacto?intent=consult"
-          className="inline-block px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition"
+          className="inline-block px-8 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
         >
           Agendar llamada de descubrimiento
         </Link>

@@ -301,7 +301,7 @@ export default function CalculadoraHipotecaria() {
             <button
               type="button"
               onClick={handleReset}
-              className="px-6 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-white transition"
+              className="px-6 py-3 border-2 border-brand-gold text-brand-green font-serif font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
             >
               Reiniciar
             </button>

@@ -348,7 +348,7 @@ export default function Page() {
           <button
             type="button"
             onClick={resetAll}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
             title="Restablecer"
           >
             <RotateCcw className="h-4 w-4" />

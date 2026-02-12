@@ -203,7 +203,7 @@ export default function BudgetCashflowPage() {
                   <a
                     href="/tools/Budget_Cashflow_Pro.csv"
                     download
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
                   >
                     Download CSV
                   </a>
@@ -275,7 +275,7 @@ export default function BudgetCashflowPage() {
                 <button
                   type="button"
                   onClick={onResetConfirm}
-                  className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition"
+                  className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
                 >
                   Reset
                 </button>

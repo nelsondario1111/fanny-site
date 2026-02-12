@@ -543,7 +543,7 @@ export default function RecursosClient({
                         clearQuick();
                         clearTags();
                       }}
-                      className="ml-2 px-4 py-3 rounded-xl border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition"
+                      className="ml-2 px-4 py-3 rounded-xl border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
                       aria-label="Borrar filtros"
                     >
                       Restablecer
@@ -840,7 +840,7 @@ function FilterDrawer({
           <div className="flex items-center justify-between">
             <div className="text-sm text-brand-body/80">{selected.size} seleccionada{selected.size === 1 ? "" : "s"}</div>
             <div className="flex gap-2">
-              <button type="button" onClick={clearTags} className="px-3 py-1.5 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-white transition text-sm">Limpiar</button>
+              <button type="button" onClick={clearTags} className="px-3 py-1.5 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition text-sm">Limpiar</button>
               <button type="button" onClick={onClose} className="px-3 py-1.5 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition text-sm">Aplicar</button>
             </div>
           </div>

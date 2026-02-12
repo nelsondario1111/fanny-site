@@ -8,12 +8,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'brand-green': '#7D9A7E',
-        'brand-blue': '#5B8EAE',
-        'brand-beige': '#F5F2EA',
+        'brand-green': '#2F4A35',
+        'brand-blue': '#315F78',
+        'brand-beige': '#F7F3EB',
         'brand-gold': '#D3B67A',
-        'brand-coral': '#FFBC9A',
-        'brand-body': '#444444',
+        'brand-coral': '#E6A887',
+        'brand-body': '#2F3B3D',
       },
       fontFamily: {
         sans: ['Lato', 'Open Sans', 'Helvetica Neue', 'Arial', 'sans-serif'],

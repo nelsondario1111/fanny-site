@@ -168,7 +168,7 @@ export default function ClientLibraryStarter({ lang }: ClientLibraryStarterProps
                 </Link>
                 <Link
                   href={paths.home}
-                  className="inline-flex items-center justify-center rounded-full border border-brand-gold/40 bg-white px-4 py-2 text-sm font-semibold text-brand-green transition hover:bg-brand-gold hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                  className="inline-flex items-center justify-center rounded-full border border-brand-gold/40 bg-white px-4 py-2 text-sm font-semibold text-brand-green transition hover:bg-brand-gold hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
                 >
                   {isEn ? "Back to home" : "Volver al inicio"}
                 </Link>

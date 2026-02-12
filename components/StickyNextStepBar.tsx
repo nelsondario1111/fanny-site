@@ -49,7 +49,7 @@ export default function StickyNextStepBar({
             </a>
             <Link
               href={checklistHref}
-              className="inline-flex items-center justify-center rounded-full border border-brand-gold/40 bg-white px-4 py-2 text-xs font-semibold text-brand-green transition hover:bg-brand-gold hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className="inline-flex items-center justify-center rounded-full border border-brand-gold/40 bg-white px-4 py-2 text-xs font-semibold text-brand-green transition hover:bg-brand-gold hover:text-brand-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
               data-track="cta_click"
               data-track-type="checklist"
               data-track-label={checklistLabel ?? fallbackChecklistLabel}

@@ -216,7 +216,7 @@ export default function Page() {
       <div className="flex flex-wrap gap-2 mb-4 print:hidden">
         <button type="button" onClick={printPage} className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition">Print / Save as PDF</button>
         <button type="button" onClick={exportCSV} className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Export (CSV)</button>
-        <button type="button" onClick={resetAll} className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green transition">Reset to defaults</button>
+        <button type="button" onClick={resetAll} className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition">Reset to defaults</button>
       </div>
 
       {/* Single column normally; 2xl -> 5-column grid with span (Income 2, Expenses 3) */}
