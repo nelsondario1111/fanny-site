@@ -14,6 +14,7 @@ import { ctaButtonClass } from "@/components/sections/hub";
 import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
 import TrustChips from "@/components/TrustChips";
 import HeroScrollAccents from "@/components/ui/HeroScrollAccents";
+import FixedParallaxBackdrop from "@/components/ui/FixedParallaxBackdrop";
 
 /* ============================= Título de sección ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -78,12 +79,9 @@ export default function HomeEs() {
       />
 
       {/* =============================== HERO =============================== */}
-      <div
-        className="relative bg-scroll md:bg-fixed bg-center bg-cover"
-        style={{ backgroundImage: "url('/nature.jpg')" }}
-      >
+      <div className="relative overflow-hidden">
+        <FixedParallaxBackdrop src="/nature.jpg" />
         <HeroScrollAccents className="z-[1]" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/5 to-black/10" />
 
         <header
           className="relative z-20 min-h-[60dvh] flex items-center justify-center overflow-hidden"
