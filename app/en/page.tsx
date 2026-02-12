@@ -110,18 +110,18 @@ export default function Home() {
                 >
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link
-                      href="/en/tax-review"
-                      aria-label="Explore 10-Year Holistic Tax Review"
-                      className={primaryCtaClass}
-                    >
-                      Explore 10-Year Tax Review
-                    </Link>
-                    <Link
                       href="/en/services"
                       aria-label="Explore services"
-                      className={secondaryCtaClass}
+                      className={primaryCtaClass}
                     >
                       Explore Services
+                    </Link>
+                    <Link
+                      href="/en/tax-review"
+                      aria-label="See 10-Year Holistic Tax Review"
+                      className={secondaryCtaClass}
+                    >
+                      See 10-Year Tax Review
                     </Link>
                   </div>
                   <Link
@@ -145,54 +145,52 @@ export default function Home() {
         <StartHereDecisionWidget lang="en" />
       </RevealPanel>
 
-      {/* =================== FEATURED: TAX REVIEW =================== */}
+      {/* =================== SERVICE SPOTLIGHT: TAX REVIEW =================== */}
       <RevealPanel
         className="mt-16 lg:mt-20"
-        aria-label="Featured Service: 10-Year Holistic Tax Review"
+        aria-label="Service spotlight: 10-Year Holistic Tax Review"
       >
         <div className="max-w-5xl mx-auto bg-white/90 rounded-3xl border border-brand-gold/20 shadow-sm px-6 sm:px-10 py-10 sm:py-12">
           <SectionTitle
-            title="10-Year Holistic Tax Review"
-            kicker="Featured Service"
+            title="10-Year Holistic Tax Review (When It Fits)"
+            kicker="Service Spotlight"
           />
           <StaggerGroup className="flex flex-col md:flex-row gap-8 items-center">
             <Reveal variants={fadeUp} className="md:w-1/2">
               <p className="font-sans text-lg text-brand-body/90 leading-relaxed mb-4">
-                If you&apos;ve lived and worked in Canada for several years,
-                there&apos;s a real chance the CRA may owe you money you were
-                never told about—especially if your life has included moves, job
-                changes, kids, or income shifts.
+                This review is most useful for clients with complex changes over
+                the last few years, such as moves, job transitions, children,
+                or shifting income.
               </p>
               <p className="font-sans text-base text-brand-body/90 leading-relaxed mb-4">
-                The 10-Year Holistic Tax Review is a calm, step-by-step process
-                where we look back over the last decade to uncover missed
-                benefits, credits, and opportunities—without blame, shame, or
-                overwhelm.
+                We take a calm, step-by-step look at the previous decade only
+                when relevant, then decide together whether this should be a
+                priority now or later in your overall plan.
               </p>
               <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
-                <li>Review up to 10 years of filings and life events.</li>
-                <li>Identify missed credits and benefits you may still claim.</li>
-                <li>Keep you informed and in control at every step.</li>
+                <li>Review up to 10 years of filings only when your profile suggests value.</li>
+                <li>Identify missed credits and benefits you may still be able to claim.</li>
+                <li>Agree on clear next steps with no pressure to proceed.</li>
               </ul>
               <div className="flex flex-wrap gap-3 items-center">
                 <Link
                   href="/en/tax-review"
                   aria-label="Learn more about the 10-Year Holistic Tax Review"
-                  className={primaryCtaClass}
+                  className={secondaryCtaClass}
                 >
                   Learn More
                 </Link>
                 <Link
                   href="/en/contact?intent=tax-review"
-                  aria-label="Book a 15-minute call about the Tax Review"
-                  className={secondaryCtaClass}
+                  aria-label="Ask if the Tax Review is relevant for your situation"
+                  className="text-sm text-brand-blue/80 hover:text-brand-green underline underline-offset-4"
                 >
-                  Book a 15-min Call
+                  Ask if this is relevant for you
                 </Link>
               </div>
               <p className="mt-2 text-xs text-brand-blue/70">
-                No pressure and no upfront commitment—just a short conversation
-                to see if this review is right for you.
+                Not everyone needs this review first. We can help you choose
+                the right starting point.
               </p>
             </Reveal>
 

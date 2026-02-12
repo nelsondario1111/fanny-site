@@ -107,18 +107,18 @@ export default function HomeEs() {
                 >
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link
-                      href="/es/revision-impuestos" // ajusta la ruta si usas otro slug
-                      aria-label="Explorar Revisión Fiscal de 10 Años"
-                      className={primaryCtaClass}
-                    >
-                      Revisar Impuestos de 10 Años
-                    </Link>
-                    <Link
                       href="/es/servicios"
                       aria-label="Explorar servicios"
-                      className={secondaryCtaClass}
+                      className={primaryCtaClass}
                     >
                       Explorar Servicios
+                    </Link>
+                    <Link
+                      href="/es/revision-impuestos"
+                      aria-label="Ver Revisión Fiscal de 10 Años"
+                      className={secondaryCtaClass}
+                    >
+                      Ver Revisión Fiscal de 10 Años
                     </Link>
                   </div>
                   <Link
@@ -142,54 +142,52 @@ export default function HomeEs() {
         <StartHereDecisionWidget lang="es" />
       </RevealPanel>
 
-      {/* =================== SERVICIO DESTACADO: REVISIÓN FISCAL =================== */}
+      {/* =================== SERVICIO EN FOCO: REVISIÓN FISCAL =================== */}
       <RevealPanel
         className="mt-16 lg:mt-20"
-        aria-label="Servicio destacado: Revisión Fiscal Holística de 10 Años"
+        aria-label="Servicio en foco: Revisión Fiscal Holística de 10 Años"
       >
         <div className="max-w-5xl mx-auto bg-white/90 rounded-3xl border border-brand-gold/20 shadow-sm px-6 sm:px-10 py-10 sm:py-12">
           <SectionTitle
-            title="Revisión Fiscal Holística de 10 Años"
-            kicker="Servicio destacado"
+            title="Revisión Fiscal Holística de 10 Años (Cuando aplica)"
+            kicker="Servicio en foco"
           />
           <StaggerGroup className="flex flex-col md:flex-row gap-8 items-center">
             <Reveal variants={fadeUp} className="md:w-1/2">
               <p className="font-sans text-lg text-brand-body/90 leading-relaxed mb-4">
-                Si has vivido y trabajado en Canadá por varios años, existe una
-                posibilidad real de que la CRA pueda deberte dinero del que
-                nunca te hablaron—especialmente si en tu camino ha habido
-                mudanzas, cambios de trabajo, hijos o variaciones de ingreso.
+                Esta revisión suele aportar más valor a personas con cambios
+                importantes en los últimos años, como mudanzas, cambios
+                laborales, hijos o variaciones de ingreso.
               </p>
               <p className="font-sans text-base text-brand-body/90 leading-relaxed mb-4">
-                La Revisión Fiscal Holística de 10 Años es un proceso tranquilo
-                y ordenado donde miramos hacia atrás la última década para
-                detectar beneficios, créditos y oportunidades que podrías aún
-                reclamar—sin culpa, sin reproches y sin abrumarte.
+                Revisamos la última década de forma ordenada solo cuando tiene
+                sentido para tu situación, y definimos juntos si conviene
+                priorizarlo ahora o después dentro de tu plan general.
               </p>
               <ul className="list-disc pl-6 text-brand-body/90 text-sm space-y-1 mb-6">
-                <li>Revisamos hasta 10 años de declaraciones y eventos de vida.</li>
-                <li>Identificamos créditos y beneficios que podrías recuperar.</li>
-                <li>Te mantenemos informada(o) y en control en cada paso.</li>
+                <li>Revisión de hasta 10 años solo cuando tu perfil sugiere valor.</li>
+                <li>Identificación de créditos y beneficios que aún podrías recuperar.</li>
+                <li>Próximos pasos claros, sin presión para continuar.</li>
               </ul>
               <div className="flex flex-wrap gap-3 items-center">
                 <Link
-                  href="/es/revision-impuestos" // ajusta si usas otro slug
+                  href="/es/revision-impuestos"
                   aria-label="Saber más sobre la Revisión Fiscal de 10 Años"
-                  className={primaryCtaClass}
+                  className={secondaryCtaClass}
                 >
                   Saber más
                 </Link>
                 <Link
                   href="/es/contacto?intent=tax-review"
-                  aria-label="Agendar llamada de 15 minutos sobre la revisión fiscal"
-                  className={secondaryCtaClass}
+                  aria-label="Consultar si la revisión fiscal aplica a tu caso"
+                  className="text-sm text-brand-blue/80 hover:text-brand-green underline underline-offset-4"
                 >
-                  Agendar llamada de 15 min
+                  Consultar si aplica a tu caso
                 </Link>
               </div>
               <p className="mt-2 text-xs text-brand-blue/70">
-                Sin presión y sin compromiso inicial—solo una conversación breve
-                para ver si este proceso es adecuado para ti.
+                No todas las personas necesitan empezar por esta revisión.
+                Te ayudamos a elegir el mejor punto de partida.
               </p>
             </Reveal>
 
