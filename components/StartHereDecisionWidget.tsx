@@ -76,9 +76,9 @@ const COPY: Record<
       },
       {
         title: "Impuestos",
-        subtitle: "revision 10 anos / temporada / negocio",
+        subtitle: "revision 10 años / temporada / negocio",
         options: [
-          { label: "Revision de 10 anos", href: "/es/revision-impuestos" },
+          { label: "Revision de 10 años", href: "/es/revision-impuestos" },
           { label: "Preparacion de temporada", href: "/es/herramientas/preparacion-impuestos" },
           { label: "Estrategia fiscal para negocio", href: "/es/servicios#business" },
         ],
