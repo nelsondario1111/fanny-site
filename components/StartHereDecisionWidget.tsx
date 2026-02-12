@@ -56,7 +56,7 @@ const COPY: Record<
         options: [
           { label: "Cash-flow plan", href: "/en/tools/budget-cashflow" },
           { label: "Debt strategy", href: "/en/tools/debt-snowball" },
-          { label: "Financial systems", href: "/en/services#support" },
+          { label: "Financial systems", href: "/en/services#strategic-maps" },
         ],
       },
     ],
@@ -89,7 +89,7 @@ const COPY: Record<
         options: [
           { label: "Plan de flujo de caja", href: "/es/herramientas/presupuesto-flujo" },
           { label: "Estrategia de deuda", href: "/es/herramientas/deuda-bola-nieve" },
-          { label: "Sistemas financieros", href: "/es/servicios#support" },
+          { label: "Sistemas financieros", href: "/es/servicios#strategic-maps" },
         ],
       },
     ],
