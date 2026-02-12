@@ -63,7 +63,7 @@ export default function Home() {
   } as const;
 
   return (
-    <main className="bg-[#FAF8F5] min-h-dvh text-brand-body">
+    <main className="bg-brand-beige min-h-dvh text-brand-body">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

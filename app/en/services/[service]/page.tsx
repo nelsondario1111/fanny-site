@@ -74,7 +74,7 @@ export default async function ServiceDetailPage(
   const discoveryHref = "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)";
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-brand-beige">
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-screen-xl mx-auto px-4 py-8 lg:py-10">
           <nav className="text-sm text-brand-blue/80">

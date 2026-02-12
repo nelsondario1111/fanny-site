@@ -10,7 +10,7 @@ type RecursosProps = React.ComponentProps<typeof RecursosClientType>;
 /** Skeleton SSR-safe para que nunca se vea “en blanco” durante la hidratación */
 function RecursosSkeleton() {
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-brand-beige min-h-screen">
       <section className="max-w-content mx-auto px-5 sm:px-8 py-8 sm:py-12 bg-white rounded-[28px] border border-brand-gold/60 shadow-sm">
         <div className="text-center mb-6">
           <h1 className="font-serif font-extrabold text-3xl md:text-4xl text-brand-green tracking-tight">

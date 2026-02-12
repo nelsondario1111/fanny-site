@@ -362,7 +362,7 @@ function AboutInner() {
 /* ============================ Suspense wrapper ============================ */
 export default function About() {
   return (
-    <React.Suspense fallback={<main className="min-h-screen bg-white" />}>
+    <React.Suspense fallback={<main className="min-h-screen bg-brand-beige" />}>
       <AboutInner />
     </React.Suspense>
   );

@@ -179,7 +179,7 @@ export default async function ArticlePage(
   const altText = (hasHeroAlt(a) && a.heroAlt) || a.title || "Imagen del artículo";
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-brand-beige">
       {/* Encabezado */}
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-screen-xl mx-auto px-4 py-8 lg:py-10">

@@ -368,7 +368,7 @@ function AboutInnerEs() {
 /* ============================ Suspense wrapper ============================ */
 export default function AboutEs() {
   return (
-    <React.Suspense fallback={<main className="min-h-screen bg-white" />}>
+    <React.Suspense fallback={<main className="min-h-screen bg-brand-beige" />}>
       <AboutInnerEs />
     </React.Suspense>
   );

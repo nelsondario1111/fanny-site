@@ -10,7 +10,7 @@ const config: Config = {
       colors: {
         'brand-green': '#2F4A35',
         'brand-blue': '#315F78',
-        'brand-beige': '#F7F3EB',
+        'brand-beige': '#FAF8F5',
         'brand-gold': '#D3B67A',
         'brand-coral': '#E6A887',
         'brand-body': '#2F3B3D',

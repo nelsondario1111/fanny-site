@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main id="main" className="min-h-screen bg-white">
+    <main id="main" className="min-h-screen bg-brand-beige">
       <section className="bg-brand-green/5 border-b border-brand-gold/30">
         <div className="max-w-screen-xl mx-auto px-4 py-10">
           <nav className="mb-3 text-sm text-brand-blue/80">
