@@ -2,9 +2,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Servicios — Coaching, Hipotecas y Estrategia Financiera",
+  title: "Servicios — Coaching, Hipotecas y Estrategia Financiera en Toronto, Ontario",
   description:
-    "Comienza con una llamada de descubrimiento gratis y elige sesiones de Claridad y Dirección, Mapas Financieros Estratégicos y apoyo especializado en hipoteca, negocios e impuestos.",
+    "Comienza con una llamada de descubrimiento gratis y elige sesiones de Claridad y Dirección, Mapas Financieros Estratégicos y apoyo especializado en hipoteca, negocios e impuestos para clientes en Toronto y Ontario.",
   openGraph: {
     title: "Servicios — Fanny Samaniego",
     description:

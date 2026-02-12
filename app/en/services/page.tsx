@@ -1,12 +1,17 @@
 import Link from "next/link";
 import {
   CardGrid,
+  ComparisonTable,
   HubPanel as Panel,
   HubSectionTitle as SectionTitle,
   OfferCard,
   PageHero,
   StickySectionNav,
 } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import StickyNextStepBar from "@/components/StickyNextStepBar";
+import TrustChips from "@/components/TrustChips";
+import HowItWorksTimeline from "@/components/HowItWorksTimeline";
 import type { ServiceId } from "@/lib/services/details";
 
 const PRICING = {
@@ -47,6 +52,7 @@ type Card = {
   price: string;
   ctaLabel: "Book a Discovery Call" | "Book a Clarity & Direction Session" | "Explore Strategic Financial Maps";
   ctaHref: string;
+  scopeNote?: string;
 };
 
 function packageHref(title: string) {
@@ -78,9 +84,9 @@ const CARDS: Card[] = [
     title: "Clarity & Direction Session (60 min)",
     desc: "Focused strategy support for one decision that needs structure and momentum.",
     bullets: [
-      "Review options and tradeoffs",
-      "Prioritize the next 2-3 actions",
-      "Leave with practical written guidance",
+      "Receive a 1-page action plan PDF",
+      "Get your prioritized next 2-3 steps",
+      "See the recommended next service (if any)",
     ],
     tags: ["Level 1", "Decision-Focused", "Advisory"],
     price: price(PRICING.clarity60),
@@ -93,9 +99,9 @@ const CARDS: Card[] = [
     title: "Clarity & Direction Session - Extended (90 min)",
     desc: "Extended guidance for clients balancing multiple connected financial decisions.",
     bullets: [
-      "Work through interdependent priorities",
-      "Build a realistic implementation sequence",
-      "Get a confidence-building strategy plan",
+      "Receive a 1-page action plan PDF tailored to your priorities",
+      "Get your prioritized next 2-3 steps",
+      "See the recommended next service (if any)",
     ],
     tags: ["Level 1", "Decision-Focused", "Extended"],
     price: price(PRICING.clarity90),
@@ -161,6 +167,7 @@ const CARDS: Card[] = [
     price: price(PRICING.coachingFoundations),
     ctaLabel: "Book a Discovery Call",
     ctaHref: packageHref("Coaching & Foundations"),
+    scopeNote: "Advice-only / educational",
   },
   {
     id: "support-workshops",
@@ -206,6 +213,7 @@ const CARDS: Card[] = [
     price: price(PRICING.mortgagePreapproval),
     ctaLabel: "Book a Discovery Call",
     ctaHref: packageHref("Pre-Approval Planning"),
+    scopeNote: "Licensed mortgage service",
   },
   {
     id: "business-cashflow",
@@ -236,6 +244,7 @@ const CARDS: Card[] = [
     price: price(PRICING.taxCoordination),
     ctaLabel: "Book a Discovery Call",
     ctaHref: packageHref("Tax Planning Coordination Session"),
+    scopeNote: "Coordination + planning questions (not filing)",
   },
 ];
 
@@ -247,6 +256,162 @@ const SECTIONS = [
   { id: "mortgage", label: "Mortgage Strategy" },
   { id: "business", label: "Business & Tax" },
 ] as const;
+
+const STRATEGIC_MAP_COLUMNS = ["Tier 1", "Tier 2", "Tier 3"];
+const STRATEGIC_MAP_ROWS = [
+  {
+    label: "Best for",
+    values: [
+      "One high-priority goal",
+      "Multiple connected priorities",
+      "Complex life + financial transitions",
+    ],
+  },
+  {
+    label: "Time horizon",
+    values: [
+      "Near-term (next 3-6 months)",
+      "Mid-term (next 6-18 months)",
+      "Long-term (18+ months)",
+    ],
+  },
+  {
+    label: "Deliverables",
+    values: [
+      "Goal-specific map + action sequence",
+      "Integrated strategic map + implementation sequence",
+      "Holistic strategic map + long-range roadmap",
+    ],
+  },
+  {
+    label: "Includes",
+    values: [
+      "Milestones, priorities, and execution checkpoints",
+      "Cross-priority coordination with decision filters",
+      "Comprehensive coordination plan with expert touchpoints",
+    ],
+  },
+  {
+    label: "Price",
+    values: [price(PRICING.mapTier1), price(PRICING.mapTier2), price(PRICING.mapTier3)],
+  },
+];
+
+const CTA_PRIMARY_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+const CTA_SECONDARY_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 rounded-full border-2 border-brand-blue/40 bg-white text-brand-blue font-semibold shadow-sm hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40";
+const CTA_GHOST_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 bg-white text-brand-green font-semibold hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+
+const SERVICES_FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Who are Strategic Financial Maps for?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Strategic Financial Maps are built for clients who want a structured plan for one goal or multiple connected priorities with clear implementation steps.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do mortgage strategy sessions work?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Mortgage strategy starts with readiness and pre-approval planning, then aligns timeline, lender-fit scenarios, and documentation before application.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I start with a Discovery Call before choosing a tier?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Most clients start with a free discovery call to confirm fit, urgency, and the best next service.",
+      },
+    },
+  ],
+} as const;
+
+const SERVICES_SCHEMA_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Free Discovery Call (15 min)",
+      serviceType: "Financial consultation",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "CAD",
+        price: "0",
+      },
+      url: "https://www.fannysamaniego.com/en/services#start-here",
+    },
+    {
+      "@type": "Service",
+      name: "Strategic Financial Maps",
+      serviceType: "Financial strategy and planning",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: [
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "2500",
+          name: "Tier 1: Goal-Specific Strategic Map",
+        },
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "3500",
+          name: "Tier 2: Integrated Strategic Map",
+        },
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "5000",
+          name: "Tier 3: Holistic Life & Financial Strategic Map",
+        },
+      ],
+      url: "https://www.fannysamaniego.com/en/services#strategic-maps",
+    },
+    {
+      "@type": "Service",
+      name: "Mortgage Strategy - Pre-Approval Planning",
+      serviceType: "Licensed mortgage service",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "CAD",
+        price: "0",
+      },
+      url: "https://www.fannysamaniego.com/en/services#mortgage",
+    },
+  ],
+} as const;
 
 function PackageCard({ c }: { c: Card }) {
   return (
@@ -265,6 +430,11 @@ function PackageCard({ c }: { c: Card }) {
         label: "See service details",
         href: `/en/services/${c.id}`,
       }}
+      extra={c.scopeNote ? (
+        <p className="mt-4 border-t border-brand-gold/30 pt-3 text-xs text-brand-blue/75">
+          <strong>Scope:</strong> {c.scopeNote}
+        </p>
+      ) : undefined}
     />
   );
 }
@@ -280,7 +450,16 @@ export default function ServicesPage() {
   };
 
   return (
-    <main id="main" className="bg-white min-h-screen">
+    <main id="main" className="bg-white min-h-screen pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_FAQ_JSON_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_SCHEMA_JSON_LD) }}
+      />
+
       <PageHero
         homeHref="/en"
         homeLabel="Home"
@@ -296,13 +475,44 @@ export default function ServicesPage() {
           href: "#strategic-maps",
           variant: "secondary",
         }}
-      />
+      >
+        <TrustChips lang="en" />
+      </PageHero>
 
       <StickySectionNav
         sections={SECTIONS}
         ariaLabel="On this page"
         defaultActive="start-here"
       />
+
+      <div className="bg-white border-t border-brand-gold/20">
+        <Panel>
+          <HowItWorksTimeline
+            title="How Services Work"
+            subtitle="A simple path from first conversation to implementation support."
+            steps={[
+              {
+                title: "Discovery call",
+                detail: "Start with a short call to clarify your priorities, timeline, and best fit.",
+              },
+              {
+                title: "Clarity session or intake",
+                detail: "Choose a decision-focused session or complete intake for deeper strategic work.",
+              },
+              {
+                title: "Map, implementation, and coordination",
+                detail: "Receive your roadmap, execution checkpoints, and coordinated support where needed.",
+              },
+            ]}
+          />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <StartHereDecisionWidget lang="en" />
+        </Panel>
+      </div>
 
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
@@ -325,6 +535,12 @@ export default function ServicesPage() {
             tint="green"
           />
           <Grid cards={sectionsWithCards.strategicMaps} />
+          <ComparisonTable
+            className="mt-6"
+            columns={STRATEGIC_MAP_COLUMNS}
+            rows={STRATEGIC_MAP_ROWS}
+            footnote="All Strategic Map tiers are advisory and can coordinate with your existing legal, tax, and lending professionals."
+          />
           <p className="mt-6 rounded-2xl border border-brand-gold/40 bg-white/95 p-4 text-sm text-brand-blue/90">
             If you begin with a Clarity & Direction Session and proceed with a Strategic Financial
             Map within 30 days, your session fee may be credited toward the full engagement.
@@ -416,25 +632,30 @@ export default function ServicesPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)"
-              className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className={`${CTA_PRIMARY_CLASS} sm:min-w-[255px]`}
             >
               Book a Discovery Call
             </Link>
             <Link
               href={packageHref("Clarity & Direction Session (60 min)")}
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+              className={`${CTA_SECONDARY_CLASS} sm:min-w-[255px]`}
             >
               Book a Clarity & Direction Session
             </Link>
             <Link
               href="#strategic-maps"
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 text-brand-green hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className={`${CTA_GHOST_CLASS} sm:min-w-[255px]`}
             >
               Explore Strategic Financial Maps
             </Link>
           </div>
         </Panel>
       </div>
+      <StickyNextStepBar
+        lang="en"
+        checklistHref="/en/tools/mortgage-readiness"
+        checklistLabel="Open mortgage readiness checklist"
+      />
     </main>
   );
 }

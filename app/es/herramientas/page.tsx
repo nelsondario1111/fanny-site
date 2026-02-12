@@ -18,6 +18,9 @@ import {
   StickySectionNav,
   HUB_CARD_CLASS,
 } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import StickyNextStepBar from "@/components/StickyNextStepBar";
+import TrustChips from "@/components/TrustChips";
 
 import {
   FaCalculator, FaHome, FaShieldAlt, FaGlobeAmericas, FaCheckCircle, FaClipboardList,
@@ -499,7 +502,7 @@ export default function ToolsPage() {
   }, []);
 
   return (
-    <main id="main" className="bg-white min-h-screen">
+    <main id="main" className="bg-white min-h-screen pb-24">
       <PageHero
         homeHref="/es"
         homeLabel="Inicio"
@@ -507,15 +510,16 @@ export default function ToolsPage() {
         title="Herramientas para tu bienestar financiero"
         subtitle="Calculadoras y plantillas prácticas y bilingües para decidir con claridad y avanzar con confianza."
         primaryCta={{
-          label: "Reservar llamada de descubrimiento",
-          href: "/es/contacto?intent=consult",
+          label: "Reservar llamada de descubrimiento gratis",
+          href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
         }}
         secondaryCta={{
-          label: "Explorar recursos",
-          href: "/es/recursos",
+          label: "Explorar servicios",
+          href: "/es/servicios",
           variant: "secondary",
         }}
       >
+        <TrustChips lang="es" />
         <div className="mt-5 flex flex-wrap gap-2">
           <button
             onClick={() => setListMode((m) => (m === "grid" ? "list" : "grid"))}
@@ -550,6 +554,12 @@ export default function ToolsPage() {
       </PageHero>
 
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
+
+      <div className="bg-white border-t border-brand-gold/20">
+        <Panel>
+          <StartHereDecisionWidget lang="es" />
+        </Panel>
+      </div>
 
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
@@ -764,9 +774,9 @@ export default function ToolsPage() {
             Agendar llamada de descubrimiento
           </Link>
           <div className="mt-4 flex items-center justify-center gap-3">
-            <Link href="/es/cuenta" className="inline-flex" aria-label="Abrir portal de clientes">
+            <Link href="/es/biblioteca-clientes" className="inline-flex" aria-label="Abrir biblioteca de clientes">
               <span className={ButtonGhost}>
-                <FaSignInAlt aria-hidden /> Portal de clientes
+                <FaSignInAlt aria-hidden /> Biblioteca de clientes
               </span>
             </Link>
             <Link href="/es/contacto?intent=pregunta" className="text-sm text-brand-blue underline hover:text-brand-green">
@@ -776,6 +786,12 @@ export default function ToolsPage() {
         </div>
         </Panel>
       </div>
+
+      <StickyNextStepBar
+        lang="es"
+        checklistHref="/es/herramientas/lista-recien-llegados"
+        checklistLabel="Abrir checklist de recien llegados"
+      />
 
       {/* Estilos de impresión */}
       <style jsx global>{`

@@ -1,12 +1,14 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
+import HowItWorksTimeline from "@/components/HowItWorksTimeline";
+import TrustChips from "@/components/TrustChips";
 import Section from "@/components/ui/Section";
 
 export const metadata: Metadata = {
   title: "Revisión Holística de Impuestos de 10 Años | Fanny Samaniego",
   description:
-    "Descubre si tienes reembolsos o beneficios del CRA sin reclamar de los últimos 10 años. Agenda una consulta gratuita de 15 minutos con Fanny Samaniego, Coach Financiera Holística en Toronto.",
+    "Descubre si tienes reembolsos o beneficios del CRA sin reclamar de los ultimos 10 años. Agenda una consulta gratuita de 15 minutos para clientes en Toronto y Ontario con Fanny Samaniego.",
   alternates: {
     canonical: "https://www.fannysamaniego.com/es/revision-impuestos",
     languages: {
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Revisión de Impuestos de 10 Años — Fanny Samaniego",
     description:
-      "Podrías tener derecho a cientos en reembolsos del CRA. Agenda una consulta gratuita de 15 minutos para averiguarlo.",
+      "Podrias tener derecho a cientos en reembolsos del CRA. Agenda una consulta gratuita de 15 minutos para apoyo en Toronto y Ontario.",
     url: "https://www.fannysamaniego.com/es/revision-impuestos",
     type: "website",
     locale: "es_CA",
@@ -37,7 +39,7 @@ export const metadata: Metadata = {
     creator: "@fannysamaniego",
     title: "Revisión de Impuestos de 10 Años — Fanny Samaniego",
     description:
-      "Podrías tener derecho a cientos en reembolsos del CRA. Agenda una consulta gratuita de 15 minutos para averiguarlo.",
+      "Podrias tener derecho a cientos en reembolsos del CRA. Agenda una consulta gratuita de 15 minutos para apoyo en Toronto y Ontario.",
     images: ["https://www.fannysamaniego.com/og/og-tax-review-es.png"],
   },
 };
@@ -45,15 +47,80 @@ export const metadata: Metadata = {
 export default function RevisionImpuestosPage() {
   const pkg = "Revisión Holística de Impuestos de 10 Años";
   const queryPkg = encodeURIComponent(pkg);
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Para quien es la revision holistica de 10 años?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Esta revision esta pensada para personas con cambios de vida e ingresos en los ultimos años que quieren identificar beneficios y reembolsos del CRA no reclamados.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Tiene costo inicial?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No tiene costo inicial. Solo se cobra un honorario de exito si se recupera dinero.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Los reembolsos pasan por su firma?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. Cualquier reembolso o beneficio elegible es pagado directamente por el CRA.",
+        },
+      },
+    ],
+  } as const;
+
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Revision Holistica de Impuestos de 10 Años",
+    serviceType: "Revision y coordinacion fiscal",
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "Toronto, Ontario, Canada",
+    },
+    provider: {
+      "@type": "Organization",
+      name: "Fanny Samaniego",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "CAD",
+      price: "0",
+      description: "Sin costo inicial; honorario de exito cuando se recupera dinero.",
+    },
+    url: "https://www.fannysamaniego.com/es/revision-impuestos",
+  } as const;
 
   return (
     <main className="flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
       {/* ================= HERO ================= */}
       <PageHero
         title="Revisión Holística de Impuestos de 10 Años"
         subtitle="Es posible que tengas reembolsos o beneficios del CRA sin reclamar de los últimos 10 años."
         image="/images/resources/tax-review-leaves.jpg"
+        imageAlt="Fondo de hojas que representa un proceso calmado de revision fiscal"
       />
+
+      <Section className="py-8 md:py-10">
+        <TrustChips lang="es" />
+      </Section>
 
       {/* ================= OPORTUNIDADES PRINCIPALES ================= */}
       <Section className="animate-fade-up py-16 md:py-20">
@@ -73,27 +140,29 @@ export default function RevisionImpuestosPage() {
 
       {/* ================= CÓMO FUNCIONA ================= */}
       <Section className="bg-brand-beige animate-fade-up py-16 md:py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl text-brand-green font-semibold mb-8">
-            Cómo Funciona
-          </h2>
-          <ol
-            aria-label="Pasos del proceso para la revisión de impuestos de 10 años"
-            className="space-y-6 list-decimal list-inside text-lg md:text-xl text-gray-800 text-left md:text-center leading-relaxed"
-          >
-            <li>Envía tu correo electrónico o agenda una llamada de descubrimiento de 15 minutos.</li>
-            <li>
-              Agrega a Fanny como representante del CRA (ID de Representante:{" "}
-              <span className="font-semibold text-brand-body">FD26QH9</span>).
-            </li>
-            <li>
-              Fanny revisa los últimos 10 años de tus declaraciones de impuestos con un enfoque holístico.
-            </li>
-            <li>Recibe cualquier reembolso o beneficio directamente del CRA.</li>
-            <li>
-              🆓 <strong>Sin costo inicial:</strong> solo pagas si se recupera dinero.
-            </li>
-          </ol>
+        <div className="max-w-5xl mx-auto">
+          <HowItWorksTimeline
+            title="Como funciona"
+            subtitle="Proceso claro desde la primera llamada hasta los siguientes pasos coordinados."
+            steps={[
+              {
+                title: "Llamada de descubrimiento",
+                detail: "Inicia con una llamada gratuita de 15 minutos para validar ajuste y linea de tiempo.",
+              },
+              {
+                title: "Intake de claridad",
+                detail: "Completa intake y autorizacion ante CRA para revisar tus registros correctamente.",
+              },
+              {
+                title: "Revision, implementacion y coordinacion",
+                detail: "Recibe hallazgos, pasos sugeridos y acompanamiento para ejecutar las correcciones.",
+              },
+            ]}
+          />
+          <p className="mt-6 text-sm text-gray-600 leading-relaxed text-center">
+            Esta revision complementa — y no reemplaza — el trabajo de tu contador o asesor fiscal.
+            El CRA define elegibilidad y tiempos; nuestro rol es ayudarte a avanzar con claridad.
+          </p>
         </div>
       </Section>
 

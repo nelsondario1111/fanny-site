@@ -30,22 +30,10 @@ function LangToggle({
     }
   }, []);
 
-  // Normalize + bilingual guards
+  // Normalize before mapping to the alternate locale route.
   const normalized = pathname.split("?")[0].split("#")[0].replace(/\/+$/, "");
-  const isTaxReview =
-    normalized.includes("/tax-review") || normalized.includes("/revision-impuestos");
-  const isBook = normalized.includes("/book") || normalized.includes("/reservar");
-
-  const altEn = isTaxReview
-    ? "/en/tax-review"
-    : isBook
-    ? "/en/book"
-    : buildAlternateHref(normalized, "en") + qs + hash;
-  const altEs = isTaxReview
-    ? "/es/revision-impuestos"
-    : isBook
-    ? "/es/reservar"
-    : buildAlternateHref(normalized, "es") + qs + hash;
+  const altEn = buildAlternateHref(normalized, "en") + qs + hash;
+  const altEs = buildAlternateHref(normalized, "es") + qs + hash;
 
   const linkClsBase = invert
     ? "text-white/85 hover:text-white"
@@ -61,6 +49,7 @@ function LangToggle({
         href={altEn}
         className={[linkClsBase, cur === "en" ? activeCls : ""].join(" ")}
         aria-current={cur === "en" ? "true" : undefined}
+        aria-label="Switch language to English"
       >
         EN
       </Link>
@@ -69,6 +58,7 @@ function LangToggle({
         href={altEs}
         className={[linkClsBase, cur === "es" ? activeCls : ""].join(" ")}
         aria-current={cur === "es" ? "true" : undefined}
+        aria-label="Switch language to Spanish"
       >
         ES
       </Link>

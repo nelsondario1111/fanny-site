@@ -7,8 +7,6 @@ import {
   FaIdBadge,
   FaUsers,
   FaLeaf,
-  FaShieldAlt,
-  FaGlobeAmericas,
 } from "react-icons/fa";
 
 import {
@@ -18,6 +16,8 @@ import {
   useMotionPresets,
 } from "@/components/motion-safe";
 import { ctaButtonClass } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import TrustChips from "@/components/TrustChips";
 
 /* ============================= Section Title ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -132,37 +132,16 @@ export default function Home() {
               </Reveal>
 
               <Reveal variants={fade}>
-                <div
-                  className="mt-6 flex flex-wrap items-center justify-center gap-2"
-                  aria-label="Trust badges"
-                >
-                  {[
-                    {
-                      icon: <FaShieldAlt aria-hidden />,
-                      text: "Private & Confidential",
-                    },
-                    {
-                      icon: <FaGlobeAmericas aria-hidden />,
-                      text: "Bilingual (EN/ES)",
-                    },
-                    {
-                      icon: <FaIdBadge aria-hidden />,
-                      text: "Licensed Mortgage Agent (L2)",
-                    },
-                  ].map((item) => (
-                    <span
-                      key={item.text}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
-                    >
-                      {item.icon} {item.text}
-                    </span>
-                  ))}
-                </div>
+                <TrustChips lang="en" />
               </Reveal>
             </section>
           </StaggerGroup>
         </header>
       </div>
+
+      <RevealPanel className="mt-10" aria-label="Start Here pathways">
+        <StartHereDecisionWidget lang="en" />
+      </RevealPanel>
 
       {/* =================== FEATURED: TAX REVIEW =================== */}
       <RevealPanel

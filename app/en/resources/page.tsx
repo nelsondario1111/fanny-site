@@ -305,7 +305,6 @@ export default async function Page() {
         featuredSlugs={featuredSlugs}
         views={views}
         ctaHref="/en/contact?intent=question"
-        newsletterHref="/en/subscribe"
         tagsData={tagsIndex}
       />
     </>

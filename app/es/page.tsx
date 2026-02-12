@@ -7,8 +7,6 @@ import {
   FaIdBadge,
   FaUsers,
   FaLeaf,
-  FaShieldAlt,
-  FaGlobeAmericas,
 } from "react-icons/fa";
 
 import {
@@ -18,6 +16,8 @@ import {
   useMotionPresets,
 } from "@/components/motion-safe";
 import { ctaButtonClass } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import TrustChips from "@/components/TrustChips";
 
 /* ============================= Título de sección ============================= */
 function SectionTitle({ title, kicker }: { title: string; kicker?: string }) {
@@ -131,37 +131,16 @@ export default function HomeEs() {
               </Reveal>
 
               <Reveal variants={fade}>
-                <div
-                  className="mt-6 flex flex-wrap items-center justify-center gap-2"
-                  aria-label="Insignias de confianza"
-                >
-                  {[
-                    {
-                      icon: <FaShieldAlt aria-hidden />,
-                      text: "Privado y confidencial",
-                    },
-                    {
-                      icon: <FaGlobeAmericas aria-hidden />,
-                      text: "Bilingüe (ES/EN)",
-                    },
-                    {
-                      icon: <FaIdBadge aria-hidden />,
-                      text: "Agente hipotecaria licenciada (L2)",
-                    },
-                  ].map((item) => (
-                    <span
-                      key={item.text}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-green/30 text-brand-green/90 text-xs md:text-sm"
-                    >
-                      {item.icon} {item.text}
-                    </span>
-                  ))}
-                </div>
+                <TrustChips lang="es" />
               </Reveal>
             </section>
           </StaggerGroup>
         </header>
       </div>
+
+      <RevealPanel className="mt-10" aria-label="Rutas para empezar">
+        <StartHereDecisionWidget lang="es" />
+      </RevealPanel>
 
       {/* =================== SERVICIO DESTACADO: REVISIÓN FISCAL =================== */}
       <RevealPanel

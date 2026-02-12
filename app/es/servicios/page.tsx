@@ -1,12 +1,17 @@
 import Link from "next/link";
 import {
   CardGrid,
+  ComparisonTable,
   HubPanel as Panel,
   HubSectionTitle as SectionTitle,
   OfferCard,
   PageHero,
   StickySectionNav,
 } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import StickyNextStepBar from "@/components/StickyNextStepBar";
+import TrustChips from "@/components/TrustChips";
+import HowItWorksTimeline from "@/components/HowItWorksTimeline";
 import type { ServiceId } from "@/lib/services/details";
 
 const PRICING = {
@@ -50,6 +55,7 @@ type Card = {
     | "Reservar sesión de claridad y dirección"
     | "Explorar mapas financieros estratégicos";
   ctaHref: string;
+  scopeNote?: string;
 };
 
 function packageHref(title: string) {
@@ -81,9 +87,9 @@ const CARDS: Card[] = [
     title: "Sesión de Claridad y Dirección (60 min)",
     desc: "Asesoría enfocada para una decisión que necesita estructura y avance.",
     bullets: [
-      "Revisa opciones y trade-offs",
-      "Prioriza los próximos 2-3 pasos",
-      "Recibe guía práctica por escrito",
+      "Recibe un PDF de plan de acción de 1 página",
+      "Prioriza tus próximos 2-3 pasos",
+      "Recibe recomendación del siguiente servicio (si aplica)",
     ],
     tags: ["Nivel 1", "Decisión enfocada", "Asesoría"],
     price: price(PRICING.clarity60),
@@ -96,9 +102,9 @@ const CARDS: Card[] = [
     title: "Sesión de Claridad y Dirección - Extendida (90 min)",
     desc: "Acompañamiento extendido para decisiones financieras múltiples e interconectadas.",
     bullets: [
-      "Ordena prioridades conectadas",
-      "Construye una secuencia realista",
-      "Define un plan de implementación con confianza",
+      "Recibe un PDF de plan de acción de 1 página adaptado a tus prioridades",
+      "Prioriza tus próximos 2-3 pasos",
+      "Recibe recomendación del siguiente servicio (si aplica)",
     ],
     tags: ["Nivel 1", "Decisión enfocada", "Extendida"],
     price: price(PRICING.clarity90),
@@ -164,6 +170,7 @@ const CARDS: Card[] = [
     price: price(PRICING.coachingFoundations),
     ctaLabel: "Reservar llamada de descubrimiento",
     ctaHref: packageHref("Coaching y Fundamentos"),
+    scopeNote: "Solo asesoría / educativo",
   },
   {
     id: "support-workshops",
@@ -209,6 +216,7 @@ const CARDS: Card[] = [
     price: price(PRICING.mortgagePreapproval),
     ctaLabel: "Reservar llamada de descubrimiento",
     ctaHref: packageHref("Planificación de Preaprobación"),
+    scopeNote: "Servicio hipotecario con licencia",
   },
   {
     id: "business-cashflow",
@@ -239,6 +247,7 @@ const CARDS: Card[] = [
     price: price(PRICING.taxCoordination),
     ctaLabel: "Reservar llamada de descubrimiento",
     ctaHref: packageHref("Sesión de Coordinación para Planificación Fiscal"),
+    scopeNote: "Coordinación + preguntas de planificación (no declaración)",
   },
 ];
 
@@ -250,6 +259,162 @@ const SECTIONS = [
   { id: "mortgage", label: "Estrategia hipotecaria" },
   { id: "business", label: "Negocios e impuestos" },
 ] as const;
+
+const STRATEGIC_MAP_COLUMNS = ["Nivel 1", "Nivel 2", "Nivel 3"];
+const STRATEGIC_MAP_ROWS = [
+  {
+    label: "Ideal para",
+    values: [
+      "Una meta prioritaria",
+      "Varias prioridades conectadas",
+      "Transiciones complejas de vida + finanzas",
+    ],
+  },
+  {
+    label: "Horizonte de tiempo",
+    values: [
+      "Corto plazo (3-6 meses)",
+      "Mediano plazo (6-18 meses)",
+      "Largo plazo (18+ meses)",
+    ],
+  },
+  {
+    label: "Entregables",
+    values: [
+      "Mapa por meta + secuencia de acción",
+      "Mapa integrado + secuencia de implementación",
+      "Mapa holístico + hoja de ruta de largo plazo",
+    ],
+  },
+  {
+    label: "Incluye",
+    values: [
+      "Hitos, prioridades y puntos de seguimiento",
+      "Coordinación entre prioridades con filtros de decisión",
+      "Plan integral de coordinación con puntos de apoyo profesional",
+    ],
+  },
+  {
+    label: "Precio",
+    values: [price(PRICING.mapTier1), price(PRICING.mapTier2), price(PRICING.mapTier3)],
+  },
+];
+
+const CTA_PRIMARY_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+const CTA_SECONDARY_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 rounded-full border-2 border-brand-blue/40 bg-white text-brand-blue font-semibold shadow-sm hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40";
+const CTA_GHOST_CLASS =
+  "inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 bg-white text-brand-green font-semibold hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold";
+
+const SERVICES_FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Para quien son los Mapas Financieros Estrategicos?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Los Mapas Financieros Estrategicos estan diseñados para clientes que necesitan una ruta clara para una meta principal o varias prioridades conectadas.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Como funciona la estrategia hipotecaria?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "El proceso inicia con preparacion y preaprobacion, luego alinea tiempos, escenarios con prestamistas y documentacion antes de aplicar.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Puedo iniciar con llamada de descubrimiento antes de elegir nivel?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Si. La mayoria de clientes inicia con una llamada de descubrimiento gratis para confirmar ajuste y siguiente paso.",
+      },
+    },
+  ],
+} as const;
+
+const SERVICES_SCHEMA_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      name: "Llamada de Descubrimiento Gratis (15 min)",
+      serviceType: "Consulta financiera",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "CAD",
+        price: "0",
+      },
+      url: "https://www.fannysamaniego.com/es/servicios#start-here",
+    },
+    {
+      "@type": "Service",
+      name: "Mapas Financieros Estrategicos",
+      serviceType: "Estrategia y planificacion financiera",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: [
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "2500",
+          name: "Nivel 1: Mapa Estrategico Especifico por Meta",
+        },
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "3500",
+          name: "Nivel 2: Mapa Estrategico Integrado",
+        },
+        {
+          "@type": "Offer",
+          priceCurrency: "CAD",
+          price: "5000",
+          name: "Nivel 3: Mapa Estrategico Holistico de Vida y Finanzas",
+        },
+      ],
+      url: "https://www.fannysamaniego.com/es/servicios#strategic-maps",
+    },
+    {
+      "@type": "Service",
+      name: "Estrategia Hipotecaria - Planificacion de Preaprobacion",
+      serviceType: "Servicio hipotecario con licencia",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Toronto, Ontario, Canada",
+      },
+      provider: {
+        "@type": "Organization",
+        name: "Fanny Samaniego",
+      },
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "CAD",
+        price: "0",
+      },
+      url: "https://www.fannysamaniego.com/es/servicios#mortgage",
+    },
+  ],
+} as const;
 
 function PackageCard({ c }: { c: Card }) {
   return (
@@ -268,6 +433,11 @@ function PackageCard({ c }: { c: Card }) {
         label: "Ver detalles del servicio",
         href: `/es/servicios/${c.id}`,
       }}
+      extra={c.scopeNote ? (
+        <p className="mt-4 border-t border-brand-gold/30 pt-3 text-xs text-brand-blue/75">
+          <strong>Alcance:</strong> {c.scopeNote}
+        </p>
+      ) : undefined}
     />
   );
 }
@@ -283,7 +453,16 @@ export default function ServiciosPage() {
   };
 
   return (
-    <main id="main" className="bg-white min-h-screen">
+    <main id="main" className="bg-white min-h-screen pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_FAQ_JSON_LD) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICES_SCHEMA_JSON_LD) }}
+      />
+
       <PageHero
         homeHref="/es"
         homeLabel="Inicio"
@@ -299,13 +478,44 @@ export default function ServiciosPage() {
           href: "#strategic-maps",
           variant: "secondary",
         }}
-      />
+      >
+        <TrustChips lang="es" />
+      </PageHero>
 
       <StickySectionNav
         sections={SECTIONS}
         ariaLabel="En esta página"
         defaultActive="start-here"
       />
+
+      <div className="bg-white border-t border-brand-gold/20">
+        <Panel>
+          <HowItWorksTimeline
+            title="Como funciona el servicio"
+            subtitle="Una ruta simple desde la primera llamada hasta la implementacion."
+            steps={[
+              {
+                title: "Llamada de descubrimiento",
+                detail: "Iniciamos con una llamada corta para aclarar prioridades, tiempos y mejor ajuste.",
+              },
+              {
+                title: "Sesion de claridad o intake",
+                detail: "Elige una sesion enfocada en decisiones o completa intake para un trabajo estrategico profundo.",
+              },
+              {
+                title: "Mapa, implementacion y coordinacion",
+                detail: "Recibe tu hoja de ruta, puntos de seguimiento y apoyo coordinado cuando se requiera.",
+              },
+            ]}
+          />
+        </Panel>
+      </div>
+
+      <div className="bg-brand-gold/5 border-t border-brand-gold/20">
+        <Panel>
+          <StartHereDecisionWidget lang="es" />
+        </Panel>
+      </div>
 
       <div className="bg-brand-gold/5 border-t border-brand-gold/20">
         <Panel>
@@ -328,6 +538,12 @@ export default function ServiciosPage() {
             tint="green"
           />
           <Grid cards={sectionsWithCards.strategicMaps} />
+          <ComparisonTable
+            className="mt-6"
+            columns={STRATEGIC_MAP_COLUMNS}
+            rows={STRATEGIC_MAP_ROWS}
+            footnote="Todos los niveles de Mapa Estratégico son de asesoría y pueden coordinarse con tu equipo legal, fiscal o hipotecario."
+          />
           <p className="mt-6 rounded-2xl border border-brand-gold/40 bg-white/95 p-4 text-sm text-brand-blue/90">
             Si inicias con una Sesión de Claridad y Dirección y avanzas a un Mapa Financiero
             Estratégico dentro de 30 días, el valor de esa sesión puede acreditarse al programa
@@ -420,25 +636,30 @@ export default function ServiciosPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)"
-              className="inline-flex items-center justify-center px-5 py-2.5 bg-brand-green text-white rounded-full font-semibold hover:bg-brand-gold hover:text-brand-green border border-brand-green/20 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className={`${CTA_PRIMARY_CLASS} sm:min-w-[255px]`}
             >
               Reservar llamada de descubrimiento
             </Link>
             <Link
               href={packageHref("Sesión de Claridad y Dirección (60 min)")}
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-blue/40 text-brand-blue hover:bg-brand-blue hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/40"
+              className={`${CTA_SECONDARY_CLASS} sm:min-w-[255px]`}
             >
               Reservar sesión de claridad y dirección
             </Link>
             <Link
               href="#strategic-maps"
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-brand-gold/40 text-brand-green hover:bg-brand-gold hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+              className={`${CTA_GHOST_CLASS} sm:min-w-[255px]`}
             >
               Explorar mapas financieros estratégicos
             </Link>
           </div>
         </Panel>
       </div>
+      <StickyNextStepBar
+        lang="es"
+        checklistHref="/es/herramientas/preparacion-hipoteca"
+        checklistLabel="Abrir checklist hipotecario"
+      />
     </main>
   );
 }

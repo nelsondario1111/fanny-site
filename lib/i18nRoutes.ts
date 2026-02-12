@@ -159,6 +159,14 @@ export function buildAlternateHref(pathname: string, target: Locale): string {
       en: "/en/kitchen-table-conversations",
       es: "/es/conversaciones-en-la-mesa",
     },
+    "/en/client-library": {
+      en: "/en/client-library",
+      es: "/es/biblioteca-clientes",
+    },
+    "/es/biblioteca-clientes": {
+      en: "/en/client-library",
+      es: "/es/biblioteca-clientes",
+    },
   };
 
   // Direct match first

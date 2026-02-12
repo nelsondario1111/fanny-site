@@ -14,6 +14,9 @@ import {
   StickySectionNav,
   HUB_CARD_CLASS,
 } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import StickyNextStepBar from "@/components/StickyNextStepBar";
+import TrustChips from "@/components/TrustChips";
 
 /* =============================== Tipos =============================== */
 export type ClientArticle = {
@@ -176,7 +179,6 @@ const EVENTOS: QuickFilter[] = [
 export default function RecursosClient({
   articles,
   ctaHref = "/es/contacto?intent=pregunta",
-  newsletterHref = "/es/suscribir",
   personas,
   featuredSlugs,
   views,
@@ -185,7 +187,6 @@ export default function RecursosClient({
 }: {
   articles: ClientArticle[];
   ctaHref?: string;
-  newsletterHref?: string;
   personas?: PersonaIndex[];
   featuredSlugs?: string[];
   views?: Array<{ key: "grid" | "list" | string; label: string }>;
@@ -422,17 +423,30 @@ export default function RecursosClient({
 
   /* --------------------------------- Render --------------------------------- */
   return (
-    <main className="bg-white min-h-screen pb-16">
+    <main className="bg-white min-h-screen pb-24">
       <PageHero
         homeHref="/es"
         homeLabel="Inicio"
         currentLabel="Recursos"
         title="Artículos y Guias Utiles"
         subtitle="Lecturas breves y practicas sobre hipotecas, dinero e impuestos para profesionales y familias con poco tiempo."
-        primaryCta={{ label: "Reservar llamada de descubrimiento", href: ctaHref }}
-        secondaryCta={{ label: "Recibir el boletin", href: newsletterHref, variant: "secondary" }}
-      />
+        primaryCta={{
+          label: "Reservar llamada de descubrimiento gratis",
+          href: "/es/contacto?intent=consult&package=Llamada%20de%20Descubrimiento%20Gratis%20(15%20min)",
+        }}
+        secondaryCta={{ label: "Explorar servicios", href: "/es/servicios", variant: "secondary" }}
+      >
+        <TrustChips lang="es" />
+      </PageHero>
       <StickySectionNav sections={SECTIONS} ariaLabel="En esta pagina" defaultActive="start-here" />
+
+      <section className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
+          <Panel className="bg-white">
+            <StartHereDecisionWidget lang="es" />
+          </Panel>
+        </motion.div>
+      </section>
 
       {/* EMPIEZA AQUI */}
       <section id="start-here" className="px-4 mt-8 scroll-mt-24">
@@ -762,6 +776,11 @@ export default function RecursosClient({
         selected={drawerSelectedTags}
         toggleTag={toggleTag}
         clearTags={clearTags}
+      />
+      <StickyNextStepBar
+        lang="es"
+        checklistHref="/es/herramientas/preparacion-impuestos"
+        checklistLabel="Abrir checklist de temporada fiscal"
       />
     </main>
   );

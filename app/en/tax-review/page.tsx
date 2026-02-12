@@ -1,13 +1,15 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
+import HowItWorksTimeline from "@/components/HowItWorksTimeline";
+import TrustChips from "@/components/TrustChips";
 import Section from "@/components/ui/Section";
 
 export const metadata: Metadata = {
   title:
     "10-Year Holistic Tax Review — Recover Missed CRA Benefits & Refunds | Fanny Samaniego",
   description:
-    "You may be owed tax refunds or benefits from the last 10 years. Get a calm, holistic CRA review with no upfront cost. Free 15-min call to check eligibility. Bilingual EN/ES support.",
+    "You may be owed tax refunds or benefits from the last 10 years. Get a calm, holistic CRA review for Toronto and Ontario clients with no upfront cost. Free 15-min call to check eligibility. Bilingual EN/ES support.",
   alternates: {
     canonical: "https://www.fannysamaniego.com/en/tax-review",
     languages: {
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
     title:
       "10-Year Holistic Tax Review — Recover Missed CRA Refunds | Fanny Samaniego",
     description:
-      "You may be owed hundreds or thousands in missed refunds and benefits from the CRA. Book a free 15-min call to find out if you qualify.",
+      "You may be owed hundreds or thousands in missed refunds and benefits from the CRA. Book a free 15-min call for Toronto and Ontario support.",
     url: "https://www.fannysamaniego.com/en/tax-review",
     type: "website",
     locale: "en_CA",
@@ -40,7 +42,7 @@ export const metadata: Metadata = {
     title:
       "10-Year Holistic Tax Review — Recover Missed CRA Refunds | Fanny Samaniego",
     description:
-      "You may be owed hundreds or thousands in missed refunds and benefits from the CRA. Book a free 15-min call to find out if you qualify.",
+      "You may be owed hundreds or thousands in missed refunds and benefits from the CRA. Book a free 15-min call for Toronto and Ontario support.",
     images: ["https://www.fannysamaniego.com/og/og-tax-review-en.png"],
   },
 };
@@ -48,15 +50,80 @@ export const metadata: Metadata = {
 export default function TaxReviewPage() {
   const pkg = "10-Year Holistic Tax Review";
   const queryPkg = encodeURIComponent(pkg);
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Who is the 10-Year Holistic Tax Review for?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "It is designed for people with multiple life or income changes across recent years who want to identify missed CRA benefits and refund opportunities.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do I pay upfront for the review?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No upfront fee is required. A success fee only applies if recoverable amounts are found and processed.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do CRA refunds come through your firm?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "No. Any eligible refunds or benefits are paid directly by the CRA.",
+        },
+      },
+    ],
+  } as const;
+
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "10-Year Holistic Tax Review",
+    serviceType: "Tax review and coordination",
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "Toronto, Ontario, Canada",
+    },
+    provider: {
+      "@type": "Organization",
+      name: "Fanny Samaniego",
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "CAD",
+      price: "0",
+      description: "No upfront fee; success-based fee when recovery is achieved.",
+    },
+    url: "https://www.fannysamaniego.com/en/tax-review",
+  } as const;
 
   return (
     <main className="flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
       {/* ================= HERO ================= */}
       <PageHero
         title="10-Year Holistic Tax Review"
         subtitle="A calm, step-by-step review of up to 10 years of your CRA history to uncover refunds and benefits you may have missed."
         image="/images/resources/tax-review-leaves.jpg"
+        imageAlt="Calm leaves background representing the 10-Year Holistic Tax Review process"
       />
+
+      <Section className="py-8 md:py-10">
+        <TrustChips lang="en" />
+      </Section>
 
       {/* ================= TOP REFUND OPPORTUNITIES ================= */}
       <Section className="animate-fade-up py-16 md:py-20">
@@ -95,35 +162,26 @@ export default function TaxReviewPage() {
 
       {/* ================= HOW IT WORKS ================= */}
       <Section className="bg-brand-beige animate-fade-up py-16 md:py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl text-brand-green font-semibold mb-8">
-            How It Works
-          </h2>
-          <ol
-            aria-label="Process steps for the 10-year tax review"
-            className="space-y-6 list-decimal list-inside text-lg md:text-xl text-gray-800 text-left md:text-center leading-relaxed"
-          >
-            <li>Submit your email or book a free 15-minute discovery call.</li>
-            <li>
-              Add Fanny as a CRA representative (Rep ID:{" "}
-              <span className="font-semibold text-brand-body">FD26QH9</span>).
-            </li>
-            <li>
-              Fanny reviews up to 10 years of your CRA tax records with a
-              holistic, life-events lens.
-            </li>
-            <li>
-              If opportunities are found, Fanny helps map the steps to request
-              adjustments. Any refunds or benefits are paid{" "}
-              <strong>directly by the CRA</strong>.
-            </li>
-            <li>
-              🆓 <strong>No upfront cost:</strong> you only pay a fee if money
-              is successfully recovered.
-            </li>
-          </ol>
-
-          <p className="mt-8 text-sm text-gray-600 leading-relaxed">
+        <div className="max-w-5xl mx-auto">
+          <HowItWorksTimeline
+            title="How It Works"
+            subtitle="Simple, transparent process from first call to coordinated next steps."
+            steps={[
+              {
+                title: "Discovery call",
+                detail: "Start with a free 15-minute call to confirm fit and review your case timeline.",
+              },
+              {
+                title: "Clarity intake",
+                detail: "Complete intake and CRA authorization so records can be reviewed accurately.",
+              },
+              {
+                title: "Review, implementation, coordination",
+                detail: "Receive findings, recommended adjustment steps, and coordinated guidance through the process.",
+              },
+            ]}
+          />
+          <p className="mt-6 text-sm text-gray-600 leading-relaxed text-center">
             This review is designed to complement — not replace — your existing
             accountant or tax professional. CRA ultimately decides eligibility
             and processing timelines; our role is to help you ask the right

@@ -52,6 +52,21 @@ type Task = {
   priority?: "high" | "normal";
 };
 
+const LEGACY_LINK_MAP: Record<string, string> = {
+  "/en/clients/portal": "/en/client-library",
+  "/en/services/taxes": "/en/services#business",
+  "/en/services/financial-planning": "/en/services#strategic-maps",
+};
+
+function normalizeTaskLinks(list: Task[]): Task[] {
+  return list.map((task) => {
+    if (!task.linkHref) return task;
+    const mapped = LEGACY_LINK_MAP[task.linkHref];
+    if (!mapped) return task;
+    return { ...task, linkHref: mapped };
+  });
+}
+
 // ---------- Storage ----------
 const LS_KEY = (year: number) => `tools.tax_prep_${year}.v1`;
 
@@ -72,6 +87,13 @@ function ymd(d: Date) {
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
+
+const EN_CA_DATE_FORMAT = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "America/Toronto",
+});
 
 // Robust CSV (quotes + CRLF + BOM for Excel)
 function toCSV(rows: Array<Array<string | number>>) {
@@ -181,10 +203,9 @@ function defaultTasks(taxYear: number): Task[] {
   const apr30 = filingDueDate(taxYear);
   const jun15 = selfEmployedDueDate(taxYear);
 
-  return [
+  const base: Array<Omit<Task, "id">> = [
     // YEAR SETUP — dated reminders
     {
-      id: uid(),
       section: "year_setup",
       title: `RRSP contribution deadline for ${taxYear}`,
       note: "First 60 days of the following year count toward this tax year.",
@@ -193,7 +214,6 @@ function defaultTasks(taxYear: number): Task[] {
       priority: "high",
     },
     {
-      id: uid(),
       section: "year_setup",
       title: `File tax return (most individuals) — ${taxYear}`,
       note: "Balance owing still due by April 30.",
@@ -202,7 +222,6 @@ function defaultTasks(taxYear: number): Task[] {
       priority: "high",
     },
     {
-      id: uid(),
       section: "year_setup",
       title: `Self-employed filing deadline — ${taxYear}`,
       note: "If self-employed, filing due by June 15; any balance still due April 30.",
@@ -212,7 +231,6 @@ function defaultTasks(taxYear: number): Task[] {
 
     // YEAR SETUP — general
     {
-      id: uid(),
       section: "year_setup",
       title: `Confirm tax year is ${taxYear}; note RRSP deadline & filing dates`,
       note: "",
@@ -220,72 +238,96 @@ function defaultTasks(taxYear: number): Task[] {
       priority: "high",
     },
     {
-      id: uid(),
       section: "year_setup",
       title: "Review prior Notice of Assessment & carry-forward amounts (RRSP/TFSA/tuition)",
-      linkHref: "/en/clients/portal",
-      linkLabel: "Client portal",
+      linkHref: "/en/client-library",
+      linkLabel: "Client library",
       done: false,
     },
 
     // PERSONAL & CRA
     {
-      id: uid(),
       section: "personal_cra",
       title: "CRA My Account access verified (email/phone up to date, 2FA on)",
       done: false,
-      linkHref: "/en/services/taxes",
+      linkHref: "/en/services#business",
       linkLabel: "Tax support",
       priority: "high",
     },
     {
-      id: uid(),
       section: "personal_cra",
       title: "Direct deposit info current; address & marital status changes updated",
       done: false,
     },
 
     // INCOME SLIPS
-    { id: uid(), section: "income_slips", title: "T4 (employment income)", done: false, priority: "high" },
-    { id: uid(), section: "income_slips", title: "T4A (other income, scholarships, commissions)", done: false },
-    { id: uid(), section: "income_slips", title: "T5 (interest/dividends), T3 (trust), T5008 (securities)", done: false },
-    { id: uid(), section: "income_slips", title: "T4E (EI), T4AP (CPP), T4A(OAS) (OAS), T4RSP/T4RIF (RRSP/RRIF)", done: false },
-    { id: uid(), section: "income_slips", title: "Foreign income statements (employment/investments)", done: false },
+    { section: "income_slips", title: "T4 (employment income)", done: false, priority: "high" },
+    { section: "income_slips", title: "T4A (other income, scholarships, commissions)", done: false },
+    { section: "income_slips", title: "T5 (interest/dividends), T3 (trust), T5008 (securities)", done: false },
+    { section: "income_slips", title: "T4E (EI), T4AP (CPP), T4A(OAS) (OAS), T4RSP/T4RIF (RRSP/RRIF)", done: false },
+    { section: "income_slips", title: "Foreign income statements (employment/investments)", done: false },
 
     // DEDUCTIONS & CREDITS
-    { id: uid(), section: "deductions_credits", title: "RRSP contribution receipts (first 60 days & rest of year)", done: false, priority: "high" },
-    { id: uid(), section: "deductions_credits", title: "Childcare receipts & caregiver support", done: false },
-    { id: uid(), section: "deductions_credits", title: "Tuition: T2202 (student) & transfer forms (if applicable)", done: false },
-    { id: uid(), section: "deductions_credits", title: "Medical expenses summary (by family), insurance reimbursements", done: false },
-    { id: uid(), section: "deductions_credits", title: "Charitable donation receipts", done: false },
-    { id: uid(), section: "deductions_credits", title: "Union dues / professional fees / employment expenses (T2200S)", done: false },
+    { section: "deductions_credits", title: "RRSP contribution receipts (first 60 days & rest of year)", done: false, priority: "high" },
+    { section: "deductions_credits", title: "Childcare receipts & caregiver support", done: false },
+    { section: "deductions_credits", title: "Tuition: T2202 (student) & transfer forms (if applicable)", done: false },
+    { section: "deductions_credits", title: "Medical expenses summary (by family), insurance reimbursements", done: false },
+    { section: "deductions_credits", title: "Charitable donation receipts", done: false },
+    { section: "deductions_credits", title: "Union dues / professional fees / employment expenses (T2200S)", done: false },
 
     // SELF-EMPLOYED
-    { id: uid(), section: "self_employed", title: "Income summary (invoices, platform reports) for the year", done: false, priority: "high" },
-    { id: uid(), section: "self_employed", title: "Expense log & receipts (office, supplies, software, insurance)", done: false },
-    { id: uid(), section: "self_employed", title: "Vehicle log (km), fuel/maintenance/insurance; business-use-of-home worksheet", done: false },
-    { id: uid(), section: "self_employed", title: "GST/HST registration & filings (if applicable)", done: false },
+    { section: "self_employed", title: "Income summary (invoices, platform reports) for the year", done: false, priority: "high" },
+    { section: "self_employed", title: "Expense log & receipts (office, supplies, software, insurance)", done: false },
+    { section: "self_employed", title: "Vehicle log (km), fuel/maintenance/insurance; business-use-of-home worksheet", done: false },
+    { section: "self_employed", title: "GST/HST registration & filings (if applicable)", done: false },
 
     // INVESTMENTS & PROPERTY
-    { id: uid(), section: "investments_property", title: "Capital gains summary & ACB tracking (incl. crypto)", done: false, priority: "high" },
-    { id: uid(), section: "investments_property", title: "Rental income & expenses (T776 worksheet): leases, statements, repairs", done: false },
-    { id: uid(), section: "investments_property", title: "Foreign assets reporting (T1135) — if over threshold", done: false },
+    { section: "investments_property", title: "Capital gains summary & ACB tracking (incl. crypto)", done: false, priority: "high" },
+    { section: "investments_property", title: "Rental income & expenses (T776 worksheet): leases, statements, repairs", done: false },
+    { section: "investments_property", title: "Foreign assets reporting (T1135) — if over threshold", done: false },
 
     // STUDENTS & FAMILIES
-    { id: uid(), section: "students_families", title: "Update CCB/benefits information (dependents, marital status)", done: false },
-    { id: uid(), section: "students_families", title: "Tuition transfers (parent/spouse) with signatures", done: false },
-    { id: uid(), section: "students_families", title: "RESP withdrawals (educational assistance payments) statements", done: false },
+    { section: "students_families", title: "Update CCB/benefits information (dependents, marital status)", done: false },
+    { section: "students_families", title: "Tuition transfers (parent/spouse) with signatures", done: false },
+    { section: "students_families", title: "RESP withdrawals (educational assistance payments) statements", done: false },
 
     // FINALIZE & FILE
-    { id: uid(), section: "finalize_file", title: "Upload all documents to client portal and verify completeness", done: false, linkHref: "/en/clients/portal", linkLabel: "Upload docs", priority: "high" },
-    { id: uid(), section: "finalize_file", title: "Review summary, sign engagement forms (e.g., T183) if applicable", done: false },
-    { id: uid(), section: "finalize_file", title: "Set payment method and confirm balance/refund details", done: false },
+    { section: "finalize_file", title: "Upload all documents to client portal and verify completeness", done: false, linkHref: "/en/client-library", linkLabel: "Upload docs", priority: "high" },
+    { section: "finalize_file", title: "Review summary, sign engagement forms (e.g., T183) if applicable", done: false },
+    { section: "finalize_file", title: "Set payment method and confirm balance/refund details", done: false },
 
     // AFTER FILING
-    { id: uid(), section: "after_filing", title: "Save Notice of Assessment & return copy to secure folder", done: false },
-    { id: uid(), section: "after_filing", title: "Set installment reminders or adjust withholdings (TD1) if needed", done: false },
-    { id: uid(), section: "after_filing", title: "Plan next year: update RRSP/TFSA strategy, contributions, and goals", done: false, linkHref: "/en/services/financial-planning", linkLabel: "Planning session" },
+    { section: "after_filing", title: "Save Notice of Assessment & return copy to secure folder", done: false },
+    { section: "after_filing", title: "Set installment reminders or adjust withholdings (TD1) if needed", done: false },
+    { section: "after_filing", title: "Plan next year: update RRSP/TFSA strategy, contributions, and goals", done: false, linkHref: "/en/services#strategic-maps", linkLabel: "Planning session" },
   ];
+
+  // Keep IDs deterministic so SSR and client hydration produce identical markup.
+  return base.map((task, idx) => ({
+    ...task,
+    id: `${taxYear}-${task.section}-${idx}`,
+  }));
+}
+
+function normalizeStoredTasks(list: Task[], taxYear: number): Task[] {
+  const defaultIdBySignature = new Map(
+    defaultTasks(taxYear).map((task) => [
+      `${task.section}::${task.title}::${task.due ?? ""}`,
+      task.id,
+    ])
+  );
+
+  const seen = new Set<string>();
+  return normalizeTaskLinks(list).map((task, idx) => {
+    const signature = `${task.section}::${task.title}::${task.due ?? ""}`;
+    const preferredId = task.isCustom ? task.id : defaultIdBySignature.get(signature) ?? task.id;
+
+    let nextId = preferredId;
+    if (seen.has(nextId)) nextId = `${preferredId}-dup-${idx}`;
+    seen.add(nextId);
+
+    return nextId === task.id ? task : { ...task, id: nextId };
+  });
 }
 
 // ---------- Small UI helpers ----------
@@ -316,7 +358,7 @@ function ProgressBar({ value, total }: { value: number; total: number }) {
 // ---------- Page ----------
 export default function Page() {
   // Year defaults to last calendar year (typical filing)
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getUTCFullYear();
   const defaultTaxYear = currentYear - 1;
   const [taxYear, setTaxYear] = useState<number>(defaultTaxYear);
 
@@ -342,7 +384,7 @@ export default function Page() {
       const raw = localStorage.getItem(LS_KEY(taxYear));
       if (raw) {
         const v = JSON.parse(raw);
-        if (Array.isArray(v)) setTasks(v as Task[]);
+        if (Array.isArray(v)) setTasks(normalizeStoredTasks(v as Task[], taxYear));
         else setTasks(defaultTasks(taxYear));
       } else {
         setTasks(defaultTasks(taxYear));
@@ -591,7 +633,7 @@ export default function Page() {
 
         <div className="text-xs text-brand-blue/70">
           Need help?{" "}
-          <Link href="/en/services/taxes" className="underline">
+          <Link href="/en/services#business" className="underline">
             Work with our tax team
           </Link>
           .
@@ -815,7 +857,7 @@ export default function Page() {
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li>
             Need hands-on help?{" "}
-            <Link href="/en/services/taxes" className="underline">
+            <Link href="/en/services#business" className="underline">
               Work with our tax team
             </Link>{" "}
             (secure portal, guided document list, review & file).
@@ -832,13 +874,13 @@ export default function Page() {
           </li>
           <li>
             Upload securely:{" "}
-            <Link href="/en/clients/portal" className="underline">
-              Client portal
+            <Link href="/en/client-library" className="underline">
+              Client library
             </Link>
           </li>
           <li>
             Optimize year-round:{" "}
-            <Link href="/en/services/financial-planning" className="underline">
+            <Link href="/en/services#strategic-maps" className="underline">
               Financial planning session
             </Link>
           </li>
@@ -869,7 +911,7 @@ function DateCard({ label, date, helper }: { label: string; date: Date; helper?:
     <div className="rounded-xl border border-brand-gold/50 bg-white p-3 md:p-4">
       <div className="text-xs md:text-sm text-brand-blue/80">{label}</div>
       <div className="text-xl md:text-2xl font-bold text-brand-green mt-1">
-        {date.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+        {EN_CA_DATE_FORMAT.format(date)}
       </div>
       {helper && <div className="text-[11px] md:text-xs text-brand-blue/70 mt-1">{helper}</div>}
     </div>

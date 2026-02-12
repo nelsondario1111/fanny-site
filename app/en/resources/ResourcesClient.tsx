@@ -14,6 +14,9 @@ import {
   StickySectionNav,
   HUB_CARD_CLASS,
 } from "@/components/sections/hub";
+import StartHereDecisionWidget from "@/components/StartHereDecisionWidget";
+import StickyNextStepBar from "@/components/StickyNextStepBar";
+import TrustChips from "@/components/TrustChips";
 
 /* =============================== Types =============================== */
 export type ClientArticle = {
@@ -172,7 +175,6 @@ const LIFE_EVENTS: QuickFilter[] = [
 export default function ResourcesClient({
   articles,
   ctaHref = "/en/contact?intent=question",
-  newsletterHref = "/en/subscribe",
   personas,
   featuredSlugs,
   views,
@@ -181,7 +183,6 @@ export default function ResourcesClient({
 }: {
   articles: ClientArticle[];
   ctaHref?: string;
-  newsletterHref?: string;
   personas?: PersonaIndex[];
   featuredSlugs?: string[];
   views?: Array<{ key: "grid" | "list" | string; label: string }>;
@@ -419,17 +420,30 @@ export default function ResourcesClient({
 
   /* --------------------------------- Render --------------------------------- */
   return (
-    <main className="bg-white min-h-screen pb-16">
+    <main className="bg-white min-h-screen pb-24">
       <PageHero
         homeHref="/en"
         homeLabel="Home"
         currentLabel="Resources"
         title="Helpful Articles & Guides"
         subtitle="Short, practical reads on mortgages, money behavior, and tax basics for busy professionals and families."
-        primaryCta={{ label: "Book a Discovery Call", href: ctaHref }}
-        secondaryCta={{ label: "Get the Newsletter", href: newsletterHref, variant: "secondary" }}
-      />
+        primaryCta={{
+          label: "Book a Free Discovery Call",
+          href: "/en/contact?intent=consult&package=Free%20Discovery%20Call%20(15%20min)",
+        }}
+        secondaryCta={{ label: "Explore Services", href: "/en/services", variant: "secondary" }}
+      >
+        <TrustChips lang="en" />
+      </PageHero>
       <StickySectionNav sections={SECTIONS} ariaLabel="On this page" defaultActive="start-here" />
+
+      <section className="px-4 mt-8 scroll-mt-24">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
+          <Panel className="bg-white">
+            <StartHereDecisionWidget lang="en" />
+          </Panel>
+        </motion.div>
+      </section>
 
       {/* START HERE */}
       <section id="start-here" className="px-4 mt-8 scroll-mt-24">
@@ -759,6 +773,11 @@ export default function ResourcesClient({
         selected={drawerSelectedTags}
         toggleTag={toggleTag}
         clearTags={clearTags}
+      />
+      <StickyNextStepBar
+        lang="en"
+        checklistHref="/en/tools/tax-prep"
+        checklistLabel="Open tax prep checklist"
       />
     </main>
   );

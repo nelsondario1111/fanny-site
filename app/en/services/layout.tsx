@@ -5,7 +5,7 @@ import { buildMetadata } from "@/app/metadata";
 export const metadata: Metadata = buildMetadata({
   title: "Services",
   description:
-    "Explore mortgage, tax, and financial coaching services tailored to families, professionals, and entrepreneurs.",
+    "Explore mortgage, tax, and financial coaching services for families, professionals, and entrepreneurs in Toronto and across Ontario.",
   path: "/en/services",
   locale: "en",
 });

@@ -5,14 +5,15 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   image: string;
+  imageAlt?: string;
 }
 
-export function PageHero({ title, subtitle, image }: PageHeroProps) {
+export function PageHero({ title, subtitle, image, imageAlt }: PageHeroProps) {
   return (
     <section className="relative w-full h-[60vh] md:h-[75vh] flex items-center justify-center bg-black text-white">
       <Image
         src={image}
-        alt={title}
+        alt={imageAlt ?? title}
         fill
         priority
         className="object-cover object-center brightness-[0.55]"

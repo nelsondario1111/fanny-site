@@ -3,6 +3,9 @@ import "./globals.css";
 import { lato, playfair, pacifico } from "./fonts";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import TrackingEvents from "@/components/TrackingEvents";
 
 /** -------------------------------------------------------------
  *  Viewport meta (no change)
@@ -68,6 +71,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ].join(" ")}
       >
         {children}
+        <TrackingEvents />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -2,9 +2,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Services — Coaching, Mortgages & Financial Strategy",
+  title: "Services — Coaching, Mortgages & Financial Strategy in Toronto, Ontario",
   description:
-    "Start with a free discovery call, then choose Clarity & Direction sessions, Strategic Financial Maps, and specialized mortgage, business, and tax strategy support.",
+    "Start with a free discovery call, then choose Clarity & Direction sessions, Strategic Financial Maps, and specialized mortgage, business, and tax strategy support in Toronto and across Ontario.",
   openGraph: {
     title: "Services — Fanny Samaniego",
     description:
