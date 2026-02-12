@@ -20,7 +20,6 @@ const PRICING = {
   workshops: null,
   foundationsGroup: null,
   mortgagePreapproval: 0,
-  mortgageOffer: 295,
   businessCashflow: 395,
   taxCoordination: 395,
 } as const;
@@ -209,21 +208,6 @@ const CARDS: Card[] = [
     ctaHref: packageHref("Pre-Approval Planning"),
   },
   {
-    id: "mortgage-offer",
-    section: "mortgage",
-    title: "Offer & Financing Strategy",
-    desc: "Make stronger offers with financing strategy tailored to your real constraints.",
-    bullets: [
-      "Compare scenario tradeoffs",
-      "Set practical offer guardrails",
-      "Coordinate financing next steps",
-    ],
-    tags: ["Mortgage", "Offer Strategy", "Decision Support"],
-    price: price(PRICING.mortgageOffer),
-    ctaLabel: "Book a Discovery Call",
-    ctaHref: packageHref("Offer & Financing Strategy"),
-  },
-  {
     id: "business-cashflow",
     section: "business",
     title: "Business Strategy & Cash Flow Session",
@@ -363,8 +347,8 @@ export default function ServicesPage() {
         <Panel className="bg-white/90">
           <SectionTitle
             id="mortgage"
-            title="Mortgage Strategy - Practical Confidence from Pre-Approval to Closing"
-            subtitle="A distinct strategy track that supports clear property decisions."
+            title="Mortgage Strategy - Pre-Approval Readiness with Practical Confidence"
+            subtitle="A focused mortgage track for buyers preparing strong, lender-ready files."
             tint="green"
           />
           <Grid cards={sectionsWithCards.mortgage} />

@@ -20,7 +20,6 @@ const PRICING = {
   workshops: null,
   foundationsGroup: null,
   mortgagePreapproval: 0,
-  mortgageOffer: 295,
   businessCashflow: 395,
   taxCoordination: 395,
 } as const;
@@ -212,21 +211,6 @@ const CARDS: Card[] = [
     ctaHref: packageHref("Planificación de Preaprobación"),
   },
   {
-    id: "mortgage-offer",
-    section: "mortgage",
-    title: "Estrategia de Oferta y Financiamiento",
-    desc: "Toma mejores decisiones de oferta con una estrategia financiera realista.",
-    bullets: [
-      "Compara escenarios y concesiones",
-      "Define límites de oferta seguros",
-      "Coordina próximos pasos de financiamiento",
-    ],
-    tags: ["Hipoteca", "Oferta", "Soporte de decisiones"],
-    price: price(PRICING.mortgageOffer),
-    ctaLabel: "Reservar llamada de descubrimiento",
-    ctaHref: packageHref("Estrategia de Oferta y Financiamiento"),
-  },
-  {
     id: "business-cashflow",
     section: "business",
     title: "Sesión de Estrategia de Negocio y Flujo de Caja",
@@ -367,8 +351,8 @@ export default function ServiciosPage() {
         <Panel className="bg-white/90">
           <SectionTitle
             id="mortgage"
-            title="Estrategia hipotecaria - Confianza práctica desde la preaprobación hasta el cierre"
-            subtitle="Un bloque diferenciado para decisiones de vivienda y propiedad."
+            title="Estrategia hipotecaria - Preparación de preaprobación con confianza práctica"
+            subtitle="Un bloque hipotecario enfocado en compradores que quieren presentar un expediente sólido."
             tint="green"
           />
           <Grid cards={sectionsWithCards.mortgage} />

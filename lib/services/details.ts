@@ -9,7 +9,6 @@ export type ServiceId =
   | "support-workshops"
   | "support-foundations-group"
   | "mortgage-preapproval"
-  | "mortgage-offer"
   | "business-cashflow"
   | "business-tax";
 
@@ -290,34 +289,6 @@ const EN: Record<ServiceId, ServiceDetail> = {
     outcome: "You enter pre-approval with stronger preparation and fewer surprises.",
     scopeNote:
       "Mortgage qualification remains subject to lender underwriting and approved credit (O.A.C.).",
-  },
-  "mortgage-offer": {
-    id: "mortgage-offer",
-    title: "Offer & Financing Strategy",
-    subtitle:
-      "Decision support for offer structure and financing trade-offs before submission.",
-    price: "$295 CAD",
-    duration: "Session-based",
-    packageTitle: "Offer & Financing Strategy",
-    primaryCtaLabel: "Book a Discovery Call",
-    idealFor: [
-      "Buyers preparing offers in active timelines",
-      "Clients comparing financing scenarios",
-      "People who need guardrails before committing",
-    ],
-    includes: [
-      "Offer/financing scenario comparison",
-      "Constraint and risk checkpoint review",
-      "Action sequence for next lender conversations",
-    ],
-    process: [
-      "Map your offer constraints and priorities",
-      "Compare key financing pathways and trade-offs",
-      "Finalize practical decision guardrails",
-    ],
-    outcome: "You make stronger, better-aligned offer decisions with financing clarity.",
-    scopeNote:
-      "This service provides strategy support; legal offer terms must be reviewed with your realtor/lawyer.",
   },
   "business-cashflow": {
     id: "business-cashflow",
@@ -637,34 +608,6 @@ const ES: Record<ServiceId, ServiceDetail> = {
     outcome: "Llegas a preaprobación con mejor preparación y menos sorpresas.",
     scopeNote:
       "La aprobación final depende de underwriting del prestamista y crédito aprobado (O.A.C.).",
-  },
-  "mortgage-offer": {
-    id: "mortgage-offer",
-    title: "Estrategia de Oferta y Financiamiento",
-    subtitle:
-      "Soporte de decisión para estructura de oferta y trade-offs de financiamiento.",
-    price: "$295 CAD",
-    duration: "Por sesión",
-    packageTitle: "Estrategia de Oferta y Financiamiento",
-    primaryCtaLabel: "Reservar llamada de descubrimiento",
-    idealFor: [
-      "Compradores preparando oferta en tiempos activos",
-      "Clientes comparando escenarios de financiamiento",
-      "Personas que necesitan guardrails antes de comprometerse",
-    ],
-    includes: [
-      "Comparación de escenarios oferta/financiamiento",
-      "Revisión de restricciones y riesgos",
-      "Secuencia de próximos pasos con prestamistas",
-    ],
-    process: [
-      "Mapeamos prioridades y límites de oferta.",
-      "Comparamos opciones de financiamiento y trade-offs.",
-      "Definimos criterios prácticos de decisión.",
-    ],
-    outcome: "Tomas decisiones de oferta más sólidas y alineadas con tu realidad.",
-    scopeNote:
-      "Esta sesión es estratégica; términos legales de oferta deben revisarse con realtor/abogado.",
   },
   "business-cashflow": {
     id: "business-cashflow",
