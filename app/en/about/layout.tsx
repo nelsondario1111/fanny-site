@@ -5,7 +5,7 @@ import { buildMetadata } from "@/app/metadata";
 export const metadata: Metadata = buildMetadata({
   title: "About",
   description:
-    "Meet Fanny Samaniego and learn the human-centered approach to mortgages, money, and tax guidance.",
+    "Meet Fanny Samaniego, Mortgage Agent (Level 2) and former CRA Income Tax Auditor, and learn her human-centered approach to mortgages, money, and tax guidance.",
   path: "/en/about",
   locale: "en",
 });

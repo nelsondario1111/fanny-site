@@ -8,7 +8,7 @@ import BackToTopButton from "@/components/BackToTopButton";
 export const metadata: Metadata = {
   title: "Fanny Samaniego — Consultora Financiera Holística",
   description:
-    "Consultoría financiera holística para impuestos, hipotecas y estrategia financiera en Toronto. Números claros, decisiones con calma.",
+    "Agente hipotecaria (Nivel 2), ex-auditora de impuestos para la CRA y consultora financiera holística en Toronto. Guía clara en impuestos, hipotecas y estrategia financiera.",
 };
 
 export default function EsLayout({ children }: { children: React.ReactNode }) {

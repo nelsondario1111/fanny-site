@@ -5,7 +5,7 @@ import { buildMetadata } from "@/app/metadata";
 export const metadata: Metadata = buildMetadata({
   title: "Sobre Mí",
   description:
-    "Conoce a Fanny Samaniego y su enfoque humano para hipotecas, dinero e impuestos.",
+    "Conoce a Fanny Samaniego, agente hipotecaria (Nivel 2) y ex-auditora de la CRA, y su enfoque humano para hipotecas, dinero e impuestos.",
   path: "/es/sobre-mi",
   locale: "es",
 });

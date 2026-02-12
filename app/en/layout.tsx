@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s • Fanny Samaniego",
   },
   description:
-    "Holistic financial consulting for taxes, mortgages, and money strategy in Toronto. Clear numbers, calm decisions. Bilingual (EN/ES).",
+    "Mortgage Agent (Level 2), former CRA Income Tax Auditor, and holistic financial consultant in Toronto. Clear guidance for taxes, mortgages, and money strategy. Bilingual (EN/ES).",
 };
 
 export default function EnLayout({ children }: { children: React.ReactNode }) {

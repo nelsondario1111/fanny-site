@@ -57,8 +57,11 @@ export default function HomeEs() {
     founder: {
       "@type": "Person",
       name: "Fanny Samaniego",
-      jobTitle: "Asesora Financiera y Agente Hipotecaria",
+      jobTitle: "Agente Hipotecaria (Nivel 2) y Consultora Financiera Holística",
+      description:
+        "Ex-auditora de impuestos para la CRA que acompaña en estrategia hipotecaria, ritmo fiscal y planificación financiera práctica en Toronto.",
       worksFor: { "@type": "Organization", name: "Fanny Samaniego" },
+      knowsAbout: ["Hipotecas", "Planificación fiscal", "Flujo de caja", "Coaching financiero"],
     },
   } as const;
 
@@ -234,33 +237,34 @@ export default function HomeEs() {
 
           <Reveal variants={fadeUp} className="md:w-1/2">
             <h2 className="font-brand text-3xl md:text-4xl text-brand-green/90 mb-4 font-semibold">
-              Sabiduría invitada, compartida con el corazón
+              Guía profesional con corazón humano
             </h2>
-            <p className="font-sans text-lg text-brand-body/90 mb-6 leading-relaxed max-w-2xl">
-              Soy Fanny Samaniego—<b>asesora financiera, coach holística y
-              agente hipotecaria licenciada</b> en Toronto. Junto a mi equipo
-              coordinado, acompañamos a familias profesionales, ejecutivos y
-              dueños de negocio que buscan resultados prácticos sin perder sus
-              valores ni su paz interior.
+            <p className="font-sans text-lg text-brand-body/90 mb-4 leading-relaxed max-w-2xl">
+              Soy Fanny Samaniego—<b>agente hipotecaria (Nivel 2), ex-auditora
+              de impuestos para la CRA y consultora financiera holística</b>,
+              bilingüe y con base en Toronto. Acompaño a familias
+              profesionales, ejecutivos y dueños de negocio a tomar decisiones
+              claras y alineadas a sus valores en hipoteca, ritmo fiscal y
+              estrategia financiera.
             </p>
             <ul className="list-disc pl-6 text-brand-body/90 text-base space-y-2 mb-8">
               <li>
-                Planes que se adaptan a tu vida—basados en cómo decides y
-                ejecutas naturalmente.
+                Estrategia hipotecaria, sistemas de flujo de caja y preparación
+                fiscal alineados en un solo plan práctico.
               </li>
               <li>
-                Lente opcional de Diseño Humano para personalizar comunicación y
-                ritmo—sin reemplazar fundamentos financieros o legales.
+                Coordinación con prestamistas y especialistas calificados cuando
+                tu plan lo necesita.
               </li>
-              <li>Próximos pasos claros después de cada sesión—sin sobrecarga.</li>
+              <li>Próximos pasos claros después de cada sesión, sin sobrecarga.</li>
             </ul>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/es/sobre-mi"
-                aria-label="Descubre la trayectoria de Fanny Samaniego"
+                aria-label="Leer la página completa Sobre mí"
                 className={ghostCtaClass}
               >
-                Descubrir mi trayectoria
+                Leer la página completa Sobre mí
               </Link>
               <Link
                 href="/es/contacto?intent=pregunta"

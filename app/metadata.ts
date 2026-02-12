@@ -33,8 +33,8 @@ export const LOCALES = { en: "en", es: "es" } as const;
 export type Lang = keyof typeof LOCALES;
 
 const DEFAULT_DESC: Record<Lang, string> = {
-  en: "Holistic financial consulting for taxes, mortgages, and money strategy in the GTA. Clear numbers, calm decisions.",
-  es: "Consultoría financiera holística para impuestos, hipotecas y estrategia financiera en el GTA. Números claros, decisiones con calma.",
+  en: "Mortgage Agent (Level 2), former CRA Income Tax Auditor, and holistic financial consultant in the GTA. Clear guidance for taxes, mortgages, and money strategy.",
+  es: "Agente hipotecaria (Nivel 2), ex-auditora de impuestos para la CRA y consultora financiera holística en el GTA. Guía clara para impuestos, hipotecas y estrategia financiera.",
 };
 
 /* ============================================================================

@@ -57,8 +57,11 @@ export default function Home() {
     founder: {
       "@type": "Person",
       name: "Fanny Samaniego",
-      jobTitle: "Financial Advisor & Mortgage Agent",
+      jobTitle: "Mortgage Agent (Level 2) & Holistic Financial Consultant",
+      description:
+        "Former CRA Income Tax Auditor helping clients with mortgage strategy, tax rhythm, and practical money planning in Toronto.",
       worksFor: { "@type": "Organization", name: "Fanny Samaniego" },
+      knowsAbout: ["Mortgages", "Tax planning", "Cash flow planning", "Financial coaching"],
     },
   } as const;
 
@@ -236,35 +239,36 @@ export default function Home() {
 
           <Reveal variants={fadeUp} className="md:w-1/2">
             <h2 className="font-brand text-3xl md:text-4xl text-brand-green/90 mb-4 font-semibold">
-              Invited Wisdom, Shared with Heart
+              Professional guidance with a human heart
             </h2>
-            <p className="font-sans text-lg text-brand-body/90 mb-6 leading-relaxed max-w-2xl">
+            <p className="font-sans text-lg text-brand-body/90 mb-4 leading-relaxed max-w-2xl">
               I&apos;m Fanny Samaniego—a bilingual{" "}
               <b>
-                Financial Advisor, holistic coach, and licensed Mortgage Agent
+                Mortgage Agent (Level 2), former CRA Income Tax Auditor, and
+                holistic financial consultant
               </b>{" "}
-              in Toronto. With a coordinated team, we guide professional
-              families, executives, and business owners who want practical
-              results without losing sight of values and peace of mind.
+              based in Toronto. I help professional families, executives, and
+              business owners make clear, values-aligned decisions across
+              mortgages, tax rhythm, and everyday money strategy.
             </p>
             <ul className="list-disc pl-6 text-brand-body/90 text-base space-y-2 mb-8">
               <li>
-                Plans that fit your life—rooted in how you naturally decide and
-                follow through.
+                Mortgage strategy, cash-flow systems, and tax-season readiness
+                aligned in one practical plan.
               </li>
               <li>
-                Optional Human Design lens to personalize communication and
-                cadence—never replacing financial or legal fundamentals.
+                Coordinated support with lenders and qualified specialists when
+                your plan needs it.
               </li>
-              <li>Clear next steps after every call—no overwhelm.</li>
+              <li>Clear next steps after every call—without overwhelm.</li>
             </ul>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/en/about"
-                aria-label="Discover Fanny Samaniego's Journey"
+                aria-label="Read the full About page"
                 className={ghostCtaClass}
               >
-                Discover My Journey
+                Read the full About page
               </Link>
               <Link
                 href="/en/contact?intent=question"
