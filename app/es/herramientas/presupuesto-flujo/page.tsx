@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
 import { Trash2, PlusCircle, CheckCircle2 } from "lucide-react";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 
 type Tipo = "Ingreso" | "Gasto";
 
@@ -45,28 +46,6 @@ const uid = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()
     : `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needsQuotes = /[",\n]/.test(s);
-    const escaped = s.replace(/"/g, '""');
-    return needsQuotes ? `"${escaped}"` : escaped;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const date = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${date}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 function SummaryCard({
   label,
@@ -181,8 +160,23 @@ export default function PresupuestoFlujoPage() {
       ["Neto Mensual", "", totals.net, ""],
       ["Tasa de Ahorro", "", `${(totals.rate * 100).toFixed(1)}%`, ""],
     ];
+    downloadCsv("presupuesto_flujo", data);
+  }
 
-    downloadCSV("presupuesto_flujo", data);
+  function exportXLSX() {
+    const data: Array<Array<string | number>> = [
+      ["Tipo", "Categoría", "Monto (Mensual)", "Notas"],
+      ...rows.map((r) => [r.type, r.category, r.amount || "", r.notes || ""]),
+      [],
+      ["Total Ingresos", "", totals.income, ""],
+      ["Total Gastos", "", totals.expense, ""],
+      ["Neto Mensual", "", totals.net, ""],
+      ["Tasa de Ahorro", "", `${(totals.rate * 100).toFixed(1)}%`, ""],
+    ];
+    downloadXlsx("presupuesto_flujo", data, {
+      sheetName: "Presupuesto",
+      columnWidths: [14, 30, 18, 36],
+    });
   }
 
   function onResetConfirm() {
@@ -201,6 +195,9 @@ export default function PresupuestoFlujoPage() {
       <div className="tool-actions">
         <button type="button" onClick={exportCSV} className="tool-btn-green">
           Exportar (CSV)
+        </button>
+        <button type="button" onClick={exportXLSX} className="tool-btn-primary">
+          Exportar (XLSX)
         </button>
         <button type="button" onClick={() => window.print()} className="tool-btn-blue">
           Imprimir o guardar PDF

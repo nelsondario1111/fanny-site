@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv } from "react-icons/fa";
 
 /* =========================================================
@@ -23,26 +24,6 @@ function money(n: number, digits = 0) {
   });
 }
 /** Robust CSV (quotes + CRLF + BOM for Excel) */
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /** Month helper (whole months, floor; clamp ≥ 0) */
 function monthsBetween(fromISO: string, toISO: string) {
@@ -224,7 +205,7 @@ export default function Page() {
       ["—", "—"],
       ["Notes", "Results are estimates; lender methods vary (posted vs discounted, day-count, privileges)."],
     ];
-    downloadCSV("mortgage_penalty_estimate", rows);
+    downloadCsv("mortgage_penalty_estimate", rows);
   }
 
   function resetExample() {

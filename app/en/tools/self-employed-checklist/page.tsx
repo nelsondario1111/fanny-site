@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 import {
   Trash2,
   PlusCircle,
@@ -23,7 +24,7 @@ import {
  * Self-Employed Mortgage Toolkit
  * - Sections with tasks, due dates, notes, custom items
  * - Autosave (localStorage) + "Saved" indicator
- * - CSV export, Print, Reset
+ * - CSV/XLSX export, Print, Reset
  * - Built-in Adjusted Income Estimator (2-year avg vs. last-year; rough GDS/TDS)
  *
  * Educational only. Lender rules vary; confirm with your broker/lender.
@@ -536,27 +537,28 @@ export default function Page() {
     }
   };
 
+  const exportRows: Array<Array<string | number>> = [
+    ["Section", "Task", "Done", "Due", "Note", "Link"],
+    ...tasks.map((t) => [
+      SECTION_META[t.section].title,
+      t.title,
+      t.done ? "Yes" : "No",
+      t.due || "",
+      t.note || "",
+      t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
+    ]),
+  ];
+
   const exportCSV = () => {
-    const headers = ["Section", "Task", "Done", "Due", "Note", "Link"];
-    const lines = [headers.join(",")];
-    tasks.forEach((t) => {
-      const cells = [
-        SECTION_META[t.section].title,
-        t.title.replace(/"/g, '""'),
-        t.done ? "Yes" : "No",
-        t.due || "",
-        (t.note || "").replace(/"/g, '""'),
-        t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ];
-      lines.push(
-        cells.map((c) => (c.includes(",") || c.includes('"') ? `"${c}"` : c)).join(",")
-      );
+    downloadCsv("Self_Employed_Mortgage_Toolkit", exportRows, { includeDateSuffix: false });
+  };
+
+  const exportXLSX = () => {
+    downloadXlsx("Self_Employed_Mortgage_Toolkit", exportRows, {
+      includeDateSuffix: false,
+      sheetName: "Checklist",
+      columnWidths: [30, 74, 10, 14, 48, 46],
     });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "Self_Employed_Mortgage_Toolkit.csv"; a.click();
-    URL.revokeObjectURL(url);
   };
 
   const toggleAll = (val: boolean) =>
@@ -612,6 +614,15 @@ export default function Page() {
           >
             <Download className="h-4 w-4" />
             Export (CSV)
+          </button>
+          <button
+            type="button"
+            onClick={exportXLSX}
+            className="tool-btn-primary"
+            title="Export as Excel"
+          >
+            <Download className="h-4 w-4" />
+            Export (XLSX)
           </button>
           <button
             type="button"

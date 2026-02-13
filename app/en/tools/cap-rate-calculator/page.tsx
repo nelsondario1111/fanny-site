@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv } from "react-icons/fa";
 
 /* =========================================================
@@ -25,26 +26,6 @@ function monthlyPayment(P: number, annualRatePct: number, years: number) {
   return P * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
 // Robust CSV (quotes + CRLF + BOM)
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map(r => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /* =========================================================
    Page
@@ -170,7 +151,7 @@ export default function Page() {
       ["Fixed Expenses (monthly)", fixedExpensesMonthly.toFixed(2)],
       ["Variable (% of GPR)", variableExpensePctGPR.toFixed(2)],
     ];
-    downloadCSV("cap_rate_cash_on_cash_summary", rows);
+    downloadCsv("cap_rate_cash_on_cash_summary", rows);
   }
   function useHelperNOI() {
     setNoiAnnual(Math.round(helperNOI));

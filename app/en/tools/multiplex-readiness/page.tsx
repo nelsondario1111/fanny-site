@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 import {
   Trash2,
   PlusCircle,
@@ -25,7 +26,7 @@ import {
  * Multiplex Readiness Checklist
  * - Sections with tasks, due dates, notes, custom items
  * - Autosave (localStorage) + "Saved" indicator
- * - CSV export, Print, Reset
+ * - CSV/XLSX export, Print, Reset
  * - Mobile: stacked cards; Desktop: clean tables
  * - Built-in Deal Analyzer (NOI, Cap Rate, DSCR, Cash-on-Cash) with autosave
  *
@@ -723,29 +724,28 @@ export default function Page() {
     }
   };
 
+  const exportRows: Array<Array<string | number>> = [
+    ["Section", "Task", "Done", "Due", "Note", "Link"],
+    ...tasks.map((t) => [
+      SECTION_META[t.section].title,
+      t.title,
+      t.done ? "Yes" : "No",
+      t.due || "",
+      t.note || "",
+      t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
+    ]),
+  ];
+
   const exportCSV = () => {
-    const headers = ["Section", "Task", "Done", "Due", "Note", "Link"];
-    const lines = [headers.join(",")];
-    tasks.forEach((t) => {
-      const cells = [
-        SECTION_META[t.section].title,
-        t.title.replace(/"/g, '""'),
-        t.done ? "Yes" : "No",
-        t.due || "",
-        (t.note || "").replace(/"/g, '""'),
-        t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ];
-      lines.push(
-        cells.map((c) => (c.includes(",") || c.includes('"') ? `"${c}"` : c)).join(",")
-      );
+    downloadCsv("Multiplex_Readiness_Checklist", exportRows, { includeDateSuffix: false });
+  };
+
+  const exportXLSX = () => {
+    downloadXlsx("Multiplex_Readiness_Checklist", exportRows, {
+      includeDateSuffix: false,
+      sheetName: "Checklist",
+      columnWidths: [28, 72, 10, 14, 48, 46],
     });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Multiplex_Readiness_Checklist.csv";
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   const toggleAll = (val: boolean) =>
@@ -800,6 +800,15 @@ export default function Page() {
           >
             <Download className="h-4 w-4" />
             Export (CSV)
+          </button>
+          <button
+            type="button"
+            onClick={exportXLSX}
+            className="tool-btn-primary"
+            title="Export as Excel"
+          >
+            <Download className="h-4 w-4" />
+            Export (XLSX)
           </button>
           <button
             type="button"

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv } from "react-icons/fa";
 
 /* =========================================================
@@ -27,26 +28,6 @@ function monthlyPaymentFactor(annualRatePct: number, years: number) {
   return (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
 /** CSV robusto (comillas + CRLF + BOM) */
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map(r => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /* ---------- Tabla por defecto de prima de seguro hipotecario ----------
    Típica para “high-ratio” (pago inicial < 20%) — puede variar por programa:
@@ -322,7 +303,7 @@ export default function Page() {
       ["Prima del seguro", maxPriceResult.premiumAmt.toFixed(2)],
       ["Hipoteca asegurada (con prima)", maxPriceResult.insuredLoan.toFixed(2)],
     ];
-    downloadCSV("asequibilidad_hipotecaria_resumen", rows);
+    downloadCsv("asequibilidad_hipotecaria_resumen", rows);
   }
   function resetExample() {
     setIncome1(95_000); setIncome2(55_000); setOtherMonthlyIncome(0);

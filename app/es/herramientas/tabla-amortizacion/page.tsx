@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 
 /**
  * Tabla de Amortización y Prepagos (ES-CA)
@@ -25,28 +26,6 @@ const num = (s: string) => {
   return Number.isFinite(x) ? x : 0;
 };
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needsQuotes = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needsQuotes ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 type FreqKey = "monthly" | "biweekly" | "accelerated_biweekly";
 const FREQ_META: Record<FreqKey, { labelPlural: string; periodsPerYear: number }> = {
@@ -322,7 +301,7 @@ export default function Page() {
         r.balance.toFixed(2),
       ]),
     ];
-    downloadCSV(`amortizacion_${m.freq}_${m.pr}_${m.rate}_${m.amortYears}`.replace(/\s+/g, ""), rows);
+    downloadCsv(`amortizacion_${m.freq}_${m.pr}_${m.rate}_${m.amortYears}`.replace(/\s+/g, ""), rows);
   };
 
   // ---------- UI ----------

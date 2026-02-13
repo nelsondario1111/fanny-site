@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 
 /**
  * Net Worth Tracker
@@ -149,35 +150,50 @@ export default function Page() {
   };
 
   const onExportCSV = () => {
-    const esc = (s: string) => `"${String(s).replace(/"/g, '""')}"`;
-    const lines: string[] = [];
-    lines.push("Type,Section,Label,Amount");
+    const rows: Array<Array<string | number>> = [];
+    rows.push(["Type", "Section", "Label", "Amount"]);
 
-    for (const [section, rows] of Object.entries(assets)) {
-      for (const r of rows) {
-        lines.push(["Asset", esc(section), esc(r.label), num(r.amount).toFixed(2)].join(","));
+    for (const [section, assetRows] of Object.entries(assets)) {
+      for (const r of assetRows) {
+        rows.push(["Asset", section, r.label, num(r.amount).toFixed(2)]);
       }
     }
-    for (const [section, rows] of Object.entries(liabs)) {
-      for (const r of rows) {
-        lines.push(["Liability", esc(section), esc(r.label), num(r.amount).toFixed(2)].join(","));
+    for (const [section, liabilityRows] of Object.entries(liabs)) {
+      for (const r of liabilityRows) {
+        rows.push(["Liability", section, r.label, num(r.amount).toFixed(2)]);
       }
     }
 
-    lines.push("");
-    lines.push(`Totals,Assets,,${num(m.totalAssets.toString()).toFixed(2)}`);
-    lines.push(`Totals,Liabilities,,${num(m.totalLiabs.toString()).toFixed(2)}`);
-    lines.push(`Totals,Net Worth,,${num(m.netWorth.toString()).toFixed(2)}`);
+    rows.push([]);
+    rows.push(["Totals", "Assets", "", num(m.totalAssets.toString()).toFixed(2)]);
+    rows.push(["Totals", "Liabilities", "", num(m.totalLiabs.toString()).toFixed(2)]);
+    rows.push(["Totals", "Net Worth", "", num(m.netWorth.toString()).toFixed(2)]);
+    downloadCsv("net_worth", rows);
+  };
 
-    const csv = lines.join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const fname = `net_worth_${new Date().toISOString().slice(0,10)}.csv`;
-    a.href = url;
-    a.download = fname;
-    a.click();
-    URL.revokeObjectURL(url);
+  const onExportXLSX = () => {
+    const rows: Array<Array<string | number>> = [];
+    rows.push(["Type", "Section", "Label", "Amount"]);
+
+    for (const [section, assetRows] of Object.entries(assets)) {
+      for (const r of assetRows) {
+        rows.push(["Asset", section, r.label, num(r.amount).toFixed(2)]);
+      }
+    }
+    for (const [section, liabilityRows] of Object.entries(liabs)) {
+      for (const r of liabilityRows) {
+        rows.push(["Liability", section, r.label, num(r.amount).toFixed(2)]);
+      }
+    }
+
+    rows.push([]);
+    rows.push(["Totals", "Assets", "", num(m.totalAssets.toString()).toFixed(2)]);
+    rows.push(["Totals", "Liabilities", "", num(m.totalLiabs.toString()).toFixed(2)]);
+    rows.push(["Totals", "Net Worth", "", num(m.netWorth.toString()).toFixed(2)]);
+    downloadXlsx("net_worth", rows, {
+      sheetName: "Net Worth",
+      columnWidths: [12, 26, 38, 14],
+    });
   };
 
   // UI Blocks
@@ -266,6 +282,13 @@ export default function Page() {
           className="tool-btn-green"
         >
           Export (CSV)
+        </button>
+        <button
+          type="button"
+          onClick={onExportXLSX}
+          className="tool-btn-primary"
+        >
+          Export (XLSX)
         </button>
         <button
           type="button"

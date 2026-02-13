@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 import {
   Trash2,
   PlusCircle,
@@ -94,28 +95,6 @@ const EN_CA_DATE_FORMAT = new Intl.DateTimeFormat("en-CA", {
   day: "numeric",
   timeZone: "America/Toronto",
 });
-
-// Robust CSV (quotes + CRLF + BOM for Excel)
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 // Key date helpers
 function rrspDeadlineForTaxYear(taxYear: number) {
@@ -479,24 +458,32 @@ export default function Page() {
     }
   };
 
+  const spreadsheetRows: Array<Array<string | number>> = [
+    ["Tax Year", taxYear],
+    ["RRSP Deadline", ymd(keyDates.rrsp)],
+    ["Filing Deadline (most)", ymd(keyDates.apr30)],
+    ["Self-employed Filing", ymd(keyDates.jun15)],
+    ["", ""],
+    ["Section", "Task", "Done", "Due", "Note", "Link"],
+    ...tasks.map((t) => [
+      SECTION_META[t.section].title,
+      t.title,
+      t.done ? "Yes" : "No",
+      t.due || "",
+      t.note || "",
+      t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
+    ]),
+  ];
+
   const exportCSV = () => {
-    const rows: Array<Array<string | number>> = [
-      ["Tax Year", taxYear],
-      ["RRSP Deadline", ymd(keyDates.rrsp)],
-      ["Filing Deadline (most)", ymd(keyDates.apr30)],
-      ["Self-employed Filing", ymd(keyDates.jun15)],
-      ["—", "—"],
-      ["Section", "Task", "Done", "Due", "Note", "Link"],
-      ...tasks.map((t) => [
-        SECTION_META[t.section].title,
-        t.title,
-        t.done ? "Yes" : "No",
-        t.due || "",
-        t.note || "",
-        t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ]),
-    ];
-    downloadCSV(`Tax_Prep_${taxYear}`, rows);
+    downloadCsv(`Tax_Prep_${taxYear}`, spreadsheetRows);
+  };
+
+  const exportXLSX = () => {
+    downloadXlsx(`Tax_Prep_${taxYear}`, spreadsheetRows, {
+      sheetName: `${taxYear} Prep`,
+      columnWidths: [28, 74, 10, 14, 48, 46],
+    });
   };
 
   const toggleAll = (val: boolean) =>
@@ -551,6 +538,15 @@ export default function Page() {
           >
             <Download className="h-4 w-4" />
             Export (CSV)
+          </button>
+          <button
+            type="button"
+            onClick={exportXLSX}
+            className="tool-btn-primary"
+            title="Export as Excel"
+          >
+            <Download className="h-4 w-4" />
+            Export (XLSX)
           </button>
           <button
             type="button"

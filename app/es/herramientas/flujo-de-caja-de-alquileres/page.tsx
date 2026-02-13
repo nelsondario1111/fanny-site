@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv, FaPlus, FaTrash } from "react-icons/fa";
 
 /* =========================================================
@@ -30,26 +31,6 @@ function monthlyPayment(P: number, annualRatePct: number, years: number) {
   return (P * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
 }
 /** CSV robusto (comillas + CRLF + BOM para Excel) */
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /* =========================================================
    Página
@@ -271,7 +252,7 @@ export default function Page() {
     rows.push(["Efectivo invertido", cashInvested.toFixed(2)]);
     rows.push(["Cash-on-Cash", (cashOnCash * 100).toFixed(2) + "%"]);
 
-    downloadCSV("flujo_caja_alquileres_resumen", rows);
+    downloadCsv("flujo_caja_alquileres_resumen", rows);
   }
 
   function resetExample() {

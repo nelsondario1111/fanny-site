@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv, FaInfoCircle } from "react-icons/fa";
 
 /* =========================================================
@@ -45,26 +46,6 @@ function interestOverMonths(principal: number, annualRatePct: number, years: num
   return { interest, endBalance: bal, payment: M };
 }
 /** CSV robusto (comillas + CRLF + BOM para Excel) */
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /* Estimadores rápidos de penalidad (educativos) */
 function est3MonthInterest(balance: number, contractRatePct: number) {
@@ -368,7 +349,7 @@ export default function Page() {
         : []),
     ];
 
-    downloadCSV("refinanciacion_blend_estimador", rows);
+    downloadCsv("refinanciacion_blend_estimador", rows);
   }
   function resetExample() {
     setMortType("fixed");

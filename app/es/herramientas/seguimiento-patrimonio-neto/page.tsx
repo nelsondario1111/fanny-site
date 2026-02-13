@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv, FaPlus, FaTrash, FaCalendarPlus } from "react-icons/fa";
 
 /* =========================================================
@@ -22,25 +23,6 @@ function money(n: number, digits = 0) {
 }
 
 // CSV robusto (comillas + CRLF + BOM para Excel)
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const blob = new Blob(["\uFEFF" + toCSV(rows)], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 /* =========================================================
    Página
@@ -157,13 +139,13 @@ export default function Page() {
       ["Deuda/Activos (ratio)", totals.dta.toFixed(4)],
       ["Liquidez/Deuda (ratio)", Number.isFinite(totals.ltr) ? totals.ltr.toFixed(4) : "∞"],
     ];
-    downloadCSV("patrimonio_resumen", rows);
+    downloadCsv("patrimonio_resumen", rows);
   }
 
   function exportTimelineCSV() {
     const rows: Array<Array<string | number>> = [["Fecha", "Activos", "Pasivos", "Patrimonio neto"]];
     snapshots.forEach((s) => rows.push([s.date, s.assets.toFixed(2), s.liabilities.toFixed(2), s.netWorth.toFixed(2)]));
-    downloadCSV("patrimonio_timeline", rows);
+    downloadCsv("patrimonio_timeline", rows);
   }
 
   function resetExample() {

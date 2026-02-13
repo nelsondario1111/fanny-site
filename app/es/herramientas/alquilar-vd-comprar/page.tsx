@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv } from "@/lib/spreadsheet";
 import { FaPrint, FaFileCsv } from "react-icons/fa";
 
 /* =========================================================
@@ -13,26 +14,6 @@ function money(n: number, digits = 0) {
     currency: "CAD",
     maximumFractionDigits: digits,
   });
-}
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const iso = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${iso}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 /** Pago mensual totalmente amortizado */
 function monthlyPayment(P: number, annualRatePct: number, years: number) {
@@ -277,7 +258,7 @@ export default function Page() {
       ["Capital pagado (horizonte)", r.principalPaid.toFixed(2)],
       ["Interés pagado (horizonte)", r.interestPaid.toFixed(2)],
     ];
-    downloadCSV("alquilar_vs_comprar_resumen", rows);
+    downloadCsv("alquilar_vs_comprar_resumen", rows);
   }
   function resetExample() {
     setPurchasePrice(850_000);

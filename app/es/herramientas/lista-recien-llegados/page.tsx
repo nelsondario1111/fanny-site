@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 import {
   CheckCircle2,
   PlusCircle,
@@ -21,7 +22,7 @@ import {
  * - Secciones, progreso, fechas límite, notas y tareas personalizadas
  * - Móvil: tarjetas apiladas; Escritorio: tablas limpias
  * - Auto-guardado (localStorage) + indicador “Guardado”
- * - Exportar CSV, Imprimir, Restablecer
+ * - Exportar CSV/XLSX, Imprimir, Restablecer
  */
 
 // ---------- Tipos ----------
@@ -383,29 +384,28 @@ export default function Page() {
     }
   };
 
+  const exportRows: Array<Array<string | number>> = [
+    ["Sección", "Tarea", "Hecho", "Vence", "Notas", "Enlace"],
+    ...tasks.map((t) => [
+      SECTION_META[t.section].title,
+      t.title,
+      t.done ? "Sí" : "No",
+      t.due || "",
+      t.note || "",
+      t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
+    ]),
+  ];
+
   const exportCSV = () => {
-    const headers = ["Sección", "Tarea", "Hecho", "Vence", "Notas", "Enlace"];
-    const lines = [headers.join(",")];
-    tasks.forEach((t) => {
-      const cells = [
-        SECTION_META[t.section].title,
-        t.title.replace(/"/g, '""'),
-        t.done ? "Sí" : "No",
-        t.due || "",
-        (t.note || "").replace(/"/g, '""'),
-        t.linkLabel ? `${t.linkLabel} (${t.linkHref || ""})` : "",
-      ];
-      lines.push(
-        cells.map((c) => (c.includes(",") || c.includes('"') ? `"${c}"` : c)).join(",")
-      );
+    downloadCsv("Checklist_Recien_Llegados", exportRows, { includeDateSuffix: false });
+  };
+
+  const exportXLSX = () => {
+    downloadXlsx("Checklist_Recien_Llegados", exportRows, {
+      includeDateSuffix: false,
+      sheetName: "Lista",
+      columnWidths: [28, 72, 10, 14, 48, 46],
     });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Checklist_Recien_Llegados.csv";
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
   const toggleAll = (val: boolean) =>
@@ -472,6 +472,15 @@ export default function Page() {
           >
             <Download className="h-4 w-4" />
             Exportar (CSV)
+          </button>
+          <button
+            type="button"
+            onClick={exportXLSX}
+            className="tool-btn-primary"
+            title="Exportar como Excel"
+          >
+            <Download className="h-4 w-4" />
+            Exportar (XLSX)
           </button>
           <button
             type="button"

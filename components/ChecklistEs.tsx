@@ -2,30 +2,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 
 export type ChecklistSection = { title: string; items: string[] };
-
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needsQuotes = /[",\n]/.test(s);
-    const escaped = s.replace(/"/g, '""');
-    return needsQuotes ? `"${escaped}"` : escaped;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
-}
-
-function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
-  const date = new Date().toISOString().slice(0, 10);
-  const csv = toCSV(rows);
-  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${baseName}_${date}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 export default function ChecklistEs({
   title,
@@ -82,7 +61,21 @@ export default function ChecklistEs({
         filas.push([sec.title, it, state[k] ? "Hecho" : "Pendiente"]);
       });
     });
-    downloadCSV(title.replace(/\s+/g, "_"), filas);
+    downloadCsv(title.replace(/\s+/g, "_"), filas);
+  }
+
+  function exportXLSX() {
+    const filas: Array<Array<string | number>> = [["Sección", "Elemento", "Estado"]];
+    sections.forEach((sec, si) => {
+      sec.items.forEach((it, ii) => {
+        const k = `${si}:${ii}`;
+        filas.push([sec.title, it, state[k] ? "Hecho" : "Pendiente"]);
+      });
+    });
+    downloadXlsx(title.replace(/\s+/g, "_"), filas, {
+      sheetName: "Checklist",
+      columnWidths: [28, 56, 16],
+    });
   }
 
   return (
@@ -114,6 +107,13 @@ export default function ChecklistEs({
               className="tool-btn-green"
             >
               Exportar (CSV)
+            </button>
+            <button
+              type="button"
+              onClick={exportXLSX}
+              className="tool-btn-primary"
+            >
+              Exportar (XLSX)
             </button>
             <button
               type="button"

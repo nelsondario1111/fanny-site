@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
 import { Trash2 } from "lucide-react";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 
 /**
  * Holistic Budget Calculator
@@ -78,7 +79,7 @@ const Tag = ({ children, tone = "emerald" }: { children: React.ReactNode; tone?:
 
 // Desktop table shell (md+)
 const Table = ({ children }: { children: React.ReactNode }) => (
-  <div className="hidden md:block rounded-xl border border-brand-gold/40 overflow-x-auto">
+  <div className="budget-print-table hidden md:block rounded-xl border border-brand-gold/40 overflow-x-auto">
     <table className="w-full text-sm">{children}</table>
   </div>
 );
@@ -166,21 +167,76 @@ export default function Page() {
   const printPage = () => window.print();
   const resetAll = () => { setIncome(DEFAULT_INCOME); setExpenses(DEFAULT_EXPENSES); };
   const exportCSV = () => {
-    const esc = (s: string) => `"${String(s).replace(/"/g, '""')}"`;
-    const L: string[] = [];
-    L.push("Section,Label,Amount,Frequency,MonthlyEquivalent");
-    income.forEach(r => L.push(["Income", esc(r.label), toNum(r.amount).toFixed(2), r.freq, toMonthly(toNum(r.amount), r.freq).toFixed(2)].join(",")));
-    expenses.forEach(r => L.push([r.kind === "need" ? "Need" : r.kind === "want" ? "Want" : "Savings/Debt", esc(r.label), toNum(r.amount).toFixed(2), r.freq, toMonthly(toNum(r.amount), r.freq).toFixed(2)].join(",")));
-    L.push(""); L.push(`Totals,Income,${metrics.incomeMonthly.toFixed(2)}`);
-    L.push(`Totals,Needs,${metrics.needs.toFixed(2)}`); L.push(`Totals,Wants,${metrics.wants.toFixed(2)}`);
-    L.push(`Totals,Savings&D,${metrics.savings.toFixed(2)}`); L.push(`Totals,Expenses,${metrics.totalExp.toFixed(2)}`);
-    L.push(`Totals,Leftover,${metrics.leftover.toFixed(2)}`); L.push("");
-    L.push(`Targets,Needs(50%),${metrics.targetNeeds.toFixed(2)}`);
-    L.push(`Targets,Wants(30%),${metrics.targetWants.toFixed(2)}`);
-    L.push(`Targets,Savings(20%),${metrics.targetSavings.toFixed(2)}`);
-    const blob = new Blob([L.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = `budget_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+    const rows: Array<Array<string | number>> = [];
+    rows.push(["Section", "Label", "Amount", "Frequency", "MonthlyEquivalent"]);
+    income.forEach((r) =>
+      rows.push([
+        "Income",
+        r.label,
+        toNum(r.amount).toFixed(2),
+        r.freq,
+        toMonthly(toNum(r.amount), r.freq).toFixed(2),
+      ])
+    );
+    expenses.forEach((r) =>
+      rows.push([
+        r.kind === "need" ? "Need" : r.kind === "want" ? "Want" : "Savings/Debt",
+        r.label,
+        toNum(r.amount).toFixed(2),
+        r.freq,
+        toMonthly(toNum(r.amount), r.freq).toFixed(2),
+      ])
+    );
+    rows.push([]);
+    rows.push(["Totals", "Income", metrics.incomeMonthly.toFixed(2)]);
+    rows.push(["Totals", "Needs", metrics.needs.toFixed(2)]);
+    rows.push(["Totals", "Wants", metrics.wants.toFixed(2)]);
+    rows.push(["Totals", "Savings&D", metrics.savings.toFixed(2)]);
+    rows.push(["Totals", "Expenses", metrics.totalExp.toFixed(2)]);
+    rows.push(["Totals", "Leftover", metrics.leftover.toFixed(2)]);
+    rows.push([]);
+    rows.push(["Targets", "Needs(50%)", metrics.targetNeeds.toFixed(2)]);
+    rows.push(["Targets", "Wants(30%)", metrics.targetWants.toFixed(2)]);
+    rows.push(["Targets", "Savings(20%)", metrics.targetSavings.toFixed(2)]);
+    downloadCsv("budget", rows);
+  };
+
+  const exportXLSX = () => {
+    const rows: Array<Array<string | number>> = [];
+    rows.push(["Section", "Label", "Amount", "Frequency", "MonthlyEquivalent"]);
+    income.forEach((r) =>
+      rows.push([
+        "Income",
+        r.label,
+        toNum(r.amount).toFixed(2),
+        r.freq,
+        toMonthly(toNum(r.amount), r.freq).toFixed(2),
+      ])
+    );
+    expenses.forEach((r) =>
+      rows.push([
+        r.kind === "need" ? "Need" : r.kind === "want" ? "Want" : "Savings/Debt",
+        r.label,
+        toNum(r.amount).toFixed(2),
+        r.freq,
+        toMonthly(toNum(r.amount), r.freq).toFixed(2),
+      ])
+    );
+    rows.push([]);
+    rows.push(["Totals", "Income", metrics.incomeMonthly.toFixed(2)]);
+    rows.push(["Totals", "Needs", metrics.needs.toFixed(2)]);
+    rows.push(["Totals", "Wants", metrics.wants.toFixed(2)]);
+    rows.push(["Totals", "Savings&D", metrics.savings.toFixed(2)]);
+    rows.push(["Totals", "Expenses", metrics.totalExp.toFixed(2)]);
+    rows.push(["Totals", "Leftover", metrics.leftover.toFixed(2)]);
+    rows.push([]);
+    rows.push(["Targets", "Needs(50%)", metrics.targetNeeds.toFixed(2)]);
+    rows.push(["Targets", "Wants(30%)", metrics.targetWants.toFixed(2)]);
+    rows.push(["Targets", "Savings(20%)", metrics.targetSavings.toFixed(2)]);
+    downloadXlsx("budget", rows, {
+      sheetName: "Budget",
+      columnWidths: [20, 36, 14, 16, 20],
+    });
   };
 
   // Row helpers
@@ -216,6 +272,7 @@ export default function Page() {
       <div className="tool-actions">
         <button type="button" onClick={printPage} className="tool-btn-blue">Print or Save PDF</button>
         <button type="button" onClick={exportCSV} className="tool-btn-green">Export (CSV)</button>
+        <button type="button" onClick={exportXLSX} className="tool-btn-primary">Export (XLSX)</button>
         <button type="button" onClick={resetAll} className="tool-btn-gold">Reset values</button>
       </div>
 
@@ -281,16 +338,14 @@ export default function Page() {
                   </tr>
                 );
               })}
-            </tbody>
-            <tfoot>
-              <tr className="bg-brand-beige/20">
+              <tr className="border-t bg-brand-beige/20">
                 <td className="px-3 py-2" colSpan={3}>
                   <button type="button" onClick={addIncome} className="underline">+ Add income</button>
                 </td>
                 <td className="px-3 py-2 text-right font-semibold">{CAD2.format(metrics.incomeMonthly)}</td>
                 <td className="px-3 py-2"></td>
               </tr>
-            </tfoot>
+            </tbody>
           </Table>
 
           {/* Summary */}
@@ -392,14 +447,12 @@ export default function Page() {
                     </tr>
                   );
                 })}
-              </tbody>
-              <tfoot>
-                <tr className="bg-brand-beige/20">
+                <tr className="border-t bg-brand-beige/20">
                   <td className="px-3 py-2" colSpan={3}>Total Needs</td>
                   <td className="px-3 py-2 text-right font-semibold">{CAD2.format(metrics.needs)}</td>
                   <td className="px-3 py-2"></td>
                 </tr>
-              </tfoot>
+              </tbody>
             </Table>
           </div>
 
@@ -459,14 +512,12 @@ export default function Page() {
                     </tr>
                   );
                 })}
-              </tbody>
-              <tfoot>
-                <tr className="bg-brand-beige/20">
+                <tr className="border-t bg-brand-beige/20">
                   <td className="px-3 py-2" colSpan={3}>Total Wants</td>
                   <td className="px-3 py-2 text-right font-semibold">{CAD2.format(metrics.wants)}</td>
                   <td className="px-3 py-2"></td>
                 </tr>
-              </tfoot>
+              </tbody>
             </Table>
           </div>
 
@@ -526,14 +577,12 @@ export default function Page() {
                     </tr>
                   );
                 })}
-              </tbody>
-              <tfoot>
-                <tr className="bg-brand-beige/20">
+                <tr className="border-t bg-brand-beige/20">
                   <td className="px-3 py-2" colSpan={3}>Total Savings & Debt</td>
                   <td className="px-3 py-2 text-right font-semibold">{CAD2.format(metrics.savings)}</td>
                   <td className="px-3 py-2"></td>
                 </tr>
-              </tfoot>
+              </tbody>
             </Table>
           </div>
 
@@ -573,9 +622,76 @@ export default function Page() {
       {/* Print helpers */}
       <style jsx global>{`
         @media print {
-          .print\\:hidden { display: none !important; }
-          main { background: white !important; }
-          header, section { break-inside: avoid; page-break-inside: avoid; }
+          /* Print only the tool content on this route (hide global nav/footer chrome). */
+          body > :not(main#main) { display: none !important; }
+          main#main > :not([data-tool-shell]) { display: none !important; }
+
+          main#main,
+          [data-tool-shell] {
+            background: white !important;
+          }
+
+          [data-tool-shell] {
+            min-height: auto !important;
+          }
+
+          [data-tool-shell] > header {
+            padding-top: 0 !important;
+          }
+
+          [data-tool-shell] > header .max-w-6xl {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            box-shadow: none !important;
+          }
+
+          [data-tool-shell] > header a,
+          [data-tool-shell] > header .mt-4 {
+            display: none !important;
+          }
+
+          [data-tool-shell] > section {
+            margin-top: 8px !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+          }
+
+          [data-tool-shell] > section > .max-w-6xl {
+            box-shadow: none !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+          }
+
+          [data-tool-shell] .print\\:hidden,
+          [data-tool-shell] .tool-actions {
+            display: none !important;
+          }
+
+          [data-tool-shell] table {
+            page-break-inside: auto;
+          }
+
+          [data-tool-shell] .budget-print-table {
+            overflow: visible !important;
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+          }
+
+          [data-tool-shell] .budget-print-table table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+          }
+
+          [data-tool-shell] .budget-print-table thead {
+            display: table-header-group;
+          }
+
+          [data-tool-shell] tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
         }
       `}</style>
 

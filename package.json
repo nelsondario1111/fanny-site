@@ -9,6 +9,8 @@
     "build": "npm run check-env && next build",
     "start": "next start",
     "lint": "next lint",
+    "qa:tool-outputs": "node scripts/qa-tool-outputs.mjs",
+    "release:check": "npm run lint && npx tsc --noEmit && npm run qa:tool-outputs",
     "postbuild": "next-sitemap"
   },
   "dependencies": {

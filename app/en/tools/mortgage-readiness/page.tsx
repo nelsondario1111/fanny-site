@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ToolShell from "@/components/ToolShell";
+import { downloadCsv, downloadXlsx } from "@/lib/spreadsheet";
 import {
   Trash2,
   PlusCircle,
@@ -82,16 +83,6 @@ function daysUntil(dateISO?: string) {
     (d.getTime() - new Date(today.toDateString()).getTime()) / (1000 * 60 * 60 * 24)
   );
   return diff;
-}
-
-function toCSV(rows: Array<Array<string | number>>) {
-  const esc = (v: string | number) => {
-    const s = String(v ?? "");
-    const needs = /[",\n]/.test(s);
-    const q = s.replace(/"/g, '""');
-    return needs ? `"${q}"` : q;
-  };
-  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
 }
 
 function downloadFile(filename: string, mime: string, data: string | Blob) {
@@ -433,22 +424,30 @@ export default function Page() {
     }
   };
 
+  const spreadsheetRows: Array<Array<string | number>> = [
+    ["Section", "Task", "Done", "Due", "Priority", "Note", "LinkLabel", "LinkHref"],
+    ...tasks.map((t) => [
+      SECTION_META[t.section].title,
+      t.title,
+      t.done ? "Yes" : "No",
+      t.due || "",
+      t.priority || "normal",
+      t.note || "",
+      t.linkLabel || "",
+      t.linkHref || "",
+    ]),
+  ];
+
   const exportCSV = () => {
-    const rows: Array<Array<string | number>> = [
-      ["Section", "Task", "Done", "Due", "Priority", "Note", "LinkLabel", "LinkHref"],
-      ...tasks.map((t) => [
-        SECTION_META[t.section].title,
-        t.title,
-        t.done ? "Yes" : "No",
-        t.due || "",
-        t.priority || "normal",
-        t.note || "",
-        t.linkLabel || "",
-        t.linkHref || "",
-      ]),
-    ];
-    const csv = "\uFEFF" + toCSV(rows);
-    downloadFile("Mortgage_Readiness_Checklist.csv", "text/csv;charset=utf-8", csv);
+    downloadCsv("Mortgage_Readiness_Checklist", spreadsheetRows, { includeDateSuffix: false });
+  };
+
+  const exportXLSX = () => {
+    downloadXlsx("Mortgage_Readiness_Checklist", spreadsheetRows, {
+      includeDateSuffix: false,
+      sheetName: "Checklist",
+      columnWidths: [24, 58, 10, 14, 12, 46, 28, 40],
+    });
   };
 
   const exportJSON = () => {
@@ -633,6 +632,15 @@ export default function Page() {
           >
             <Download className="h-4 w-4" />
             Export (CSV)
+          </button>
+          <button
+            type="button"
+            onClick={exportXLSX}
+            className="tool-btn-primary"
+            title="Export as Excel"
+          >
+            <Download className="h-4 w-4" />
+            Export (XLSX)
           </button>
           <button
             type="button"

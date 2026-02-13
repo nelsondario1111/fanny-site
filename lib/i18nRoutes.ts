@@ -29,31 +29,15 @@ export const I18N_SECTIONS = {
 
 type SectionKey = keyof typeof I18N_SECTIONS["en"];
 
-/** ======================= Dynamic slug map loading ======================= */
+import slugMap from "@/content/i18n-slugs.json";
+
+/** ======================= Static slug map loading ======================= */
 type PairDict = Record<string, { en: string; es: string }>;
 type GenShape = { resources: PairDict; tools: PairDict };
-
-let gen: GenShape = { resources: {}, tools: {} };
-let genLoadStarted = false;
-
-function ensureGenLoaded(): void {
-  if (genLoadStarted) return;
-  genLoadStarted = true;
-  import("@/content/i18n-slugs.json")
-    .then((mod) => {
-      const data = (mod as { default?: GenShape }).default ?? (mod as unknown as GenShape);
-      if (data && typeof data === "object") {
-        gen = {
-          resources: data.resources ?? {},
-          tools: data.tools ?? {},
-        };
-      }
-    })
-    .catch(() => {
-      // Silent fallback if no file yet
-    });
-}
-ensureGenLoaded();
+const gen: GenShape = {
+  resources: slugMap.resources ?? {},
+  tools: slugMap.tools ?? {},
+};
 
 /** ======================= Static slug dictionary ======================= */
 export const I18N_SLUGS: {
@@ -61,12 +45,8 @@ export const I18N_SLUGS: {
   tools: PairDict;
   static: Record<SectionKey, { en: string; es: string }>;
 } = {
-  get resources() {
-    return gen.resources;
-  },
-  get tools() {
-    return gen.tools;
-  },
+  resources: gen.resources,
+  tools: gen.tools,
   static: {
     home: { en: "", es: "" },
     about: { en: "about", es: "sobre-mi" },
