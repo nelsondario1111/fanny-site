@@ -27,18 +27,20 @@ const clamp = (n: number, lo: number, hi: number) => Math.min(Math.max(n, lo), h
 
 // pago mensual de hipoteca (cuota fija)
 function pmt(principal: number, annualRatePct: number, years: number) {
-  if (principal <= 0 || annualRatePct <= 0 || years <= 0) return 0;
+  if (principal <= 0 || years <= 0) return 0;
   const r = (annualRatePct / 100) / 12;
   const n = years * 12;
+  if (r === 0) return principal / n;
   const pow = Math.pow(1 + r, n);
   return (principal * r * pow) / (pow - 1);
 }
 
 // principal a partir de un pago mensual permitido
 function principalFromPayment(paymentMonthly: number, annualRatePct: number, years: number) {
-  if (paymentMonthly <= 0 || annualRatePct <= 0 || years <= 0) return 0;
+  if (paymentMonthly <= 0 || years <= 0) return 0;
   const r = (annualRatePct / 100) / 12;
   const n = years * 12;
+  if (r === 0) return paymentMonthly * n;
   const pow = Math.pow(1 + r, n);
   return (paymentMonthly * (pow - 1)) / (r * pow);
 }
@@ -181,7 +183,13 @@ export default function Page() {
     const scenarioPmt = pmt(scenarioLoan, qualifyingRate, amort);
     const gdsScenario = incMonthly > 0 ? ((scenarioPmt + countedHousing) / incMonthly) * 100 : 0;
     const tdsScenario = incMonthly > 0 ? ((scenarioPmt + countedHousing + debtsM) / incMonthly) * 100 : 0;
-    const scenarioPass = gdsScenario <= gds + 1e-6 && tdsScenario <= tds + 1e-6;
+    const scenarioPass =
+      incMonthly > 0 &&
+      scenarioLoan > 0 &&
+      gdsScenario <= gds + 1e-6 &&
+      tdsScenario <= tds + 1e-6;
+    const bindingCap =
+      pmtAllow <= 0 ? "Ninguno" : allowGDS <= allowTDS ? "GDS" : "TDS";
 
     return {
       incMonthly,
@@ -211,6 +219,7 @@ export default function Page() {
       gdsScenario,
       tdsScenario,
       scenarioPass,
+      bindingCap,
     };
   }, [
     annualIncome,
@@ -253,16 +262,18 @@ export default function Page() {
       lang="es"
     >
       {/* Acciones */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
+          type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Imprimir / Guardar PDF
+          Imprimir o guardar PDF
         </button>
         <button
+          type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
           Restablecer valores
         </button>
@@ -271,8 +282,9 @@ export default function Page() {
       {/* Toggle modo */}
       <div className="flex flex-wrap gap-2 mb-6">
         <button
+          type="button"
           onClick={() => setMode("max")}
-          className={`px-4 py-2 rounded-full border-2 ${
+          className={`tool-btn border-2 ${
             mode === "max"
               ? "border-brand-blue bg-brand-blue text-white"
               : "border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
@@ -281,8 +293,9 @@ export default function Page() {
           Hipoteca máxima
         </button>
         <button
+          type="button"
           onClick={() => setMode("scenario")}
-          className={`px-4 py-2 rounded-full border-2 ${
+          className={`tool-btn border-2 ${
             mode === "scenario"
               ? "border-brand-blue bg-brand-blue text-white"
               : "border-brand-green text-brand-green hover:bg-brand-green hover:text-white"
@@ -293,9 +306,9 @@ export default function Page() {
       </div>
 
       {/* Panel principal */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid xl:grid-cols-2 gap-6">
         {/* Entradas */}
-        <section className="rounded-2xl border border-brand-gold/50 bg-white p-4 sm:p-6">
+        <section className="tool-card">
           <h2 className="font-brand text-xl text-brand-green font-semibold mb-3">Entradas</h2>
 
           <div className="grid sm:grid-cols-2 gap-4">
@@ -306,7 +319,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={annualIncome}
                 onChange={(e) => setAnnualIncome(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 140000"
               />
               <p className="mt-1 text-xs text-brand-blue/60">
@@ -319,7 +332,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={monthlyDebts}
                 onChange={(e) => setMonthlyDebts(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 350"
               />
             </div>
@@ -331,7 +344,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={propertyTaxAnnual}
                 onChange={(e) => setPropertyTaxAnnual(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 4200"
               />
               <p className="mt-1 text-xs text-brand-blue/60">
@@ -344,7 +357,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={heatMonthly}
                 onChange={(e) => setHeatMonthly(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 120"
               />
             </div>
@@ -354,7 +367,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={condoFeesMonthly}
                 onChange={(e) => setCondoFeesMonthly(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 0"
               />
               <p className="mt-1 text-xs text-brand-blue/60">Se cuenta el 50%: {CAD2.format(NUM(condoFeesMonthly) * 0.5)} / mes.</p>
@@ -367,7 +380,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={contractRatePct}
                 onChange={(e) => setContractRatePct(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 4.84"
               />
             </div>
@@ -377,7 +390,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={benchmarkRatePct}
                 onChange={(e) => setBenchmarkRatePct(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="p. ej., 5.25"
               />
             </div>
@@ -387,7 +400,7 @@ export default function Page() {
                 inputMode="numeric"
                 value={amortYears}
                 onChange={(e) => setAmortYears(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="25"
               />
             </div>
@@ -399,7 +412,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={gdsPct}
                 onChange={(e) => setGdsPct(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="39"
               />
             </div>
@@ -409,7 +422,7 @@ export default function Page() {
                 inputMode="decimal"
                 value={tdsPct}
                 onChange={(e) => setTdsPct(e.target.value)}
-                className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                className="tool-field"
                 placeholder="44"
               />
             </div>
@@ -423,7 +436,7 @@ export default function Page() {
                     inputMode="decimal"
                     value={purchasePrice}
                     onChange={(e) => setPurchasePrice(e.target.value)}
-                    className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                    className="tool-field"
                     placeholder="p. ej., 800000"
                   />
                 </div>
@@ -433,7 +446,7 @@ export default function Page() {
                     inputMode="decimal"
                     value={downPayment}
                     onChange={(e) => setDownPayment(e.target.value)}
-                    className="w-full rounded-lg border border-brand-gold/60 px-3 py-2"
+                    className="tool-field"
                     placeholder="p. ej., 80000"
                   />
                 </div>
@@ -443,7 +456,7 @@ export default function Page() {
         </section>
 
         {/* Resultados */}
-        <section className="rounded-2xl border border-brand-gold/50 bg-white p-4 sm:p-6">
+        <section className="tool-card">
           <h2 className="font-brand text-xl text-brand-green font-semibold mb-3">Resultados</h2>
 
           <div className="space-y-3">
@@ -504,7 +517,15 @@ export default function Page() {
                   <div className="text-xs text-brand-blue/60 mt-1">
                     A {m.qualifyingRate.toFixed(2)}% • amortización {NUM(amortYears)} años • ~{CAD2.format(m.perThousand)} por cada $1,000.
                   </div>
+                  <div className="text-xs text-brand-blue/60 mt-1">
+                    Relación limitante: {m.bindingCap}
+                  </div>
                 </div>
+                {m.incMonthly <= 0 && (
+                  <p className="text-xs text-red-700">
+                    Ingresa un ingreso familiar positivo para estimar la asequibilidad.
+                  </p>
+                )}
               </>
             ) : (
               <>
@@ -543,6 +564,11 @@ export default function Page() {
                 >
                   {m.scenarioPass ? "El escenario pasaría GDS/TDS." : "El escenario NO pasaría GDS/TDS con estos supuestos."}
                 </div>
+                {m.scenarioLoan > 0 && m.incMonthly <= 0 && (
+                  <p className="text-xs text-red-700">
+                    No se puede evaluar el escenario sin ingreso familiar positivo.
+                  </p>
+                )}
               </>
             )}
           </div>
@@ -554,7 +580,7 @@ export default function Page() {
         <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Herramientas similares</h3>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li>
-            <Link href="/es/herramientas/accesibilidad-hipotecaria" className="underline">
+            <Link href="/es/herramientas/asequibilidad-hipotecaria" className="underline">
               Asequibilidad Hipotecaria (Rápida)
             </Link>
           </li>

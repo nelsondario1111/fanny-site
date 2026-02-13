@@ -158,17 +158,14 @@ export default function Page() {
     const A_common = interestOverMonths(curP, curRatePct || 0, remAmort, horizonCommonAB).interest;
     const B_common = interestOverMonths(refiPrincipal, newRatePct || 0, refiAmort, horizonCommonAB).interest;
     const refiInterestSaved = Math.max(0, A_common - B_common);
-    // Approx break-even months (accumulating interest savings until ≥ upfront cash)
+    // Approx break-even months (when cumulative interest savings offset upfront cash)
     let breakEvenRefi: number | null = null;
     if (refiUpfrontCash > 0) {
-      // simple monthly step approximation
-      let cum = 0;
       for (let m = 1; m <= horizonCommonAB; m++) {
         const ia = interestOverMonths(curP, curRatePct || 0, remAmort, m).interest;
         const ib = interestOverMonths(refiPrincipal, newRatePct || 0, refiAmort, m).interest;
-        const diff = Math.max(0, ia - ib) - (m === 1 ? refiUpfrontCash : 0); // subtract cash only once at start
-        cum += Math.max(0, diff);
-        if (cum >= refiUpfrontCash) {
+        const savedToDate = Math.max(0, ia - ib);
+        if (savedToDate >= refiUpfrontCash) {
           breakEvenRefi = m;
           break;
         }
@@ -214,13 +211,11 @@ export default function Page() {
       // Break-even months for blend
       let be: number | null = null;
       if (upfrontCash > 0) {
-        let cum = 0;
         for (let m = 1; m <= horizonCommonAC; m++) {
           const ia = interestOverMonths(curP, curRatePct || 0, remAmort, m).interest;
           const ic = interestOverMonths(principalUsed, blendedRatePct, amort, m).interest;
-          const diff = Math.max(0, ia - ic) - (m === 1 ? upfrontCash : 0);
-          cum += Math.max(0, diff);
-          if (cum >= upfrontCash) {
+          const savedToDate = Math.max(0, ia - ic);
+          if (savedToDate >= upfrontCash) {
             be = m;
             break;
           }
@@ -413,40 +408,40 @@ export default function Page() {
       lang="en"
     >
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Open print dialog (choose 'Save as PDF')"
         >
-          <FaPrint aria-hidden /> Print / Save as PDF
+          <FaPrint aria-hidden /> Print or Save PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Export results"
         >
-          <FaFileCsv aria-hidden /> Export CSV
+          <FaFileCsv aria-hidden /> Export (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Reset to sample values"
+          className="tool-btn-gold"
+          title="Reset values"
         >
-          Reset Example
+          Reset values
         </button>
       </div>
 
       {/* Inputs */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Current Mortgage */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Current Mortgage</h3>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Type</label>
               <div className="flex gap-4">
@@ -466,14 +461,14 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={curBalance}
                 onChange={(e) => setCurBalance(Number(e.target.value || 0))}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Rate (annual %)</label>
               <input
@@ -482,7 +477,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={curRatePct}
                 onChange={(e) => setCurRatePct(Number(e.target.value || 0))}
               />
@@ -495,7 +490,7 @@ export default function Page() {
                 max={35}
                 step={1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={remAmortYears}
                 onChange={(e) => setRemAmortYears(Number(e.target.value || 0))}
               />
@@ -508,7 +503,7 @@ export default function Page() {
                 max={10}
                 step={0.25}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={remTermYears}
                 onChange={(e) => setRemTermYears(Number(e.target.value || 0))}
               />
@@ -537,14 +532,14 @@ export default function Page() {
             </div>
 
             {penaltyMode === "manual" && (
-              <div className="mt-2 grid grid-cols-2 gap-3">
+              <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Penalty amount (CAD)</label>
                   <input
                     type="number"
                     min={0}
                     inputMode="decimal"
-                    className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    className="tool-field-sm"
                     value={manualPenalty}
                     onChange={(e) => setManualPenalty(Number(e.target.value || 0))}
                   />
@@ -553,7 +548,7 @@ export default function Page() {
             )}
 
             {penaltyMode === "estIRD" && (
-              <div className="mt-2 grid grid-cols-3 gap-3">
+              <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Comparison Rate (% per year)</label>
                   <input
@@ -562,25 +557,25 @@ export default function Page() {
                     max={25}
                     step={0.01}
                     inputMode="decimal"
-                    className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    className="tool-field-sm"
                     value={comparisonRatePct}
                     onChange={(e) => setComparisonRatePct(Number(e.target.value || 0))}
                   />
                 </div>
-                <div className="col-span-2 text-xs text-brand-blue/70 flex items-center gap-2">
+                <div className="text-xs text-brand-blue/70 flex items-center gap-2 sm:col-span-2">
                   <FaInfoCircle /> Simple IRD estimate: Balance × (Contract − Comparison) × (Remaining term ÷ 12).
                 </div>
               </div>
             )}
 
-            <div className="mt-2 grid grid-cols-2 gap-3">
+            <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Admin / Discharge Fee (CAD)</label>
                 <input
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={adminFee}
                   onChange={(e) => setAdminFee(Number(e.target.value || 0))}
                 />
@@ -594,10 +589,10 @@ export default function Page() {
         </section>
 
         {/* Refinance (new mortgage) */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Refinance — New Mortgage</h3>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Rate (annual %)</label>
               <input
@@ -606,7 +601,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={newRatePct}
                 onChange={(e) => setNewRatePct(Number(e.target.value || 0))}
               />
@@ -614,7 +609,7 @@ export default function Page() {
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Amortization (years)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={newAmortYears}
                 onChange={(e) => setNewAmortYears(Number(e.target.value))}
               >
@@ -627,7 +622,7 @@ export default function Page() {
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">New Term (years)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={newTermYears}
                 onChange={(e) => setNewTermYears(Number(e.target.value))}
               >
@@ -640,14 +635,14 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Other Refi Costs (CAD)</label>
               <input
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={refiOtherCosts}
                 onChange={(e) => setRefiOtherCosts(Number(e.target.value || 0))}
               />
@@ -662,7 +657,7 @@ export default function Page() {
         </section>
 
         {/* Blend & Extend */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Blend & Extend (Optional)</h3>
             <label className="inline-flex items-center gap-2">
@@ -671,7 +666,7 @@ export default function Page() {
             </label>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Offer Rate for Extension (annual %)</label>
               <input
@@ -680,7 +675,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={offerRatePct}
                 onChange={(e) => setOfferRatePct(Number(e.target.value || 0))}
               />
@@ -688,7 +683,7 @@ export default function Page() {
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Extend to New Term (years)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={blendNewTermYears}
                 onChange={(e) => setBlendNewTermYears(Number(e.target.value))}
               >
@@ -707,7 +702,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3">
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
               <label className="inline-flex items-center gap-2">
                 <input type="checkbox" checked={blendResetAmort} onChange={(e) => setBlendResetAmort(e.target.checked)} />
@@ -721,7 +716,7 @@ export default function Page() {
                   max={35}
                   step={1}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={blendAmortYears}
                   onChange={(e) => setBlendAmortYears(Number(e.target.value || 0))}
                 />
@@ -729,14 +724,14 @@ export default function Page() {
             </div>
 
             <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="block text-xs text-brand-blue mb-1">Blend Costs (CAD)</label>
                   <input
                     type="number"
                     min={0}
                     inputMode="decimal"
-                    className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                    className="tool-field-sm"
                     value={blendCosts}
                     onChange={(e) => setBlendCosts(Number(e.target.value || 0))}
                   />
@@ -761,7 +756,7 @@ export default function Page() {
         </section>
 
         {/* Analysis Horizon */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Analysis Horizon</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Horizon (years)</label>
           <input
@@ -770,7 +765,7 @@ export default function Page() {
             max={10}
             step={1}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field"
             value={analysisYears}
             onChange={(e) => setAnalysisYears(Number(e.target.value || 0))}
           />
@@ -781,7 +776,7 @@ export default function Page() {
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Stay */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Stay (No Change)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
@@ -800,7 +795,7 @@ export default function Page() {
         </section>
 
         {/* Refinance */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Refinance — New Mortgage</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
@@ -833,7 +828,7 @@ export default function Page() {
         </section>
 
         {/* Blend */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Blend & Extend</h3>
           {results.blend ? (
             <div className="text-sm space-y-2">

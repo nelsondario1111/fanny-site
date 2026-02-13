@@ -117,7 +117,8 @@ export default function Page() {
     const statusCost = isCondo === "true" ? num(statusCert) : 0; // include only when condo
     const adjustmentsCost = num(adjustments);
     const movingCost = num(moving);
-    const contingency = price * (Number(contingencyPct) / 100);
+    const contingencyRate = Math.max(0, num(contingencyPct));
+    const contingency = price * (contingencyRate / 100);
 
     const total =
       legalCost +
@@ -168,26 +169,26 @@ export default function Page() {
       lang="en"
     >
       {/* Actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Print / Save as PDF
+          Print or Save PDF
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
-          Reset to defaults
+          Reset values
         </button>
       </div>
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           <label className="block">
@@ -196,7 +197,7 @@ export default function Page() {
               value={purchasePrice}
               onChange={(e) => setPurchasePrice(e.target.value)}
               inputMode="decimal"
-              className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="mt-1 tool-field"
             />
           </label>
 
@@ -216,7 +217,7 @@ export default function Page() {
                 value={legal}
                 onChange={(e) => setLegal(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -225,7 +226,7 @@ export default function Page() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                className="mt-1 tool-field"
               />
             </label>
           </div>
@@ -237,7 +238,7 @@ export default function Page() {
                 value={inspection}
                 onChange={(e) => setInspection(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -246,7 +247,7 @@ export default function Page() {
                 value={appraisal}
                 onChange={(e) => setAppraisal(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                className="mt-1 tool-field"
               />
             </label>
           </div>
@@ -262,7 +263,7 @@ export default function Page() {
                   onChange={(e) => setStatusCert(e.target.value)}
                   inputMode="decimal"
                   disabled={isCondo !== "true"}
-                  className={`mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 ${isCondo !== "true" ? "opacity-60" : ""}`}
+                  className={`mt-1 tool-field ${isCondo !== "true" ? "opacity-60" : ""}`}
                 />
               </label>
               <label className="block">
@@ -271,7 +272,7 @@ export default function Page() {
                   value={adjustments}
                   onChange={(e) => setAdjustments(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
             </div>
@@ -283,7 +284,7 @@ export default function Page() {
                   value={moving}
                   onChange={(e) => setMoving(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
               <label className="block">
@@ -292,7 +293,7 @@ export default function Page() {
                   value={contingencyPct}
                   onChange={(e) => setContingencyPct(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
             </div>
@@ -300,7 +301,7 @@ export default function Page() {
         </section>
 
         {/* Results */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
@@ -328,7 +329,7 @@ export default function Page() {
               <li>Condo status certificate: {isCondo === "true" ? CAD2.format(m.statusCost) : "—"}</li>
               <li>Adjustments: {CAD2.format(m.adjustmentsCost)}</li>
               <li>Moving: {CAD2.format(m.movingCost)}</li>
-              <li>Contingency (@ {Number(contingencyPct || 0).toFixed(2)}%): {CAD2.format(m.contingency)}</li>
+              <li>Contingency (@ {Math.max(0, num(contingencyPct)).toFixed(2)}%): {CAD2.format(m.contingency)}</li>
             </ul>
           </div>
 

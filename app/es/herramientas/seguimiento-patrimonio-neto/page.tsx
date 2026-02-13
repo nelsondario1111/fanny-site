@@ -194,52 +194,55 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de acciones */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportSummaryCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar un resumen detallado de tus partidas y totales"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV (resumen)
+          <FaFileCsv aria-hidden /> Exportar (CSV) (resumen)
         </button>
         <button
           type="button"
           onClick={exportTimelineCSV}
           disabled={snapshots.length === 0}
-          className={`px-4 py-2 rounded-full inline-flex items-center gap-2 border-2 ${snapshots.length===0 ? "border-gray-300 text-gray-400 cursor-not-allowed" : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"}`}
+          className={[
+            "tool-btn-blue",
+            snapshots.length === 0 ? "border-gray-300 text-gray-400 hover:bg-white hover:text-gray-400 cursor-not-allowed" : "",
+          ].join(" ")}
           title={snapshots.length === 0 ? "Agrega un registro primero" : "Exporta tus registros con fecha"}
         >
-          <FaFileCsv aria-hidden /> Exportar CSV (línea de tiempo)
+          <FaFileCsv aria-hidden /> Exportar (CSV) (línea de tiempo)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Activos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Activos</h3>
             <button
               type="button"
               onClick={addAsset}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              className="tool-btn-green"
             >
               <FaPlus aria-hidden /> Agregar activo
             </button>
@@ -255,7 +258,7 @@ export default function Page() {
                     <label className="block text-sm font-medium text-brand-blue mb-1">Nombre</label>
                     <input
                       type="text"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={a.name}
                       onChange={(e) => updateAsset(a.id, { name: e.target.value })}
                     />
@@ -264,7 +267,7 @@ export default function Page() {
                     <label className="block text-sm font-medium text-brand-blue mb-1">Monto</label>
                     <input
                       type="number" min={0} inputMode="decimal"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={a.amount}
                       onChange={(e) => updateAsset(a.id, { amount: Number(e.target.value || 0) })}
                     />
@@ -290,13 +293,13 @@ export default function Page() {
         </section>
 
         {/* Pasivos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Pasivos</h3>
             <button
               type="button"
               onClick={addLiability}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              className="tool-btn-green"
             >
               <FaPlus aria-hidden /> Agregar pasivo
             </button>
@@ -312,7 +315,7 @@ export default function Page() {
                     <label className="block text-sm font-medium text-brand-blue mb-1">Nombre</label>
                     <input
                       type="text"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={l.name}
                       onChange={(e) => updateLiability(l.id, { name: e.target.value })}
                     />
@@ -321,7 +324,7 @@ export default function Page() {
                     <label className="block text-sm font-medium text-brand-blue mb-1">Monto</label>
                     <input
                       type="number" min={0} inputMode="decimal"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={l.amount}
                       onChange={(e) => updateLiability(l.id, { amount: Number(e.target.value || 0) })}
                     />
@@ -347,7 +350,7 @@ export default function Page() {
         </section>
 
         {/* Registro + Ratios */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Registro y ratios</h3>
 
           <div className="grid grid-cols-2 gap-3">
@@ -387,7 +390,7 @@ export default function Page() {
               <button
                 type="button"
                 onClick={saveSnapshot}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+                className="tool-btn-blue"
                 title="Guardar un registro con fecha de tus totales"
               >
                 <FaCalendarPlus aria-hidden /> Agregar registro
@@ -401,7 +404,7 @@ export default function Page() {
       </form>
 
       {/* Tabla de registros */}
-      <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
+      <div className="mt-8 tool-card">
         <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Registros guardados</h3>
         {snapshots.length === 0 ? (
           <p className="text-sm text-brand-blue/70">Aún no hay registros. Elige una fecha y haz clic en <b>Agregar registro</b>.</p>

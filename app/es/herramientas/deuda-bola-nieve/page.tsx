@@ -93,6 +93,10 @@ function simulate(
 
   // Copias de trabajo
   const debts = debtsInput.map(d => ({ ...d }));
+  // Mantener un presupuesto mensual fijo para que los mínimos liberados se reasignen.
+  const fixedMonthlyBudget = round2(
+    debts.reduce((s, d) => s + Math.max(0, d.min), 0) + Math.max(0, extraMonthly)
+  );
 
   // Acumulados por deuda
   const interestPaid: Record<number, number> = {};
@@ -121,8 +125,8 @@ function simulate(
       interestPaid[d.id] = round2(interestPaid[d.id] + i);
     }
 
-    // 2) Pool de pago = suma de mínimos activos + extra mensual
-    let pool = round2(debts.filter(d => d.balance > 0.005).reduce((s, d) => s + Math.max(0, d.min), 0) + Math.max(0, extraMonthly));
+    // 2) Pool de pago basado en presupuesto fijo (incluye mínimos liberados)
+    let pool = fixedMonthlyBudget;
 
     // Si el pool es cero mientras hay saldos, no se puede avanzar
     if (pool <= 0) {
@@ -328,19 +332,19 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de acciones */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir el diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportSummaryCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar resumen"
         >
           <FaFileCsv aria-hidden /> Exportar Resumen CSV
@@ -348,7 +352,7 @@ export default function Page() {
         <button
           type="button"
           onClick={exportScheduleCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar calendario mes a mes"
         >
           <FaFileCsv aria-hidden /> Exportar Calendario CSV
@@ -356,23 +360,23 @@ export default function Page() {
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Lista de deudas */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Tus deudas</h3>
             <button
               type="button"
               onClick={addDebt}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              className="tool-btn-green"
             >
               <FaPlus aria-hidden /> Agregar deuda
             </button>
@@ -383,44 +387,44 @@ export default function Page() {
           ) : (
             <div className="space-y-3">
               {debts.map(d => (
-                <div key={d.id} className="grid grid-cols-12 items-end gap-3">
-                  <div className="col-span-5">
+                <div key={d.id} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 items-end gap-3">
+                  <div className="sm:col-span-2 lg:col-span-5">
                     <label className="block text-sm font-medium text-brand-blue mb-1">Nombre</label>
                     <input
                       type="text"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={d.name}
                       onChange={(e)=>updateDebt(d.id, { name: e.target.value })}
                     />
                   </div>
-                  <div className="col-span-3">
+                  <div className="sm:col-span-1 lg:col-span-3">
                     <label className="block text-sm font-medium text-brand-blue mb-1">Saldo</label>
                     <input
                       type="number" min={0} inputMode="decimal"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={d.balance}
                       onChange={(e)=>updateDebt(d.id, { balance: Number(e.target.value || 0) })}
                     />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-1 lg:col-span-2">
                     <label className="block text-sm font-medium text-brand-blue mb-1">APR %</label>
                     <input
                       type="number" min={0} max={99} step={0.01} inputMode="decimal"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={d.apr}
                       onChange={(e)=>updateDebt(d.id, { apr: Number(e.target.value || 0) })}
                     />
                   </div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-1 lg:col-span-2">
                     <label className="block text-sm font-medium text-brand-blue mb-1">Mín. / mes</label>
                     <input
                       type="number" min={0} inputMode="decimal"
-                      className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                      className="tool-field"
                       value={d.min}
                       onChange={(e)=>updateDebt(d.id, { min: Number(e.target.value || 0) })}
                     />
                   </div>
-                  <div className="col-span-12 md:col-span-0 flex md:block justify-end">
+                  <div className="sm:col-span-1 lg:col-span-12 flex justify-end">
                     <button
                       type="button"
                       onClick={()=>removeDebt(d.id)}
@@ -437,7 +441,7 @@ export default function Page() {
         </section>
 
         {/* Estrategia y calendario */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Estrategia</h3>
 
           <div className="grid grid-cols-2 gap-3">
@@ -458,7 +462,7 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Extra mensual</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={extra}
                 onChange={(e)=>setExtra(Number(e.target.value || 0))}
               />
@@ -469,7 +473,7 @@ export default function Page() {
             <label className="block text-sm font-medium text-brand-blue mb-1">Fecha de inicio (opcional)</label>
             <input
               type="date"
-              className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field"
               value={startDate}
               onChange={(e)=>setStartDate(e.target.value)}
             />
@@ -478,7 +482,7 @@ export default function Page() {
         </section>
 
         {/* Resultados */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Resultados</h3>
 
           <div className="text-sm space-y-2">
@@ -527,7 +531,7 @@ export default function Page() {
       </form>
 
       {/* Calendario */}
-      <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
+      <div className="mt-8 tool-card">
         <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Calendario (vista previa de los primeros 24 meses)</h3>
         <div className="overflow-auto rounded-xl border border-brand-gold/40">
           <table className="w-full text-sm">
@@ -599,7 +603,7 @@ export default function Page() {
           <button
             type="button"
             onClick={exportSummaryCSV}
-            className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+            className="tool-btn-blue"
             title="Exportar resumen"
           >
             <FaFileCsv aria-hidden /> Exportar Resumen CSV
@@ -607,7 +611,7 @@ export default function Page() {
           <button
             type="button"
             onClick={exportScheduleCSV}
-            className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+            className="tool-btn-blue"
             title="Exportar calendario mes a mes"
           >
             <FaFileCsv aria-hidden /> Exportar Calendario CSV

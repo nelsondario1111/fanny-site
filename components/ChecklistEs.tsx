@@ -5,6 +5,28 @@ import { useEffect, useMemo, useState } from "react";
 
 export type ChecklistSection = { title: string; items: string[] };
 
+function toCSV(rows: Array<Array<string | number>>) {
+  const esc = (v: string | number) => {
+    const s = String(v ?? "");
+    const needsQuotes = /[",\n]/.test(s);
+    const escaped = s.replace(/"/g, '""');
+    return needsQuotes ? `"${escaped}"` : escaped;
+  };
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
+}
+
+function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
+  const date = new Date().toISOString().slice(0, 10);
+  const csv = toCSV(rows);
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${baseName}_${date}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function ChecklistEs({
   title,
   subtitle,
@@ -53,26 +75,14 @@ export default function ChecklistEs({
   }
 
   function exportCSV() {
-    const filas: string[] = [];
-    filas.push(`Sección,Elemento,Estado`);
-    sections.forEach((sec, si) =>
+    const filas: Array<Array<string | number>> = [["Sección", "Elemento", "Estado"]];
+    sections.forEach((sec, si) => {
       sec.items.forEach((it, ii) => {
         const k = `${si}:${ii}`;
-        const estado = state[k] ? "Hecho" : "Pendiente";
-        filas.push(
-          `"${sec.title.replace(/"/g, '""')}","${it.replace(/"/g, '""')}",${estado}`
-        );
-      })
-    );
-    const blob = new Blob([filas.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${title.replace(/\s+/g, "_")}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+        filas.push([sec.title, it, state[k] ? "Hecho" : "Pendiente"]);
+      });
+    });
+    downloadCSV(title.replace(/\s+/g, "_"), filas);
   }
 
   return (
@@ -93,28 +103,31 @@ export default function ChecklistEs({
       </header>
 
       <div className="bg-white/95 rounded-2xl border border-brand-gold shadow p-5 sm:p-7">
-        <div className="flex flex-wrap gap-2 justify-between mb-5">
+        <div className="tool-actions justify-between mb-5">
           <div className="text-brand-body/80">
             Consejo: Tu progreso se guarda en este navegador.
           </div>
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={exportCSV}
-              className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              className="tool-btn-green"
             >
-              Exportar CSV
+              Exportar (CSV)
             </button>
             <button
+              type="button"
               onClick={() => window.print()}
-              className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+              className="tool-btn-blue"
             >
-              Imprimir
+              Imprimir o guardar PDF
             </button>
             <button
+              type="button"
               onClick={reset}
-              className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+              className="tool-btn-gold"
             >
-              Reiniciar
+              Restablecer valores
             </button>
           </div>
         </div>
@@ -154,6 +167,10 @@ export default function ChecklistEs({
             </div>
           ))}
         </div>
+
+        <p className="mt-6 text-xs text-brand-blue/70">
+          Herramienta de planificación solo educativa. Esta lista es una guía general y no constituye asesoría legal, fiscal, hipotecaria ni de inversión.
+        </p>
       </div>
     </section>
   );

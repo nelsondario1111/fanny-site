@@ -86,12 +86,12 @@ export default function Page() {
     const meetsMinimum = down >= minDp;
 
     let premiumRate = cmhcPremiumRate(ltv);
-    if (!meetsMinimum) premiumRate = null; // inválido
     if (price >= 1_000_000) premiumRate = 0; // solo convencional
+    if (!meetsMinimum) premiumRate = null; // inválido
 
     const premium = premiumRate ? loan * premiumRate : 0;
     const pst = premium * 0.08; // Ontario 8%
-    const totalWithPremium = loan + premium + pst;
+    const totalMortgageWithPremium = loan + premium; // el impuesto se paga en efectivo al cierre
 
     return {
       price,
@@ -104,7 +104,7 @@ export default function Page() {
       premiumRate,
       premium,
       pst,
-      totalWithPremium,
+      totalMortgageWithPremium,
     };
   }, [priceStr, downStr]);
 
@@ -121,18 +121,18 @@ export default function Page() {
       lang="es"
     >
       {/* Acciones */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Imprimir / Guardar PDF
+          Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
           Restablecer valores
         </button>
@@ -140,7 +140,7 @@ export default function Page() {
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Entradas */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Entradas</h3>
           <label className="block">
             <span className="block text-sm text-brand-blue/80">Precio de compra</span>
@@ -148,7 +148,7 @@ export default function Page() {
               value={priceStr}
               onChange={(e) => setPriceStr(e.target.value)}
               inputMode="decimal"
-              className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="mt-1 tool-field"
             />
           </label>
           <label className="block">
@@ -157,13 +157,13 @@ export default function Page() {
               value={downStr}
               onChange={(e) => setDownStr(e.target.value)}
               inputMode="decimal"
-              className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="mt-1 tool-field"
             />
           </label>
         </section>
 
         {/* Resultados */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Resultados</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
@@ -194,16 +194,16 @@ export default function Page() {
               <div>
                 <div className="text-sm text-brand-blue/80">Tasa de prima del seguro</div>
                 <div className="text-xl font-semibold">
-                  {m.premiumRate ? (m.premiumRate * 100).toFixed(2) + "%" : "N/D"}
+                  {m.premiumRate === 0 ? "0.00% (Sin prima)" : (m.premiumRate ? (m.premiumRate * 100).toFixed(2) + "%" : "N/D")}
                 </div>
               </div>
               <div>
                 <div className="text-sm text-brand-blue/80">Prima del seguro</div>
-                <div className="text-xl font-semibold">{m.premium ? CAD0.format(Math.round(m.premium)) : "—"}</div>
+                <div className="text-xl font-semibold">{CAD0.format(Math.round(m.premium))}</div>
               </div>
               <div>
                 <div className="text-sm text-brand-blue/80">Impuesto a la prima (ON 8%)</div>
-                <div className="text-xl font-semibold">{m.pst ? CAD0.format(Math.round(m.pst)) : "—"}</div>
+                <div className="text-xl font-semibold">{CAD0.format(Math.round(m.pst))}</div>
               </div>
             </div>
           )}
@@ -213,12 +213,17 @@ export default function Page() {
               Este pago inicial no cumple con las reglas mínimas. Aumenta el pago inicial para calificar.
             </p>
           )}
+          {m.price >= 1_000_000 && m.meetsMinimum && (
+            <p className="mt-3 text-sm text-brand-blue/80">
+              Compras de $1M o más requieren al menos 20% de pago inicial y no son elegibles para hipotecas aseguradas.
+            </p>
+          )}
 
           {m.premiumRate !== null && (
             <div className="mt-4">
-              <div className="text-sm text-brand-blue/80">Hipoteca total incl. prima</div>
+              <div className="text-sm text-brand-blue/80">Hipoteca total incl. prima (antes de impuesto a la prima)</div>
               <div className="text-2xl font-bold text-brand-green">
-                {CAD0.format(Math.round(m.totalWithPremium))}
+                {CAD0.format(Math.round(m.totalMortgageWithPremium))}
               </div>
             </div>
           )}

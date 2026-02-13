@@ -161,7 +161,7 @@ function SavedIndicator({ savedAt }: { savedAt: number | null }) {
 function ProgressBar({ value, total }: { value: number; total: number }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <div className="h-2 w-28 bg-brand-beige rounded-full overflow-hidden">
         <div className="h-2 bg-brand-green" style={{ width: `${pct}%`, transition: "width .3s ease" }} />
       </div>
@@ -306,14 +306,14 @@ export default function Page() {
     >
       {/* Acciones de encabezado */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-blue/60" />
             <input
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder="Filtrar tareas…"
-              className="pl-9 pr-3 py-2 rounded-full border-2 border-brand-gold/60 bg-white min-w-[220px]"
+              className="tool-field-sm min-w-[220px] pl-9"
               aria-label="Filtrar tareas"
             />
           </div>
@@ -330,35 +330,35 @@ export default function Page() {
           <button
             type="button"
             onClick={exportCSV}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+            className="tool-btn-green"
             title="Exportar como CSV"
           >
             <Download className="h-4 w-4" />
-            Exportar CSV
+            Exportar (CSV)
           </button>
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
-            title="Imprimir"
+            className="tool-btn-blue"
+            title="Imprimir o guardar PDF"
           >
             <Printer className="h-4 w-4" />
-            Imprimir
+            Imprimir o guardar PDF
           </button>
           <button
             type="button"
             onClick={resetAll}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-            title="Restablecer"
+            className="tool-btn-gold"
+            title="Restablecer valores"
           >
             <RotateCcw className="h-4 w-4" />
-            Restablecer
+            Restablecer valores
           </button>
         </div>
       </div>
 
       {/* Estado / Snapshot */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
+      <section className="tool-card-compact mb-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <SummaryCard icon={<ShieldCheck className="h-5 w-5" />} label="Progreso general" value={`${overall.pct}%`} />
           <SummaryCard icon={<CreditCard className="h-5 w-5" />} label="Enfoque de crédito" value="12 meses limpios • &lt;30% util." />
@@ -404,7 +404,7 @@ export default function Page() {
           const isCollapsed = collapse[key];
 
           return (
-            <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
+            <section key={key} className="tool-card-compact">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className={classNames("font-sans text-base md:text-lg font-semibold", toneToText[meta.tone])}>
@@ -606,7 +606,7 @@ export default function Page() {
       </form>
 
       {/* Herramientas y servicios útiles */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
+      <section className="tool-card-compact mt-6">
         <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Herramientas y servicios útiles
         </h4>
@@ -629,12 +629,8 @@ export default function Page() {
           </li>
           <li>
             Flujo de caja y ahorro:{" "}
-            <Link href="/es/herramientas/calculadora-presupuesto" className="underline">
-              Calculadora de Presupuesto
-            </Link>{" "}
-            •{" "}
             <Link href="/es/herramientas/presupuesto-flujo" className="underline">
-              Flujo de Caja
+              Flujo de Caja y Presupuesto
             </Link>
           </li>
           <li>

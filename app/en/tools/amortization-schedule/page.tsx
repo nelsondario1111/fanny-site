@@ -27,6 +27,28 @@ const num = (s: string) => {
 };
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
+function toCSV(rows: Array<Array<string | number>>) {
+  const esc = (v: string | number) => {
+    const s = String(v ?? "");
+    const needsQuotes = /[",\n]/.test(s);
+    const q = s.replace(/"/g, '""');
+    return needsQuotes ? `"${q}"` : q;
+  };
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
+}
+
+function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
+  const iso = new Date().toISOString().slice(0, 10);
+  const csv = toCSV(rows);
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${baseName}_${iso}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 type FreqKey = "monthly" | "biweekly" | "accelerated_biweekly";
 const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number }> = {
   monthly: { label: "Monthly", periodsPerYear: 12 },
@@ -35,9 +57,10 @@ const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number }> = {
 };
 
 function pmt(principal: number, annualRatePct: number, years: number, periodsPerYear: number) {
-  if (principal <= 0 || annualRatePct <= 0 || years <= 0 || periodsPerYear <= 0) return 0;
+  if (principal <= 0 || years <= 0 || periodsPerYear <= 0) return 0;
   const r = (annualRatePct / 100) / periodsPerYear;
   const nper = years * periodsPerYear;
+  if (r === 0) return principal / nper;
   const pow = Math.pow(1 + r, nper);
   return (principal * r * pow) / (pow - 1);
 }
@@ -77,7 +100,7 @@ function buildSchedule(opts: {
     oneTimeLump = 0, oneTimeLumpAt,
   } = opts;
 
-  if (principal <= 0 || annualRatePct <= 0 || amortYears <= 0) {
+  if (principal <= 0 || amortYears <= 0 || periodsPerYear <= 0) {
     return { rows: [], totalInterest: 0, totalPrincipal: 0, totalExtra: 0, paymentUsed: 0, payoffPeriods: 0 };
   }
 
@@ -238,10 +261,12 @@ export default function Page() {
     // Extras
     const extraPerPeriod = Math.max(0, num(extraPerPeriodStr));
     const annualLump = Math.max(0, num(annualLumpStr));
-    const annualLumpAtIndex = annualLumpAtIndexStr ? clamp(num(annualLumpAtIndexStr), 1, periodsPerYear) : periodsPerYear;
+    const annualLumpAtIndex = annualLumpAtIndexStr
+      ? Math.round(clamp(num(annualLumpAtIndexStr), 1, periodsPerYear))
+      : periodsPerYear;
 
     const oneTimeLump = Math.max(0, num(oneTimeLumpStr));
-    const oneTimeLumpAt = oneTimeLumpAtStr ? Math.max(1, num(oneTimeLumpAtStr)) : undefined;
+    const oneTimeLumpAt = oneTimeLumpAtStr ? Math.round(Math.max(1, num(oneTimeLumpAtStr))) : undefined;
 
     // Build schedule
     const schedule = buildSchedule({
@@ -289,38 +314,18 @@ export default function Page() {
   };
 
   const exportCSV = () => {
-    // Build CSV of full schedule
-    const rows = m.schedule.rows;
-    const header = [
-      "Period",
-      "Payment",
-      "Interest",
-      "Principal",
-      "ExtraApplied",
-      "Balance",
-    ];
-
-    const lines = [header.join(",")];
-    for (const r of rows) {
-      lines.push([
+    const rows: Array<Array<string | number>> = [
+      ["Period", "Payment", "Interest", "Principal", "ExtraApplied", "Balance"],
+      ...m.schedule.rows.map((r) => [
         r.period,
         r.payment.toFixed(2),
         r.interest.toFixed(2),
         r.principal.toFixed(2),
         r.extraApplied.toFixed(2),
         r.balance.toFixed(2),
-      ].join(","));
-    }
-
-    const csv = lines.join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    const filename = `amortization_${m.freq}_${m.pr}_${m.rate}_${m.amortYears}.csv`.replace(/\s+/g, "");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
+      ]),
+    ];
+    downloadCSV(`amortization_${m.freq}_${m.pr}_${m.rate}_${m.amortYears}`.replace(/\s+/g, ""), rows);
   };
 
   // ---------- UI ----------
@@ -333,33 +338,33 @@ export default function Page() {
       lang="en"
     >
       {/* Actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Print / Save as PDF
+          Print or Save PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+          className="tool-btn-green"
         >
           Export (CSV)
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
-          Reset to defaults
+          Reset values
         </button>
       </div>
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           <div className="grid sm:grid-cols-2 gap-3">
@@ -369,7 +374,7 @@ export default function Page() {
                 value={principalStr}
                 onChange={(e) => setPrincipalStr(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -378,7 +383,7 @@ export default function Page() {
                 value={rateStr}
                 onChange={(e) => setRateStr(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
           </div>
@@ -390,7 +395,7 @@ export default function Page() {
                 value={amortYearsStr}
                 onChange={(e) => setAmortYearsStr(e.target.value)}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -398,7 +403,7 @@ export default function Page() {
               <select
                 value={freq}
                 onChange={(e) => setFreq(e.target.value as FreqKey)}
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 bg-white"
+                className="mt-1 tool-field bg-white"
               >
                 <option value="monthly">Monthly</option>
                 <option value="biweekly">Bi-weekly</option>
@@ -425,7 +430,7 @@ export default function Page() {
                   value={extraPerPeriodStr}
                   onChange={(e) => setExtraPerPeriodStr(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
               <label className="block">
@@ -434,7 +439,7 @@ export default function Page() {
                   value={annualLumpStr}
                   onChange={(e) => setAnnualLumpStr(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
               <label className="block">
@@ -444,7 +449,7 @@ export default function Page() {
                   onChange={(e) => setAnnualLumpAtIndexStr(e.target.value)}
                   inputMode="numeric"
                   placeholder={`1–${m.periodsPerYear} (default ${m.periodsPerYear})`}
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
             </div>
@@ -455,7 +460,7 @@ export default function Page() {
                   value={oneTimeLumpStr}
                   onChange={(e) => setOneTimeLumpStr(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
               <label className="block">
@@ -465,7 +470,7 @@ export default function Page() {
                   onChange={(e) => setOneTimeLumpAtStr(e.target.value)}
                   inputMode="numeric"
                   placeholder="e.g., 24"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2"
+                  className="mt-1 tool-field"
                 />
               </label>
             </div>
@@ -476,7 +481,7 @@ export default function Page() {
         </section>
 
         {/* Results */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-3 gap-4 mt-2">

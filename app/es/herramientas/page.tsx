@@ -333,13 +333,13 @@ const TOOLS: ToolItem[] = [
   },
   {
     id: "lista-autonomos",
-    title: "Toolkit Hipoteca para Autónomos",
-    desc: "Documentos y *add-backs* que esperan los prestamistas: NOAs, estados, finanzas del negocio y más.",
+    title: "Toolkit Hipoteca para Autónomos (EN)",
+    desc: "Documentos y *add-backs* que esperan los prestamistas: NOAs, estados, finanzas del negocio y más. Disponible en inglés por ahora.",
     href: "/es/herramientas/lista-autonomos",
     category: "Plantillas",
     type: "worksheet",
     icon: <FaClipboardList className="text-brand-green text-2xl" aria-hidden />,
-    ctas: [{ label: "Abrir checklist", href: "/es/herramientas/lista-autonomos", variant: "primary" }],
+    ctas: [{ label: "Abrir toolkit (EN)", href: "/es/herramientas/lista-autonomos", variant: "primary" }],
     tags: ["autónomos", "checklist"],
   },
   {

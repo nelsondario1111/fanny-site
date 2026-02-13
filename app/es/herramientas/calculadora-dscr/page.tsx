@@ -187,6 +187,21 @@ export default function Page() {
   function useHelperNOI() {
     setNoiAnnual(Math.max(0, Math.round(helperNOI)));
   }
+  function resetExample() {
+    setNoiAnnual(42_000);
+    setRatePct(5.75);
+    setAmortYears(25);
+    setDscrTarget(1.2);
+    setMode("loanAmount");
+    setLoanAmount(600_000);
+    setPurchasePrice(850_000);
+    setLtvPct(75);
+    setGrossRentMonthly(4_300);
+    setVacancyPct(4);
+    setOtherIncomeMonthly(0);
+    setFixedExpensesMonthly(900);
+    setVariableExpensePctGPR(18);
+  }
 
   /* -----------------------------
      Render
@@ -198,36 +213,44 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de acciones */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir el diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar un resumen de tus entradas y resultados"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV
+          <FaFileCsv aria-hidden /> Exportar (CSV)
+        </button>
+        <button
+          type="button"
+          onClick={resetExample}
+          className="tool-btn-gold"
+          title="Restablecer valores"
+        >
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid xl:grid-cols-3 gap-6">
         {/* NOI */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Ingresos</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">NOI (anual, CAD)</label>
           <input
             type="number"
             min={0}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field-lg"
             value={noiAnnual}
             onChange={(e) => setNoiAnnual(Number(e.target.value || 0))}
           />
@@ -240,7 +263,7 @@ export default function Page() {
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={grossRentMonthly}
                   onChange={(e) => setGrossRentMonthly(Number(e.target.value || 0))}
                 />
@@ -253,7 +276,7 @@ export default function Page() {
                   max={100}
                   step={0.1}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={vacancyPct}
                   onChange={(e) => setVacancyPct(Number(e.target.value || 0))}
                 />
@@ -264,7 +287,7 @@ export default function Page() {
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={otherIncomeMonthly}
                   onChange={(e) => setOtherIncomeMonthly(Number(e.target.value || 0))}
                 />
@@ -275,7 +298,7 @@ export default function Page() {
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={fixedExpensesMonthly}
                   onChange={(e) => setFixedExpensesMonthly(Number(e.target.value || 0))}
                 />
@@ -288,13 +311,13 @@ export default function Page() {
                   max={100}
                   step={0.1}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={variableExpensePctGPR}
                   onChange={(e) => setVariableExpensePctGPR(Number(e.target.value || 0))}
                 />
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-between text-sm">
+            <div className="mt-3 flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div>NOI estimado por asistente (anual): <b>{money(helperNOI)}</b></div>
                 <div className="text-brand-blue/70">
@@ -304,7 +327,7 @@ export default function Page() {
               <button
                 type="button"
                 onClick={useHelperNOI}
-                className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                className="tool-btn-green"
               >
                 Usar este NOI
               </button>
@@ -313,7 +336,7 @@ export default function Page() {
         </section>
 
         {/* Términos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Términos del préstamo</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Tasa de interés (anual %)</label>
@@ -323,7 +346,7 @@ export default function Page() {
               min={0}
               max={25}
               inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={ratePct}
               onChange={(e) => setRatePct(Number(e.target.value || 0))}
             />
@@ -331,7 +354,7 @@ export default function Page() {
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Amortización (años)</label>
             <select
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={amortYears}
               onChange={(e) => setAmortYears(Number(e.target.value))}
             >
@@ -348,7 +371,7 @@ export default function Page() {
               min={0.80}
               max={2.00}
               inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={dscrTarget}
               onChange={(e) => setDscrTarget(Number(e.target.value || 0))}
             />
@@ -357,10 +380,10 @@ export default function Page() {
         </section>
 
         {/* Modo de financiamiento */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financiamiento propuesto</h3>
 
-          <div className="flex gap-4 items-center mb-3">
+          <div className="mb-3 flex flex-wrap items-center gap-4">
             <label className="inline-flex items-center gap-2">
               <input
                 type="radio"
@@ -388,7 +411,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value || 0))}
               />
@@ -401,7 +424,7 @@ export default function Page() {
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-lg"
                   value={purchasePrice}
                   onChange={(e) => setPurchasePrice(Number(e.target.value || 0))}
                 />
@@ -414,7 +437,7 @@ export default function Page() {
                   max={100}
                   step={0.1}
                   inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-lg"
                   value={ltvPct}
                   onChange={(e) => setLtvPct(Number(e.target.value || 0))}
                 />
@@ -436,7 +459,7 @@ export default function Page() {
 
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">DSCR y servicio de deuda</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Préstamo propuesto</span><span className="font-medium">{money(proposedLoan)}</span></div>
@@ -452,11 +475,11 @@ export default function Page() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Préstamo máx. por DSCR objetivo</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>DSCR objetivo</span><span className="font-medium">{dscrTarget.toFixed(2)}</span></div>
-            <div className="flex justify-between"><span>Pago mensual máx. permitido</span><span className="font-medium">{money((noiAnnual / 12) / dscrTarget, 2)}</span></div>
+            <div className="flex justify-between"><span>Pago mensual máx. permitido</span><span className="font-medium">{dscrTarget > 0 ? money((noiAnnual / 12) / dscrTarget, 2) : "—"}</span></div>
             <div className="flex justify-between border-t pt-2 mt-2">
               <span>Préstamo máx. por DSCR</span>
               <span className="font-semibold">{money(maxLoanByDSCR)}</span>
@@ -471,7 +494,7 @@ export default function Page() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Contexto LTV</h3>
           {mode === "purchaseLTV" ? (
             <div className="space-y-2 text-sm">

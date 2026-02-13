@@ -245,41 +245,41 @@ export default function Page() {
   return (
     <ToolShell
       title="Mortgage Penalty Estimator"
-      subtitle="Estimate early-payout penalties using 3-month interest and a simple IRD model. Apply a one-time prepayment, or auto-calc months from a maturity date. Export CSV or a branded printout."
+      subtitle="Estimate early-payout penalties using 3-month interest and a simple IRD model. Apply a one-time prepayment, or auto-calc months from a maturity date. Export (CSV) or a branded printout."
       lang="en"
     >
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Open print dialog (choose 'Save as PDF')"
         >
-          <FaPrint aria-hidden /> Print / Save as PDF
+          <FaPrint aria-hidden /> Print or Save PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Export a summary of your inputs and results"
         >
-          <FaFileCsv aria-hidden /> Export CSV
+          <FaFileCsv aria-hidden /> Export (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Reset to sample values"
+          className="tool-btn-gold"
+          title="Reset values"
         >
-          Reset Example
+          Reset values
         </button>
       </div>
 
       {/* Inputs */}
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Mortgage Basics */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Mortgage Basics</h3>
 
           <div>
@@ -318,7 +318,7 @@ export default function Page() {
               min={0}
               step={1}
               inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={outstandingBalance}
               onChange={(e) => setOutstandingBalance(Number(e.target.value || 0))}
             />
@@ -333,7 +333,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={contractRatePct}
                 onChange={(e) => setContractRatePct(Number(e.target.value || 0))}
               />
@@ -346,7 +346,7 @@ export default function Page() {
                 min={0}
                 step={1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={prepayAmount}
                 onChange={(e) => setPrepayAmount(Number(e.target.value || 0))}
               />
@@ -358,7 +358,7 @@ export default function Page() {
         </section>
 
         {/* Term / Maturity */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Remaining Term</h3>
 
           <div className="rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-3">
@@ -376,7 +376,7 @@ export default function Page() {
                 <label className="block text-sm font-medium text-brand-blue mb-1">Maturity Date</label>
                 <input
                   type="date"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={maturityISO}
                   onChange={(e) => setMaturityISO(e.target.value)}
                   disabled={!useMaturityDate}
@@ -393,7 +393,7 @@ export default function Page() {
                   Remaining Term (months) {useMaturityDate && "(override)"}
                 </label>
                 <select
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={remainingMonths}
                   onChange={(e) => setRemainingMonths(Number(e.target.value))}
                   disabled={useMaturityDate}
@@ -411,7 +411,7 @@ export default function Page() {
                   type="number"
                   min={1}
                   step={1}
-                  className="mt-2 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="mt-2 tool-field"
                   value={remainingMonths}
                   onChange={(e) => setRemainingMonths(Number(e.target.value || 0))}
                   aria-label="Custom remaining term in months"
@@ -423,7 +423,7 @@ export default function Page() {
         </section>
 
         {/* IRD Inputs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">IRD (Simple) Inputs</h3>
           <p className="text-sm text-brand-blue/80 mb-3">
             IRD estimates can vary by lender. We use:{" "}
@@ -440,7 +440,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={comparisonRatePct}
                 onChange={(e) => setComparisonRatePct(Number(e.target.value || 0))}
               />
@@ -457,7 +457,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={adminFee}
                 onChange={(e) => setAdminFee(Number(e.target.value || 0))}
               />
@@ -470,7 +470,7 @@ export default function Page() {
       </form>
 
       {/* Quick results */}
-      <section className="mt-8 rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+      <section className="mt-8 tool-card avoid-break">
         <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Quick Results</h3>
         <div className="grid md:grid-cols-2 gap-3 text-sm">
           <div className="flex justify-between">
@@ -532,7 +532,7 @@ export default function Page() {
 
       {/* Comparison panels */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">3-Month Interest Detail</h3>
           <p className="text-sm text-brand-blue/80 mb-2">
             Typically used for variable-rate mortgages or when it’s greater for fixed-rate penalties.
@@ -553,7 +553,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">IRD (Simple) Detail</h3>
           <p className="text-sm text-brand-blue/80 mb-2">
             This estimate compares your contract rate to a current comparable term rate.

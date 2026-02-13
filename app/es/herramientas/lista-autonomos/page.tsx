@@ -1,64 +1,44 @@
-// app/es/herramientas/preparacion-impuestos/page.tsx
-"use client";
+import Link from "next/link";
+import { ArrowRight, Languages } from "lucide-react";
+import ToolShell from "@/components/ToolShell";
 
-import ChecklistEs, { ChecklistSection } from "@/components/ChecklistEs";
-
-export default function PreparacionImpuestosPage() {
-  const sections: ChecklistSection[] = [
-    {
-      title: "Información Personal",
-      items: [
-        "Nombre legal completo, domicilio actual, cambios de estado civil",
-        "Información de dependientes (SIN, recibos de matrícula si aplica)",
-      ],
-    },
-    {
-      title: "Comprobantes de Ingreso",
-      items: [
-        "T4 ingreso por empleo",
-        "T5 ingreso de inversiones; T3 ingreso de fideicomisos",
-        "T4A pensión/otros; T4E EI; T5007 beneficios",
-        "Trabajo autónomo: resumen de ingresos y gastos",
-      ],
-    },
-    {
-      title: "Deducciones y Créditos",
-      items: [
-        "Aportes RRSP (año + primeros 60 días)",
-        "Recibos de guardería (datos del proveedor + montos)",
-        "Gastos médicos y primas de seguro (elegibles)",
-        "Recibos de donaciones",
-        "Cuotas sindicales/profesionales; herramientas elegibles",
-      ],
-    },
-    {
-      title: "Vivienda / Mudanza",
-      items: [
-        "Recibos de renta o impuesto predial (si crédito aplica)",
-        "Gastos de mudanza (si elegible)",
-      ],
-    },
-    {
-      title: "Otros",
-      items: [
-        "Pagos por cuotas a CRA (comprobante)",
-        "Datos para depósito directo (cheque anulado/PAD)",
-      ],
-    },
-  ];
-
+export default function ListaAutonomosPage() {
   return (
-    <main className="bg-brand-beige min-h-screen pt-10 pb-16 px-4">
-      <section className="max-w-6xl mx-auto">
-        <div className="bg-white/95 rounded-[28px] border border-brand-gold shadow-xl p-6 sm:p-10">
-          <ChecklistEs
-            title="Lista de Preparación — Temporada de Impuestos"
-            subtitle="Una lista clara y completa para que la temporada de impuestos sea tranquila, no caótica."
-            sections={sections}
-            storageKey="prep-impuestos-es-v1"
-          />
+    <ToolShell
+      lang="es"
+      title="Toolkit para Autónomos"
+      subtitle="La versión completa de esta herramienta está disponible en inglés por ahora."
+    >
+      <section className="tool-card-compact">
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 rounded-full border border-brand-gold/70 bg-brand-beige/70 p-2 text-brand-green">
+            <Languages className="h-5 w-5" aria-hidden />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold text-brand-green">Acceso en inglés (EN)</h2>
+            <p className="mt-2 text-brand-blue/90">
+              Incluye checklist completo, estimador de ingresos ajustados, exportación CSV,
+              auto-guardado y recomendaciones prácticas para preparar tu expediente hipotecario.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/en/tools/self-employed-checklist" className="tool-btn-primary">
+            Abrir toolkit en inglés
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+          <Link href="/es/herramientas" className="tool-btn-blue">
+            Volver a herramientas
+          </Link>
         </div>
       </section>
-    </main>
+
+      <section className="tool-card-compact mt-6">
+        <p className="text-sm text-brand-blue/80">
+          Nota: seguimos ampliando la versión en español para mantener la misma calidad y claridad en todas las herramientas.
+        </p>
+      </section>
+    </ToolShell>
   );
 }

@@ -225,6 +225,19 @@ export default function Page() {
     horizonYears, homeAppreciationPctAnnual, investmentReturnPctAnnual
   ]);
 
+  const decisionHeadline =
+    results.netAdvantage > 1_000
+      ? "Buying leads at this horizon"
+      : results.netAdvantage < -1_000
+      ? "Renting leads at this horizon"
+      : "Close outcome at this horizon";
+  const decisionDetail =
+    results.netAdvantage > 1_000
+      ? `Buy is ahead by about ${money(results.netAdvantage, 0)} after ${horizonYears} years.`
+      : results.netAdvantage < -1_000
+      ? `Rent is ahead by about ${money(Math.abs(results.netAdvantage), 0)} after ${horizonYears} years.`
+      : `Difference is about ${money(Math.abs(results.netAdvantage), 0)} after ${horizonYears} years.`;
+
   /* -----------------------------
      Actions
      ----------------------------- */
@@ -305,61 +318,61 @@ export default function Page() {
       lang="en"
     >
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Open print dialog (choose 'Save as PDF')"
         >
-          <FaPrint aria-hidden /> Print / Save as PDF
+          <FaPrint aria-hidden /> Print or Save PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Export your comparison"
         >
-          <FaFileCsv aria-hidden /> Export CSV
+          <FaFileCsv aria-hidden /> Export (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Reset to sample values"
+          className="tool-btn-gold"
+          title="Reset values"
         >
-          Reset Example
+          Reset values
         </button>
       </div>
 
       {/* Inputs */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Buy */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Buy — Price & Financing</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Purchase Price (CAD)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={purchasePrice} onChange={(e)=>setPurchasePrice(Number(e.target.value || 0))}/>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Down Payment (%)</label>
               <input type="number" min={0} max={100} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={downPct} onChange={(e)=>setDownPct(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Rate (annual %)</label>
               <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={ratePct} onChange={(e)=>setRatePct(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Amortization (years)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={amortYears} onChange={(e)=>setAmortYears(Number(e.target.value))}
               >
                 <option value={20}>20</option>
@@ -369,97 +382,97 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Closing Costs (est.)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={closingCosts} onChange={(e)=>setClosingCosts(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Selling Cost (% of price)</label>
               <input type="number" min={0} max={10} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={sellingCostPct} onChange={(e)=>setSellingCostPct(Number(e.target.value || 0))}/>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Property Taxes (annual)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={propertyTaxAnnual} onChange={(e)=>setPropertyTaxAnnual(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Maintenance (% of home value / year)</label>
               <input type="number" min={0} max={10} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={maintenancePctAnnual} onChange={(e)=>setMaintenancePctAnnual(Number(e.target.value || 0))}/>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">HOA / Condo (monthly)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={hoaMonthly} onChange={(e)=>setHoaMonthly(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Home Insurance (monthly)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={homeInsMonthly} onChange={(e)=>setHomeInsMonthly(Number(e.target.value || 0))}/>
             </div>
           </div>
         </section>
 
         {/* Rent */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Rent — Price & Growth</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Starting Rent (monthly)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={rentMonthly} onChange={(e)=>setRentMonthly(Number(e.target.value || 0))}/>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Rent Growth (% annual)</label>
               <input type="number" min={0} max={15} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={rentGrowthPctAnnual} onChange={(e)=>setRentGrowthPctAnnual(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Renter Insurance (monthly)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={renterInsMonthly} onChange={(e)=>setRenterInsMonthly(Number(e.target.value || 0))}/>
             </div>
           </div>
         </section>
 
         {/* Horizon & assumptions */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Horizon & Assumptions</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Horizon (years)</label>
               <input type="number" min={1} max={40} step={1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={horizonYears} onChange={(e)=>setHorizonYears(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Investment Return (% annual)</label>
               <input type="number" min={0} max={15} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={investmentReturnPctAnnual} onChange={(e)=>setInvestmentReturnPctAnnual(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Home Appreciation (% annual)</label>
               <input type="number" min={-10} max={20} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={homeAppreciationPctAnnual} onChange={(e)=>setHomeAppreciationPctAnnual(Number(e.target.value || 0))}/>
             </div>
           </div>
@@ -469,9 +482,19 @@ export default function Page() {
         </section>
       </form>
 
+      <section className="tool-card-compact mt-6 avoid-break">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="font-sans text-lg text-brand-green font-semibold">{decisionHeadline}</h3>
+          <span className="inline-flex w-fit items-center rounded-full border border-brand-gold/60 bg-brand-beige/60 px-3 py-1 text-xs font-medium text-brand-blue">
+            Horizon: {horizonYears} years
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-brand-blue/90">{decisionDetail}</p>
+      </section>
+
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Monthly Cashflow (Month 1)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner cash out</span><span className="font-medium">{money(results.ownerCashMonth1, 2)}</span></div>
@@ -484,7 +507,7 @@ export default function Page() {
           <p className="text-xs text-brand-blue/70 mt-2">Owner cash includes P&I, taxes, maintenance, HOA/condo, and home insurance.</p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Total Cash Out (Horizon)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner total cash out</span><span className="font-medium">{money(results.totalOwnerCashOut, 0)}</span></div>
@@ -500,7 +523,7 @@ export default function Page() {
           </details>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Net Worth at Horizon</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Owner equity (after sale costs & mortgage)</span><span className="font-medium">{money(results.ownerNetWorth, 0)}</span></div>

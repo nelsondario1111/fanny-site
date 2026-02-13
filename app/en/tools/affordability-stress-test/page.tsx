@@ -24,17 +24,20 @@ const NUM = (s: string) => {
   const x = Number(String(s).replace(/[^\d.-]/g, ""));
   return Number.isFinite(x) ? x : 0;
 };
+const clamp = (n: number, lo: number, hi: number) => Math.min(Math.max(n, lo), hi);
 function pmt(principal: number, annualRatePct: number, years: number) {
-  if (principal <= 0 || annualRatePct <= 0 || years <= 0) return 0;
+  if (principal <= 0 || years <= 0) return 0;
   const r = (annualRatePct / 100) / 12;
   const n = years * 12;
+  if (r === 0) return principal / n;
   const pow = Math.pow(1 + r, n);
   return (principal * r * pow) / (pow - 1);
 }
 function principalFromPayment(paymentMonthly: number, annualRatePct: number, years: number) {
-  if (paymentMonthly <= 0 || annualRatePct <= 0 || years <= 0) return 0;
+  if (paymentMonthly <= 0 || years <= 0) return 0;
   const r = (annualRatePct / 100) / 12;
   const n = years * 12;
+  if (r === 0) return paymentMonthly * n;
   const pow = Math.pow(1 + r, n);
   return paymentMonthly * (pow - 1) / (r * pow);
 }
@@ -139,9 +142,9 @@ export default function Page() {
     const condoM = NUM(condoFeesMonthly);
     const condoCounted = condoM * 0.5; // 50% of condo fees commonly counted
 
-    const gds = Math.max(1, NUM(gdsPct));
-    const tds = Math.max(1, NUM(tdsPct));
-    const amort = Math.max(1, NUM(amortYears));
+    const gds = clamp(NUM(gdsPct), 20, 50);
+    const tds = clamp(NUM(tdsPct), 20, 60);
+    const amort = clamp(NUM(amortYears), 5, 35);
 
     const contract = NUM(contractRatePct);
     const benchmark = NUM(benchmarkRatePct);
@@ -169,7 +172,14 @@ export default function Page() {
     const scenarioPmt = pmt(scenarioLoan, qualifyingRate, amort);
     const gdsScenario = incMonthly > 0 ? ((scenarioPmt + countedHousing) / incMonthly) * 100 : 0;
     const tdsScenario = incMonthly > 0 ? ((scenarioPmt + countedHousing + debtsM) / incMonthly) * 100 : 0;
-    const scenarioPass = gdsScenario <= gds + 1e-6 && tdsScenario <= tds + 1e-6;
+    const scenarioPass =
+      incMonthly > 0 &&
+      scenarioLoan > 0 &&
+      gdsScenario <= gds + 1e-6 &&
+      tdsScenario <= tds + 1e-6;
+
+    const bindingCap =
+      pmtAllow <= 0 ? "None" : allowGDS <= allowTDS ? "GDS" : "TDS";
 
     const perThousand = pmt(1000, qualifyingRate, amort);
 
@@ -179,7 +189,7 @@ export default function Page() {
       contract, benchmark, qualifyingRate, amort,
       allowGDS, allowTDS, pmtAllow, maxMortgage,
       price, down, scenarioLoan, scenarioPmt, gdsScenario, tdsScenario, scenarioPass,
-      perThousand,
+      perThousand, bindingCap,
     };
   }, [
     annualIncome, monthlyDebts, propertyTaxAnnual, heatMonthly, condoFeesMonthly,
@@ -212,29 +222,29 @@ export default function Page() {
       lang="en"
     >
       {/* Top actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Print / Save as PDF
+          Print or Save PDF
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
-          Reset to defaults
+          Reset values
         </button>
       </div>
 
       {/* Mode toggle */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="mb-4 flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => setMode("max")}
-          className={`px-4 py-2 rounded-full border-2 transition ${mode === "max"
+          className={`tool-btn border-2 transition ${mode === "max"
             ? "border-brand-blue bg-brand-blue text-white"
             : "border-brand-green text-brand-green hover:bg-brand-green hover:text-white"}`}
           aria-pressed={mode === "max"}
@@ -244,7 +254,7 @@ export default function Page() {
         <button
           type="button"
           onClick={() => setMode("scenario")}
-          className={`px-4 py-2 rounded-full border-2 transition ${mode === "scenario"
+          className={`tool-btn border-2 transition ${mode === "scenario"
             ? "border-brand-blue bg-brand-blue text-white"
             : "border-brand-green text-brand-green hover:bg-brand-green hover:text-white"}`}
           aria-pressed={mode === "scenario"}
@@ -256,7 +266,7 @@ export default function Page() {
       {/* Content */}
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           {/* Income & debts */}
@@ -267,7 +277,7 @@ export default function Page() {
                 value={annualIncome}
                 onChange={(e) => setAnnualIncome(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Household annual gross income"
               />
             </label>
@@ -277,7 +287,7 @@ export default function Page() {
                 value={monthlyDebts}
                 onChange={(e) => setMonthlyDebts(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Monthly non-mortgage debts"
               />
             </label>
@@ -291,7 +301,7 @@ export default function Page() {
                 value={propertyTaxAnnual}
                 onChange={(e) => setPropertyTaxAnnual(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Annual property tax"
               />
             </label>
@@ -301,7 +311,7 @@ export default function Page() {
                 value={heatMonthly}
                 onChange={(e) => setHeatMonthly(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Monthly heating cost"
               />
             </label>
@@ -311,7 +321,7 @@ export default function Page() {
                 value={condoFeesMonthly}
                 onChange={(e) => setCondoFeesMonthly(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Monthly condo fees"
               />
             </label>
@@ -325,7 +335,7 @@ export default function Page() {
                 value={contractRatePct}
                 onChange={(e) => setContractRatePct(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Contract interest rate"
               />
             </label>
@@ -335,7 +345,7 @@ export default function Page() {
                 value={benchmarkRatePct}
                 onChange={(e) => setBenchmarkRatePct(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Benchmark qualifying rate"
               />
             </label>
@@ -345,7 +355,7 @@ export default function Page() {
                 value={amortYears}
                 onChange={(e) => setAmortYears(e.target.value)}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="Amortization in years"
               />
             </label>
@@ -353,22 +363,22 @@ export default function Page() {
 
           <div className="grid sm:grid-cols-2 gap-3">
             <label className="block">
-              <span className="block text sm text-brand-blue/80">GDS limit (%)</span>
+              <span className="block text-sm text-brand-blue/80">GDS limit (%)</span>
               <input
                 value={gdsPct}
                 onChange={(e) => setGdsPct(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="GDS limit percent"
               />
             </label>
             <label className="block">
-              <span className="block text sm text-brand-blue/80">TDS limit (%)</span>
+              <span className="block text-sm text-brand-blue/80">TDS limit (%)</span>
               <input
                 value={tdsPct}
                 onChange={(e) => setTdsPct(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
                 aria-label="TDS limit percent"
               />
             </label>
@@ -383,7 +393,7 @@ export default function Page() {
                   value={purchasePrice}
                   onChange={(e) => setPurchasePrice(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="mt-1 tool-field"
                   aria-label="Purchase price"
                 />
               </label>
@@ -393,7 +403,7 @@ export default function Page() {
                   value={downPayment}
                   onChange={(e) => setDownPayment(e.target.value)}
                   inputMode="decimal"
-                  className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="mt-1 tool-field"
                   aria-label="Down payment"
                 />
               </label>
@@ -402,7 +412,7 @@ export default function Page() {
         </section>
 
         {/* Results */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
@@ -462,11 +472,20 @@ export default function Page() {
                 <div className="text-2xl font-bold text-brand-green">
                   {m.maxMortgage ? CAD0.format(Math.round(m.maxMortgage)) : "—"}
                 </div>
+                <div className="text-xs text-brand-blue/70 mt-1">
+                  Binding ratio: {m.bindingCap}
+                </div>
               </div>
 
-              <p className="mt-3 text-xs text-brand-blue/70">
-                Uses your inputs and selected ratio limits ({m.gds}% / {m.tds}%). Actual qualification depends on lender/insurer policies.
-              </p>
+              {m.incMonthly <= 0 ? (
+                <p className="mt-3 text-xs text-red-700">
+                  Enter a positive household income to estimate affordability.
+                </p>
+              ) : (
+                <p className="mt-3 text-xs text-brand-blue/70">
+                  Uses your inputs and selected ratio limits ({m.gds}% / {m.tds}%). Actual qualification depends on lender/insurer policies.
+                </p>
+              )}
             </>
           ) : (
             <>
@@ -501,6 +520,11 @@ export default function Page() {
                     ? (m.scenarioPass ? "Scenario appears within selected GDS/TDS limits" : "Scenario appears above selected GDS/TDS limits")
                     : "Enter a price and down payment to check"}
                 </span>
+                {m.scenarioLoan > 0 && m.incMonthly <= 0 && (
+                  <p className="mt-2 text-xs text-red-700">
+                    Scenario cannot be assessed without positive household income.
+                  </p>
+                )}
               </div>
 
               <p className="mt-3 text-xs text-brand-blue/70">
@@ -525,7 +549,7 @@ export default function Page() {
 
       {/* Footer note / CTA */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Notes</h4>
           <ul className="list-disc pl-6 space-y-2 text-brand-body">
             <li>Qualifying rate uses the greater of your contract rate + 2% or the benchmark.</li>
@@ -534,17 +558,15 @@ export default function Page() {
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Need a human review?</h4>
           <p className="text-brand-body mb-3">We’ll translate this into a lender-ready plan and next steps.</p>
-          <Link href="/en/contact?intent=pre-approval" className="inline-flex">
-            <button
-              type="button"
-              className="px-6 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-              aria-label="Start a pre-approval"
-            >
-              Start a Pre-Approval
-            </button>
+          <Link
+            href="/en/contact?intent=pre-approval"
+            className="tool-btn-gold inline-flex px-6"
+            aria-label="Start a pre-approval"
+          >
+            Start a Pre-Approval
           </Link>
         </section>
       </div>

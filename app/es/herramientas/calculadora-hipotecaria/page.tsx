@@ -1,491 +1,473 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import type {
-  ElementType,
-  ComponentPropsWithoutRef,
-  ReactNode,
-  FormEvent,
-} from "react";
-import { FaHome, FaPrint, FaQuestionCircle } from "react-icons/fa";
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import ToolShell from "@/components/ToolShell";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-/* ---------- Componentes de estilo compartido (panel/tabla) ---------- */
-type PanelProps<T extends ElementType> = {
-  children: ReactNode;
-  className?: string;
-  as?: T;
-} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+/**
+ * Calculadora de Pagos Hipotecarios (Avanzada)
+ * --------------------------------------------------------------
+ * - Frecuencia de pago: Mensual / Quincenal / Quincenal acelerado
+ * - Totales por plazo vs. amortización completa
+ * - Extra opcional por periodo
+ * - Gráfico + vista previa del cronograma
+ * - Persistencia en localStorage
+ * - Herramienta educativa
+ */
 
-function Panel<T extends ElementType = "section">({
-  children,
-  className = "",
-  as,
-  ...rest
-}: PanelProps<T>) {
-  const Tag = (as || "section") as ElementType;
+const CAD0 = new Intl.NumberFormat("es-CA", {
+  style: "currency",
+  currency: "CAD",
+  maximumFractionDigits: 0,
+});
+const CAD2 = new Intl.NumberFormat("es-CA", {
+  style: "currency",
+  currency: "CAD",
+  minimumFractionDigits: 2,
+});
+
+const num = (s: string) => {
+  const x = Number(String(s).replace(/[^\d.-]/g, ""));
+  return Number.isFinite(x) ? x : 0;
+};
+
+type FreqKey = "monthly" | "biweekly" | "accelerated_biweekly";
+const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number }> = {
+  monthly: { label: "Mensual", periodsPerYear: 12 },
+  biweekly: { label: "Quincenal", periodsPerYear: 26 },
+  accelerated_biweekly: { label: "Quincenal acelerado", periodsPerYear: 26 },
+};
+
+function pmt(principal: number, annualRatePct: number, years: number, periodsPerYear: number) {
+  if (principal <= 0 || years <= 0 || periodsPerYear <= 0) return 0;
+  const r = (annualRatePct / 100) / periodsPerYear;
+  const nper = years * periodsPerYear;
+  if (r === 0) return principal / nper;
+  const pow = Math.pow(1 + r, nper);
+  return (principal * r * pow) / (pow - 1);
+}
+
+type Row = { period: number; interest: number; principal: number; balance: number };
+
+function buildSchedule(opts: {
+  principal: number;
+  annualRatePct: number;
+  amortYears: number;
+  periodsPerYear: number;
+  paymentOverride?: number;
+  extraPerPeriod?: number;
+  maxPeriods?: number;
+}): { rows: Row[]; totalInterest: number; totalPrincipal: number; paymentUsed: number } {
+  const {
+    principal,
+    annualRatePct,
+    amortYears,
+    periodsPerYear,
+    paymentOverride,
+    extraPerPeriod = 0,
+    maxPeriods,
+  } = opts;
+
+  if (principal <= 0 || amortYears <= 0 || periodsPerYear <= 0) {
+    return { rows: [], totalInterest: 0, totalPrincipal: 0, paymentUsed: 0 };
+  }
+
+  const r = (annualRatePct / 100) / periodsPerYear;
+  const nper = amortYears * periodsPerYear;
+  const base = pmt(principal, annualRatePct, amortYears, periodsPerYear);
+  const pay = paymentOverride && paymentOverride > 0 ? paymentOverride : base;
+
+  const rows: Row[] = [];
+  let bal = principal;
+  let ti = 0;
+  let tp = 0;
+  const stopAt = maxPeriods && maxPeriods > 0 ? Math.min(maxPeriods, nper) : nper;
+
+  for (let k = 1; k <= stopAt && bal > 0.01; k++) {
+    const interest = bal * r;
+    let principalPart = pay - interest + (extraPerPeriod || 0);
+    if (principalPart > bal) principalPart = bal;
+    bal = bal - principalPart;
+
+    ti += interest;
+    tp += principalPart;
+    rows.push({ period: k, interest, principal: principalPart, balance: Math.max(0, bal) });
+
+    if (bal <= 0.01) break;
+  }
+
+  return { rows, totalInterest: ti, totalPrincipal: tp, paymentUsed: pay };
+}
+
+const LS_KEY = "herramientas.calculadora_hipoteca.avanzada.v1";
+const DEFAULTS = {
+  principal: "600000",
+  rate: "5.25",
+  amortYears: "25",
+  termYears: "5",
+  freq: "monthly" as FreqKey,
+  extraPerPeriod: "0",
+};
+
+export default function Page() {
+  const [principalStr, setPrincipalStr] = useState(DEFAULTS.principal);
+  const [rateStr, setRateStr] = useState(DEFAULTS.rate);
+  const [amortYearsStr, setAmortYearsStr] = useState(DEFAULTS.amortYears);
+  const [termYearsStr, setTermYearsStr] = useState(DEFAULTS.termYears);
+  const [freq, setFreq] = useState<FreqKey>(DEFAULTS.freq);
+  const [extraPerPeriodStr, setExtraPerPeriodStr] = useState(DEFAULTS.extraPerPeriod);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        const v = JSON.parse(raw);
+        if (v && typeof v === "object") {
+          setPrincipalStr(v.principal ?? DEFAULTS.principal);
+          setRateStr(v.rate ?? DEFAULTS.rate);
+          setAmortYearsStr(v.amortYears ?? DEFAULTS.amortYears);
+          setTermYearsStr(v.termYears ?? DEFAULTS.termYears);
+          setFreq(v.freq ?? DEFAULTS.freq);
+          setExtraPerPeriodStr(v.extraPerPeriod ?? DEFAULTS.extraPerPeriod);
+        }
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        LS_KEY,
+        JSON.stringify({
+          principal: principalStr,
+          rate: rateStr,
+          amortYears: amortYearsStr,
+          termYears: termYearsStr,
+          freq,
+          extraPerPeriod: extraPerPeriodStr,
+        })
+      );
+    } catch {}
+  }, [principalStr, rateStr, amortYearsStr, termYearsStr, freq, extraPerPeriodStr]);
+
+  const m = useMemo(() => {
+    const pr = Math.max(0, num(principalStr));
+    const rate = Math.max(0, num(rateStr));
+    const amortYears = Math.max(1, num(amortYearsStr));
+    const termYears = Math.max(1, num(termYearsStr));
+    const extra = Math.max(0, num(extraPerPeriodStr));
+
+    const meta = FREQ_META[freq];
+    const periodsPerYear = meta.periodsPerYear;
+
+    const standardPayment = pmt(pr, rate, amortYears, periodsPerYear);
+    const monthlyStandard = pmt(pr, rate, amortYears, 12);
+    const acceleratedPayment = monthlyStandard / 2;
+
+    const paymentUsed = freq === "accelerated_biweekly" ? acceleratedPayment : standardPayment;
+
+    const termPeriods = termYears * periodsPerYear;
+    const termSchedule = buildSchedule({
+      principal: pr,
+      annualRatePct: rate,
+      amortYears,
+      periodsPerYear,
+      paymentOverride: freq === "accelerated_biweekly" ? acceleratedPayment : undefined,
+      extraPerPeriod: extra,
+      maxPeriods: termPeriods,
+    });
+
+    const balAfterTerm = termSchedule.rows.length
+      ? termSchedule.rows[termSchedule.rows.length - 1].balance
+      : pr;
+
+    const fullSchedule = buildSchedule({
+      principal: pr,
+      annualRatePct: rate,
+      amortYears,
+      periodsPerYear,
+      paymentOverride: freq === "accelerated_biweekly" ? acceleratedPayment : undefined,
+      extraPerPeriod: extra,
+    });
+
+    const totalPaidTerm = termSchedule.totalInterest + termSchedule.totalPrincipal;
+    const totalPaidFull = fullSchedule.totalInterest + fullSchedule.totalPrincipal;
+    const periodsToPayoff = fullSchedule.rows.length;
+
+    const chartData = [
+      { name: "Interés (plazo)", value: Math.max(0, termSchedule.totalInterest) },
+      { name: "Capital (plazo)", value: Math.max(0, termSchedule.totalPrincipal) },
+    ];
+
+    return {
+      pr,
+      rate,
+      amortYears,
+      termYears,
+      extra,
+      freq,
+      periodsPerYear,
+      paymentUsed,
+      termSchedule,
+      fullSchedule,
+      balAfterTerm,
+      totalPaidTerm,
+      totalPaidFull,
+      periodsToPayoff,
+      chartData,
+    };
+  }, [principalStr, rateStr, amortYearsStr, termYearsStr, freq, extraPerPeriodStr]);
+
+  const onPrint = () => window.print();
+  const onReset = () => {
+    setPrincipalStr(DEFAULTS.principal);
+    setRateStr(DEFAULTS.rate);
+    setAmortYearsStr(DEFAULTS.amortYears);
+    setTermYearsStr(DEFAULTS.termYears);
+    setFreq(DEFAULTS.freq);
+    setExtraPerPeriodStr(DEFAULTS.extraPerPeriod);
+  };
+
+  const palette = ["#0f766e", "#9a6b2f"];
+  const pieHasValues = m.chartData.some((d) => d.value > 0);
+
   return (
-    <Tag
-      className={[
-        "max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-12",
-        "bg-white/95 rounded-[28px] border border-brand-gold shadow-xl",
-        "backdrop-blur-[1px]",
-        className,
-      ].join(" ")}
-      {...rest}
+    <ToolShell
+      title="Calculadora de Pagos Hipotecarios"
+      subtitle="Estima pagos por frecuencia, revisa interés/capital durante tu plazo y previsualiza la amortización."
+      lang="es"
     >
-      {children}
-    </Tag>
-  );
-}
-
-function SectionTitle({
-  title,
-  subtitle,
-  center = true,
-}: {
-  title: string;
-  subtitle?: ReactNode;
-  center?: boolean;
-}) {
-  return (
-    <div className={center ? "text-center mb-6" : "mb-6"}>
-      <h1 className="font-brand font-bold text-4xl md:text-5xl text-brand-green tracking-tight">
-        {title}
-      </h1>
-      <div className="flex justify-center my-4">
-        <div className="w-16 h-[3px] rounded-full bg-brand-gold" />
+      <div className="tool-actions">
+        <button type="button" onClick={onPrint} className="tool-btn-blue">
+          Imprimir o guardar PDF
+        </button>
+        <button type="button" onClick={onReset} className="tool-btn-gold">
+          Restablecer valores
+        </button>
       </div>
-      {subtitle && (
-        <p className="text-brand-blue/90 text-lg md:text-xl max-w-3xl mx-auto">{subtitle}</p>
-      )}
-    </div>
-  );
-}
-/* ------------------------------------------------------------------- */
 
-/** Pago mensual estimado para hipoteca fija (estándar Canadá) */
-function calcMortgage(principal: number, ratePct: number, years: number): number {
-  const r = ratePct / 100 / 12;
-  const n = Math.max(1, years * 12);
-  if (r === 0) return principal / n;
-  return (principal * r) / (1 - Math.pow(1 + r, -n));
-}
+      <form className="grid xl:grid-cols-2 gap-6">
+        <section className="tool-card grid gap-3">
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Entradas</h3>
 
-const fmt = (n: number) =>
-  (Number.isFinite(n) ? n : 0).toLocaleString("es-CA", {
-    style: "currency",
-    currency: "CAD",
-    maximumFractionDigits: 0,
-  });
-
-export default function CalculadoraHipotecaria() {
-  // Entradas
-  const [precio, setPrecio] = useState<string>("");
-  const [enganche, setEnganche] = useState<string>("");
-  const [tasa, setTasa] = useState<string>("");
-  const [anios, setAnios] = useState<number>(25);
-
-  const [multi, setMulti] = useState<boolean>(false);
-  const [unidades, setUnidades] = useState<number>(4);
-  const [rentaUnidad, setRentaUnidad] = useState<string>("");
-
-  const [mostrarResultados, setMostrarResultados] = useState(false);
-  const resultadosRef = useRef<HTMLDivElement>(null);
-
-  // Derivados
-  const precioNum = parseFloat(precio) || 0;
-  const engancheNum = parseFloat(enganche) || 0;
-  const prestamo = Math.max(0, precioNum - engancheNum);
-  const tasaNum = parseFloat(tasa) || 0;
-
-  const mensual = useMemo(
-    () => calcMortgage(prestamo, tasaNum, anios),
-    [prestamo, tasaNum, anios]
-  );
-  const totalPagado = mensual * anios * 12;
-  const interesTotal = totalPagado - prestamo;
-
-  const rentaPorUnidad = parseFloat(rentaUnidad) || 0;
-  const rentaTotal = multi && unidades > 0 ? rentaPorUnidad * unidades : 0;
-  const pagoPorUnidad = multi && unidades > 0 ? mensual / unidades : mensual;
-  const flujoCaja = multi ? rentaTotal - mensual : null;
-
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setMostrarResultados(true);
-    setTimeout(() => resultadosRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-  }
-
-  function handleReset() {
-    setPrecio("");
-    setEnganche("");
-    setTasa("");
-    setAnios(25);
-    setMulti(false);
-    setUnidades(4);
-    setRentaUnidad("");
-    setMostrarResultados(false);
-  }
-
-  function handlePrint() {
-    window.print();
-  }
-
-  const fechaImpresion = new Date().toLocaleDateString("es-CA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-  return (
-    <main className="bg-brand-beige min-h-screen pb-16 print:bg-white">
-      {/* HERO */}
-      <header className="pt-10 px-4 print:hidden">
-        <Panel as="div">
-          <div className="flex justify-center mb-4">
-            <div className="rounded-full bg-brand-blue/10 border w-16 h-16 flex items-center justify-center shadow">
-              <FaHome className="text-brand-blue text-2xl" aria-hidden />
-            </div>
-          </div>
-          <SectionTitle
-            title="Calculadora de Hipoteca"
-            subtitle={
-              <>
-                Estima tu pago mensual en segundos—para vivienda unifamiliar o multi-unidad.
-                Privada, bilingüe y lista para imprimir, para compartir con tu familia o agente.
-              </>
-            }
-          />
-        </Panel>
-      </header>
-
-      {/* FORMULARIO */}
-      <section className="px-4 mt-8 print:hidden">
-        <Panel as="form" onSubmit={handleSubmit}>
-          <h2 className="font-brand text-2xl md:text-3xl text-brand-green font-semibold mb-6">
-            Ingresa los detalles de tu hipoteca
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-brand-blue font-semibold mb-1" htmlFor="precio">
-                Precio de la propiedad (CAD)
-              </label>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <label className="block">
+              <span className="block text-sm text-brand-blue/80">Monto de hipoteca (principal)</span>
               <input
-                id="precio"
-                type="number"
-                min={0}
+                value={principalStr}
+                onChange={(e) => setPrincipalStr(e.target.value)}
                 inputMode="decimal"
-                value={precio}
-                onChange={(e) => setPrecio(e.target.value)}
-                placeholder="Ej: 800000"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                className="mt-1 tool-field"
               />
-            </div>
-
-            <div>
-              <label className="block text-brand-blue font-semibold mb-1" htmlFor="enganche">
-                Enganche (CAD)
-              </label>
+            </label>
+            <label className="block">
+              <span className="block text-sm text-brand-blue/80">Tasa de interés (anual %)</span>
               <input
-                id="enganche"
-                type="number"
-                min={0}
+                value={rateStr}
+                onChange={(e) => setRateStr(e.target.value)}
                 inputMode="decimal"
-                value={enganche}
-                onChange={(e) => setEnganche(e.target.value)}
-                placeholder="Ej: 160000"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
+                className="mt-1 tool-field"
               />
-            </div>
-
-            <div>
-              <label className="block text-brand-blue font-semibold mb-1" htmlFor="tasa">
-                Tasa de interés (anual %)
-              </label>
-              <input
-                id="tasa"
-                type="number"
-                step="0.01"
-                min={0}
-                max={25}
-                inputMode="decimal"
-                value={tasa}
-                onChange={(e) => setTasa(e.target.value)}
-                placeholder="Ej: 5.20"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-brand-blue font-semibold mb-1" htmlFor="anios">
-                Amortización (años)
-              </label>
-              <input
-                id="anios"
-                type="number"
-                min={5}
-                max={35}
-                value={anios}
-                onChange={(e) => setAnios(Number(e.target.value))}
-                placeholder="Ej: 25"
-                required
-                className="w-full px-4 py-3 rounded-xl border-2 border-brand-green/30 bg-white text-brand-body placeholder:text-brand-body/60 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/30 outline-none"
-              />
-            </div>
-          </div>
-
-          {/* Multi-unidad */}
-          <div className="mt-6">
-            <label className="inline-flex items-center gap-3">
-              <input
-                type="checkbox"
-                className="w-5 h-5 accent-brand-blue"
-                checked={multi}
-                onChange={() => setMulti((v) => !v)}
-              />
-              <span className="text-brand-blue font-semibold">Esta propiedad es multi-unidad</span>
             </label>
           </div>
 
-          {multi && (
-            <div className="mt-4 rounded-2xl border border-brand-blue/40 bg-brand-blue/5 p-4">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-brand-blue font-semibold mb-1" htmlFor="unidades">
-                    Número de unidades
-                  </label>
-                  <input
-                    id="unidades"
-                    type="number"
-                    min={2}
-                    max={12}
-                    value={unidades}
-                    onChange={(e) => setUnidades(Number(e.target.value))}
-                    placeholder="Ej: 4"
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-brand-blue/40 bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-brand-blue font-semibold mb-1" htmlFor="renta">
-                    Renta estimada por unidad (mensual, CAD)
-                  </label>
-                  <input
-                    id="renta"
-                    type="number"
-                    min={0}
-                    inputMode="decimal"
-                    value={rentaUnidad}
-                    onChange={(e) => setRentaUnidad(e.target.value)}
-                    placeholder="Ej: 2200"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-blue/40 bg-white"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Acciones */}
-          <div className="mt-6 grid sm:grid-cols-3 gap-3">
-            <button
-              type="submit"
-              className="px-6 py-3 bg-brand-gold text-brand-green font-sans font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition"
-            >
-              Calcular
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="px-6 py-3 border-2 border-brand-gold text-brand-green font-sans font-bold rounded-full hover:bg-brand-gold hover:text-brand-green transition"
-            >
-              Reiniciar
-            </button>
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="px-6 py-3 bg-brand-blue text-white font-sans font-bold rounded-full shadow hover:bg-brand-gold hover:text-brand-green transition"
-            >
-              Imprimir (PDF)
-            </button>
-          </div>
-        </Panel>
-      </section>
-
-      {/* RESULTADOS */}
-      {mostrarResultados && (
-        <section ref={resultadosRef} className="px-4 mt-8">
-          <Panel>
-            {/* Encabezado impresión */}
-            <div className="hidden print:block mb-2 text-center">
-              <Image
-                src="/fanny-logo.png"
-                alt="Logo Fanny Samaniego"
-                width={96}
-                height={96}
-                className="mx-auto"
+          <div className="grid sm:grid-cols-3 gap-3">
+            <label className="block">
+              <span className="block text-sm text-brand-blue/80">Amortización (años)</span>
+              <input
+                value={amortYearsStr}
+                onChange={(e) => setAmortYearsStr(e.target.value)}
+                inputMode="numeric"
+                className="mt-1 tool-field"
               />
-              <div className="font-sans font-bold text-brand-green">
-                Fanny Samaniego — Coach & Asesora Financiera Holística
+            </label>
+            <label className="block">
+              <span className="block text-sm text-brand-blue/80">Plazo (años)</span>
+              <input
+                value={termYearsStr}
+                onChange={(e) => setTermYearsStr(e.target.value)}
+                inputMode="numeric"
+                className="mt-1 tool-field"
+              />
+            </label>
+            <label className="block">
+              <span className="block text-sm text-brand-blue/80">Frecuencia de pago</span>
+              <select
+                value={freq}
+                onChange={(e) => setFreq(e.target.value as FreqKey)}
+                className="mt-1 tool-field bg-white"
+              >
+                <option value="monthly">Mensual</option>
+                <option value="biweekly">Quincenal</option>
+                <option value="accelerated_biweekly">Quincenal acelerado</option>
+              </select>
+            </label>
+          </div>
+
+          <label className="block">
+            <span className="block text-sm text-brand-blue/80">Extra por periodo (opcional)</span>
+            <input
+              value={extraPerPeriodStr}
+              onChange={(e) => setExtraPerPeriodStr(e.target.value)}
+              inputMode="decimal"
+              className="mt-1 tool-field"
+            />
+          </label>
+
+          <p className="text-xs text-brand-blue/70">
+            Nota: &quot;Quincenal acelerado&quot; usa la mitad del pago mensual estándar, pagado 26 veces por año.
+            Esto acelera la reducción de capital y disminuye el interés total.
+          </p>
+        </section>
+
+        <section className="tool-card">
+          <h3 className="font-sans text-lg text-brand-green font-semibold">Resultados</h3>
+
+          <div className="grid sm:grid-cols-2 gap-4 mt-2">
+            <div>
+              <div className="text-sm text-brand-blue/80">Pago por periodo</div>
+              <div className="text-2xl font-bold text-brand-green">
+                {m.paymentUsed ? CAD2.format(m.paymentUsed) : "—"}
               </div>
-              <div className="text-xs text-brand-blue">Preparado el {fechaImpresion}</div>
-              <div className="w-16 h-[2px] bg-brand-gold rounded-full mx-auto mt-2" />
-            </div>
-
-            <h2 className="font-brand text-2xl md:text-3xl text-brand-green font-semibold mb-4 text-center">
-              Resumen de Hipoteca
-            </h2>
-
-            {/* Tabla resumen */}
-            <div className="rounded-2xl border border-brand-gold/60 p-5 bg-white/70 max-w-3xl mx-auto">
-              <table className="w-full text-left border-separate border-spacing-y-2">
-                <tbody>
-                  <tr>
-                    <td className="text-brand-blue font-semibold pr-3">Precio de la propiedad</td>
-                    <td>{fmt(precioNum)}</td>
-                  </tr>
-                  <tr>
-                    <td className="text-brand-blue font-semibold pr-3">Enganche</td>
-                    <td>{fmt(engancheNum)}</td>
-                  </tr>
-                  <tr>
-                    <td className="text-brand-blue font-semibold pr-3">Monto del préstamo</td>
-                    <td>{fmt(prestamo)}</td>
-                  </tr>
-                  <tr>
-                    <td className="text-brand-blue font-semibold pr-3">Tasa de interés</td>
-                    <td>{(tasaNum || 0).toFixed(2)}%</td>
-                  </tr>
-                  <tr>
-                    <td className="text-brand-blue font-semibold pr-3">Amortización</td>
-                    <td>{anios} años</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className="mt-3 text-lg">
-                <div className="flex justify-between py-1">
-                  <span className="font-semibold text-brand-green">Pago mensual estimado</span>
-                  <span className="font-semibold">{fmt(mensual)}</span>
-                </div>
-                <div className="flex justify-between text-brand-body/80">
-                  <span>Total pagado en {anios} años</span>
-                  <span>{fmt(totalPagado)}</span>
-                </div>
-                <div className="flex justify-between text-brand-body/80">
-                  <span>Interés total</span>
-                  <span>{fmt(interesTotal)}</span>
-                </div>
+              <div className="text-xs text-brand-blue/70">
+                {FREQ_META[m.freq].label} ({m.periodsPerYear}x/año){m.extra > 0 ? " + extra" : ""}
               </div>
             </div>
+            <div>
+              <div className="text-sm text-brand-blue/80">Periodos para pagar (estimado)</div>
+              <div className="text-2xl font-bold text-brand-green">{m.periodsToPayoff || "—"}</div>
+              <div className="text-xs text-brand-blue/70">Incluye extras si aplican</div>
+            </div>
+          </div>
 
-            {/* Detalle multi-unidad */}
-            {multi && (
-              <div className="mt-6 rounded-2xl border border-brand-blue/40 p-5 bg-brand-blue/5 max-w-3xl mx-auto">
-                <h3 className="font-sans text-xl text-brand-blue font-semibold mb-2">
-                  Vista rápida multi-unidad
-                </h3>
-                <table className="w-full text-left border-separate border-spacing-y-2">
-                  <tbody>
-                    <tr>
-                      <td className="text-brand-blue font-semibold pr-3">Unidades</td>
-                      <td>{unidades}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-brand-blue font-semibold pr-3">Renta por unidad</td>
-                      <td>{fmt(rentaPorUnidad)}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-brand-blue font-semibold pr-3">Renta total mensual</td>
-                      <td>{fmt(rentaTotal)}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-brand-blue font-semibold pr-3">Pago por unidad</td>
-                      <td>{fmt(pagoPorUnidad)}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-brand-blue font-semibold pr-3">Flujo de caja</td>
-                      <td
-                        className={
-                          (Number(flujoCaja) ?? 0) >= 0
-                            ? "text-brand-green font-semibold"
-                            : "text-red-600 font-semibold"
-                        }
-                      >
-                        {fmt(Math.abs(flujoCaja ?? 0))}{" "}
-                        {(Number(flujoCaja) ?? 0) >= 0 ? "(positivo)" : "(déficit)"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p className="mt-2 text-sm text-brand-body/80">
-                  Nota: Para calificación, muchos prestamistas consideran entre 50% y 80% del ingreso por renta.
-                  Planea contingencias por vacancia y mantenimiento.
-                </p>
+          <div className="grid sm:grid-cols-3 gap-4 mt-4">
+            <div>
+              <div className="text-sm text-brand-blue/80">Interés durante el plazo</div>
+              <div className="text-xl font-semibold">{CAD0.format(Math.round(m.termSchedule.totalInterest))}</div>
+            </div>
+            <div>
+              <div className="text-sm text-brand-blue/80">Capital durante el plazo</div>
+              <div className="text-xl font-semibold">{CAD0.format(Math.round(m.termSchedule.totalPrincipal))}</div>
+            </div>
+            <div>
+              <div className="text-sm text-brand-blue/80">Saldo al final del plazo</div>
+              <div className="text-xl font-semibold">{CAD0.format(Math.round(m.balAfterTerm))}</div>
+            </div>
+          </div>
+
+          <div className="mt-6 h-64 rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-2">
+            {pieHasValues ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip formatter={(val: number | string) => CAD0.format(Math.round(Number(val)))} />
+                  <Pie
+                    data={m.chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={90}
+                    paddingAngle={2}
+                  >
+                    {m.chartData.map((_, i) => (
+                      <Cell key={i} fill={palette[i % palette.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-sm text-brand-blue/70">
+                Ingresa valores para ver el gráfico.
               </div>
             )}
+          </div>
 
-            {/* Botón imprimir */}
-            <div className="mt-6 text-center print:hidden">
-              <button
-                onClick={handlePrint}
-                type="button"
-                className="px-6 py-3 bg-brand-gold text-brand-green font-sans font-bold rounded-full shadow hover:bg-brand-blue hover:text-white transition inline-flex items-center gap-2"
-              >
-                <FaPrint aria-hidden /> Imprimir resultados (PDF)
-              </button>
+          <div className="mt-6">
+            <h4 className="font-semibold text-brand-green mb-2">
+              Vista previa (primeros 24 periodos {FREQ_META[m.freq].label.toLowerCase()})
+            </h4>
+            <div className="overflow-auto rounded-xl border border-brand-gold/40">
+              <table className="w-full text-sm">
+                <thead className="bg-brand-beige/40 text-brand-blue">
+                  <tr>
+                    <th className="text-left px-3 py-2">#</th>
+                    <th className="text-right px-3 py-2">Interés</th>
+                    <th className="text-right px-3 py-2">Capital</th>
+                    <th className="text-right px-3 py-2">Saldo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {m.termSchedule.rows.slice(0, 24).map((r) => (
+                    <tr key={r.period} className="border-t">
+                      <td className="px-3 py-2">{r.period}</td>
+                      <td className="px-3 py-2 text-right">{CAD2.format(r.interest)}</td>
+                      <td className="px-3 py-2 text-right">{CAD2.format(r.principal)}</td>
+                      <td className="px-3 py-2 text-right">{CAD2.format(r.balance)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </Panel>
-        </section>
-      )}
 
-      {/* FAQ / Guía */}
-      <section className="px-4 mt-8 print:hidden">
-        <Panel>
-          <div className="flex items-center gap-2 mb-4">
-            <FaQuestionCircle className="text-brand-blue text-2xl" aria-hidden />
-            <h3 className="font-sans text-2xl text-brand-green font-semibold m-0">
-              Preguntas frecuentes y guía
-            </h3>
+            <p className="mt-3 text-sm">
+              ¿Quieres el detalle completo periodo a periodo?{" "}
+              <Link href="/es/herramientas/tabla-amortizacion" className="underline">
+                Abre la Tabla de Amortización
+              </Link>
+              .
+            </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 text-brand-body">
-            <ul className="list-disc pl-6 space-y-2">
+
+          <div className="mt-6 rounded-xl border border-brand-gold/40 bg-brand-beige/40 p-4">
+            <h4 className="font-semibold text-brand-green mb-2">Herramientas similares</h4>
+            <ul className="list-disc ml-5 text-sm space-y-1">
               <li>
-                <b>¿Cómo se calcula el pago?</b> Usamos la fórmula estándar canadiense según monto del
-                préstamo, tasa de interés y amortización.
+                <Link href="/es/herramientas/prueba-esfuerzo" className="underline">
+                  Asequibilidad y Prueba de Esfuerzo
+                </Link>
               </li>
               <li>
-                <b>¿Y el plazo (term)?</b> El plazo es distinto de la amortización. Muchos compradores
-                eligen 3–5 años fijo, pero depende de tu tolerancia al riesgo y tus planes.
+                <Link href="/es/herramientas/pago-inicial-seguro" className="underline">
+                  Pago Inicial y Seguro CMHC
+                </Link>
               </li>
               <li>
-                <b>¿Incluye impuestos o seguro?</b> No. Esta herramienta estima solo la hipoteca. Agrega
-                impuesto predial, seguro, cuotas de condominio, servicios y mantenimiento.
-              </li>
-            </ul>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>
-                <b>¿Financiamiento multi-unidad?</b> A partir de 4+ unidades aplican reglas distintas
-                (DSCR, rentas, NOI). Agenda una llamada para un plan a tu medida.
+                <Link href="/es/herramientas/tabla-amortizacion" className="underline">
+                  Tabla de Amortización y Prepagos
+                </Link>
               </li>
               <li>
-                <b>¿Escenarios personalizados?</b> Modelamos cambios de tasa, pagos anticipados y
-                opciones de refinanciación.
-              </li>
-              <li>
-                <a href="/es/contacto" className="text-brand-blue font-bold underline hover:text-brand-gold">
-                  Contacta a Fanny y Equipo
-                </a>{" "}
-                para una evaluación personalizada.
+                <Link href="/es/herramientas/costos-cierre" className="underline">
+                  Estimador de Costos de Cierre
+                </Link>
               </li>
             </ul>
           </div>
-        </Panel>
-      </section>
-    </main>
+        </section>
+      </form>
+
+      <style jsx global>{`
+        @media print {
+          .print\\:hidden {
+            display: none !important;
+          }
+          main {
+            background: white !important;
+          }
+          header,
+          section {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+        }
+      `}</style>
+
+      <p className="mt-6 text-xs text-brand-blue/70">
+        Estimación educativa. Los cálculos usan capitalización por periodo y pueden diferir de métodos de prestamistas.
+        Confirma pagos exactos con tu prestamista.
+      </p>
+    </ToolShell>
   );
 }

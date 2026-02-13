@@ -190,18 +190,18 @@ export default function Page() {
       lang="es"
     >
       {/* Acciones */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Imprimir / Guardar PDF
+          Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
           Restablecer valores
         </button>
@@ -209,7 +209,7 @@ export default function Page() {
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Entradas */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
+        <section className="tool-card grid gap-4">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Entradas</h3>
 
           <label className="block">
@@ -218,7 +218,7 @@ export default function Page() {
               value={priceStr}
               onChange={(e) => setPriceStr(e.target.value)}
               inputMode="decimal"
-              className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="mt-1 tool-field"
               aria-label="Precio de compra"
             />
           </label>
@@ -273,7 +273,7 @@ export default function Page() {
         </section>
 
         {/* Resultados */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Resultados</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">
@@ -382,7 +382,7 @@ export default function Page() {
       </form>
 
       {/* Notas / aviso */}
-      <div className="mt-8 rounded-2xl border border-brand-gold bg-white p-5">
+      <div className="mt-8 tool-card">
         <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Notas</h4>
         <ul className="list-disc pl-6 space-y-2 text-brand-body">
           <li>Tramos Ontario: 0.5% hasta $55k; 1.0% $55k–$250k; 1.5% $250k–$400k; 2.0% $400k–$2M; 2.5% sobre $2M (1–2 viviendas unifamiliares).</li>

@@ -213,16 +213,16 @@ export default function Page() {
       lang="en"
     >
       {/* Top actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
-        <button type="button" onClick={printPage} className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition">Print / Save as PDF</button>
-        <button type="button" onClick={exportCSV} className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition">Export (CSV)</button>
-        <button type="button" onClick={resetAll} className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition">Reset to defaults</button>
+      <div className="tool-actions">
+        <button type="button" onClick={printPage} className="tool-btn-blue">Print or Save PDF</button>
+        <button type="button" onClick={exportCSV} className="tool-btn-green">Export (CSV)</button>
+        <button type="button" onClick={resetAll} className="tool-btn-gold">Reset values</button>
       </div>
 
       {/* Single column normally; 2xl -> 5-column grid with span (Income 2, Expenses 3) */}
       <form className="grid grid-cols-1 2xl:grid-cols-5 gap-6">
         {/* Income & guidance */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 grid gap-4 2xl:col-span-2">
+        <section className="tool-card-compact grid gap-4 2xl:col-span-2">
           <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold">Income (take-home)</h3>
 
           {/* Mobile stacked */}
@@ -331,7 +331,7 @@ export default function Page() {
         </section>
 
         {/* Expenses (single column except ultra-wide) */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 grid gap-6 2xl:col-span-3">
+        <section className="tool-card-compact grid gap-6 2xl:col-span-3">
           <h3 className="font-sans text-base md:text-lg text-brand-green font-semibold">Expenses</h3>
 
           {/* ----- NEEDS ----- */}
@@ -560,7 +560,7 @@ export default function Page() {
       </form>
 
       {/* Similar tools */}
-      <div className="mt-6 rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
+      <div className="mt-6 tool-card-compact">
         <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">Similar tools</h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li><Link href="/en/tools/net-worth" className="underline">Net Worth Tracker</Link></li>

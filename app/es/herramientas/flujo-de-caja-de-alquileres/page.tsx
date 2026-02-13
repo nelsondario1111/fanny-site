@@ -148,7 +148,8 @@ export default function Page() {
     const noiAnnual = egiAnnual - totalOpexAnnual;
 
     const monthlyPmt = monthlyPayment(loanAmount, Math.max(0, ratePct), Math.max(1, amortYears));
-    const adsAnnual = ratePct > 0 && loanAmount > 0 ? monthlyPmt * 12 : 0;
+    // Incluye pago de principal aunque la tasa sea 0% (financiamiento sin interés).
+    const adsAnnual = loanAmount > 0 ? monthlyPmt * 12 : 0;
 
     const cashFlowBeforeTax = noiAnnual - adsAnnual;
 
@@ -307,44 +308,44 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de herramientas */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar un resumen detallado"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV
+          <FaFileCsv aria-hidden /> Exportar (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Compra y financiamiento */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Compra y financiamiento</h3>
           <label className="block text-sm font-medium text-brand-blue mb-1">Precio de compra (CAD)</label>
           <input
             type="number"
             min={0}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field-lg"
             value={purchasePrice}
             onChange={(e) => setPurchasePrice(Number(e.target.value || 0))}
           />
@@ -355,7 +356,7 @@ export default function Page() {
             max={100}
             step={0.1}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field-lg"
             value={downPct}
             onChange={(e) => setDownPct(Number(e.target.value || 0))}
           />
@@ -364,7 +365,7 @@ export default function Page() {
             type="number"
             min={0}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field-lg"
             value={closingCosts}
             onChange={(e) => setClosingCosts(Number(e.target.value || 0))}
           />
@@ -373,7 +374,7 @@ export default function Page() {
             type="number"
             min={0}
             inputMode="decimal"
-            className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+            className="tool-field-lg"
             value={initialRepairs}
             onChange={(e) => setInitialRepairs(Number(e.target.value || 0))}
           />
@@ -386,7 +387,7 @@ export default function Page() {
                 min={0}
                 max={25}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={ratePct}
                 onChange={(e) => setRatePct(Number(e.target.value || 0))}
               />
@@ -394,7 +395,7 @@ export default function Page() {
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Amortización (años)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={amortYears}
                 onChange={(e) => setAmortYears(Number(e.target.value))}
               >
@@ -405,12 +406,12 @@ export default function Page() {
             </div>
           </div>
           <p className="text-xs text-brand-blue/70 mt-1">
-            El monto del préstamo se deriva del precio y el pago inicial. Pon tasa 0% para modelar compra al contado.
+            El monto del préstamo se deriva del precio y el pago inicial. Usa 100% de pago inicial para modelar compra al contado.
           </p>
         </section>
 
         {/* Ingreso por alquiler */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Ingreso por alquiler</h3>
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-12 font-semibold text-sm text-brand-blue">
@@ -419,10 +420,10 @@ export default function Page() {
               <div className="col-span-1 text-right"> </div>
             </div>
             {units.map((u) => (
-              <div key={u.id} className="grid grid-cols-12 items-center gap-2">
+              <div key={u.id} className="grid grid-cols-1 sm:grid-cols-12 items-center gap-2">
                 <input
                   type="text"
-                  className="col-span-6 rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="sm:col-span-6 tool-field"
                   value={u.label}
                   onChange={(e) => updateUnit(u.id, { label: e.target.value })}
                 />
@@ -430,14 +431,14 @@ export default function Page() {
                   type="number"
                   min={0}
                   inputMode="decimal"
-                  className="col-span-5 rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="sm:col-span-5 tool-field text-right"
                   value={u.rent}
                   onChange={(e) => updateUnit(u.id, { rent: Number(e.target.value || 0) })}
                 />
                 <button
                   type="button"
                   onClick={() => removeUnit(u.id)}
-                  className="col-span-1 justify-self-end text-brand-blue/70 hover:text-brand-blue"
+                  className="sm:col-span-1 justify-self-end text-brand-blue/70 hover:text-brand-blue"
                   title="Eliminar unidad"
                   aria-label={`Eliminar ${u.label}`}
                 >
@@ -449,7 +450,7 @@ export default function Page() {
               <button
                 type="button"
                 onClick={addUnit}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+                className="tool-btn-green"
               >
                 <FaPlus aria-hidden /> Agregar unidad
               </button>
@@ -465,7 +466,7 @@ export default function Page() {
                 max={100}
                 step={0.1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={vacancyPct}
                 onChange={(e) => setVacancyPct(Number(e.target.value || 0))}
               />
@@ -476,7 +477,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={otherIncomeMonthly}
                 onChange={(e) => setOtherIncomeMonthly(Number(e.target.value || 0))}
               />
@@ -497,7 +498,7 @@ export default function Page() {
         </section>
 
         {/* Gastos operativos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Gastos operativos</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -506,7 +507,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={taxesMonthly}
                 onChange={(e) => setTaxesMonthly(Number(e.target.value || 0))}
               />
@@ -517,7 +518,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={insuranceMonthly}
                 onChange={(e) => setInsuranceMonthly(Number(e.target.value || 0))}
               />
@@ -528,7 +529,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={utilitiesMonthly}
                 onChange={(e) => setUtilitiesMonthly(Number(e.target.value || 0))}
               />
@@ -539,7 +540,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={condoHOAMonthly}
                 onChange={(e) => setCondoHOAMonthly(Number(e.target.value || 0))}
               />
@@ -550,7 +551,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={lawnSnowMonthly}
                 onChange={(e) => setLawnSnowMonthly(Number(e.target.value || 0))}
               />
@@ -561,7 +562,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={otherFixedMonthly}
                 onChange={(e) => setOtherFixedMonthly(Number(e.target.value || 0))}
               />
@@ -577,7 +578,7 @@ export default function Page() {
                 max={100}
                 step={0.1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={mgmtPctEGI}
                 onChange={(e) => setMgmtPctEGI(Number(e.target.value || 0))}
               />
@@ -590,7 +591,7 @@ export default function Page() {
                 max={100}
                 step={0.1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={maintenancePctGPR}
                 onChange={(e) => setMaintenancePctGPR(Number(e.target.value || 0))}
               />
@@ -603,7 +604,7 @@ export default function Page() {
                 max={100}
                 step={0.1}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={capexPctGPR}
                 onChange={(e) => setCapexPctGPR(Number(e.target.value || 0))}
               />
@@ -626,7 +627,7 @@ export default function Page() {
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
         {/* Resumen de ingresos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Ingresos (anual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Alquiler Bruto Potencial (GPR)</span><span className="font-medium">{money(gprRentAnnual)}</span></div>
@@ -637,7 +638,7 @@ export default function Page() {
         </section>
 
         {/* Gastos operativos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Gastos operativos (anual)</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Gastos fijos</span><span className="font-medium">−{money(fixedOpexAnnual)}</span></div>
@@ -650,7 +651,7 @@ export default function Page() {
         </section>
 
         {/* Rendimientos y deuda */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Rendimientos y deuda</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Servicio anual de la deuda (ADS)</span><span className="font-medium">−{money(adsAnnual)}</span></div>

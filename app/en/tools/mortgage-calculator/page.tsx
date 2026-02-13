@@ -36,9 +36,10 @@ const FREQ_META: Record<FreqKey, { label: string; periodsPerYear: number; }> = {
 };
 
 function pmt(principal: number, annualRatePct: number, years: number, periodsPerYear: number) {
-  if (principal <= 0 || annualRatePct <= 0 || years <= 0 || periodsPerYear <= 0) return 0;
+  if (principal <= 0 || years <= 0 || periodsPerYear <= 0) return 0;
   const r = (annualRatePct / 100) / periodsPerYear;
   const nper = years * periodsPerYear;
+  if (r === 0) return principal / nper;
   const pow = Math.pow(1 + r, nper);
   return (principal * r * pow) / (pow - 1);
 }
@@ -57,7 +58,7 @@ function buildSchedule(opts: {
 }): { rows: Row[]; totalInterest: number; totalPrincipal: number; paymentUsed: number } {
   const { principal, annualRatePct, amortYears, periodsPerYear, paymentOverride, extraPerPeriod = 0, maxPeriods } = opts;
 
-  if (principal <= 0 || annualRatePct <= 0 || amortYears <= 0) {
+  if (principal <= 0 || amortYears <= 0 || periodsPerYear <= 0) {
     return { rows: [], totalInterest: 0, totalPrincipal: 0, paymentUsed: 0 };
   }
 
@@ -240,26 +241,26 @@ export default function Page() {
       lang="en"
     >
       {/* Actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Print / Save as PDF
+          Print or Save PDF
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
-          Reset to defaults
+          Reset values
         </button>
       </div>
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Inputs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Inputs</h3>
 
           <div className="grid sm:grid-cols-2 gap-3">
@@ -269,7 +270,7 @@ export default function Page() {
                 value={principalStr}
                 onChange={(e) => setPrincipalStr(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -278,7 +279,7 @@ export default function Page() {
                 value={rateStr}
                 onChange={(e) => setRateStr(e.target.value)}
                 inputMode="decimal"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
           </div>
@@ -290,7 +291,7 @@ export default function Page() {
                 value={amortYearsStr}
                 onChange={(e) => setAmortYearsStr(e.target.value)}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -299,7 +300,7 @@ export default function Page() {
                 value={termYearsStr}
                 onChange={(e) => setTermYearsStr(e.target.value)}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="mt-1 tool-field"
               />
             </label>
             <label className="block">
@@ -307,7 +308,7 @@ export default function Page() {
               <select
                 value={freq}
                 onChange={(e) => setFreq(e.target.value as FreqKey)}
-                className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 bg-white"
+                className="mt-1 tool-field bg-white"
               >
                 <option value="monthly">Monthly</option>
                 <option value="biweekly">Bi-weekly</option>
@@ -322,7 +323,7 @@ export default function Page() {
               value={extraPerPeriodStr}
               onChange={(e) => setExtraPerPeriodStr(e.target.value)}
               inputMode="decimal"
-              className="mt-1 w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="mt-1 tool-field"
             />
           </label>
 
@@ -333,7 +334,7 @@ export default function Page() {
         </section>
 
         {/* Results + Chart */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Results</h3>
 
           <div className="grid sm:grid-cols-2 gap-4 mt-2">

@@ -252,33 +252,33 @@ export default function Page() {
       lang="en"
     >
       {/* Actions */}
-      <div className="flex flex-wrap gap-2 mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={onPrint}
-          className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
         >
-          Print / Save as PDF
+          Print or Save PDF
         </button>
         <button
           type="button"
           onClick={onExportCSV}
-          className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+          className="tool-btn-green"
         >
           Export (CSV)
         </button>
         <button
           type="button"
           onClick={onReset}
-          className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-gold"
         >
-          Reset to defaults
+          Reset values
         </button>
       </div>
 
       <form className="grid xl:grid-cols-2 gap-6">
         {/* Left: Assets */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
+        <section className="tool-card grid gap-4">
           <div className="flex items-center justify-between">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Assets</h3>
             <button type="button" onClick={addAssetSection} className="underline">+ Add asset section</button>
@@ -308,7 +308,7 @@ export default function Page() {
         </section>
 
         {/* Right: Liabilities */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-4">
+        <section className="tool-card grid gap-4">
           <div className="flex items-center justify-between">
             <h3 className="font-sans text-lg text-brand-green font-semibold">Liabilities</h3>
             <button type="button" onClick={addLiabSection} className="underline">+ Add liability section</button>
@@ -345,7 +345,7 @@ export default function Page() {
       </form>
 
       {/* Similar tools */}
-      <div className="mt-6 rounded-2xl border border-brand-gold bg-white p-5">
+      <div className="mt-6 tool-card">
         <h4 className="font-sans text-lg text-brand-green font-semibold mb-2">Similar tools</h4>
         <ul className="list-disc ml-5 text-sm space-y-1">
           <li><Link href="/en/tools/budget-calculator" className="underline">Holistic Budget Calculator</Link></li>

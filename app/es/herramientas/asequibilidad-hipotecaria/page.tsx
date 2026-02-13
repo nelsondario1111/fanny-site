@@ -345,79 +345,79 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de acciones */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir el diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar un resumen de tus entradas y resultados"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV
+          <FaFileCsv aria-hidden /> Exportar (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Ingresos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Ingresos</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Ingreso de solicitante (anual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={income1} onChange={(e)=>setIncome1(Number(e.target.value || 0))}/>
           </div>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Ingreso de co-solicitante (anual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={income2} onChange={(e)=>setIncome2(Number(e.target.value || 0))}/>
           </div>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Otros ingresos mensuales (opcional)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={otherMonthlyIncome} onChange={(e)=>setOtherMonthlyIncome(Number(e.target.value || 0))}/>
             <p className="text-xs text-brand-blue/70 mt-1">Se consideran como parte del ingreso bruto; algunos prestamistas pueden excluirlos.</p>
           </div>
         </section>
 
         {/* Costos de vivienda calificables */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Costos de vivienda (calificables)</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Impuestos a la propiedad (anual)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={propertyTaxAnnual} onChange={(e)=>setPropertyTaxAnnual(Number(e.target.value || 0))}/>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Calefacción (mensual)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={heatingMonthly} onChange={(e)=>setHeatingMonthly(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Cuotas de condominio (mensual)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={condoFeesMonthly} onChange={(e)=>setCondoFeesMonthly(Number(e.target.value || 0))}/>
               <p className="text-xs text-brand-blue/70 mt-1">Para GDS/TDS se cuenta el 50% de las cuotas.</p>
             </div>
@@ -425,31 +425,31 @@ export default function Page() {
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Seguro de hogar (mensual)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={homeInsMonthly} onChange={(e)=>setHomeInsMonthly(Number(e.target.value || 0))}/>
           </div>
         </section>
 
         {/* Otras deudas & ratios */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Deudas y ratios</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Otras deudas mensuales (pagos mínimos)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={otherDebtsMonthly} onChange={(e)=>setOtherDebtsMonthly(Number(e.target.value || 0))}/>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">GDS objetivo (%)</label>
               <input type="number" min={20} max={60} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={gdsTarget*100} onChange={(e)=>setGdsTarget(Number(e.target.value || 0)/100)}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">TDS objetivo (%)</label>
               <input type="number" min={20} max={60} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={tdsTarget*100} onChange={(e)=>setTdsTarget(Number(e.target.value || 0)/100)}/>
             </div>
           </div>
@@ -457,20 +457,20 @@ export default function Page() {
         </section>
 
         {/* Financiamiento: tasa, amortización y pago inicial */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financiamiento</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Tasa contractual (anual %)</label>
               <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={contractRatePct} onChange={(e)=>setContractRatePct(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Amortización (años)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={amortYears} onChange={(e)=>setAmortYears(Number(e.target.value))}
               >
                 <option value={20}>20</option>
@@ -489,13 +489,13 @@ export default function Page() {
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Margen (+%)</label>
                 <input type="number" min={0} max={5} step={0.01} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={stressBufferPct} onChange={(e)=>setStressBufferPct(Number(e.target.value || 0))}/>
               </div>
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Piso (%)</label>
                 <input type="number" min={0} max={10} step={0.01} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={qualifyingFloorPct} onChange={(e)=>setQualifyingFloorPct(Number(e.target.value || 0))}/>
               </div>
               <div className="flex items-end">
@@ -520,12 +520,12 @@ export default function Page() {
             </div>
             {downMode === "amount" ? (
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={downAmount} onChange={(e)=>setDownAmount(Number(e.target.value || 0))}/>
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 <input type="number" min={0} max={100} step={0.1} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={downPercent} onChange={(e)=>setDownPercent(Number(e.target.value || 0))}/>
                 <div className="text-sm text-brand-blue/70 flex items-center">
                   Ingresa el % que planeas aportar.
@@ -546,7 +546,7 @@ export default function Page() {
 
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Cobertura y restricciones</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Ingreso mensual bruto</span><span className="font-medium">{money(grossMonthlyIncome, 2)}</span></div>
@@ -568,7 +568,7 @@ export default function Page() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Hipoteca máxima (por pago)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Amortización</span><span className="font-medium">{amortYears} años</span></div>
@@ -588,7 +588,7 @@ export default function Page() {
           </details>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Precio máximo de compra</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Pago inicial (estimado)</span><span className="font-medium">{money(downPaymentCAD)}</span></div>

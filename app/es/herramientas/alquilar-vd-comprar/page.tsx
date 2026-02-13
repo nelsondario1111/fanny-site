@@ -51,6 +51,11 @@ function remainingBalance(P: number, annualRatePct: number, years: number, month
   const pow = Math.pow(1 + i, m);
   return P * pow - (M * (pow - 1)) / i;
 }
+/** Convierte tasa anual (%) a tasa mensual efectiva */
+function monthlyRateFromAnnualPct(annualPct: number) {
+  const r = (annualPct || 0) / 100;
+  return Math.pow(1 + r, 1 / 12) - 1;
+}
 
 /* =========================================================
    Página
@@ -97,12 +102,12 @@ export default function Page() {
     const principal = Math.max(0, price - downPayment);
 
     const nMonths = Math.max(1, Math.round((horizonYears || 0) * 12));
-    // const i_mort = Math.max(0, ratePct) / 100 / 12; // ← (eliminado por no usarse)
-    const i_rent = Math.max(0, rentGrowthPctAnnual) / 100 / 12;
-    const g_home = Math.max(0, homeAppreciationPctAnnual) / 100 / 12;
-    const i_inv = Math.max(0, investmentReturnPctAnnual) / 100 / 12;
+    const i_rent = monthlyRateFromAnnualPct(rentGrowthPctAnnual || 0);
+    const g_home = monthlyRateFromAnnualPct(homeAppreciationPctAnnual || 0); // puede ser negativa
+    const i_inv = monthlyRateFromAnnualPct(investmentReturnPctAnnual || 0);
 
     const M = monthlyPayment(principal, ratePct || 0, amortYears || 25);
+    const mortgageMonths = Math.max(1, Math.round((amortYears || 25) * 12));
 
     let houseValue = price;
     let rent = Math.max(0, rentMonthly || 0);
@@ -111,25 +116,25 @@ export default function Page() {
     let totalOwnerCashOut = 0;
     let totalRenterCashOut = 0;
 
-    // Inversión del inquilino (inicia con pago inicial + costos de cierre evitados; aporta ahorros mensuales si los hay)
+    // Inversión del inquilino: inicia con el efectivo evitado al no comprar
     let renterFV = (downPayment + Math.max(0, closingCosts || 0));
-    renterFV *= 1 + i_inv; // crecer desde el mes 1
 
-    // Flujo mensual — mes 1 (para mostrar)
+    // Flujo mensual (mes 1) para mostrar
     let ownerCashMonth1 = 0;
     let renterCashMonth1 = 0;
 
     for (let m = 1; m <= nMonths; m++) {
-      // Costos recurrentes del propietario
       const propertyTaxM = (taxPctOfValue * houseValue) / 12;
       const maintenanceM = (Math.max(0, maintenancePctAnnual || 0) / 100) * houseValue / 12;
+      const pmtThisMonth = m <= mortgageMonths ? M : 0;
       const ownerMonthlyCash =
-        M + propertyTaxM + maintenanceM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
-
-      // Costos recurrentes del inquilino
+        pmtThisMonth +
+        propertyTaxM +
+        maintenanceM +
+        Math.max(0, hoaMonthly || 0) +
+        Math.max(0, homeInsMonthly || 0);
       const renterMonthlyCash = rent + Math.max(0, renterInsMonthly || 0);
 
-      // Captura de mes 1
       if (m === 1) {
         ownerCashMonth1 = ownerMonthlyCash;
         renterCashMonth1 = renterMonthlyCash;
@@ -138,54 +143,48 @@ export default function Page() {
       totalOwnerCashOut += ownerMonthlyCash;
       totalRenterCashOut += renterMonthlyCash;
 
-      // Si alquilar es más barato este mes, invertir la diferencia
       const diff = ownerMonthlyCash - renterMonthlyCash;
-      if (diff > 0) {
-        renterFV = (renterFV + diff) * (1 + i_inv);
-      } else {
-        renterFV = renterFV * (1 + i_inv);
-      }
+      renterFV = (renterFV + (diff > 0 ? diff : 0)) * (1 + i_inv);
 
-      // Actualizar renta y valor de casa para el próximo mes
       rent = rent * (1 + i_rent);
       houseValue = houseValue * (1 + g_home);
     }
 
-    // Saldo de hipoteca y patrimonio del propietario al horizonte
+    // Saldo hipotecario y patrimonio al horizonte
     const remBal = remainingBalance(principal, ratePct || 0, amortYears || 25, nMonths);
     const salePrice = price * Math.pow(1 + g_home, nMonths);
     const saleCosts = salePrice * Math.max(0, sellingCostPct || 0) / 100;
     const ownerNetWorth = Math.max(0, salePrice - saleCosts - Math.max(0, remBal));
-
     const renterNetWorth = Math.max(0, renterFV);
-
-    // Ventaja neta = patrimonio propietario − patrimonio inquilino
     const netAdvantage = ownerNetWorth - renterNetWorth;
 
-    // Escaneo simple de año de equilibrio
-    let breakEvenYear: number | null = null;
-    let cumulativeMonths = 0;
-    for (let y = 1; y <= Math.ceil(nMonths / 12); y++) {
-      cumulativeMonths = Math.min(nMonths, y * 12);
-      const rb = remainingBalance(principal, ratePct || 0, amortYears || 25, cumulativeMonths);
-      const sp = price * Math.pow(1 + g_home, cumulativeMonths);
-      const sc = sp * Math.max(0, sellingCostPct || 0) / 100;
+    // Capital e interés pagados en el horizonte
+    const monthsPaid = Math.min(nMonths, mortgageMonths);
+    const principalPaid = Math.max(0, principal - remainingBalance(principal, ratePct || 0, amortYears || 25, monthsPaid));
+    const totalPaid = M * monthsPaid;
+    const interestPaid = Math.max(0, totalPaid - principalPaid);
 
-      // Recalcular inversión del inquilino hasta ese año
+    // Escaneo simple de año de equilibrio, consistente con el modelo
+    let breakEvenYear: number | null = null;
+    for (let y = 1; y <= Math.ceil(nMonths / 12); y++) {
+      const months = Math.min(nMonths, y * 12);
       let rentY = Math.max(0, rentMonthly || 0);
       let hvY = price;
-      let renterFVY = (downPayment + Math.max(0, closingCosts || 0)) * (1 + i_inv);
-      for (let m = 1; m <= cumulativeMonths; m++) {
+      let renterFVY = (downPayment + Math.max(0, closingCosts || 0));
+      for (let m = 1; m <= months; m++) {
         const taxM = (taxPctOfValue * hvY) / 12;
         const maintM = (Math.max(0, maintenancePctAnnual || 0) / 100) * hvY / 12;
-        const ownerCash = M + taxM + maintM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
+        const pmtY = m <= mortgageMonths ? M : 0;
+        const ownerCash = pmtY + taxM + maintM + Math.max(0, hoaMonthly || 0) + Math.max(0, homeInsMonthly || 0);
         const renterCash = rentY + Math.max(0, renterInsMonthly || 0);
         const dif = ownerCash - renterCash;
-        if (dif > 0) renterFVY = (renterFVY + dif) * (1 + i_inv);
-        else renterFVY = renterFVY * (1 + i_inv);
+        renterFVY = (renterFVY + (dif > 0 ? dif : 0)) * (1 + i_inv);
         rentY *= 1 + i_rent;
         hvY *= 1 + g_home;
       }
+      const rb = remainingBalance(principal, ratePct || 0, amortYears || 25, months);
+      const sp = price * Math.pow(1 + g_home, months);
+      const sc = sp * Math.max(0, sellingCostPct || 0) / 100;
       const ownerNWy = Math.max(0, sp - sc - Math.max(0, rb));
       const renterNWy = Math.max(0, renterFVY);
       if (ownerNWy >= renterNWy) { breakEvenYear = y; break; }
@@ -206,6 +205,8 @@ export default function Page() {
       downPayment,
       principal,
       breakEvenYear,
+      principalPaid,
+      interestPaid,
     };
   }, [
     purchasePrice, downPct, ratePct, amortYears, closingCosts,
@@ -213,6 +214,19 @@ export default function Page() {
     sellingCostPct, rentMonthly, rentGrowthPctAnnual, renterInsMonthly,
     horizonYears, homeAppreciationPctAnnual, investmentReturnPctAnnual
   ]);
+
+  const decisionHeadline =
+    results.netAdvantage > 1_000
+      ? "Comprar lidera en este horizonte"
+      : results.netAdvantage < -1_000
+      ? "Alquilar lidera en este horizonte"
+      : "Resultado muy parejo en este horizonte";
+  const decisionDetail =
+    results.netAdvantage > 1_000
+      ? `Comprar queda arriba por aprox. ${money(results.netAdvantage, 0)} tras ${horizonYears} años.`
+      : results.netAdvantage < -1_000
+      ? `Alquilar queda arriba por aprox. ${money(Math.abs(results.netAdvantage), 0)} tras ${horizonYears} años.`
+      : `La diferencia es de aprox. ${money(Math.abs(results.netAdvantage), 0)} tras ${horizonYears} años.`;
 
   /* -----------------------------
      Acciones
@@ -260,6 +274,8 @@ export default function Page() {
       ["Costos de venta @ horizonte", r.saleCosts.toFixed(2)],
       ["Pago inicial (CAD)", r.downPayment.toFixed(2)],
       ["Principal inicial (préstamo)", r.principal.toFixed(2)],
+      ["Capital pagado (horizonte)", r.principalPaid.toFixed(2)],
+      ["Interés pagado (horizonte)", r.interestPaid.toFixed(2)],
     ];
     downloadCSV("alquilar_vs_comprar_resumen", rows);
   }
@@ -292,52 +308,52 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de herramientas */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar tu comparación"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV
+          <FaFileCsv aria-hidden /> Exportar (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Comprar */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Comprar — Precio y financiamiento</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Precio de compra (CAD)</label>
             <input
               type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={purchasePrice} onChange={(e)=>setPurchasePrice(Number(e.target.value || 0))}
             />
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Pago inicial (%)</label>
               <input
                 type="number" min={0} max={100} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={downPct} onChange={(e)=>setDownPct(Number(e.target.value || 0))}
               />
             </div>
@@ -345,14 +361,14 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Tasa (anual %)</label>
               <input
                 type="number" min={0} max={25} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={ratePct} onChange={(e)=>setRatePct(Number(e.target.value || 0))}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Amortización (años)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={amortYears} onChange={(e)=>setAmortYears(Number(e.target.value))}
               >
                 <option value={20}>20</option>
@@ -362,12 +378,12 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Costos de cierre (est.)</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={closingCosts} onChange={(e)=>setClosingCosts(Number(e.target.value || 0))}
               />
             </div>
@@ -375,18 +391,18 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Costo de venta (% del precio)</label>
               <input
                 type="number" min={0} max={10} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={sellingCostPct} onChange={(e)=>setSellingCostPct(Number(e.target.value || 0))}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Impuesto a la propiedad (anual)</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={propertyTaxAnnual} onChange={(e)=>setPropertyTaxAnnual(Number(e.target.value || 0))}
               />
             </div>
@@ -394,18 +410,18 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Mantenimiento (% del valor / año)</label>
               <input
                 type="number" min={0} max={10} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={maintenancePctAnnual} onChange={(e)=>setMaintenancePctAnnual(Number(e.target.value || 0))}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Condo/Strata/HOA (mensual)</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={hoaMonthly} onChange={(e)=>setHoaMonthly(Number(e.target.value || 0))}
               />
             </div>
@@ -413,7 +429,7 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Seguro de vivienda (mensual)</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={homeInsMonthly} onChange={(e)=>setHomeInsMonthly(Number(e.target.value || 0))}
               />
             </div>
@@ -421,22 +437,22 @@ export default function Page() {
         </section>
 
         {/* Alquilar */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Alquilar — Precio y crecimiento</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Alquiler inicial (mensual)</label>
             <input
               type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={rentMonthly} onChange={(e)=>setRentMonthly(Number(e.target.value || 0))}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Crecimiento del alquiler (% anual)</label>
               <input
                 type="number" min={0} max={15} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={rentGrowthPctAnnual} onChange={(e)=>setRentGrowthPctAnnual(Number(e.target.value || 0))}
               />
             </div>
@@ -444,7 +460,7 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Seguro de inquilino (mensual)</label>
               <input
                 type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={renterInsMonthly} onChange={(e)=>setRenterInsMonthly(Number(e.target.value || 0))}
               />
             </div>
@@ -452,14 +468,14 @@ export default function Page() {
         </section>
 
         {/* Horizonte y supuestos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Horizonte y supuestos</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Horizonte (años)</label>
               <input
                 type="number" min={1} max={40} step={1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={horizonYears} onChange={(e)=>setHorizonYears(Number(e.target.value || 0))}
               />
             </div>
@@ -467,7 +483,7 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Rendimiento de inversión (% anual)</label>
               <input
                 type="number" min={0} max={15} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={investmentReturnPctAnnual} onChange={(e)=>setInvestmentReturnPctAnnual(Number(e.target.value || 0))}
               />
             </div>
@@ -475,7 +491,7 @@ export default function Page() {
               <label className="block text-sm font-medium text-brand-blue mb-1">Apreciación de la vivienda (% anual)</label>
               <input
                 type="number" min={-10} max={20} step={0.1} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={homeAppreciationPctAnnual} onChange={(e)=>setHomeAppreciationPctAnnual(Number(e.target.value || 0))}
               />
             </div>
@@ -486,9 +502,19 @@ export default function Page() {
         </section>
       </form>
 
+      <section className="tool-card-compact mt-6 avoid-break">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="font-sans text-lg text-brand-green font-semibold">{decisionHeadline}</h3>
+          <span className="inline-flex w-fit items-center rounded-full border border-brand-gold/60 bg-brand-beige/60 px-3 py-1 text-xs font-medium text-brand-blue">
+            Horizonte: {horizonYears} años
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-brand-blue/90">{decisionDetail}</p>
+      </section>
+
       {/* Resultados */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Flujo mensual (Mes 1)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Egreso propietario</span><span className="font-medium">{money(results.ownerCashMonth1, 2)}</span></div>
@@ -503,7 +529,7 @@ export default function Page() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Egreso total (Horizonte)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Egreso total propietario</span><span className="font-medium">{money(results.totalOwnerCashOut, 0)}</span></div>
@@ -519,7 +545,7 @@ export default function Page() {
           </details>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Patrimonio al horizonte</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Patrimonio del propietario (tras costos de venta y saldo)</span><span className="font-medium">{money(results.ownerNetWorth, 0)}</span></div>
@@ -531,6 +557,14 @@ export default function Page() {
             <div className="flex justify-between">
               <span>Punto de equilibrio (primer año en que Comprar ≥ Alquilar)</span>
               <span className="font-medium">{results.breakEvenYear ?? "No alcanzado"}</span>
+            </div>
+            <div className="flex justify-between border-t pt-2 mt-2">
+              <span>Capital pagado (horizonte)</span>
+              <span className="font-medium">{money(results.principalPaid, 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Interés pagado (horizonte)</span>
+              <span className="font-medium">{money(results.interestPaid, 0)}</span>
             </div>
           </div>
           <p className="text-xs text-brand-blue/70 mt-2">

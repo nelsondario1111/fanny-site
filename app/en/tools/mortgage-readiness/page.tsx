@@ -272,7 +272,7 @@ function SavedIndicator({ savedAt }: { savedAt: number | null }) {
 function ProgressBar({ value, total }: { value: number; total: number }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <div className="h-2 w-28 bg-brand-beige rounded-full overflow-hidden">
         <div className="h-2 bg-brand-green" style={{ width: `${pct}%`, transition: "width .3s ease" }} />
       </div>
@@ -585,7 +585,7 @@ export default function Page() {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder="Filter tasks…"
-              className="pl-9 pr-3 py-2 rounded-full border-2 border-brand-gold/60 bg-white min-w-[220px]"
+              className="tool-field-sm min-w-[220px] pl-9"
               aria-label="Filter tasks"
             />
           </div>
@@ -628,16 +628,16 @@ export default function Page() {
           <button
             type="button"
             onClick={exportCSV}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+            className="tool-btn-green"
             title="Export as CSV"
           >
             <Download className="h-4 w-4" />
-            Export CSV
+            Export (CSV)
           </button>
           <button
             type="button"
             onClick={exportJSON}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+            className="tool-btn-blue"
             title="Export as JSON"
           >
             <Download className="h-4 w-4" />
@@ -646,7 +646,7 @@ export default function Page() {
           <button
             type="button"
             onClick={openImport}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+            className="tool-btn-gold"
             title="Import JSON"
           >
             <Upload className="h-4 w-4" />
@@ -667,26 +667,26 @@ export default function Page() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
-            title="Print"
+            className="tool-btn-blue"
+            title="Print or Save PDF"
           >
             <Printer className="h-4 w-4" />
-            Print
+            Print or Save PDF
           </button>
           <button
             type="button"
             onClick={resetAll}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-            title="Reset"
+            className="tool-btn-gold"
+            title="Reset values"
           >
             <RotateCcw className="h-4 w-4" />
-            Reset
+            Reset values
           </button>
         </div>
       </div>
 
       {/* Status / Snapshot */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
+      <section className="tool-card-compact mb-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <SummaryCard
             icon={<ShieldCheck className="h-5 w-5" />}
@@ -762,7 +762,7 @@ export default function Page() {
           const qa = quickAdd[key];
 
           return (
-            <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
+            <section key={key} className="tool-card-compact">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3
@@ -870,7 +870,7 @@ export default function Page() {
                               </select>
                             </td>
                             <td className="p-2 align-top">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <input
                                   type="date"
                                   value={t.due || ""}
@@ -1045,7 +1045,7 @@ export default function Page() {
                               </div>
                               <div>
                                 <div className="text-[11px] text-brand-blue/70">Due</div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
                                   <input
                                     type="date"
                                     value={t.due || ""}
@@ -1119,7 +1119,7 @@ export default function Page() {
       </form>
 
       {/* Helpful tools & services */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
+      <section className="tool-card-compact mt-6">
         <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Helpful tools & services
         </h4>

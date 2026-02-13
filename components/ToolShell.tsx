@@ -13,8 +13,13 @@ type ToolShellProps = {
 
 export default function ToolShell({ title, subtitle, lang = "en", children }: ToolShellProps) {
   const backHref = lang === "es" ? "/es/herramientas" : "/en/tools";
+  const trustChips =
+    lang === "es"
+      ? ["Privado en tu navegador", "Estimación educativa", "Listo para imprimir/exportar"]
+      : ["Private in your browser", "Educational estimate", "Print/export ready"];
+
   return (
-    <main className="bg-brand-beige min-h-screen">
+    <main className="bg-brand-beige min-h-screen" data-tool-shell>
       <header className="pt-10 px-4">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 py-8 sm:py-12 bg-white/95 rounded-[28px] border border-brand-gold shadow-xl">
           <div className="flex items-center justify-between gap-4 mb-4">
@@ -26,6 +31,16 @@ export default function ToolShell({ title, subtitle, lang = "en", children }: To
             {title}
           </h1>
           {subtitle && <p className="text-brand-blue/90 text-lg mt-3">{subtitle}</p>}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {trustChips.map((chip) => (
+              <span
+                key={chip}
+                className="inline-flex items-center rounded-full border border-brand-gold/60 bg-brand-beige/60 px-3 py-1 text-xs font-medium tracking-[0.02em] text-brand-blue"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
         </div>
       </header>
 

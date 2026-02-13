@@ -528,7 +528,7 @@ export default function Page() {
             id="tax-year"
             value={taxYear}
             onChange={(e) => setTaxYear(parseInt(e.target.value))}
-            className="border-2 border-brand-gold/60 rounded-full bg-white px-3 py-1.5"
+            className="tool-field-sm w-auto"
           >
             {/* Offer a few recent years plus current (filing is for prior year) */}
             {[currentYear, currentYear - 1, currentYear - 2, currentYear - 3].map((y) => (
@@ -546,35 +546,35 @@ export default function Page() {
           <button
             type="button"
             onClick={exportCSV}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+            className="tool-btn-green"
             title="Export as CSV"
           >
             <Download className="h-4 w-4" />
-            Export CSV
+            Export (CSV)
           </button>
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
-            title="Print"
+            className="tool-btn-blue"
+            title="Print or Save PDF"
           >
             <Printer className="h-4 w-4" />
-            Print
+            Print or Save PDF
           </button>
           <button
             type="button"
             onClick={resetAll}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
-            title="Reset"
+            className="tool-btn-gold"
+            title="Reset values"
           >
             <RotateCcw className="h-4 w-4" />
-            Reset
+            Reset values
           </button>
         </div>
       </div>
 
       {/* Key dates & status */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mb-6">
+      <section className="tool-card-compact mb-6">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <DateCard label="RRSP deadline" date={keyDates.rrsp} helper={`60th day of ${taxYear + 1}`} />
           <DateCard label="Filing deadline (most)" date={keyDates.apr30} helper={`April 30, ${taxYear + 1}`} />
@@ -614,12 +614,12 @@ export default function Page() {
 
       {/* Controls row below header */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <input
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Filter tasks…"
-            className="pl-3 pr-3 py-2 rounded-full border-2 border-brand-gold/60 bg-white min-w-[220px]"
+            className="tool-field-sm min-w-[220px]"
             aria-label="Filter tasks"
           />
           <button type="button" onClick={() => toggleAll(true)} className="text-sm underline text-brand-blue">
@@ -648,7 +648,7 @@ export default function Page() {
           const isCollapsed = collapse[key];
 
           return (
-            <section key={key} className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5">
+            <section key={key} className="tool-card-compact">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className={classNames("font-sans text-base md:text-lg font-semibold", toneToText[meta.tone])}>
@@ -850,7 +850,7 @@ export default function Page() {
       </form>
 
       {/* Helpful tools & services */}
-      <section className="rounded-2xl border border-brand-gold bg-white p-4 md:p-5 mt-6">
+      <section className="tool-card-compact mt-6">
         <h4 className="font-sans text-base md:text-lg text-brand-green font-semibold mb-2">
           Helpful tools & services
         </h4>

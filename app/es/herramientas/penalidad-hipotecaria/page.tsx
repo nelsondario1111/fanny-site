@@ -165,37 +165,37 @@ export default function Page() {
       lang="es"
     >
       {/* Barra de acciones */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Abrir el diálogo de impresión (elige 'Guardar como PDF')"
         >
-          <FaPrint aria-hidden /> Imprimir / Guardar PDF
+          <FaPrint aria-hidden /> Imprimir o guardar PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Exportar un resumen de tus entradas y resultados"
         >
-          <FaFileCsv aria-hidden /> Exportar CSV
+          <FaFileCsv aria-hidden /> Exportar (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Restablecer a valores de ejemplo"
+          className="tool-btn-gold"
+          title="Restablecer valores"
         >
-          Restablecer ejemplo
+          Restablecer valores
         </button>
       </div>
 
       {/* Entradas */}
       <form className="grid xl:grid-cols-3 gap-6">
         {/* Básicos de la hipoteca */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Básicos de la hipoteca</h3>
 
           <div>
@@ -233,7 +233,7 @@ export default function Page() {
               type="number"
               min={0}
               inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={outstandingBalance}
               onChange={(e) => setOutstandingBalance(Number(e.target.value || 0))}
             />
@@ -250,7 +250,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={contractRatePct}
                 onChange={(e) => setContractRatePct(Number(e.target.value || 0))}
               />
@@ -260,7 +260,7 @@ export default function Page() {
                 Plazo restante (meses)
               </label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={remainingMonths}
                 onChange={(e) => setRemainingMonths(Number(e.target.value))}
               >
@@ -285,7 +285,7 @@ export default function Page() {
         </section>
 
         {/* Entradas para IRD */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">
             Entradas IRD (simple)
           </h3>
@@ -307,7 +307,7 @@ export default function Page() {
                 max={25}
                 step={0.01}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={comparisonRatePct}
                 onChange={(e) => setComparisonRatePct(Number(e.target.value || 0))}
               />
@@ -325,7 +325,7 @@ export default function Page() {
                 type="number"
                 min={0}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={adminFee}
                 onChange={(e) => setAdminFee(Number(e.target.value || 0))}
               />
@@ -337,7 +337,7 @@ export default function Page() {
         </section>
 
         {/* Resultados rápidos */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">
             Resultados rápidos
           </h3>
@@ -400,7 +400,7 @@ export default function Page() {
 
       {/* Paneles comparativos */}
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             Detalle — Interés 3 meses
           </h3>
@@ -424,7 +424,7 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">
             Detalle — IRD (simple)
           </h3>

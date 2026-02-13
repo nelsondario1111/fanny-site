@@ -5,6 +5,28 @@ import { useEffect, useMemo, useState } from "react";
 
 export type ChecklistSection = { title: string; items: string[] };
 
+function toCSV(rows: Array<Array<string | number>>) {
+  const esc = (v: string | number) => {
+    const s = String(v ?? "");
+    const needsQuotes = /[",\n]/.test(s);
+    const escaped = s.replace(/"/g, '""');
+    return needsQuotes ? `"${escaped}"` : escaped;
+  };
+  return rows.map((r) => r.map(esc).join(",")).join("\r\n");
+}
+
+function downloadCSV(baseName: string, rows: Array<Array<string | number>>) {
+  const date = new Date().toISOString().slice(0, 10);
+  const csv = toCSV(rows);
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${baseName}_${date}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function Checklist({
   title,
   subtitle,
@@ -54,26 +76,14 @@ export default function Checklist({
   }
 
   function exportCSV() {
-    const rows: string[] = [];
-    rows.push(`Section,Item,Status`);
-    sections.forEach((sec, si) =>
+    const rows: Array<Array<string | number>> = [["Section", "Item", "Status"]];
+    sections.forEach((sec, si) => {
       sec.items.forEach((it, ii) => {
         const k = `${si}:${ii}`;
-        const status = state[k] ? "Done" : "To-do";
-        rows.push(
-          `"${sec.title.replace(/"/g, '""')}","${it.replace(/"/g, '""')}",${status}`
-        );
-      })
-    );
-    const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${title.replace(/\s+/g, "_")}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+        rows.push([sec.title, it, state[k] ? "Done" : "To-do"]);
+      });
+    });
+    downloadCSV(title.replace(/\s+/g, "_"), rows);
   }
 
   return (
@@ -94,28 +104,31 @@ export default function Checklist({
       </header>
 
       <div className="bg-white/95 rounded-2xl border border-brand-gold shadow p-5 sm:p-7">
-        <div className="flex flex-wrap gap-2 justify-between mb-5">
+        <div className="tool-actions justify-between mb-5">
           <div className="text-brand-body/80">
             Tip: Your progress is saved to this browser.
           </div>
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={exportCSV}
-              className="px-4 py-2 rounded-full border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white transition"
+              className="tool-btn-green"
             >
-              Export CSV
+              Export (CSV)
             </button>
             <button
+              type="button"
               onClick={() => window.print()}
-              className="px-4 py-2 rounded-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white transition"
+              className="tool-btn-blue"
             >
-              Print
+              Print or Save PDF
             </button>
             <button
+              type="button"
               onClick={reset}
-              className="px-4 py-2 rounded-full border-2 border-brand-gold text-brand-green hover:bg-brand-gold hover:text-brand-green transition"
+              className="tool-btn-gold"
             >
-              Reset
+              Reset values
             </button>
           </div>
         </div>
@@ -155,6 +168,10 @@ export default function Checklist({
             </div>
           ))}
         </div>
+
+        <p className="mt-6 text-xs text-brand-blue/70">
+          Educational planning tool. This checklist is general guidance, not legal, tax, lending, or investment advice.
+        </p>
       </div>
     </section>
   );

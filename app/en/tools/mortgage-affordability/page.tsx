@@ -347,79 +347,79 @@ export default function Page() {
       lang="en"
     >
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-2 items-center justify-end mb-4 print:hidden">
+      <div className="tool-actions">
         <button
           type="button"
           onClick={handlePrint}
-          className="px-4 py-2 bg-brand-blue text-white rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
+          className="tool-btn-primary"
           title="Open print dialog (choose 'Save as PDF')"
         >
-          <FaPrint aria-hidden /> Print / Save as PDF
+          <FaPrint aria-hidden /> Print or Save PDF
         </button>
         <button
           type="button"
           onClick={exportCSV}
-          className="px-4 py-2 bg-white border-2 border-brand-blue text-brand-blue rounded-full inline-flex items-center gap-2 hover:bg-brand-blue hover:text-white transition"
+          className="tool-btn-blue"
           title="Export a summary of your inputs and results"
         >
-          <FaFileCsv aria-hidden /> Export CSV
+          <FaFileCsv aria-hidden /> Export (CSV)
         </button>
         <button
           type="button"
           onClick={resetExample}
-          className="px-4 py-2 bg-white border-2 border-brand-gold text-brand-green rounded-full inline-flex items-center gap-2 hover:bg-brand-gold hover:text-brand-green transition"
-          title="Reset to sample values"
+          className="tool-btn-gold"
+          title="Reset values"
         >
-          Reset Example
+          Reset values
         </button>
       </div>
 
       {/* Inputs */}
       <form className="grid 2xl:grid-cols-4 xl:grid-cols-3 gap-6">
         {/* Incomes */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Incomes</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Borrower Income (annual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={income1} onChange={(e)=>setIncome1(Number(e.target.value || 0))}/>
           </div>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Co-Borrower Income (annual, CAD)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={income2} onChange={(e)=>setIncome2(Number(e.target.value || 0))}/>
           </div>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Other Monthly Income (optional)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={otherMonthlyIncome} onChange={(e)=>setOtherMonthlyIncome(Number(e.target.value || 0))}/>
             <p className="text-xs text-brand-blue/70 mt-1">Conservatively treated as part of gross income; some lenders may exclude.</p>
           </div>
         </section>
 
         {/* Housing costs */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Qualifying Housing Costs</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Property Taxes (annual)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={propertyTaxAnnual} onChange={(e)=>setPropertyTaxAnnual(Number(e.target.value || 0))}/>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Heating (monthly)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={heatingMonthly} onChange={(e)=>setHeatingMonthly(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Condo Fees (monthly)</label>
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={condoFeesMonthly} onChange={(e)=>setCondoFeesMonthly(Number(e.target.value || 0))}/>
               <p className="text-xs text-brand-blue/70 mt-1">We count 50% of condo fees for GDS/TDS.</p>
             </div>
@@ -427,31 +427,31 @@ export default function Page() {
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Home Insurance (monthly)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={homeInsMonthly} onChange={(e)=>setHomeInsMonthly(Number(e.target.value || 0))}/>
           </div>
         </section>
 
         {/* Other debts & ratios */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 grid gap-3">
+        <section className="tool-card grid gap-3">
           <h3 className="font-sans text-lg text-brand-green font-semibold">Debts & Ratios</h3>
           <div>
             <label className="block text-sm font-medium text-brand-blue mb-1">Other Monthly Debts (minimums)</label>
             <input type="number" min={0} inputMode="decimal"
-              className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+              className="tool-field-lg"
               value={otherDebtsMonthly} onChange={(e)=>setOtherDebtsMonthly(Number(e.target.value || 0))}/>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">GDS Target (%)</label>
               <input type="number" min={20} max={60} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={gdsTarget*100} onChange={(e)=>setGdsTarget(Number(e.target.value || 0)/100)}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">TDS Target (%)</label>
               <input type="number" min={20} max={60} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field-lg"
                 value={tdsTarget*100} onChange={(e)=>setTdsTarget(Number(e.target.value || 0)/100)}/>
             </div>
           </div>
@@ -459,20 +459,20 @@ export default function Page() {
         </section>
 
         {/* Rate, amortization, down payment */}
-        <section className="rounded-2xl border border-brand-gold bg-white p-5">
+        <section className="tool-card">
           <h3 className="font-sans text-lg text-brand-green font-semibold mb-2">Financing</h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Contract Rate (annual %)</label>
               <input type="number" min={0} max={25} step={0.01} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={contractRatePct} onChange={(e)=>setContractRatePct(Number(e.target.value || 0))}/>
             </div>
             <div>
               <label className="block text-sm font-medium text-brand-blue mb-1">Amortization (years)</label>
               <select
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={amortYears} onChange={(e)=>setAmortYears(Number(e.target.value))}
               >
                 <option value={20}>20</option>
@@ -491,13 +491,13 @@ export default function Page() {
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Buffer (+%)</label>
                 <input type="number" min={0} max={5} step={0.01} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={stressBufferPct} onChange={(e)=>setStressBufferPct(Number(e.target.value || 0))}/>
               </div>
               <div>
                 <label className="block text-xs text-brand-blue mb-1">Floor (%)</label>
                 <input type="number" min={0} max={10} step={0.01} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-2 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field-sm"
                   value={qualifyingFloorPct} onChange={(e)=>setQualifyingFloorPct(Number(e.target.value || 0))}/>
               </div>
               <div className="flex items-end">
@@ -522,12 +522,12 @@ export default function Page() {
             </div>
             {downMode === "amount" ? (
               <input type="number" min={0} inputMode="decimal"
-                className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                className="tool-field"
                 value={downAmount} onChange={(e)=>setDownAmount(Number(e.target.value || 0))}/>
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 <input type="number" min={0} max={100} step={0.1} inputMode="decimal"
-                  className="w-full rounded-xl border border-brand-gold/60 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-gold"
+                  className="tool-field"
                   value={downPercent} onChange={(e)=>setDownPercent(Number(e.target.value || 0))}/>
                 <div className="text-sm text-brand-blue/70 flex items-center">
                   Enter the % you plan to put down.
@@ -548,7 +548,7 @@ export default function Page() {
 
       {/* Results */}
       <div className="mt-8 grid xl:grid-cols-3 gap-6">
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Coverage & Constraints</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Gross Monthly Income</span><span className="font-medium">{money(grossMonthlyIncome, 2)}</span></div>
@@ -570,7 +570,7 @@ export default function Page() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Max Mortgage (by payment)</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Amortization</span><span className="font-medium">{amortYears} years</span></div>
@@ -590,7 +590,7 @@ export default function Page() {
           </details>
         </section>
 
-        <section className="rounded-2xl border border-brand-gold bg-white p-5 avoid-break">
+        <section className="tool-card avoid-break">
           <h3 className="font-sans text-xl text-brand-green font-semibold mb-2">Max Purchase Price</h3>
           <div className="text-sm space-y-2">
             <div className="flex justify-between"><span>Down Payment (est.)</span><span className="font-medium">{money(downPaymentCAD)}</span></div>
